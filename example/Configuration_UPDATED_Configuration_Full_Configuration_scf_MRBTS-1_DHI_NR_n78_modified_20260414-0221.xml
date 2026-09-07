@@ -1,0 +1,2332 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<raml xmlns="raml21.xsd" version="2.1">
+  <cmData type="plan" scope="all" id="4208913589">
+    <header>
+      <log action="create" dateTime="2026-04-13T23:21:40.946Z"/>
+    </header>
+    <managedObject class="com.nokia.srbts:MRBTS" distName="MRBTS-1" version="SBTS25R2_2502_100" operation="create">
+      <p name="btsName">DHI_NR_B66</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:EQM" distName="MRBTS-1/EQM-1" version="EQM25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.eqm:APEQM" distName="MRBTS-1/EQM-1/APEQM-1" version="EQM25R2_2503_111" operation="create">
+      <p name="aldScanningInterval">30 sec</p>
+      <p name="allowBbPoolRecoveryReset">true</p>
+      <p name="berMajorAlarmThreshold">-12</p>
+      <p name="berMinorAlarmThreshold">-13</p>
+      <p name="eCpriOutOfTimingWindowMinorThreshold">-3</p>
+      <p name="sfpOperatorMode">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:CABINET" distName="MRBTS-1/EQM-1/APEQM-1/CABINET-2" version="EQM25R2_2503_111" operation="create">
+      <p name="temperatureSensor">front</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:BBMOD" distName="MRBTS-1/EQM-1/APEQM-1/CABINET-2/BBMOD-1" version="EQM25R2_2503_111" operation="create">
+      <p name="actEcpriEthPortPooling">false</p>
+      <p name="administrativeState">Locked</p>
+      <p name="fddNrCellConfigTradeoff">not used</p>
+      <p name="prodCodePlanned">474020A.102</p>
+      <p name="useFullCapacity">true</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:SMOD" distName="MRBTS-1/EQM-1/APEQM-1/CABINET-2/SMOD-1" version="EQM25R2_2503_111" operation="create">
+      <p name="climateControlOcxoTemperatureLearning">false</p>
+      <p name="prodCodePlanned">474021A.103</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:RMOD" distName="MRBTS-1/EQM-1/APEQM-1/RMOD-1" version="EQM25R2_2503_111" operation="create">
+      <p name="actParExpansionOff">false</p>
+      <p name="actPimCancellation">false</p>
+      <p name="actSharedRUIndControl">false</p>
+      <p name="actSnapshotCollection">false</p>
+      <p name="administrativeState">Unlocked</p>
+      <p name="alVoltHighThreshold">107</p>
+      <p name="alVoltLowThreshold">-100</p>
+      <p name="alVoltUnstableThreshold">5</p>
+      <p name="energySavingMode">NORMAL</p>
+      <p name="internetProtocolVersion">IPV4</p>
+      <p name="legacyWideCarrierMode">false</p>
+      <p name="pimCancellingEnabled">true</p>
+      <p name="prodCodePlanned">474788A</p>
+      <p name="protocol">NOKIA</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:ANTL" distName="MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-1" version="EQM25R2_2503_111" operation="create">
+      <p name="antPortId">1</p>
+      <p name="antennaPathDelayDL">20</p>
+      <p name="antennaPathDelayUL">20</p>
+      <p name="cwaThreshold">215</p>
+      <p name="totalLoss">30</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:ANTL" distName="MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-2" version="EQM25R2_2503_111" operation="create">
+      <p name="antPortId">2</p>
+      <p name="antennaPathDelayDL">20</p>
+      <p name="antennaPathDelayUL">20</p>
+      <p name="cwaThreshold">215</p>
+      <p name="totalLoss">30</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:ANTL" distName="MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-3" version="EQM25R2_2503_111" operation="create">
+      <p name="antPortId">3</p>
+      <p name="antennaPathDelayDL">20</p>
+      <p name="antennaPathDelayUL">20</p>
+      <p name="cwaThreshold">215</p>
+      <p name="totalLoss">30</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:ANTL" distName="MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-4" version="EQM25R2_2503_111" operation="create">
+      <p name="antPortId">4</p>
+      <p name="antennaPathDelayDL">20</p>
+      <p name="antennaPathDelayUL">20</p>
+      <p name="cwaThreshold">215</p>
+      <p name="totalLoss">30</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:RSL" distName="MRBTS-1/EQM-1/APEQM-1/RMOD-1/RSL-1" version="EQM25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.eqm:HWTOP" distName="MRBTS-1/EQM-1/HWTOP-1" version="EQM25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.eqm:CABLINK" distName="MRBTS-1/EQM-1/HWTOP-1/CABLINK-1" version="EQM25R2_2503_111" operation="create">
+      <p name="firstEndpointDN">MRBTS-1/EQM-1/APEQM-1/CABINET-2/SMOD-1</p>
+      <p name="firstEndpointLabel">BACKPLANE</p>
+      <p name="firstEndpointPortId">1</p>
+      <p name="linkSpeed">Cpri7</p>
+      <p name="secondEndpointDN">MRBTS-1/EQM-1/APEQM-1/CABINET-2/BBMOD-1</p>
+      <p name="secondEndpointLabel">BACKPLANE</p>
+      <p name="secondEndpointPortId">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqm:CABLINK" distName="MRBTS-1/EQM-1/HWTOP-1/CABLINK-2" version="EQM25R2_2503_111" operation="create">
+      <p name="firstEndpointDN">MRBTS-1/EQM-1/APEQM-1/CABINET-2/BBMOD-1</p>
+      <p name="firstEndpointLabel">SFP</p>
+      <p name="firstEndpointPortId">1</p>
+      <p name="iqCompression">9bits</p>
+      <p name="linkSpeed">Cpri7</p>
+      <p name="radioProtocolType">TDDCPRI</p>
+      <p name="secondEndpointDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1</p>
+      <p name="secondEndpointLabel">SFP</p>
+      <p name="secondEndpointPortId">2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:MNL" distName="MRBTS-1/MNL-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actNcYgMPlane">false</p>
+      <p name="productVariantPlanned">sBTS</p>
+      <p name="timeZone">(GMT-5) America/New_York</p>
+      <p name="validatePlanAgainstDetectedHW">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:AMGR" distName="MRBTS-1/MNL-1/AMGR-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actCnumLdapClientAcctSup">false</p>
+      <p name="btsEMRestrictedAccess">false</p>
+      <p name="checkCnumPasswdExpiry">false</p>
+      <p name="enableCnumLdapCtrlAlarm">false</p>
+      <p name="enableDefaultPasswdAlarm">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:LUAC" distName="MRBTS-1/MNL-1/AMGR-1/LUAC-1" version="MNL25R2_2503_111" operation="create">
+      <p name="allowLocalUserDefaultPassword">true</p>
+      <p name="btsAccountLockoutDuration">15</p>
+      <p name="btsFailedLoginCountingPeriod">5</p>
+      <p name="btsMaxFailedLoginAttempts">5</p>
+      <p name="btsSessionLoginDelay">1</p>
+      <p name="enableUserAccountCtrlAlarm">false</p>
+      <p name="localPasswdExpiryPeriod">0</p>
+      <p name="localPasswdWarningPeriod">0</p>
+      <p name="maxUserNameLength">16</p>
+      <p name="minUserNameLength">4</p>
+      <p name="webEMSessionLogoutTimer">900</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CERTH" distName="MRBTS-1/MNL-1/CERTH-1" version="MNL25R2_2503_111" operation="create">
+      <p name="autoCBRSCertDelete">false</p>
+      <p name="autoCertDelete">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CMP" distName="MRBTS-1/MNL-1/CERTH-1/CMP-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actCertValidation">false</p>
+      <p name="btsNumberOfSAN">0</p>
+      <p name="caCertificateUpdateTime">90</p>
+      <p name="cmpPollingTimeout">3600</p>
+      <p name="keyLength">2048</p>
+      <p name="neCertificateUpdateTime">30</p>
+      <p name="serverPath">pkix</p>
+      <p name="serverPort">1024</p>
+      <p name="serverType">RSA</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CMPECDSA" distName="MRBTS-1/MNL-1/CERTH-1/CMPECDSA-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actCertValidation">false</p>
+      <p name="btsNumberOfSAN">0</p>
+      <p name="caCertificateUpdateTime">90</p>
+      <p name="cmpPollingTimeout">3600</p>
+      <p name="keyLength">256</p>
+      <p name="neCertificateUpdateTime">30</p>
+      <p name="serverPath">pkix</p>
+      <p name="serverPort">1024</p>
+      <p name="serverType">ECDSA</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CMPFH" distName="MRBTS-1/MNL-1/CERTH-1/CMPFH-1" version="MNL25R2_2503_111" operation="create">
+      <p name="caCertificateUpdateTime">90</p>
+      <p name="keyLength">2048</p>
+      <p name="neCertificateUpdateTime">30</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CMPFHEXT" distName="MRBTS-1/MNL-1/CERTH-1/CMPFHEXT-1" version="MNL25R2_2503_111" operation="create">
+      <p name="extKeyUsageTlsClientAuth">false</p>
+      <p name="extKeyUsageTlsServerAuth">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CRLH" distName="MRBTS-1/MNL-1/CERTH-1/CRLH-1" version="MNL25R2_2503_111" operation="create">
+      <p name="crlDownloadProtocol">LDAP</p>
+      <p name="distributionPointSource">Certificate_extension</p>
+      <p name="updatePeriod">24</p>
+      <p name="usageEnabled">Enabled</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:MNLENT" distName="MRBTS-1/MNL-1/MNLENT-1" version="MNL25R2_2503_111" operation="create">
+      <p name="cpriSyncBreakTime">200</p>
+      <p name="recoveryResetDelay">0</p>
+      <p name="targetDNType">RAP</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CELLMAPPING" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:LCELNR" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0" version="MNL25R2_2503_111" operation="create">
+      <p name="actAsiDistMimoNr">false</p>
+      <p name="actSimplChConfMAA">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNELGROUP" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-1" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-1</p>
+      <p name="direction">TX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-2" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-1</p>
+      <p name="direction">RX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-3" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-2</p>
+      <p name="direction">TX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-4" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-2</p>
+      <p name="direction">RX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-5" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-3</p>
+      <p name="direction">TX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-6" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-3</p>
+      <p name="direction">RX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-7" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-4</p>
+      <p name="direction">TX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CHANNEL" distName="MRBTS-1/MNL-1/MNLENT-1/CELLMAPPING-1/LCELNR-0/CHANNELGROUP-1/CHANNEL-8" version="MNL25R2_2503_111" operation="create">
+      <p name="antlDN">MRBTS-1/EQM-1/APEQM-1/RMOD-1/ANTL-4</p>
+      <p name="direction">RX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CERTHENT" distName="MRBTS-1/MNL-1/MNLENT-1/CERTHENT-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:CUPLANEFHNW" distName="MRBTS-1/MNL-1/MNLENT-1/CUPLANEFHNW-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:FEATCADM" distName="MRBTS-1/MNL-1/MNLENT-1/FEATCADM-1" version="MNL25R2_2503_111" operation="create">
+      <p name="act1PpsFrequencyValidation">false</p>
+      <p name="actAldSharing">false</p>
+      <p name="actAldSwUpdate">false</p>
+      <p name="actAntennaPathDelayMeasurement">false</p>
+      <p name="actAntiTheftProtectionSystem">Disabled</p>
+      <p name="actApts">false</p>
+      <p name="actAsi">false</p>
+      <p name="actAutAntRecPwrAntBasedSlCellDetRec">false</p>
+      <p name="actAutAntRecPwrBasedSlCellDetRec">false</p>
+      <p name="actAutAntRecPwrDiff2AntBasedSlCellDetRec">false</p>
+      <p name="actAutAntTxPwrBasedSlCellDetRec">false</p>
+      <p name="actAutBBModParamUpdate">true</p>
+      <p name="actAutNrRrcConStAtSlCellDetRec">false</p>
+      <p name="actAutPrachBasedSlCellDetRec">false</p>
+      <p name="actAutRachBasedSlCellDetRec">false</p>
+      <p name="actAutRrcAtmpBasedSlCellDetRec">false</p>
+      <p name="actAutRrcBasedSlCellDetRec">false</p>
+      <p name="actAutS1CommBasedSlCellDetRec">false</p>
+      <p name="actAutoPwrOffDCPort">false</p>
+      <p name="actBbReconfigImprovement">true</p>
+      <p name="actCellTimingOffset">false</p>
+      <p name="actCellTimingOffsetCpriN">false</p>
+      <p name="actCertPartitionSynch">true</p>
+      <p name="actCli">false</p>
+      <p name="actCpriLinkRecovery">false</p>
+      <p name="actDeploymentIdCalcEnhancement">true</p>
+      <p name="actDetectionUnstableEcpriLinks">false</p>
+      <p name="actDhcp">disableAll</p>
+      <p name="actDhcpIpContinuation">Deactivated</p>
+      <p name="actDiagnosticCheck">true</p>
+      <p name="actDisableEcpriUlScalingEnh">true</p>
+      <p name="actDtPim">false</p>
+      <p name="actDualCoreParallelReset">true</p>
+      <p name="actDualStackIpV4V6ForMplane">true</p>
+      <p name="actEAPMode">Authenticator initiated mode</p>
+      <p name="actECPRITransportForORANAndTSN">disabled</p>
+      <p name="actEccMemoryErrorAlarm">true</p>
+      <p name="actEcpriDelayMeasurement">false</p>
+      <p name="actEcpriMPlaneResilience">false</p>
+      <p name="actEcpriMacSecTraffic">Disabled</p>
+      <p name="actEcpriMplaneIPV6">false</p>
+      <p name="actEcpriRuMPlaneSecurity">RuProtectDisabled</p>
+      <p name="actEcpriSyncMismatchAdjustment">false</p>
+      <p name="actFaultSignature">true</p>
+      <p name="actFhNcOverTls">false</p>
+      <p name="actFipsMode">false</p>
+      <p name="actGnssJammingSpoofing">false</p>
+      <p name="actHierarchyAutoFix">true</p>
+      <p name="actIntelligentSynceAssHoTime">false</p>
+      <p name="actKpiAlarms">false</p>
+      <p name="actL1FastAutoHealing">false</p>
+      <p name="actL1ReconfigImprovement">true</p>
+      <p name="actL2L3ReconfigImprovement">true</p>
+      <p name="actLbmOnFronthaul">false</p>
+      <p name="actLoginCredPartitionSync">true</p>
+      <p name="actMhaAutoConfig">false</p>
+      <p name="actMhaEnhancement">false</p>
+      <p name="actMplaneFronthaulFirewall">false</p>
+      <p name="actMultiCablesForOTN">false</p>
+      <p name="actMultipleDynamicIP">false</p>
+      <p name="actNonOperOwnedBhMode">false</p>
+      <p name="actNonStationaryBts">false</p>
+      <p name="actNrAutCntRachStpSlCellDetRec">false</p>
+      <p name="actNrAutDegAdmCtrlSlCellDetRec">false</p>
+      <p name="actNrAutNgCommSlCellDetRec">false</p>
+      <p name="actNrAutPrachAccSltSlCellDetRec">false</p>
+      <p name="actNrAutRxPwrAntSlCellDetRec">false</p>
+      <p name="actNrAutRxPwrDiff2AntSlCellDetRec">false</p>
+      <p name="actNrAutRxPwrSlCellDetRec">false</p>
+      <p name="actNrAutSgnbAddCplSlCellDetRec">false</p>
+      <p name="actNrAutTxPwrSlCellDetRec">false</p>
+      <p name="actNrAutUeCtxStpRtSlCellDetRec">false</p>
+      <p name="actNrRrcSuccRateSlCellCuDetRec">false</p>
+      <p name="actNrRrcSuccRateSlCellDuDetRec">false</p>
+      <p name="actOPGEnergySaving">false</p>
+      <p name="actObsaiOTNRecovery">false</p>
+      <p name="actPfoe">false</p>
+      <p name="actPimTesting">false</p>
+      <p name="actPowerMeter">false</p>
+      <p name="actPrefBbBoard">None</p>
+      <p name="actPreservingRFPortMapp">true</p>
+      <p name="actPtiAndSpectreV2KernelFlag">false</p>
+      <p name="actPtpMasterClock">false</p>
+      <p name="actRadioDeepSleepTimeSchedule">false</p>
+      <p name="actRatResetEnhancement">true</p>
+      <p name="actRecovFromSecondaryController">false</p>
+      <p name="actRfChaining">false</p>
+      <p name="actRfiTesting">false</p>
+      <p name="actRuResetResiliency">true</p>
+      <p name="actRxMonitoring">true</p>
+      <p name="actSWRollbackReject">false</p>
+      <p name="actSecurityForFHS">false</p>
+      <p name="actShdfAutoDelaySetting">false</p>
+      <p name="actSoftSyncErrorRecovery">false</p>
+      <p name="actSyncEGen">false</p>
+      <p name="actSyncLinkSwitchover">false</p>
+      <p name="actSysCriticalEventLogs">true</p>
+      <p name="actTargetConfigPrep">false</p>
+      <p name="actTempFhsPrimController">false</p>
+      <p name="actTempRadioMaster">false</p>
+      <p name="actTimeErrorManagement">false</p>
+      <p name="actToppTruechimerSelection">false</p>
+      <p name="actTransceiverAlarmMonitoring">Transceiver alarms</p>
+      <p name="actTransportConfigFallback">false</p>
+      <p name="actTrsActivationFailureRecovery">true</p>
+      <p name="actValidationOnUpgrade">true</p>
+      <p name="actWifiLmp">Disable</p>
+      <p name="cntrldResetMplaneBreakTime">420</p>
+      <p name="cntrldResetMplaneBreakTimeSite">300</p>
+      <p name="enforcedRecovTimeWindow">Enforced recovery enabled within 0 - 90 minutes</p>
+      <p name="ipsecSHA1DigitalSignDisable">false</p>
+      <p name="ne3sOperationLogging">false</p>
+      <p name="netRfScanningEnabled">Disabled</p>
+      <p name="otnObsaiRecoveryPeriod">500</p>
+      <p name="rfSharingEnabled">false</p>
+      <p name="systemAcctPermEnable">true</p>
+      <p name="uncntrldResetMplaneBreakTime">420</p>
+      <list name="preventParamModifList">
+        <p>FEATCADM-actLocInfoStore</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:FMCADM" distName="MRBTS-1/MNL-1/MNLENT-1/FMCADM-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actAlarmOfRatOutage">false</p>
+      <p name="actAlarmsInTestDedicatedState">true</p>
+      <p name="actAutoBTSCommission">false</p>
+      <p name="actCabiTempMonAlarms">false</p>
+      <p name="actCategoryAlarms">true</p>
+      <p name="actCellAutoRecalculation">OnOperatorDemand</p>
+      <p name="actECpriOutOfTimingWindowAlarm">false</p>
+      <p name="actForceAutoReset">false</p>
+      <p name="actForceUnitAutoReset">false</p>
+      <p name="actPipePowerDecreased1dBFaults">false</p>
+      <p name="actRadioFanFailureEarlyNotif">false</p>
+      <p name="actRadioTechLogsUploadAlarm">false</p>
+      <p name="enableFanOverspeedAlarm">false</p>
+      <p name="enableFifoOverFlowUnderFlowAlarm">true</p>
+      <p name="enableUnitTemperatureHighAlarm">false</p>
+      <p name="fault4592CancellationTimer">30</p>
+      <list name="unservedHwFailureList">
+        <item>
+          <p name="faultId">4699</p>
+          <p name="hwFailureSeverity">warning</p>
+          <p name="hwIdentifierId">FTLX1370W4BTL</p>
+          <p name="hwType">(Q)SFP</p>
+        </item>
+        <item>
+          <p name="faultId">4699</p>
+          <p name="hwFailureSeverity">alarm</p>
+          <p name="hwIdentifierId">FTLX1370W4BTL</p>
+          <p name="hwType">(Q)SFP</p>
+        </item>
+        <item>
+          <p name="faultId">4700</p>
+          <p name="hwFailureSeverity">warning</p>
+          <p name="hwIdentifierId">MTRS-1A11-03</p>
+          <p name="hwType">(Q)SFP</p>
+        </item>
+        <item>
+          <p name="faultId">4700</p>
+          <p name="hwFailureSeverity">warning</p>
+          <p name="hwIdentifierId">LX6502IPH-C85</p>
+          <p name="hwType">(Q)SFP</p>
+        </item>
+        <item>
+          <p name="faultId">4701</p>
+          <p name="hwFailureSeverity">warning</p>
+          <p name="hwIdentifierId">RTXM330-204-C39D</p>
+          <p name="hwType">(Q)SFP</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:ALARMSUPP" distName="MRBTS-1/MNL-1/MNLENT-1/FMCADM-1/ALARMSUPP-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actAlarmsSuppression">suppressAlarms</p>
+      <list name="allowedAlarmList">
+        <item>
+          <p name="alarmId">7240,7241</p>
+          <p name="alarmSeverity">MINOR_AND_WARNING</p>
+        </item>
+      </list>
+      <list name="allowedFaultList">
+        <item>
+          <p name="alarmSeverity">MINOR_AND_WARNING</p>
+          <p name="faultId">4590,4592</p>
+        </item>
+      </list>
+      <list name="suppressedFaultList">
+        <item>
+          <p name="alarmSeverity">MINOR_AND_WARNING</p>
+          <p name="faultId">4079,4527,4080</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:MPLANENW" distName="MRBTS-1/MNL-1/MNLENT-1/MPLANENW-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actEnableTLSv13">false</p>
+      <p name="certTypeForEAPTlsAuth">RSA</p>
+      <p name="certTypeForTlsAuth">RSA</p>
+      <p name="mPlaneDscp">34</p>
+      <p name="mPlaneIpv4AddressDN">MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPADDRESSV4-1</p>
+      <p name="oamTls">forced</p>
+      <p name="tls12CbcCipherDisabled">false</p>
+      <p name="tls12Enabled">true</p>
+      <p name="tls12RsaKExDisabled">false</p>
+      <p name="tlsRenegotiationInterval">86400</p>
+      <p name="tlsSHA1DigitalSignDisable">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:PMCADM" distName="MRBTS-1/MNL-1/MNLENT-1/PMCADM-1" version="MNL25R2_2503_111" operation="create">
+      <p name="reportingIntervalPm">60min</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:SECADM" distName="MRBTS-1/MNL-1/MNLENT-1/SECADM-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actServiceAccountSsh">false</p>
+      <p name="actServicePortState">false</p>
+      <p name="actSyncToFronthaul">false</p>
+      <p name="actSyncToRU">false</p>
+      <p name="appLoginBannerText">You are about to access a private system. This system is for the use of authorized users only. All connections are logged to the extent and by means acceptable by the local legislation. Any unauthorized access or access attempts may be punished to the fullest extent possible under the applicable local legislation.</p>
+      <p name="blockRsaKeyLengthBelow2048">false</p>
+      <p name="blockSha1CertChain">false</p>
+      <p name="ethernetPortSecurityEnabled">true</p>
+      <p name="keyContinuation">false</p>
+      <p name="passwdHistoryLength">0</p>
+      <p name="platLoginBannerText">You are about to access a private system. This system is for the use of authorized users only. All connections are logged to the extent and by means acceptable by the local legislation. Any unauthorized access or access attempts may be punished to the fullest extent possible under the applicable local legislation.</p>
+      <p name="sshClientAliveTimer">45</p>
+      <p name="sshSessionIdleTimer">3600</p>
+      <p name="sshSessionLoginDelayTimer">10</p>
+      <p name="userEventTempBufOverwriting">true</p>
+      <p name="userEventTempBufThreshold">100</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:SYNC" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actEcpriMasterClock">false</p>
+      <p name="actRuIntelligentSynceAstHoTime">false</p>
+      <p name="btsSyncMode">PhaseSync</p>
+      <p name="manualFrameTimingAdjustment">30000000</p>
+      <p name="profileType">RAU</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CLOCK" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1" version="MNL25R2_2503_111" operation="create">
+      <p name="holdOverModeUsed">false</p>
+      <p name="inputConfigBiDiMode">false</p>
+      <p name="outputConfigBiDiMode">false</p>
+      <p name="outputConfiguration1Pps">EnabledWithBtsInputReference</p>
+      <p name="outputConfiguration1PpsBackplane">EnabledWithoutBtsInputReference</p>
+      <p name="outputConfiguration1PpsFHS">Disabled</p>
+      <p name="outputConfiguration2M048">Disabled</p>
+      <p name="outputConfigurationFCLK">Disabled</p>
+      <p name="sModDN">MRBTS-1/EQM-1/APEQM-1/CABINET-2/SMOD-1</p>
+      <p name="syncMaster">true</p>
+      <list name="syncInputList">
+        <item>
+          <p name="syncInputPrio">1</p>
+          <p name="syncInputType">1pps/ToD from external GNSS receiver</p>
+        </item>
+        <item>
+          <p name="syncInputPrio">2</p>
+          <p name="syncInputType">TOPP</p>
+        </item>
+        <item>
+          <p name="syncInputPrio">3</p>
+          <p name="syncInputType">SYNCE-1</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:GNSSE" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/GNSSE-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actBeidou">false</p>
+      <p name="actGalileo">false</p>
+      <p name="actGalileoOsnma">Disabled</p>
+      <p name="actGlonass">true</p>
+      <p name="actGnssOutputLnaPowerSupply">true</p>
+      <p name="actGps">true</p>
+      <p name="actNavic">false</p>
+      <p name="actQzss">false</p>
+      <p name="galileoOsnmaExtTimeEnabled">false</p>
+      <p name="gnssCableLength">30m</p>
+      <p name="gnssReceiverHoldoverMode">false</p>
+      <p name="intervalRepGnssAntPosiSpeed">1min</p>
+      <p name="locationMode">automatic</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:NTP" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/NTP-1" version="MNL25R2_2503_111" operation="create">
+      <list name="ntpServerIpAddrOrFqdnList">
+        <p>10.127.2.7</p>
+        <p>10.127.2.9</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:PTPMASTER" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/PTPMASTER-1" version="MNL25R2_2503_111" operation="create">
+      <p name="domainNumber">24</p>
+      <p name="ethernetMulticastAddress">01-1B-19-00-00-00</p>
+      <p name="phaseHoldoverSpecThreshold">1325</p>
+      <p name="priority2">128</p>
+      <p name="standardProfile">G.8275.1</p>
+      <list name="ptpMasterPortDN">
+        <p>MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHLK-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:SYNCE" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/SYNCE-1" version="MNL25R2_2503_111" operation="create">
+      <p name="ethlkDN">MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHLK-1</p>
+      <p name="ssmAcceptanceLevel">ssmPRCorPRS</p>
+      <p name="ssmEnabled">true</p>
+      <p name="ssmTimeout">5</p>
+      <p name="synceNtwReAgtForceMajor">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TOP" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/TOP-1" version="MNL25R2_2503_111" operation="create">
+      <p name="topDomainNumber">24</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TOPP" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/TOP-1/TOPP-1" version="MNL25R2_2503_111" operation="create">
+      <list name="acceptedClockClass">
+        <p>6</p>
+        <p>7</p>
+      </list>
+      <list name="topMasterList">
+        <item>
+          <p name="localPriority">128</p>
+          <p name="maximumNetworkTimingError">0</p>
+          <p name="phaseErrorComp">0</p>
+          <p name="topMasterId">1</p>
+        </item>
+      </list>
+      <p name="topEthMulticastAddress">01-1B-19-00-00-00</p>
+      <p name="topStandardProfile">G.8275.1</p>
+      <p name="tuningProfile">Normal</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:ECPRIMASTER" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/ECPRIMASTER-1" version="MNL25R2_2503_111" operation="create">
+      <p name="eCpriMasterAnnounceMessageRate">RATE_8</p>
+      <p name="eCpriMasterDomainNumber">24</p>
+      <p name="eCpriMasterEthMulticastAddress">01-80-C2-00-00-0E</p>
+      <p name="eCpriMasterSsmEnabled">true</p>
+      <p name="eCpriMasterSsmType">SSM_ITU</p>
+      <p name="eCpriMasterStandardProfile">G.8275.1</p>
+      <p name="eCpriMasterSyncMessageRate">RATE_16</p>
+      <p name="phaseHoldoverSpecThreshold">1325</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TIME" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-1/TIME-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:SYNC" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-2" version="MNL25R2_2503_111" operation="create">
+      <p name="actRuIntelligentSynceAstHoTime">false</p>
+      <p name="profileType">RU</p>
+      <list name="targetDNList">
+        <p>MRBTS-1/EQM-1/APEQM-1/RMOD-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CLOCK" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-2/CLOCK-1" version="MNL25R2_2503_111" operation="create">
+      <p name="holdOverModeUsed">false</p>
+      <p name="inputConfigBiDiMode">false</p>
+      <p name="outputConfigBiDiMode">false</p>
+      <p name="syncMaster">true</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TOP" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-2/CLOCK-1/TOP-1" version="MNL25R2_2503_111" operation="create">
+      <p name="topDomainNumber">24</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TOPP" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-2/CLOCK-1/TOP-1/TOPP-1" version="MNL25R2_2503_111" operation="create">
+      <list name="acceptedClockClass">
+        <p>6</p>
+        <p>7</p>
+      </list>
+      <list name="topMasterList">
+        <item>
+          <p name="phaseErrorComp">0</p>
+          <p name="topMasterId">1</p>
+        </item>
+      </list>
+      <p name="topEthMulticastAddress">01-80-C2-00-00-0E</p>
+      <p name="topStandardProfile">G.8275.1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TIME" distName="MRBTS-1/MNL-1/MNLENT-1/SYNC-2/TIME-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:TAC" distName="MRBTS-1/MNL-1/MNLENT-1/TAC-1" version="MNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:LTAC" distName="MRBTS-1/MNL-1/MNLENT-1/TAC-1/LTAC-1" version="MNL25R2_2503_111" operation="create">
+      <p name="tacLimitGbrEmergency">1000000</p>
+      <p name="tacLimitGbrHandover">1000000</p>
+      <p name="tacLimitGbrNormal">1000000</p>
+      <p name="transportNwId">0</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TRBLCADM" distName="MRBTS-1/MNL-1/MNLENT-1/TRBLCADM-1" version="MNL25R2_2503_111" operation="create">
+      <p name="actCoreDumpFileCollection">true</p>
+      <p name="actDefaultFaultSnapTriggers">true</p>
+      <p name="actInternalTrace">true</p>
+      <p name="actRemoteSyslogTransmission">false</p>
+      <p name="certTypeForTlsAuth">RSA</p>
+      <p name="diagSnapDestination">netact</p>
+      <p name="maxNumSnapByFaultTrigPerDay">24</p>
+      <p name="snapshotUploadDelayForFault6450">0</p>
+      <p name="snapshotUploadDestinationForFault6450">lss</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRBTS" distName="MRBTS-1/NRBTS-0" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="act3gppBL22R2">true</p>
+      <p name="act3gppBL22R3">true</p>
+      <p name="act3gppBL22R4">true</p>
+      <p name="act3gppBL23R1">true</p>
+      <p name="act5gRTPM">false</p>
+      <p name="act5gUserLayerTcpMssClamping">false</p>
+      <p name="act5qiAndUlNguTnlQosFlowMod">false</p>
+      <p name="actA1HoPrefNRLayer">none</p>
+      <p name="actA2SgnbRelease">false</p>
+      <p name="actA3A5MRDuringDRXSetup">false</p>
+      <p name="actAdaptiveSchedulerBudgetOlc">true</p>
+      <p name="actAdditionalSliceSupport">false</p>
+      <p name="actAllowedBcListMrdcPrioBcSel">false</p>
+      <p name="actAmfPlannedRemoval">false</p>
+      <p name="actArpBasedQosScaling">false</p>
+      <p name="actArpToDscpMarking">false</p>
+      <p name="actAssumeVoNRCapability">false</p>
+      <p name="actAutoPrachConfigIndexFdd">false</p>
+      <p name="actAutoPrachConfigIndexFddEnh">false</p>
+      <p name="actBbPoolExtensionTddFr1">false</p>
+      <p name="actBbPoolTddFr1">false</p>
+      <p name="actBbPoolTddFr1AlgEnh">false</p>
+      <p name="actBbPoolTddFr1Enh">false</p>
+      <p name="actBcsCheck">enabled_FR1</p>
+      <p name="actBeamControlImprovement1">true</p>
+      <p name="actBeamControlImprovement2">true</p>
+      <p name="actBtcOvlProt">false</p>
+      <p name="actBufferBasedSCellAddition">disabled</p>
+      <p name="actCAMeasInMeasProf">deactivated</p>
+      <p name="actCMAS">false</p>
+      <p name="actCaContCalcMaxAllowedScsFr1">false</p>
+      <p name="actCaDlDataBundling">true</p>
+      <p name="actCarAgPmCount">false</p>
+      <p name="actCarrierAggregation">false</p>
+      <p name="actCarrierAggregationFr2SA">false</p>
+      <p name="actCbrsEnhMeas">false</p>
+      <p name="actCbrsMobEnh">false</p>
+      <p name="actCellTraceReport">false</p>
+      <p name="actChannelMapVal">ShowAsWarning</p>
+      <p name="actChipsetAndRanInfoExchange">false</p>
+      <p name="actConflictConfiguration">false</p>
+      <p name="actConnRrcPooling">false</p>
+      <p name="actCoordEnDssPowerSaving">false</p>
+      <p name="actCoordinated4g5gPowerSaving">disabled</p>
+      <p name="actCoverageNonCoherentUes">false</p>
+      <p name="actCsReductionFactorOlc">true</p>
+      <p name="actCsiReportsMuxOnPucch">false</p>
+      <p name="actCsiTciRelAdjust">false</p>
+      <p name="actCustomBsr">false</p>
+      <p name="actDDDSPeriodOptimization">true</p>
+      <p name="actDataDuplicationForMobility">false</p>
+      <p name="actDataDuplicationForSAMobility">false</p>
+      <p name="actDedicatedAnrDrxProfile">true</p>
+      <p name="actDirectSnTermBearEstSnModNSA">false</p>
+      <p name="actDisableNrRimRsAtGnbLevel">false</p>
+      <p name="actDisableUPIPFor64kPreferred">false</p>
+      <p name="actDisableUlProactGrantAnr">false</p>
+      <p name="actDlAmbr">disabled</p>
+      <p name="actDlDataForwardingX2">true</p>
+      <p name="actDlDataForwardingX2Limit">false</p>
+      <p name="actDrbDrx">false</p>
+      <p name="actDrbPreemption">false</p>
+      <p name="actDualSectorRu">false</p>
+      <p name="actDynamicFirewall">false</p>
+      <p name="actDynamicTargetShareCalcForRg">true</p>
+      <p name="actE2CA">false</p>
+      <p name="actE2IMLB">false</p>
+      <p name="actE2Interface">false</p>
+      <p name="actETWS">false</p>
+      <p name="actEcpriPhase2">false</p>
+      <p name="actEcpriPhase3">false</p>
+      <p name="actEcpriRuPtpOnlySync">false</p>
+      <p name="actEmergencyFallback">false</p>
+      <p name="actEnDcCuReattempt">false</p>
+      <p name="actEnhCpueLoadBalancing">true</p>
+      <p name="actEnhRrcReconfUlPrbRandom">false</p>
+      <p name="actEnhanceIntraNrIntraFreqAnr">true</p>
+      <p name="actEnhancedLinkAdaptation">true</p>
+      <p name="actEnhancedNgRanSupport">false</p>
+      <p name="actEnhancedX2LinkSupervision">false</p>
+      <p name="actEutranFreqBandFiltering">false</p>
+      <p name="actEutranFreqBandNrMrdcFilter">false</p>
+      <p name="actExcludingEutranBandCheck">false</p>
+      <p name="actExcludingEutranCells">false</p>
+      <p name="actExplicitCsirsPoolSolution">false</p>
+      <p name="actExt2N77Support">false</p>
+      <p name="actExtN77Support">false</p>
+      <p name="actExtSchedWeightAndPrefWrrAlg">disabled</p>
+      <p name="actFdmEnhancedScheduling">true</p>
+      <p name="actFdmScheduling">true</p>
+      <p name="actFdmUeSkippingOlc">false</p>
+      <p name="actFixNonCompRarWinFddDss">true</p>
+      <p name="actFlexSCellSelectFr1">false</p>
+      <p name="actFlexibleBISlotDurationMode">disabled</p>
+      <p name="actFlexibleIcmpRouting">false</p>
+      <p name="actFlowControlLoadBalance">true</p>
+      <p name="actForceFullRRCConfigurationSaHo">disabled</p>
+      <p name="actForceHoInsuffUeCap">false</p>
+      <p name="actForcedCellSwitchOff">false</p>
+      <p name="actFr2L2DlTdMetricPreCalc8CC">false</p>
+      <p name="actFr2Sa">false</p>
+      <p name="actFullPlmnList">true</p>
+      <p name="actFullRRCConfigurationSaHo">disabled</p>
+      <p name="actFullRrcConfNsaPscellChange">disabled</p>
+      <p name="actGnbInitRlf">true</p>
+      <p name="actGrflShdn">false</p>
+      <p name="actGtpUpSeqNum">false</p>
+      <p name="actHighSliceWeightFactor">false</p>
+      <p name="actHigherPrioFreqHo">none</p>
+      <p name="actHighestEstNrTputBcSel">true</p>
+      <p name="actHoOptimizationCa">false</p>
+      <p name="actIdlMMEnDcSteering">false</p>
+      <p name="actIdleMMSteering">false</p>
+      <p name="actInactDetNSAUe">true</p>
+      <p name="actIncXn">true</p>
+      <p name="actInterFreqHoSA">false</p>
+      <p name="actInterFreqInterGnbMobilityNSA">false</p>
+      <p name="actInterFreqIntraGnbMobilityNSA">false</p>
+      <p name="actInterGnbRREPreparedCell">false</p>
+      <p name="actInterMeNBMobility">false</p>
+      <p name="actInterRatHoDirectDlDataFwd">noIRATDirectDataFwd</p>
+      <p name="actInterRatHoFromEutraToSA">false</p>
+      <p name="actInterRatHoSA">false</p>
+      <p name="actInterRatHoSADlDataForward">false</p>
+      <p name="actIntraFreqHoSA">false</p>
+      <p name="actIntraFreqInterGnbMobilityNSA3x">false</p>
+      <p name="actIntraFreqIntraGnbMobilityNSA">false</p>
+      <p name="actIntraMeNBMobility">false</p>
+      <p name="actIntraNRMRO">false</p>
+      <p name="actIntraNrNgHo">disabled</p>
+      <p name="actIpThpt">false</p>
+      <p name="actL2TrafficShapingX2">false</p>
+      <p name="actL4sSupport">false</p>
+      <p name="actLargeBbPoolTddFr1">false</p>
+      <p name="actLastSchedulerOlcEnh">true</p>
+      <p name="actLatencyPmCount">false</p>
+      <p name="actLbpsCtrlLogicEnh">false</p>
+      <p name="actLocationInformationAtSgnb">false</p>
+      <p name="actLocationReportingSA">false</p>
+      <p name="actLteNrDss">false</p>
+      <p name="actMDTTraceReport">false</p>
+      <p name="actMFBIEutra">false</p>
+      <p name="actMacUserThpt">false</p>
+      <p name="actMacUserThptDist">false</p>
+      <p name="actMaxCcLimitPerFrGap">false</p>
+      <p name="actMeasBasedSCellAdditionNsa">false</p>
+      <p name="actMeasProfileCa">deactivated</p>
+      <p name="actMeasurementProfile">deactivated</p>
+      <p name="actMeasurementStrategy">disabled</p>
+      <p name="actMfbiNrCaSupportFr1">false</p>
+      <p name="actMfbiNrCaSupportFr2">none</p>
+      <p name="actMobilityProfile">false</p>
+      <p name="actMobilityProfileReSelect">false</p>
+      <p name="actMobilityRetryToSecondBestCell">false</p>
+      <p name="actMultVlan">false</p>
+      <p name="actMultiDrbNSA">false</p>
+      <p name="actMultiFrequencyBandIndicatorNRSupport">false</p>
+      <p name="actMultipleDedicatedBWPs">false</p>
+      <p name="actNgSetupRespTmrExt">false</p>
+      <p name="actNgcFlexSaMode">false</p>
+      <p name="actNonGbrServiceDiff">false</p>
+      <p name="actNormVCFallback">false</p>
+      <p name="actNormVCFallbackEnh">false</p>
+      <p name="actNrCbrs">false</p>
+      <p name="actNrDc">disabled</p>
+      <p name="actNrEEEmergAct">false</p>
+      <p name="actNrExtCellSOMethod">false</p>
+      <p name="actNrLBPowerSaving">false</p>
+      <p name="actNrLBRTXPowerSaving">false</p>
+      <p name="actNrLBmMimoRTXPowerSaving">false</p>
+      <p name="actNrMixedSOMethod">false</p>
+      <p name="actNrRimRsResourcePooling">false</p>
+      <p name="actNrUlRipMeasurement">disabled</p>
+      <p name="actNrpmqapProfiles">false</p>
+      <p name="actNsaPSCellLoadBalancingInFR1">false</p>
+      <p name="actNsaSlice">false</p>
+      <p name="actNsaUeBasedAnrNr">false</p>
+      <p name="actNsaUeBasedInterFreqAnrNr">false</p>
+      <p name="actOldAmfIeIgnoreNGAP">false</p>
+      <p name="actOranCUPlanePhase1">false</p>
+      <p name="actOverheatingAssistance">false</p>
+      <p name="actOvlProtL2Sched">false</p>
+      <p name="actOvlProtL2Sig">false</p>
+      <p name="actPCMDReport">false</p>
+      <p name="actPaging">true</p>
+      <p name="actPagingEnh">disabled</p>
+      <p name="actPartialSlotUlCceCountDss">false</p>
+      <p name="actPdcpHfnDesyncDetectAlgo">false</p>
+      <p name="actPdcpRlcBufCongestionMechsm">disabled</p>
+      <p name="actPerCCDLUserThpt">false</p>
+      <p name="actPerCCULUserThpt">false</p>
+      <p name="actPerCellMacUserThpt">false</p>
+      <p name="actPersistentSysSetMOI">false</p>
+      <p name="actPlmnCellResForOpUse">false</p>
+      <p name="actPrioProcOverAnr">false</p>
+      <p name="actPrioVoiceFallback">false</p>
+      <p name="actProactResendRlcPdu">false</p>
+      <p name="actPucchF3BasedTaGrantsRed">true</p>
+      <p name="actPuschRepTypeAv16c0">false</p>
+      <p name="actRanSharing">false</p>
+      <p name="actRedPeriodicCsiProcessing">true</p>
+      <p name="actRedPeriodicSrsProcessing">true</p>
+      <p name="actRedirect">false</p>
+      <p name="actReleaseRsrpZero">false</p>
+      <p name="actReportedRxScalingFactor">false</p>
+      <p name="actRfspIndex">false</p>
+      <p name="actRohc">false</p>
+      <p name="actRrcDuringRlf">false</p>
+      <p name="actRrcInactState">none</p>
+      <p name="actRrcInactStateRedCap">false</p>
+      <p name="actRrcReleasePreference">false</p>
+      <p name="actRtwpMeasurement">false</p>
+      <p name="actSACallProcessingDU">false</p>
+      <p name="actSCellReleaseBadSCellRlq">disabled</p>
+      <p name="actSCellReleaseForInactiveSCell">disabled</p>
+      <p name="actSCellSwapFr1">disabled</p>
+      <p name="actSPID">false</p>
+      <p name="actSSBBoostInmMIMOMuting">false</p>
+      <p name="actSaHoDeltaMvInterOp">false</p>
+      <p name="actSaIntraFreqAnrDrxProf">true</p>
+      <p name="actSaUeBasedAnrEutra">false</p>
+      <p name="actSaUeBasedAnrNr">false</p>
+      <p name="actSaUeBasedInterFreqAnrNr">false</p>
+      <p name="actScheUePooling">false</p>
+      <p name="actSchedFairnessUlOlc">false</p>
+      <p name="actSecDataUsageRep">false</p>
+      <p name="actSegUeCapUl">false</p>
+      <p name="actSepNrX2uPdcpDataSplitIp">false</p>
+      <p name="actSeparatePduRelForGtpuError">false</p>
+      <p name="actSeparatePduRelForRlcError">false</p>
+      <p name="actServiceAwarePDCPConfig">false</p>
+      <p name="actSliceAwareAdmissionCtrl">false</p>
+      <p name="actSliceAwareScheduler">false</p>
+      <p name="actSliceAwareSchedulerUlAndEnh">false</p>
+      <p name="actSliceNumExt">false</p>
+      <p name="actSliceSwitchToDefault">false</p>
+      <p name="actSlowPrbPooling">false</p>
+      <p name="actSlowPrbPoolingFddFr1Enh">false</p>
+      <p name="actSmtcCentering">false</p>
+      <p name="actSpatialStreamPooling">false</p>
+      <p name="actSpidBasedSlicingNSA">false</p>
+      <p name="actSpidRfspInactTimers">false</p>
+      <p name="actSplitNrEutraUeCapa">false</p>
+      <p name="actSubscriberTraceReport">false</p>
+      <p name="actSwitchRlmConfig">false</p>
+      <p name="actTddCsiImRm">false</p>
+      <p name="actTddCsiRsOpt">false</p>
+      <p name="actTddPrePooling">false</p>
+      <p name="actTdraFallback">false</p>
+      <p name="actThpDist">false</p>
+      <p name="actTimeAlignExtension">false</p>
+      <p name="actTraceOvlProt">true</p>
+      <p name="actTransPhaseUlPrbNonRandom">false</p>
+      <p name="actTrsSepaNSARanSharing">false</p>
+      <p name="actTrsSepaSARanSharing">false</p>
+      <p name="actUPIPSupportForPreferred">false</p>
+      <p name="actUacAuto">false</p>
+      <p name="actUacBarPerPlmn">false</p>
+      <p name="actUeCapaEnquiryHoCa">false</p>
+      <p name="actUeDeltaConfigOptimize">false</p>
+      <p name="actUeInitRlf">true</p>
+      <p name="actUlAmbr">disabled</p>
+      <p name="actUlCAUe">true</p>
+      <p name="actUlCaAwareIMMSteering">false</p>
+      <p name="actUnlimitedDataRateDl">false</p>
+      <p name="actUnsupportedIEsHandling">false</p>
+      <p name="actUnsupportedIEsHandling23R4">false</p>
+      <p name="actUplaneIntegrityProtection">deactivated</p>
+      <p name="actUseCauseToIdentifySNInit">false</p>
+      <p name="actUserPreemption">false</p>
+      <p name="actVoFallBackLteB1MeaBaRedir">false</p>
+      <p name="actVonrPmCount">false</p>
+      <p name="actX2ConfigTransfer">false</p>
+      <p name="actXnSecCapNewMode">false</p>
+      <p name="activityNotificationLevelSA">ue</p>
+      <p name="allowSlowPrbPoolingStatNdmSrs">false</p>
+      <p name="bopNumPdcpSduDiscard">5</p>
+      <p name="bopNumRlcSduDiscard">5</p>
+      <p name="bopThNonCriticalTraffic">90</p>
+      <p name="cPlaneDscp">46</p>
+      <p name="caConfigurationSupport">none</p>
+      <p name="caConfigurationSupportFr2SA">none</p>
+      <p name="caDlDataBundlingInterval">1</p>
+      <p name="caHighPowerBc">disabled</p>
+      <p name="csiMeasGapOverlap">overlapChecked</p>
+      <p name="cuUeIdToLinkMappingUpdateDelay">50ms</p>
+      <p name="deactEnhPrbPoolAlgoUlMuMimo">false</p>
+      <p name="drbInactivityTimerSA">10</p>
+      <p name="drbInactivityTimerSA5qi1">0</p>
+      <p name="drbInactivityTimerSA5qi5">0</p>
+      <p name="drxDefaultPaging">v128</p>
+      <p name="e2SetupRspTmr">60</p>
+      <p name="enDcX2SetupReqTmr">60</p>
+      <p name="excludeInterGnbNgHoSelCauses">RNLradioConnectionWithUeLost</p>
+      <p name="gNbCuType">NSA</p>
+      <p name="gNbIdLength">22</p>
+      <p name="gnbOvlProtMode">classical</p>
+      <p name="gtpuManagementDscp">46</p>
+      <p name="hoForPlmnResForOpUseEnabled">false</p>
+      <p name="hoToCellBarredEnabled">false</p>
+      <p name="hoToCellResForOpUseEnabled">false</p>
+      <p name="includeRlcBearerToRelease">false</p>
+      <p name="includeSrbToAddModList">false</p>
+      <p name="keyRefrMarg">200000</p>
+      <p name="maxCellDisableTimeWhenNmsLost">30</p>
+      <p name="maxNumF1Links">128</p>
+      <p name="maxNumNrAnrMoiAllowed">20000</p>
+      <p name="maxNumOfNgRanConfigUpdRetries">5</p>
+      <p name="maxNumOfNgSetupRequestRetries">50</p>
+      <p name="maxNumX2Links">128</p>
+      <p name="maxNumXnLinks">128</p>
+      <p name="maxNumXnSetupRetry">20</p>
+      <p name="maxParallelIncX2Setup">5</p>
+      <p name="maxParallelXnSetup">5</p>
+      <p name="maxPercentageDrbOverF1UOvld">50</p>
+      <p name="maxX2EnDcCfUpRetry">5</p>
+      <p name="maxX2PartialResetReqRetry">5</p>
+      <p name="maxXnNgRanCfUpRetry">5</p>
+      <p name="mcc">999</p>
+      <p name="mnc">70</p>
+      <p name="mncLength">2</p>
+      <p name="n310">n10</p>
+      <p name="n311">n1</p>
+      <p name="neutralPlmnEnabled">false</p>
+      <p name="ngSetupRespTmr">60</p>
+      <p name="ngUeRetentionEnabled">false</p>
+      <p name="ngUeRetentionTmr">300</p>
+      <p name="nrDcSNCellActivationAlarmTimer">600</p>
+      <p name="nsaActivityNotificationLevel">ue</p>
+      <p name="nsaCellActivationAlarmTimer">600</p>
+      <p name="nsaInactivityTimer">10</p>
+      <p name="nullFallback">true</p>
+      <p name="numOfConsecPkValFailures">20</p>
+      <p name="numOfConsecVoNRPkCheckFailures">20</p>
+      <p name="numOfDRBReservedPerEmergency">2</p>
+      <p name="pdcpAndRlcCountersUpdateConf">QoS Level</p>
+      <p name="pduSessionEndMarkerTimer">3000</p>
+      <p name="periodicBSRTimer">sf10</p>
+      <p name="periodicalDataUsageReportTimer">60</p>
+      <p name="pfaTargetPRACH">0.0005</p>
+      <p name="powerSavingAvoidanceForPACalls">PA avoidance disabled</p>
+      <p name="pwsRestIndEnabled">false</p>
+      <p name="rejectSuppBcs">none</p>
+      <p name="retryXnSetupTmr">60</p>
+      <p name="rrcReestabTypeSA">deactivated</p>
+      <p name="sCellDeactivationBadRlqCount">0</p>
+      <p name="sCellMeasCycle">sf320</p>
+      <p name="saCellActivationAlarmTimer">600</p>
+      <p name="sgNBAdditionWithSuboptimalRsrpRsrq">false</p>
+      <p name="sgnbRelForNoHandoverEnabled">false</p>
+      <p name="shutdownNoX2TrafficTmr">24</p>
+      <p name="shutdownNoXnTrafficTmr">24</p>
+      <p name="shutdownNogNBCellTmr">30</p>
+      <p name="shutdownStepAmount">6</p>
+      <p name="shutdownWindow">60</p>
+      <p name="srb1Config">nokiaDefault</p>
+      <p name="srb3SupportEnabled">false</p>
+      <p name="srbInactivityTimerSA">60</p>
+      <p name="srvcDownDetectTimer">15</p>
+      <p name="t304">ms2000</p>
+      <p name="t310">2000ms</p>
+      <p name="t311">30000ms</p>
+      <p name="tDCoverall">5000</p>
+      <p name="tDiscardLteTimer">300</p>
+      <p name="tRLFindForDU">3000ms</p>
+      <p name="tRLFindForDUSA">3000ms</p>
+      <p name="tWaitingRlRecover">500ms</p>
+      <p name="tWaitingRlRecoverSA">500ms</p>
+      <p name="thpTimeCalc">disabled</p>
+      <p name="timerHOGuard">2500</p>
+      <p name="timerNGSignalingConnGuard">2500</p>
+      <p name="timerNSAGuardRA">5000</p>
+      <p name="timerRRCGuard">2500</p>
+      <p name="timerRejectWait">8</p>
+      <p name="timerX2DataFwdGuard">250</p>
+      <p name="timerX2UeProcGuard">5000</p>
+      <p name="timerXnDcOverall">5000</p>
+      <p name="timerXnDcPrep">2500</p>
+      <p name="timerXnUeProcGuard">2500</p>
+      <p name="txPathFailureMode">keepCellInService</p>
+      <p name="ueSpecAlgControl">noSpecAlgo</p>
+      <p name="ulTxSwitchingBoost">15</p>
+      <p name="ulVoipPacketAggrSinrThreshold">20</p>
+      <p name="ulsVoipPacketSize">680</p>
+      <p name="variableSourceUdpPortEnabled">false</p>
+      <p name="waitForRecovBeforeCellBarringTimer">300</p>
+      <p name="x2EnDcCfUpNbInfoBackOffTmr">0</p>
+      <p name="x2EnDcCfUpRdmDelayTmr">3</p>
+      <p name="x2EnDcCfUpRspTmr">10</p>
+      <p name="x2EndMarkerTimer">2000</p>
+      <p name="x2LinkReestabTmr">15</p>
+      <p name="x2LinkSupervisionTmr">6</p>
+      <p name="x2PartialResetCnfTmr">10</p>
+      <p name="x2ResetRspTmr">10</p>
+      <p name="xnLinkReestabTmr">60</p>
+      <p name="xnNgRanCfUpNbInfoBackOffTmr">0</p>
+      <p name="xnNgRanCfUpRdmDelayTmr">3</p>
+      <p name="xnNgRanCfUpRspTmr">10</p>
+      <p name="xnResetRespTmr">60</p>
+      <p name="xnSetupReqTmr">60</p>
+      <p name="xnSetupRespTmr">60</p>
+      <list name="actDrbProfileForCellAggrLevel">
+        <p>disabled</p>
+      </list>
+      <list name="actMeasBasedSCellAdditionSa">
+        <p>disabled</p>
+      </list>
+      <list name="actVoNRPrioDuringHOPrep">
+        <p>disabled</p>
+      </list>
+      <list name="actVoiceFallbackDuringHOPrep">
+        <p>disabled</p>
+      </list>
+      <list name="cbtsFlowControlProf">
+        <item>
+          <p name="dddsPeriod">5</p>
+          <p name="flowControlReactionDelay">5</p>
+          <p name="maxRlcQueueingDelay">20</p>
+          <p name="maxTransferDelay">20</p>
+          <p name="minThFlowCtrl">1</p>
+        </item>
+      </list>
+      <list name="cipherPrefL">
+        <item>
+          <p name="nea0">1</p>
+          <p name="nea1_128">3</p>
+          <p name="nea2_128">4</p>
+          <p name="nea3_128">2</p>
+        </item>
+      </list>
+      <list name="cpueLoadBalancing">
+        <item>
+          <p name="cpueOverrideResiliencyThreshold">false</p>
+        </item>
+      </list>
+      <list name="cuOvlHa">
+        <item>
+          <p name="ovlBeamSwitchRej">disabled</p>
+          <p name="ovlNsaA4TimerDiscard">disabled</p>
+          <p name="ovlNsaAddRej">enabled</p>
+          <p name="ovlNsaErabRej">disabled</p>
+          <p name="ovlNsaHoRej">disabled</p>
+          <p name="ovlNsaMeasDiscard">disabled</p>
+          <p name="ovlSaA4TimerDiscard">disabled</p>
+          <p name="ovlSaHoRej">disabled</p>
+          <p name="ovlSaMeasDiscard">disabled</p>
+          <p name="ovlSaPduRej">disabled</p>
+          <p name="ovlSaRrcRej">disabled</p>
+          <p name="ovlSNInitModRej">disabled</p>
+        </item>
+      </list>
+      <list name="duOvlHa">
+        <item>
+          <p name="delayRrcOvlCountermeasures">300</p>
+          <p name="ovlSaRrcRej">false</p>
+        </item>
+      </list>
+      <list name="freqBandIndicatorEutra">
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+      </list>
+      <list name="integrityProtPrefL">
+        <item>
+          <p name="nia0">0</p>
+          <p name="nia1_128">3</p>
+          <p name="nia2_128">4</p>
+          <p name="nia3_128">2</p>
+        </item>
+      </list>
+      <list name="pathSupervisionIntfList">
+        <p>None</p>
+      </list>
+      <list name="phrConfig">
+        <item>
+          <p name="dlPathlossChg">3dB</p>
+          <p name="tPeriodicPhr">20sf</p>
+          <p name="tProhibitPhr">0sf</p>
+        </item>
+      </list>
+      <list name="powerSavingBwpSwitching">
+        <item>
+          <p name="dlBufferEmptyRatioFromPsBwp">40</p>
+          <p name="dlBufferEmptyRatioToPsBwp">90</p>
+          <p name="dlRateThresholdFromPsBwp">35</p>
+          <p name="dlRateThresholdToPsBwp">30</p>
+          <p name="mcsThresholdVoNRFromPsBwp">0</p>
+          <p name="mcsThresholdVoNRToPsBwp">0</p>
+          <p name="measurementDurationFromPsBwp">40</p>
+          <p name="measurementDurationToPsBwp">160</p>
+          <p name="ulBufferEmptyRatioFromPsBwp">40</p>
+          <p name="ulBufferEmptyRatioToPsBwp">90</p>
+          <p name="ulRateThresholdNoVoNRFromPsBwp">10</p>
+          <p name="ulRateThresholdNoVoNRToPsBwp">5</p>
+          <p name="ulRateThresholdVoNRFromPsBwp">35</p>
+          <p name="ulRateThresholdVoNRToPsBwp">30</p>
+        </item>
+      </list>
+      <list name="s1Uplane">
+        <item>
+          <p name="ipV4AddressDN1">MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPADDRESSV4-1</p>
+        </item>
+      </list>
+      <list name="srb1RlcAmProf">
+        <item>
+          <p name="dlMaxRetxThreshold">t8</p>
+          <p name="dlPollByte">infinity</p>
+          <p name="dlPollPDU">infinity</p>
+          <p name="dlTPollRetr">ms45</p>
+          <p name="dlTProhib">ms0</p>
+          <p name="dlTReassembly">ms35</p>
+          <p name="ulMaxRetxThreshold">t8</p>
+          <p name="ulPollByte">infinity</p>
+          <p name="ulPollPDU">infinity</p>
+          <p name="ulTPollRetr">ms45</p>
+          <p name="ulTProhib">ms0</p>
+          <p name="ulTReassembly">ms35</p>
+        </item>
+      </list>
+      <list name="srb2RlcAmProf">
+        <item>
+          <p name="dlMaxRetxThreshold">t8</p>
+          <p name="dlPollByte">infinity</p>
+          <p name="dlPollPDU">infinity</p>
+          <p name="dlTPollRetr">ms45</p>
+          <p name="dlTProhib">ms0</p>
+          <p name="dlTReassembly">ms35</p>
+          <p name="ulMaxRetxThreshold">t8</p>
+          <p name="ulPollByte">infinity</p>
+          <p name="ulPollPDU">infinity</p>
+          <p name="ulTPollRetr">ms45</p>
+          <p name="ulTProhib">ms0</p>
+          <p name="ulTReassembly">ms35</p>
+        </item>
+      </list>
+      <list name="srb3RlcAmProf">
+        <item>
+          <p name="dlMaxRetxThreshold">t8</p>
+          <p name="dlPollByte">infinity</p>
+          <p name="dlPollPDU">infinity</p>
+          <p name="dlTPollRetr">ms45</p>
+          <p name="dlTProhib">ms0</p>
+          <p name="dlTReassembly">ms35</p>
+          <p name="ulMaxRetxThreshold">t8</p>
+          <p name="ulPollByte">infinity</p>
+          <p name="ulPollPDU">infinity</p>
+          <p name="ulTPollRetr">ms45</p>
+          <p name="ulTProhib">ms0</p>
+          <p name="ulTReassembly">ms35</p>
+        </item>
+      </list>
+      <list name="x2Cplane">
+        <item>
+          <p name="ipV4AddressDN1">MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPADDRESSV4-1</p>
+        </item>
+      </list>
+      <list name="x2Uplane">
+        <item>
+          <p name="ipV4AddressDN1">MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPADDRESSV4-1</p>
+        </item>
+      </list>
+      <list name="xxFlowControlProfForCu">
+        <item>
+          <p name="dddsPeriodXx">10</p>
+          <p name="maxTransferDelayXx">20</p>
+          <p name="minThFlowCtrlXx">1</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:BWP_PROFILE" distName="MRBTS-1/NRBTS-0/BWP_PROFILE-0" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="bwpType">initial</p>
+      <list name="locationAndBandwidthDl">
+        <item>
+          <p name="cRbSizeDl">coreset0</p>
+          <p name="cRbStartDl">coreset0</p>
+        </item>
+      </list>
+      <list name="locationAndBandwidthUl">
+        <item>
+          <p name="cRbSizeUl">sameAsDl</p>
+          <p name="cRbStartUl">sameAsDl</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:PDSCH" distName="MRBTS-1/NRBTS-0/BWP_PROFILE-0/PDSCH-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="pdschRat0RbgConfig">config1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:BWP_PROFILE" distName="MRBTS-1/NRBTS-0/BWP_PROFILE-44" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="bwpType">initial</p>
+      <list name="locationAndBandwidthDl">
+        <item>
+          <p name="cRbSizeDl">allRb</p>
+          <p name="cRbStartDl">crb0</p>
+        </item>
+      </list>
+      <list name="locationAndBandwidthUl">
+        <item>
+          <p name="cRbSizeUl">sameAsDl</p>
+          <p name="cRbStartUl">sameAsDl</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:BWP_PROFILE" distName="MRBTS-1/NRBTS-0/BWP_PROFILE-8" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="bwpType">initial</p>
+      <list name="locationAndBandwidthDl">
+        <item>
+          <p name="cRbSizeDl">coreset0</p>
+          <p name="cRbStartDl">coreset0</p>
+        </item>
+      </list>
+      <list name="locationAndBandwidthUl">
+        <item>
+          <p name="cRbSizeUl">sameAsDl</p>
+          <p name="cRbStartUl">sameAsDl</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:BWP_PROFILE" distName="MRBTS-1/NRBTS-0/BWP_PROFILE-87" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="bwpType">dedicated</p>
+      <list name="locationAndBandwidthDl">
+        <item>
+          <p name="cRbSizeDl">allRb</p>
+          <p name="cRbStartDl">crb0</p>
+        </item>
+      </list>
+      <list name="locationAndBandwidthUl">
+        <item>
+          <p name="cRbSizeUl">sameAsDl</p>
+          <p name="cRbStartUl">sameAsDl</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:PDSCH" distName="MRBTS-1/NRBTS-0/BWP_PROFILE-87/PDSCH-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="pdschRat0RbgConfig">config1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRCELL" distName="MRBTS-1/NRBTS-0/NRCELL-0" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="a1MeashoEnabled">none</p>
+      <p name="a1MeashoEnabledSA">rsrp</p>
+      <p name="a1MeashoPrefNRLayerEnabled">none</p>
+      <p name="a1MeashoPrefNRLayerEnabledSA">none</p>
+      <p name="a2MeashoEnabled">none</p>
+      <p name="a3MeasEnabled">none</p>
+      <p name="a5MeasEnabled">none</p>
+      <p name="actARPBasedAC">off</p>
+      <p name="actAdaptVoipTbs">false</p>
+      <p name="actAdaptiveReTxResMcs">false</p>
+      <p name="actAdaptiveReTxResMcsEnh">false</p>
+      <p name="actAdaptiveSr">false</p>
+      <p name="actAdjustPrachThresholdOption">false</p>
+      <p name="actAdmissionCtrlSr">false</p>
+      <p name="actAntPortMap">false</p>
+      <p name="actAperCsi">false</p>
+      <p name="actArpBasedAcDu">off</p>
+      <p name="actAugSrbPrioBoost">false</p>
+      <p name="actAveRxAntPwr">false</p>
+      <p name="actAvoidACsiVonrUl">false</p>
+      <p name="actBadUlRadioHoRej">disabled</p>
+      <p name="actBadUplinkRadioRedirect">disabled</p>
+      <p name="actBeamforming">false</p>
+      <p name="actBlankDlSymbBorderCoord">false</p>
+      <p name="actBwLimitationProfile">disabled</p>
+      <p name="actCDrx">false</p>
+      <p name="actCDrxVoNR">true</p>
+      <p name="actCGIProvInterGnbMobilityNSA">false</p>
+      <p name="actCaAwarePsCellSelectionFr1">false</p>
+      <p name="actCaNoPLMNCheck">disabled</p>
+      <p name="actCaWimaxInterferenceAvoidance">false</p>
+      <p name="actCbraContResDCI00">false</p>
+      <p name="actCceSplit">false</p>
+      <p name="actCellCsiRsImTddNonBf">false</p>
+      <p name="actCellCsirsTddOnSsbBf">false</p>
+      <p name="actConfDlInterferenceGen">none</p>
+      <p name="actCsiImRandomizationFddNonDss">false</p>
+      <p name="actCsiMeasEthFlowControl">CSIMeasBasedAllUe</p>
+      <p name="actCsiRsMuting">false</p>
+      <p name="actCsirsBeamPowerBalance">false</p>
+      <p name="actCsirsMultiplexing">false</p>
+      <p name="actDataForwardingForVoNr">deactivated</p>
+      <p name="actDcGbrService">false</p>
+      <p name="actDemoteProactUlScheduling">false</p>
+      <p name="actDisableFoeProtection">false</p>
+      <p name="actDisableMinPuschUciPrbsUpd">false</p>
+      <p name="actDl256Qam">false</p>
+      <p name="actDlCqiIncrRestriction">false</p>
+      <p name="actDlDynSwitchAlloc">false</p>
+      <p name="actDlForceRankDowng">disabled</p>
+      <p name="actDlInterferenceAvoidance">false</p>
+      <p name="actDlLaDynBlerTarget">false</p>
+      <p name="actDlLaEnhCqi2McsTables">true</p>
+      <p name="actDlLowPAPRoptimizedPrecoding">false</p>
+      <p name="actDlMuMimo">false</p>
+      <p name="actDlMuMimoEnh">false</p>
+      <p name="actDlOptMcsSelection">true</p>
+      <p name="actDlPaWarmUp">false</p>
+      <p name="actDlPowerBoost">disabled</p>
+      <p name="actDlRankAdpAndSRB1McsLimDurHO">false</p>
+      <p name="actDlRankProbing">false</p>
+      <p name="actDlRbgRandomization">disabled</p>
+      <p name="actDlSchLowBufferOpt">false</p>
+      <p name="actDlSrsBm">false</p>
+      <p name="actDlSrsForCA">false</p>
+      <p name="actDlSrsSubbandBm">false</p>
+      <p name="actDlVoNrLimMaxMcsAndLayer">false</p>
+      <p name="actDownSampling">false</p>
+      <p name="actDrbBlerTargetForBR">false</p>
+      <p name="actDrbPriorityPug">disabled</p>
+      <p name="actDrxRetransTimerSupport">false</p>
+      <p name="actDtxOptimizedScheduler">false</p>
+      <p name="actDynPdcchTdMode">disabled</p>
+      <p name="actDynUlDataSplitMode">false</p>
+      <p name="actDynUlResAlloc">false</p>
+      <p name="actDynamicPowerBackoff">on, precoding dependent</p>
+      <p name="actECallOverIMS">false</p>
+      <p name="actEcpri72e">false</p>
+      <p name="actEdrx">None</p>
+      <p name="actEirpControl">false</p>
+      <p name="actEmergencyCall">false</p>
+      <p name="actEmergencyCallExtensions">false</p>
+      <p name="actEmfTestMode">false</p>
+      <p name="actEnhCtrlChannelTrans">false</p>
+      <p name="actEnhDtxOptimizedScheduler">false</p>
+      <p name="actEnhMultipleDedicatedBWPs">false</p>
+      <p name="actEnhancedFlowControlETh">true</p>
+      <p name="actEnhancedPDSCHSchSplSlot">false</p>
+      <p name="actEnhancedVoNR">false</p>
+      <p name="actExternalAntennaBF">false</p>
+      <p name="actFdmInitialDedicatedFdd">false</p>
+      <p name="actFdmSchedulingInitialBWP">false</p>
+      <p name="actFlexGapOffset">SR_and_DRX_and_CSIRS</p>
+      <p name="actForcedDftSOfdmVonrUl">false</p>
+      <p name="actFullPwrMode">false</p>
+      <p name="actGBRAdmissionControl">off</p>
+      <p name="actGbrLoadRepDss">false</p>
+      <p name="actGbrRacTdEnhResourcePriority">true</p>
+      <p name="actHighSpeedCell">false</p>
+      <p name="actIncUlPdcchCapacity">false</p>
+      <p name="actIncreasedFdmUsersPerSlot">false</p>
+      <p name="actInfTddFrameMuting">false</p>
+      <p name="actInitialBWPFlexibility">false</p>
+      <p name="actInterRankSwitchBlock">false</p>
+      <p name="actIntraCellHoRlcMaxRetrFail">false</p>
+      <p name="actIrcRddDebiasing">true</p>
+      <p name="actK1Opt">disabled</p>
+      <p name="actLAForHiReliab">false</p>
+      <p name="actLegExt2N77Coexist">false</p>
+      <p name="actLongPucchF1F3BfOnOranExtT6">false</p>
+      <p name="actLongPucchPhase2">false</p>
+      <p name="actLongPucchResourceOpt">false</p>
+      <p name="actLowGbrNumHandlingEnh">false</p>
+      <p name="actMacBSRIndexAlign">false</p>
+      <p name="actMaxInitDeltaCqiClampVoNR">false</p>
+      <p name="actMcQosSupport">false</p>
+      <p name="actMcsPrbReductionFdmUl">false</p>
+      <p name="actMsg3PrachMux">true</p>
+      <p name="actNbrForNonGbrBearers">false</p>
+      <p name="actNonVoNRGbrService">false</p>
+      <p name="actNonVoNRGbrServiceEnh">false</p>
+      <p name="actNrDualConnectivity">disabled</p>
+      <p name="actNrRim">disabled</p>
+      <p name="actORuBeamforming">false</p>
+      <p name="actORuFlexibleBeamGrpMapping">false</p>
+      <p name="actORuFlexibleBeamIdMapping">false</p>
+      <p name="actOptimizedFlowControl">nonOptimized</p>
+      <p name="actOsiMismatchCheck">false</p>
+      <p name="actPRBBlanking">false</p>
+      <p name="actPathLoss">true</p>
+      <p name="actPciBasedCsiImRandomization">false</p>
+      <p name="actPcsiOnF2Fdm">false</p>
+      <p name="actPdcchPowerBoost">disabled</p>
+      <p name="actPdcchSharingWithPdsch">false</p>
+      <p name="actPdschAtSsbSlots">false</p>
+      <p name="actPdschBeamPowerBalance">false</p>
+      <p name="actPdschRmCsirsForTracking">false</p>
+      <p name="actPerCsiReportBundlingTddFr1">false</p>
+      <p name="actPfMetricReinitSchedUes">false</p>
+      <p name="actPmiSinrUlMuMimo">false</p>
+      <p name="actPowerSavingBWP">false</p>
+      <p name="actPrachC2Scs15kHzTddFr1">false</p>
+      <p name="actPrachMultiplexing">false</p>
+      <p name="actPrachMultiplexingLevel">disabled</p>
+      <p name="actPrachNoPreambleNoisePwrEst">true</p>
+      <p name="actPriorityAccess">false</p>
+      <p name="actProactGrantsUlLteOnlyMode">false</p>
+      <p name="actProactUlScheduling">false</p>
+      <p name="actProactUlSchedulingEnh">disabled</p>
+      <p name="actPucchAdditionalDmrs">false</p>
+      <p name="actPucchF3EnhanceDTX">true</p>
+      <p name="actPusch12Sb10MhzFddLongPucch">false</p>
+      <p name="actPuschACSIPart2ThrAdj">true</p>
+      <p name="actRachTaFilt">false</p>
+      <p name="actRat1Alloc">false</p>
+      <p name="actRedCapUeSupport">false</p>
+      <p name="actRedFreqOffset">false</p>
+      <p name="actRel16DmrsForPucchF3">false</p>
+      <p name="actRel16DmrsForPusch">false</p>
+      <p name="actRescheduleBlockedRetx">false</p>
+      <p name="actRrcReconfigAtBeamSwitch">false</p>
+      <p name="actServiceAwareConfig">false</p>
+      <p name="actServiceAwareSRPrioritization">false</p>
+      <p name="actSharedSr">false</p>
+      <p name="actShortBsrLimitAdaptation">false</p>
+      <p name="actSib1ForNsaCell">false</p>
+      <p name="actSliceBasedUlPwrCtrl">false</p>
+      <p name="actSmallestRRCSetup">false</p>
+      <p name="actSmartRoundInFdUeSkipping">false</p>
+      <p name="actSpecificBwpSize">false</p>
+      <p name="actSpeculativeDtx">shortPUCCHMode</p>
+      <p name="actSrAllocOpt">false</p>
+      <p name="actSrsBeamFallbackByRetrx">false</p>
+      <p name="actSrsCarrierSwitching">false</p>
+      <p name="actSrsUlBeamFallbackByRetrx">false</p>
+      <p name="actSssgSwitching">disabled</p>
+      <p name="actStnrRedCapUeRelaxedMeasSA">false</p>
+      <p name="actSubTRSRateMatch">false</p>
+      <p name="actSuperCell">false</p>
+      <p name="actSupercellSingleSSB">false</p>
+      <p name="actTaDisconnect">false</p>
+      <p name="actTargetBlerVoNR">false</p>
+      <p name="actTcpBoostPug">disabled</p>
+      <p name="actULSchedInactiveBwp">false</p>
+      <p name="actUca">false</p>
+      <p name="actUeRelaxedMeasSA">false</p>
+      <p name="actUl256Qam">false</p>
+      <p name="actUlAudioGapReduction">false</p>
+      <p name="actUlCgType2">false</p>
+      <p name="actUlClosedLoopPwrCtrl">disabled</p>
+      <p name="actUlDftSOfdm">false</p>
+      <p name="actUlMinTbsForVoNR">false</p>
+      <p name="actUlMuMimo">false</p>
+      <p name="actUlNrEcIdAoa">false</p>
+      <p name="actUlNrEcIdNgRanApPosition">false</p>
+      <p name="actUlNrEcIdPosMethod">false</p>
+      <p name="actUlNrEcIdTAdv">false</p>
+      <p name="actUlOptMcsSelection">true</p>
+      <p name="actUlSlotAgg">Disabled</p>
+      <p name="actUlSrsBm">false</p>
+      <p name="actUlTransPreEnhHo">false</p>
+      <p name="actUlTransPreEnhRankSwitchIwk">false</p>
+      <p name="actUlTransPreEnhSinrMetric">false</p>
+      <p name="actUlTxSkip">false</p>
+      <p name="actVoNR">false</p>
+      <p name="actVoNRIncCodingGain">false</p>
+      <p name="actVoNrFallbackFromMeasProfile">true</p>
+      <p name="actVoNrMobilityThresholds">off</p>
+      <p name="actVoipPacketAggr">false</p>
+      <p name="actVonr40msProGrant">false</p>
+      <p name="addExtDelayCompensation">0</p>
+      <p name="addNumOfGBRBearers">0</p>
+      <p name="adjustPrachThresholdOffset">0</p>
+      <p name="administrativeState">Unlocked</p>
+      <p name="aggregationLevel">4CCEs</p>
+      <p name="allowCsiRsOutsideDRX">false</p>
+      <p name="bestCellWaitTimer">200</p>
+      <p name="biSlotPdschAvgCqiRatio">90</p>
+      <p name="blockHoToScellA3A5">false</p>
+      <p name="bufferThesholdSCellDePrioritize">200</p>
+      <p name="caBlockingLoadLevel">100</p>
+      <p name="cbraPreamblesPerSsb">n64</p>
+      <p name="ccLoadThreshold">30</p>
+      <p name="cellBarred">notBarred</p>
+      <p name="cellDepType">NSA</p>
+      <p name="cellIndividualSsbRsrpOffset">0dB</p>
+      <p name="cellIndividualSsbRsrqOffset">0dB</p>
+      <p name="cellName">A</p>
+      <p name="cellReselectionPriority">7</p>
+      <p name="cellReservedForOperatorUse">notReserved</p>
+      <p name="cellReservedForOtherUse">FALSE</p>
+      <p name="cellTechnology">TDD</p>
+      <p name="chBw">40MHz</p>
+      <p name="configuredEpsTac">1</p>
+      <p name="dedicatedSib1">false</p>
+      <p name="deliveryDelayThWithDataSplit">5</p>
+      <p name="deltaCqiOffsetAdjHo">0</p>
+      <p name="disableCellWhenNmsLost">false</p>
+      <p name="disableEarlyRar">false</p>
+      <p name="disableUeBeamFailureRecovery">false</p>
+      <p name="dlCaCqiWindow">50</p>
+      <p name="dlCaMinPCellCqi">0</p>
+      <p name="dlCaMinPCellCqi5qi1">0</p>
+      <p name="dlDMRSAdditionalPosition">One additional DMRS</p>
+      <p name="dlDmrsType">Type1</p>
+      <p name="dlMcsDropLimitForVoNR">28</p>
+      <p name="dlMimoMode">4x4 or 4x2 Closed Loop Spatial Multiplexing</p>
+      <p name="dllaBlerTarget">10</p>
+      <p name="dllaDeltaCqiMax">150</p>
+      <p name="dllaDeltaCqiMin">-150</p>
+      <p name="dllaDeltaCqiStepdown">250</p>
+      <p name="dllaIniMcs">3</p>
+      <p name="dmrsTypeAPosition">pos3</p>
+      <p name="eblRplCellSelectionWithCA">false</p>
+      <p name="eirpControlTimeAveragingWindow">6</p>
+      <p name="eirpControlTimeAveragingWindowStepSize">100</p>
+      <p name="emergencyCallFails">false</p>
+      <p name="emergencyCallLimServ">false</p>
+      <p name="enDcSyncStatus">none</p>
+      <p name="expectedCellSize">15km</p>
+      <p name="forbidDrbFwdTunNgHo">false</p>
+      <p name="freqBandIndicatorNR">78</p>
+      <p name="gapOffset">0</p>
+      <p name="gscnOrSsPbchArfcn">1</p>
+      <p name="initialPreambleReceivedTargetPower">-104</p>
+      <p name="intraFreqReselection">allowed</p>
+      <p name="lcrId">0</p>
+      <p name="limitedBeamsPerStreamPerSlot">false</p>
+      <p name="longPucchConfigType">duActCaPucchConfig</p>
+      <p name="lowerMcsPowerBackoff">14</p>
+      <p name="lteNrDssMode">none</p>
+      <p name="lteToNrTimeOffset">0</p>
+      <p name="maxMCSVoNRRankAndMCSRestrict">12</p>
+      <p name="maxNumOfCaUsersNRCell">250</p>
+      <p name="maxNumOfGBRBearersSA">10</p>
+      <p name="maxNumOfNonGBRBearersSA">550</p>
+      <p name="maxNumOfNrDcSnNonGBRBearers">550</p>
+      <p name="maxNumOfNrDcSnUsers">275</p>
+      <p name="maxNumOfRrcSA">275</p>
+      <p name="maxNumOfSCellAlloc">250</p>
+      <p name="maxNumOfUsersPerCell">275</p>
+      <p name="maxNumOfUsersPerNRCell">275</p>
+      <p name="maxNumPagingRecords">8</p>
+      <p name="maxNumPdschAllocationPerSlot">1</p>
+      <p name="maxNumPuschAllocationPerSlot">1</p>
+      <p name="maxNumberUesPowerSaving">400</p>
+      <p name="maxNumberVoNRPowerSaving">250</p>
+      <p name="modPeriodCoeff">n2</p>
+      <p name="msg1FrequencyStart">0</p>
+      <p name="msg3DeltaPreamble">1</p>
+      <p name="muteLastSymbolInSsbSlot">NoMutingOfDlSymbol</p>
+      <p name="n310">n10</p>
+      <p name="n311">n1</p>
+      <p name="nUeCtxForCceSplitDeactivation">0</p>
+      <p name="nbrOfBlankedPRBsHighEdgeDL">0</p>
+      <p name="nbrOfBlankedPRBsHighEdgeUL">0</p>
+      <p name="nbrOfBlankedPRBsLowEdgeDL">0</p>
+      <p name="nbrOfBlankedPRBsLowEdgeUL">0</p>
+      <p name="nbrOfSsbPerRachOccasion">one</p>
+      <p name="nonGbrNrDrxDN">MRBTS-1/NRBTS-0/NRDRX-1</p>
+      <p name="nrCellType">4DL4UL</p>
+      <p name="nrarfcn">633334</p>
+      <p name="nrofHARQProcessesForPDSCH">16</p>
+      <p name="numOfSubSectors">0sub-sector</p>
+      <p name="numberOfRxBeamforming">2Rx</p>
+      <p name="omitPmaxInSib1">false</p>
+      <p name="openLoopScheme">Automatic</p>
+      <p name="pMax">400</p>
+      <p name="pMaxNROwnCell">23</p>
+      <p name="pduHoSliceRelease">false</p>
+      <p name="physCellId">0</p>
+      <p name="powerRampingStep">dB2</p>
+      <p name="powerRampingStepHighPriorityCfra">dB2</p>
+      <p name="prachConfigurationIndex">4</p>
+      <p name="prachRootSequenceIndex">0</p>
+      <p name="prachSequenceType">Unrestricted</p>
+      <p name="preambleTransMax">n10</p>
+      <p name="primaryPathMaxQueueingDelay">15</p>
+      <p name="priorityWaitTimer">200</p>
+      <p name="pucchF3MaxCodeRate">zeroDot15</p>
+      <p name="pucchF3ModulationScheme">qpsk_4psk</p>
+      <p name="pucchModeSelect">longPucch</p>
+      <p name="puschMappingType">TypeB</p>
+      <p name="qRxLevMin">-65</p>
+      <p name="raContentionResolutionTmr">sf64</p>
+      <p name="raResponseWindow">sl20</p>
+      <p name="rangeExtension">1x_range</p>
+      <p name="rateMatchedCsiImInMsg2Slot">true</p>
+      <p name="reportAmount">r4</p>
+      <p name="reportAmountCA">r4</p>
+      <p name="reportAmountHoPrefNRLayer">r2</p>
+      <p name="reportAmountHoPrefNRLayerSA">r2</p>
+      <p name="reportAmountNrDc">r4</p>
+      <p name="reportInterval">ms120</p>
+      <p name="reportIntervalCA">ms1024</p>
+      <p name="reportIntervalHoPrefNRLayer">ms1024</p>
+      <p name="reportIntervalHoPrefNRLayerSA">ms1024</p>
+      <p name="reportIntervalNrDc">ms1024</p>
+      <p name="reportOnLeave">false</p>
+      <p name="reqMinNumPuschPrb">13</p>
+      <p name="rlResumeBackOffTmr">2000</p>
+      <p name="rlfPsccTrigThresholdRsrp">42</p>
+      <p name="rlpDetCsiBsiThreshold">75</p>
+      <p name="rlpDetDlHarqThreshold">35</p>
+      <p name="rlpRecCsiBsiThreshold">2</p>
+      <p name="rlpRecDlHarqThreshold">5</p>
+      <p name="rsrpThresholdSSB">37</p>
+      <p name="sCellActivationLevel">1TTI</p>
+      <p name="sCellActivationLevelUL">1TTI</p>
+      <p name="sCellActivationMinDataThreshold">6000</p>
+      <p name="sCellBadChannelQualityThUL">4</p>
+      <p name="sCellBadChannelQualityThreshold">4</p>
+      <p name="sCellChannelEstimationPeriod">2000</p>
+      <p name="sCellDePrioritizeEvalPeriod">50</p>
+      <p name="sCellDeactivationTimerGNB">ms1280</p>
+      <p name="sCellGoodChannelQualityThreshold">8</p>
+      <p name="scalingStepdownHREnabled">false</p>
+      <p name="scellBlockingLoadLevel">100</p>
+      <p name="seThrTargetBlerReduct">0</p>
+      <p name="secondaryPathMaxQueueingDelay">15</p>
+      <p name="sibStartPrbRandomDisabled">false</p>
+      <p name="skipSsbToMeas">false</p>
+      <p name="sliceAwareAdmissionCtrlEnabled">false</p>
+      <p name="slimRfFilterDL">Nominal</p>
+      <p name="slimRfFilterUL">Nominal</p>
+      <p name="srPeriodicity">slots80</p>
+      <p name="ssPbchBlockPower">14</p>
+      <p name="ssbScs">30 KHz</p>
+      <p name="t300">400ms</p>
+      <p name="t301">400ms</p>
+      <p name="t310">2000ms</p>
+      <p name="t311">3000ms</p>
+      <p name="t319">400ms</p>
+      <p name="timeRestrictionForIntfMeas">notConfigured</p>
+      <p name="timingAdvanceOffset">n25600</p>
+      <p name="totalNumberOfRAPreambles">64</p>
+      <p name="trsMutingInBlankedPRBsEnabled">false</p>
+      <p name="type0CoresetConfigurationIndex">12</p>
+      <p name="type0SearchSpaceConfigurationIndex">5</p>
+      <p name="ueConnectionEstablishmentMode">useDedicatedBwp</p>
+      <p name="ueSplitPowerAdjStep">170</p>
+      <p name="ulCaMinPCellSinr">0</p>
+      <p name="ulCaMinPCellSinr5qi1">0</p>
+      <p name="ulCaSinrWindow">50</p>
+      <p name="ulDMRSAdditionalPosition">Automatic</p>
+      <p name="ulLimitedMcsStepupSizeBler">0</p>
+      <p name="ulMcsDowngradeMaxReduction">0</p>
+      <p name="ulMimoMode">Closed loop Spatial Multiplexing (2x2)</p>
+      <p name="ulRank1to2Thresh">170</p>
+      <p name="ulRank2to1Thresh">150</p>
+      <p name="ulSinrSourceForRank1SUMimo">SRS</p>
+      <p name="ullaBlerTarget">10</p>
+      <p name="ullaDeltaSinrMax">150</p>
+      <p name="ullaDeltaSinrMin">-300</p>
+      <p name="ullaDeltaSinrStepdown">250</p>
+      <p name="ullaIniMcs">0</p>
+      <p name="upperMcsPowerBackoff">18</p>
+      <p name="voNRNrDrxDN">MRBTS-1/NRBTS-0/NRDRX-0</p>
+      <p name="voiceFBMode">disabled</p>
+      <p name="weightForSCellSelection">50</p>
+      <p name="weightOfFr1PSCell">50</p>
+      <p name="weightRatioOfUePwrScellVsPcell">WeightRatio 1</p>
+      <p name="zeroCorrelationZoneConfig">13</p>
+      <list name="actCsiResAllocOptList">
+        <p>sCellCsiAllocAlgoOpt</p>
+      </list>
+      <list name="actHPPosMethodOptList">
+        <p>disabled</p>
+      </list>
+      <list name="actPagingSsbOptimization">
+        <p>disabled</p>
+      </list>
+      <list name="beamSet">
+        <item>
+          <p name="basicBeamSet">beamSet_1</p>
+          <p name="leftEdgeAngle">60</p>
+          <p name="rightEdgeAngle">60</p>
+        </item>
+      </list>
+      <list name="cellBwpList">
+        <item>
+          <p name="actPdcchCceFragmentControl">false</p>
+          <p name="actUpperThrAckNackFiltering">false</p>
+          <p name="actUpperThrAckNackHrFiltering">false</p>
+          <p name="bwpDN">MRBTS-1/NRBTS-0/BWP_PROFILE-0</p>
+          <p name="cellBwpId">0</p>
+          <p name="pdcchResourcePreference">peakRate</p>
+        </item>
+        <item>
+          <p name="actPdcchCceFragmentControl">false</p>
+          <p name="actUpperThrAckNackFiltering">false</p>
+          <p name="actUpperThrAckNackHrFiltering">false</p>
+          <p name="bwpDN">MRBTS-1/NRBTS-0/BWP_PROFILE-87</p>
+          <p name="cellBwpId">1</p>
+          <p name="pdcchResourcePreference">peakRate</p>
+        </item>
+      </list>
+      <list name="csirsForTracking">
+        <item>
+          <p name="csirsTrackingPeriod">80ms</p>
+          <p name="rbAllocation">52RB</p>
+          <p name="startRB">0</p>
+        </item>
+      </list>
+      <list name="dlDataDmrsFdm">
+        <item>
+          <p name="actDlDataDmrsFdm">false</p>
+          <p name="dlDataDmrsFdmThres256QamMcs">20</p>
+          <p name="dlDataDmrsFdmThres64QamMcs">20</p>
+          <p name="redCap1RxUesEnabled">false</p>
+          <p name="thres256QamMcsRedCap1Rx">20</p>
+        </item>
+      </list>
+      <list name="dlPtrs">
+        <item>
+          <p name="actDlPtrs">false</p>
+          <p name="dlPtrsFreqDensityThresNrb0">278</p>
+          <p name="dlPtrsFreqDensityThresNrb1">24</p>
+        </item>
+      </list>
+      <list name="drxProfileNrAnr">
+        <item>
+          <p name="drxControl">any</p>
+          <p name="nrDrxDN">MRBTS-1/NRBTS-0/NRDRX-3</p>
+        </item>
+      </list>
+      <list name="dtxOptimizedScheduler">
+        <item>
+          <p name="caSupportEnabled">false</p>
+          <p name="drbDifferentiationEnabled">false</p>
+          <p name="drxSupportEnabled">false</p>
+          <p name="dtxDelaySinceLastScheduling">0</p>
+          <p name="dtxMaxRetentionDelay">10</p>
+          <p name="dtxPrbThreshold">80</p>
+          <p name="multiCellSyncEnabled">false</p>
+          <p name="rlcStatusPduSupportEnabled">false</p>
+        </item>
+      </list>
+      <list name="periodicCsiAcquisition">
+        <item>
+          <p name="csiReportPeriodicity">slots320</p>
+          <p name="scramblingIdStep">3</p>
+        </item>
+      </list>
+      <list name="tddFrameStructure">
+        <item>
+          <p name="frameStructureType">tdLte</p>
+          <p name="guardPeriodLength">4Symbols</p>
+          <p name="lteToNrFrameShift">3ms</p>
+          <p name="tdLteUlDlConfig">tdLteConfig2</p>
+          <p name="ulDlDataSlotRatio">2/8</p>
+        </item>
+      </list>
+      <list name="ulConfiguredGrantType2">
+        <item>
+          <p name="ulCgMaxNumPrbs">4</p>
+          <p name="ulCgMaxNumUeUl">1</p>
+          <p name="ulCgPrbStartOffset">0</p>
+        </item>
+      </list>
+      <list name="ulDataDmrsFdm">
+        <item>
+          <p name="actUlDataDmrsFdm">false</p>
+          <p name="ulDataDmrsFdmThres256QamMcs">20</p>
+          <p name="ulDataDmrsFdmThres64QamMcs">20</p>
+        </item>
+      </list>
+      <list name="ulPowerControlCommon">
+        <item>
+          <p name="actUlOpenLoopPwrCtrl">true</p>
+          <p name="alpha">al1</p>
+          <p name="alphaSrs">alpha1</p>
+          <p name="p0NominalPucch">-90</p>
+          <p name="p0NominalPucchF1F3">-108</p>
+          <p name="p0NominalPusch">-96</p>
+          <p name="p0NominalSrs">-96</p>
+          <p name="p0UePusch">0</p>
+          <p name="pucchF1DeltaF">-10</p>
+          <p name="pucchF3DeltaF">0</p>
+        </item>
+      </list>
+      <list name="ulPtrs">
+        <item>
+          <p name="actUlPtrs">true</p>
+          <p name="ulPtrsFreqDensityThresNrb0">278</p>
+          <p name="ulPtrsFreqDensityThresNrb1">24</p>
+        </item>
+      </list>
+      <list name="ulPtrsForTransPrecoding">
+        <item>
+          <p name="ulPtrsSampleDensityThresNrb0">277</p>
+          <p name="ulPtrsSampleDensityThresNrb1">36</p>
+          <p name="ulPtrsSampleDensityThresNrb2">36</p>
+          <p name="ulPtrsSampleDensityThresNrb3">270</p>
+          <p name="ulPtrsSampleDensityThresNrb4">270</p>
+        </item>
+      </list>
+      <list name="ulTransPrecodeCtl">
+        <item>
+          <p name="ulTransPrecodeOffSinrThresh">35</p>
+          <p name="ulTransPrecodeOffSinrThrRedCap">35</p>
+          <p name="ulTransPrecodeOnSinrThresh">15</p>
+          <p name="ulTransPrecodeOnSinrThrRedCap">15</p>
+          <p name="ulTransPrecodePi2Bpsk">true</p>
+          <p name="ulTransPrePi2BpskPwrBoost">false</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRCELLGRP" distName="MRBTS-1/NRBTS-0/NRCELLGRP-0" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="actHighNumberOfUEs">false</p>
+      <p name="actLoadCsiPeriodicity">false</p>
+      <p name="actNackDtxFloodControlDetection">false</p>
+      <p name="actPucchBeamConstraintFR2">false</p>
+      <p name="addNumOfHoUsers">0</p>
+      <p name="addNumOfNonGBRBearersCGRPSAHo">0</p>
+      <p name="addNumOfNonGBRBearersHo">0</p>
+      <p name="addNumOfRrcCGRPSAHo">0</p>
+      <p name="beamformingGridSel">ABFG90</p>
+      <p name="loadBasedCsiPerThreshold">50Percent</p>
+      <p name="maxDlHarqTx">5</p>
+      <p name="maxHarqMsg3Tx">5</p>
+      <p name="maxNumOfNonGBRBearers">550</p>
+      <p name="maxNumOfNonGBRBearersCGRPSA">550</p>
+      <p name="maxNumOfNrDcSnNonGBRBearersCGRP">550</p>
+      <p name="maxNumOfNrDcSnUsersCGRP">275</p>
+      <p name="maxNumOfRrcCGRPSA">275</p>
+      <p name="maxNumOfUsers">550</p>
+      <p name="maxUlHarqTx">5</p>
+      <p name="numberOfTransmittedSsBlocks">1 beam</p>
+      <p name="pucchF2MaxCodeRate">zeroDot15</p>
+      <p name="scs">30 KHz</p>
+      <p name="spCellChangeEnabled">false</p>
+      <p name="ssBurstSetPeriod">20</p>
+      <list name="nackFloodControlF1">
+        <item>
+          <p name="dataFlowResumeThrFR1">5</p>
+          <p name="dataFlowResumeThrFR2">20</p>
+          <p name="forgettingRatioFR1">50</p>
+          <p name="forgettingRatioFR2">50</p>
+          <p name="maxNackFloodBurstSizeFR1">10</p>
+          <p name="maxNackFloodBurstSizeFR2">40</p>
+        </item>
+      </list>
+      <list name="nrCellList">
+        <p>0</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRCUUP" distName="MRBTS-1/NRBTS-0/NRCUUP-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="gNbCuUpId">0</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRB" distName="MRBTS-1/NRBTS-0/NRDRB-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="actDddsReduction">true</p>
+      <p name="actDlTxResumeOnPdcpStatRep">false</p>
+      <p name="actLostPduFastRetx">false</p>
+      <p name="actOptDataFlowRateEst">false</p>
+      <p name="allowedPdcchPowerBoostALDueCce">none</p>
+      <p name="allowedPdcchPowerBoostALDueCfg">None</p>
+      <p name="caPduReSendingDelayMargin">2</p>
+      <p name="discardTimer">infinity</p>
+      <p name="dlAllowMinDelayLinkXxCalib">false</p>
+      <p name="dlFlowControlAlgo">3gppFlowControl</p>
+      <p name="dscp">0</p>
+      <p name="durationThresDiscardDl">40</p>
+      <p name="durationThresDiscardDlMacSdu">40</p>
+      <p name="durationThresDiscardDlPdcpPdu5GLeg">40</p>
+      <p name="durationThresDiscardDlPdcpPduLteLeg">40</p>
+      <p name="durationThresDiscardUl">20</p>
+      <p name="endMarkerTimer">2000</p>
+      <p name="maxDddsPeriodCpuOvld">40</p>
+      <p name="nrDrbMacDN">MRBTS-1/NRBTS-0/NRDRB_MAC-1</p>
+      <p name="nrDrbPdcpDN">MRBTS-1/NRBTS-0/NRDRB_PDCP-1</p>
+      <p name="nrDrbRlcAmDN">MRBTS-1/NRBTS-0/NRDRB_RLC_AM-1</p>
+      <p name="nrDrxDN">MRBTS-1/NRBTS-0/NRDRX-1</p>
+      <p name="numSduDiscard">1</p>
+      <p name="queuingDelayDiscardStart">5</p>
+      <p name="queuingDelayDiscarding">Controlled Delay (CoDel)</p>
+      <p name="queuingDelaySduDiscardThreshold">750</p>
+      <p name="resType">nonGBR</p>
+      <p name="rlcMode">RLC_AM</p>
+      <p name="rlcPduDelayThCa">30</p>
+      <p name="sduDiscardIntervalTmr">500</p>
+      <p name="volThresDiscardDl">8000</p>
+      <p name="volThresDiscardDlMacSdu">8000</p>
+      <p name="volThresDiscardDlPdcpPdu5GLeg">8000</p>
+      <p name="volThresDiscardDlPdcpPduLteLeg">8000</p>
+      <p name="volThresDiscardUl">800</p>
+      <list name="cellAggrLevel">
+        <p>FR1 CA eligible</p>
+      </list>
+      <list name="nsaDrbParam">
+        <item>
+          <p name="actPrioritizeX2AfterInactivity">true</p>
+          <p name="actX2DuplicateTxNSA3x">false</p>
+          <p name="dlDataSplitBufferBuildUpThreshold">5</p>
+          <p name="dlDataSplitBufferBuildUpThresholdPrioritizeX2">5</p>
+          <p name="dlDataSplitGainThreshold">5</p>
+          <p name="dlDataSplitMode">dlOverF1UX2U</p>
+          <p name="dlNumOfCongOrGainDdds">2</p>
+          <p name="dlPreferredPath">F1-U</p>
+          <p name="inactivityThresholdForPrioritizeX2">300</p>
+          <p name="inactivityThresholdForRestartPrioritizeX2">100</p>
+          <p name="initialDLTrafficRouting">initDLoverX2U</p>
+          <p name="nsa3xBearerAllowed">true</p>
+          <p name="prioritizeX2Period">500</p>
+          <p name="ulDataPath">ulOverNr</p>
+          <p name="ulDataSplitThreshold">infinity</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRB_MAC" distName="MRBTS-1/NRBTS-0/NRDRB_MAC-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="lcgid">1</p>
+      <p name="prioritisedBitRate">16kBps</p>
+      <p name="schedulPrio">12</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRB_PDCP" distName="MRBTS-1/NRBTS-0/NRDRB_PDCP-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="cuFlowControlProfId">1</p>
+      <p name="pdcpBufDiscardEnabled">true</p>
+      <p name="pdcpBufDiscardThreshold">20000</p>
+      <p name="pdcpDelayThreshRetxMode">disabled</p>
+      <p name="tReorderingDl">ms100</p>
+      <p name="tReorderingUl">ms100</p>
+      <p name="xxFlowControlProfForCuIdx">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRB_RLC_AM" distName="MRBTS-1/NRBTS-0/NRDRB_RLC_AM-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="dlMaxRetxThreshold">t32</p>
+      <p name="dlPollByte">kB250</p>
+      <p name="dlPollPDU">p64</p>
+      <p name="dlTPollRetr">ms45</p>
+      <p name="dlTProhib">ms15</p>
+      <p name="dlTReassembly">ms15</p>
+      <p name="dlTReassemblyIBCA">40</p>
+      <p name="duFlowControlProfId">1</p>
+      <p name="ulMaxRetxThreshold">t32</p>
+      <p name="ulPollByte">kB250</p>
+      <p name="ulPollPDU">p64</p>
+      <p name="ulTPollRetr">ms45</p>
+      <p name="ulTProhib">ms15</p>
+      <p name="ulTReassembly">ms15</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRX" distName="MRBTS-1/NRBTS-0/NRDRX-0" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="drxHarqRttTimerDl">0symbols</p>
+      <p name="drxHarqRttTimerUl">0symbols</p>
+      <p name="drxInactivityTimer">0ms</p>
+      <p name="drxLongCycle">10ms</p>
+      <p name="drxOnDurationTimer">1ms</p>
+      <p name="drxPriority">0</p>
+      <p name="drxRetransTimerDl">0slot</p>
+      <p name="drxRetransTimerUl">0slot</p>
+      <p name="userLabel">NoDRX</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRX" distName="MRBTS-1/NRBTS-0/NRDRX-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="drxHarqRttTimerDl">0symbols</p>
+      <p name="drxHarqRttTimerUl">0symbols</p>
+      <p name="drxInactivityTimer">80ms</p>
+      <p name="drxLongCycle">160ms</p>
+      <p name="drxOnDurationTimer">10ms</p>
+      <p name="drxPriority">32</p>
+      <p name="drxRetransTimerDl">0slot</p>
+      <p name="drxRetransTimerUl">0slot</p>
+      <p name="userLabel">Default NonGbr</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRX" distName="MRBTS-1/NRBTS-0/NRDRX-2" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="drxHarqRttTimerDl">0symbols</p>
+      <p name="drxHarqRttTimerUl">0symbols</p>
+      <p name="drxInactivityTimer">20ms</p>
+      <p name="drxLongCycle">40ms</p>
+      <p name="drxOnDurationTimer">10ms</p>
+      <p name="drxPriority">1</p>
+      <p name="drxRetransTimerDl">0slot</p>
+      <p name="drxRetransTimerUl">0slot</p>
+      <p name="userLabel">Default VoNR</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDRX" distName="MRBTS-1/NRBTS-0/NRDRX-3" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="drxHarqRttTimerDl">0symbols</p>
+      <p name="drxHarqRttTimerUl">0symbols</p>
+      <p name="drxInactivityTimer">10ms</p>
+      <p name="drxLongCycle">640ms</p>
+      <p name="drxOnDurationTimer">10ms</p>
+      <p name="drxPriority">16</p>
+      <p name="drxRetransTimerDl">0slot</p>
+      <p name="drxRetransTimerUl">0slot</p>
+      <p name="userLabel">Default ANR</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRDU" distName="MRBTS-1/NRBTS-0/NRDU-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="actConnectedModeMobilityCA">false</p>
+      <p name="actInterGnbCa">disabled</p>
+      <p name="actInterNumerologyCa">false</p>
+      <p name="actMLScellAct">false</p>
+      <p name="actNonBfAndBfCa">false</p>
+      <p name="actUlCaWith3Tx">false</p>
+      <p name="administrativeState">Unlocked</p>
+      <p name="crntiAllocationOption">max72cells</p>
+      <p name="dlToUlContributionRatio">101</p>
+      <p name="flexibleCAMode">BasicCAMode</p>
+      <p name="gNbDuId">0</p>
+      <p name="maxNumOfRrcConUEsPerDU">2448</p>
+      <p name="targetDN">MRBTS-1/EQM-1/APEQM-1</p>
+      <list name="carrierAggregationSupportList">
+        <p>none</p>
+      </list>
+      <list name="mlScellActParamSet1">
+        <item>
+          <p name="mlDataCollectionPeriod">500ms</p>
+        </item>
+      </list>
+      <list name="refNrCellGroup">
+        <p>0</p>
+      </list>
+      <list name="ulTxSwitchingSupportList">
+        <p>none</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRPLMN" distName="MRBTS-1/NRBTS-0/NRPLMN-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="mcc">999</p>
+      <p name="mnc">70</p>
+      <p name="mncLength">2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRPLMN" distName="MRBTS-1/NRBTS-0/NRPLMN-2" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="mcc">315</p>
+      <p name="mnc">10</p>
+      <p name="mncLength">3</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRPMRNL" distName="MRBTS-1/NRBTS-0/NRPMRNL-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="miNrAngDistribution">disabled</p>
+      <p name="miNrBeamforming">15min</p>
+      <p name="miNrBeamforming2">disabled</p>
+      <p name="miNrBfConfig">disabled</p>
+      <p name="miNrBrc">disabled</p>
+      <p name="miNrCABMCCP">disabled</p>
+      <p name="miNrCCD">disabled</p>
+      <p name="miNrCUCM">disabled</p>
+      <p name="miNrCaCu">15min</p>
+      <p name="miNrCaDu">15min</p>
+      <p name="miNrCaDu01">disabled</p>
+      <p name="miNrCaDuCp">disabled</p>
+      <p name="miNrCellAvailPosCell">disabled</p>
+      <p name="miNrCellAvailability">15min</p>
+      <p name="miNrCellGroupMeas">disabled</p>
+      <p name="miNrCellUtilPerNrg">disabled</p>
+      <p name="miNrCellUtilPerPLMN">disabled</p>
+      <p name="miNrCellUtilization">15min</p>
+      <p name="miNrDlHarq">15min</p>
+      <p name="miNrDlHarqLowSEMCS">disabled</p>
+      <p name="miNrDlSignalQuality">15min</p>
+      <p name="miNrDlSignalQuality2">disabled</p>
+      <p name="miNrE1InterfaceBts">15min</p>
+      <p name="miNrE1InterfaceCell">disabled</p>
+      <p name="miNrE1InterfaceCuCpNsa">15min</p>
+      <p name="miNrE1InterfaceCuCpSa">15min</p>
+      <p name="miNrE1InterfaceCuUp">15min</p>
+      <p name="miNrE1InterfaceCuUpNsa">15min</p>
+      <p name="miNrE1InterfaceCuUpSa">15min</p>
+      <p name="miNrE2InterfaceBts">disabled</p>
+      <p name="miNrE2SubscriptionBts">disabled</p>
+      <p name="miNrEcpriUpFCp">15min</p>
+      <p name="miNrEirp">5min</p>
+      <p name="miNrEnDssPerCell">disabled</p>
+      <p name="miNrF1CC">15min</p>
+      <p name="miNrF1CD">15min</p>
+      <p name="miNrF1UB1Interface">disabled</p>
+      <p name="miNrF1UCInterface">15min</p>
+      <p name="miNrF1UDInterface">15min</p>
+      <p name="miNrF1UInterfaceCUpmqap">disabled</p>
+      <p name="miNrF1UInterfaceDUPmqap">disabled</p>
+      <p name="miNrF1UU">15min</p>
+      <p name="miNrGnss">15min</p>
+      <p name="miNrHighRlcCell">disabled</p>
+      <p name="miNrHighRlcCellNrpmqap">disabled</p>
+      <p name="miNrHighRlcLatNrpmqap">disabled</p>
+      <p name="miNrHighRlcReport">15min</p>
+      <p name="miNrHoInterruptCuUp">15min</p>
+      <p name="miNrIfPsCellChange">15min</p>
+      <p name="miNrInterGnbMobilityCellCuNsa">disabled</p>
+      <p name="miNrInterGnbMobilityCellCuSa">disabled</p>
+      <p name="miNrInterGnbMobilityNsaPmqap">disabled</p>
+      <p name="miNrInterGnbNgMobilitySaPmqap">disabled</p>
+      <p name="miNrInterGnbXnMobilitySaPmqap">disabled</p>
+      <p name="miNrInterRATMobilitySaPmqap">disabled</p>
+      <p name="miNrIntraGnbMobilityCellCuSa">disabled</p>
+      <p name="miNrIntraGnbMobilityNsaPmqap">disabled</p>
+      <p name="miNrIntraGnbMobilitySaPmqap">disabled</p>
+      <p name="miNrL2HiCUBearerpmqap">disabled</p>
+      <p name="miNrLowRlcCellNrpmqap">disabled</p>
+      <p name="miNrLowRlcReport">15min</p>
+      <p name="miNrLteMgPerCell">15min</p>
+      <p name="miNrLteMobilityReport">15min</p>
+      <p name="miNrMLInferEngDu">disabled</p>
+      <p name="miNrMLManServDu">disabled</p>
+      <p name="miNrMacPduTput">15min</p>
+      <p name="miNrMacSduReport">15min</p>
+      <p name="miNrMaxCABMCCP">disabled</p>
+      <p name="miNrMaxCellCuNrpmqap">disabled</p>
+      <p name="miNrMeasProfileInterFreq">disabled</p>
+      <p name="miNrMeasProfileInterRat">disabled</p>
+      <p name="miNrMeasProfileIntraFreq">disabled</p>
+      <p name="miNrMeasProfileMappingNSA">disabled</p>
+      <p name="miNrMeasProfileMappingSA">disabled</p>
+      <p name="miNrMeasProfileSCell">disabled</p>
+      <p name="miNrMgPerCell">15min</p>
+      <p name="miNrMobilityReport">15min</p>
+      <p name="miNrMobilityReportCu">15min</p>
+      <p name="miNrMobilityReportDu">15min</p>
+      <p name="miNrNAECL">disabled</p>
+      <p name="miNrNGCC">15min</p>
+      <p name="miNrNREMO">disabled</p>
+      <p name="miNrNRMOP">disabled</p>
+      <p name="miNrNRPFW">disabled</p>
+      <p name="miNrNTRAF">15min</p>
+      <p name="miNrNeighborLteNrCuNsa">disabled</p>
+      <p name="miNrNeighborNrNrCuNsa">disabled</p>
+      <p name="miNrNeighborNrNrCuSa">60min</p>
+      <p name="miNrNgInterface">15min</p>
+      <p name="miNrNgInterfaceNrpmqap">disabled</p>
+      <p name="miNrNgUReport">15min</p>
+      <p name="miNrNgcFlexInterface">disabled</p>
+      <p name="miNrNsaAcCuNrpmqap">disabled</p>
+      <p name="miNrPDCP1Report">15min</p>
+      <p name="miNrPDCP2Report">15min</p>
+      <p name="miNrPDCPCell">disabled</p>
+      <p name="miNrPRBthroughputpmqap">disabled</p>
+      <p name="miNrPaging">disabled</p>
+      <p name="miNrPagingStrategy">disabled</p>
+      <p name="miNrPdcch">disabled</p>
+      <p name="miNrPdcch2">disabled</p>
+      <p name="miNrPdcpC">15min</p>
+      <p name="miNrPdcpCellNrpmqap">disabled</p>
+      <p name="miNrPdcpLatNrpmqap">disabled</p>
+      <p name="miNrPowerSavingBwp">disabled</p>
+      <p name="miNrPsCellChange">15min</p>
+      <p name="miNrRANS">15min</p>
+      <p name="miNrRANSPeakUE">disabled</p>
+      <p name="miNrRRCC">15min</p>
+      <p name="miNrRRCD">15min</p>
+      <p name="miNrRSACU">15min</p>
+      <p name="miNrRSADU">15min</p>
+      <p name="miNrRSANB">15min</p>
+      <p name="miNrRSUP">15min</p>
+      <p name="miNrRacCu">15min</p>
+      <p name="miNrRacDu">15min</p>
+      <p name="miNrRachUsage">15min</p>
+      <p name="miNrRadBearer">15min</p>
+      <p name="miNrRadQualpmqap">disabled</p>
+      <p name="miNrRelReportCu">disabled</p>
+      <p name="miNrResourceUtilizationPerCell">disabled</p>
+      <p name="miNrRim">disabled</p>
+      <p name="miNrRip">disabled</p>
+      <p name="miNrRipSamples">disabled</p>
+      <p name="miNrRlfPerCell">15min</p>
+      <p name="miNrRtwp">disabled</p>
+      <p name="miNrS1UInterface">15min</p>
+      <p name="miNrSSBPM">disabled</p>
+      <p name="miNrSaAcDuNrpmqap">disabled</p>
+      <p name="miNrSaAdjGnb">disabled</p>
+      <p name="miNrSaCuNrpmqap">disabled</p>
+      <p name="miNrSfpBbmod">15min</p>
+      <p name="miNrSfpRmod">15min</p>
+      <p name="miNrSfpSmod">15min</p>
+      <p name="miNrSignalQualityLowSEMCS">disabled</p>
+      <p name="miNrSlicingCuCp">15min</p>
+      <p name="miNrSlicingCuUp">15min</p>
+      <p name="miNrSpareBts">disabled</p>
+      <p name="miNrSpareCellCU">disabled</p>
+      <p name="miNrSpareCellCUPlmn">disabled</p>
+      <p name="miNrSpareCellDU">disabled</p>
+      <p name="miNrSpareCellDUPlmn">disabled</p>
+      <p name="miNrSrb3C">15min</p>
+      <p name="miNrSrb3D">15min</p>
+      <p name="miNrSrsQuality">disabled</p>
+      <p name="miNrSrvcAvaStats">15min</p>
+      <p name="miNrStrMeasure">disabled</p>
+      <p name="miNrTimingAdvance">15min</p>
+      <p name="miNrUeQuan">disabled</p>
+      <p name="miNrUeStatNrpmqap">disabled</p>
+      <p name="miNrUeState">15min</p>
+      <p name="miNrUlHarq">15min</p>
+      <p name="miNrUlHarqLowSEMCS">disabled</p>
+      <p name="miNrUlHarqOne">disabled</p>
+      <p name="miNrUlSignalQuality">15min</p>
+      <p name="miNrUlSignalQuality2">disabled</p>
+      <p name="miNrX2CB">15min</p>
+      <p name="miNrX2CC">15min</p>
+      <p name="miNrX2UB1Interface">disabled</p>
+      <p name="miNrX2UInterface">15min</p>
+      <p name="miNrX2UInterfacepmqap">disabled</p>
+      <p name="miNrX2ccNrpmqap">disabled</p>
+      <p name="miNrXNUInterfaceCUBts">disabled</p>
+      <p name="miNrXNUInterfaceCUPmqap">disabled</p>
+      <p name="miNrXNUInterfaceDUPmqap">disabled</p>
+      <p name="miNrXnCCInterface">15min</p>
+      <p name="miNrXnInterface">15min</p>
+      <p name="tmpMiNrParam1">disabled</p>
+      <p name="tmpMiNrParam10">disabled</p>
+      <p name="tmpMiNrParam2">disabled</p>
+      <p name="tmpMiNrParam3">disabled</p>
+      <p name="tmpMiNrParam4">disabled</p>
+      <p name="tmpMiNrParam5">disabled</p>
+      <p name="tmpMiNrParam6">disabled</p>
+      <p name="tmpMiNrParam7">disabled</p>
+      <p name="tmpMiNrParam8">disabled</p>
+      <p name="tmpMiNrParam9">disabled</p>
+      <p name="ulUeThptMethod">CountingUEsBSRGT0</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRPMCCP" distName="MRBTS-1/NRBTS-0/NRPMRNL-1/NRPMCCP-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <list name="actMrSsHistCounters">
+        <p>disabled</p>
+      </list>
+      <list name="actNrUlRipCounters">
+        <p>disabled</p>
+      </list>
+      <list name="actRadioQualityMeasCount">
+        <p>OFF</p>
+      </list>
+      <p name="cfgTAcounters">Bin ranges based on SCS</p>
+      <p name="cfgThptDistUpdate">per second</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRRFSP_PROFILE" distName="MRBTS-1/NRBTS-0/NRRFSP_PROFILE-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="rfsp">129</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRSCTP" distName="MRBTS-1/NRBTS-0/NRSCTP-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <list name="sctpProfile">
+        <item>
+          <p name="sctpAssocMaxRetrans">9</p>
+          <p name="sctpChunkBundlingEnabled">false</p>
+          <p name="sctpHeartbeatInterval">20</p>
+          <p name="sctpMaxBurst">4</p>
+          <p name="sctpMaxPayloadSize">1395</p>
+          <p name="sctpMaxTimeSctpSetup">60</p>
+          <p name="sctpPathMaxRetrans">6</p>
+          <p name="sctpProfileId">1</p>
+          <p name="sctpRandomTimeInitSeqRetry">10</p>
+          <p name="sctpRtoInit">3000</p>
+          <p name="sctpRtoMax">30000</p>
+          <p name="sctpRtoMin">250</p>
+          <p name="sctpSackDelay">200</p>
+          <p name="sctpSackFreq">2</p>
+          <p name="sctpValidCookieLife">60000</p>
+          <p name="sctpWaitTimeInitSeqRetry">239</p>
+        </item>
+      </list>
+      <p name="x2SctpProfileId">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:NRSPID_PROFILE" distName="MRBTS-1/NRBTS-0/NRSPID_PROFILE-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="spid">129</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:SERVEDAMF" distName="MRBTS-1/NRBTS-0/SERVEDAMF-1" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="amfIPAddress">10.0.1.155</p>
+      <p name="amfIPAddressTTL">5</p>
+      <p name="defaultAMF">true</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.nrbts:TRACKINGAREA" distName="MRBTS-1/NRBTS-0/TRACKINGAREA-0" version="NRBTSCL25R2_2503_111" operation="create">
+      <p name="fiveGsTac">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:TNLSVC" distName="MRBTS-1/TNLSVC-1" version="TNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:PMTNLINT" distName="MRBTS-1/TNLSVC-1/PMTNLINT-1" version="TNL25R2_2503_111" operation="create">
+      <p name="bridgePortStatisticsInterval">disabled</p>
+      <p name="ethernetInterfaceStatisticsInterval">15min</p>
+      <p name="ethernetLinkInterval">15min</p>
+      <p name="firstLevelSchedulerStatisticsInterval">15min</p>
+      <p name="ipDataTrafficVolumeInterval">15min</p>
+      <p name="ipFilteringInterval">15min</p>
+      <p name="ipInterfaceStatisticsInterval">15min</p>
+      <p name="ipNodeStatisticsInterval">15min</p>
+      <p name="ipPerHopBehaviourStatisticsInterval">15min</p>
+      <p name="ipSecSaStatisticsInterval">15min</p>
+      <p name="ipSecStatisticsInterval">15min</p>
+      <p name="ipV4InterfaceStatisticsInterval">15min</p>
+      <p name="ipV4RxPerHopBehaviourStatisticsInterval">15min</p>
+      <p name="ipV4TxPerHopBehaviourStatisticsInterval">15min</p>
+      <p name="ipV6InterfaceStatisticsInterval">15min</p>
+      <p name="ipV6RxPerHopBehaviourStatisticsInterval">15min</p>
+      <p name="ipV6TxPerHopBehaviourStatisticsInterval">15min</p>
+      <p name="miIpFilteringFhStatistics">disabled</p>
+      <p name="sctpStatisticsInterval">15min</p>
+      <p name="secondLevelSchedulerStatisticsInterval">15min</p>
+      <p name="tcpUdpStatisticsInterval">15min</p>
+      <p name="twampStatisticsInterval">15min</p>
+      <p name="vlanStatisticsInterval">15min</p>
+      <p name="wlanInterfaceStatsInterval">15min</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:TNL" distName="MRBTS-1/TNLSVC-1/TNL-1" version="TNL25R2_2503_111" operation="create">
+      <p name="tnlUsage">backhaul</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHSVC" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1" version="TNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:ETHIF" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHIF-1" version="TNL25R2_2503_111" operation="create">
+      <p name="linkSelectorDN">MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/L2SWI-1/IBRGPRT-1</p>
+      <p name="sbsTotal">20000</p>
+      <p name="shapingOverhead">Ethernet frame</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:VLANIF" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHIF-1/VLANIF-1" version="TNL25R2_2503_111" operation="create">
+      <p name="userLabel">C &amp; M Plane</p>
+      <p name="vlanId">333</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHLK" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHLK-1" version="TNL25R2_2503_111" operation="create">
+      <p name="administrativeState">unlocked</p>
+      <p name="connectorLabel">EIF1</p>
+      <p name="l2IngressRate">10000000</p>
+      <p name="modDN">MRBTS-1/EQM-1/APEQM-1/CABINET-2/SMOD-1</p>
+      <p name="speedAndDuplex">AUTODETECT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:L2SWI" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/L2SWI-1" version="TNL25R2_2503_111" operation="create">
+      <p name="l2QoSEnabled">false</p>
+      <p name="l2SwitchingEnabled">false</p>
+      <p name="vlanAwarenessEnabled">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:BRGPRT" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/L2SWI-1/BRGPRT-1" version="TNL25R2_2503_111" operation="create">
+      <p name="acceptableFrameTypes">ADMIT_ALL</p>
+      <p name="ethlkDN">MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHLK-1</p>
+      <p name="flushFdbOnLos">false</p>
+      <p name="l2BurstSize">8387584</p>
+      <p name="l2ShaperRate">10000000</p>
+      <p name="portDefaultVlanId">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IBRGPRT" distName="MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/L2SWI-1/IBRGPRT-1" version="TNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:IPNO" distName="MRBTS-1/TNLSVC-1/TNL-1/IPNO-1" version="TNL25R2_2503_111" operation="create">
+      <p name="addressCacheExpirationTime">30</p>
+      <p name="icmpDscp">10</p>
+      <p name="icmpResponseEnabled">true</p>
+      <p name="ipReassemblyTimeout">1000</p>
+      <p name="ndMldDscp">56</p>
+      <p name="retransTimer">1000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPIF" distName="MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPIF-1" version="TNL25R2_2503_111" operation="create">
+      <p name="interfaceDN">MRBTS-1/TNLSVC-1/TNL-1/ETHSVC-1/ETHIF-1/VLANIF-1</p>
+      <p name="ipMtu">1500</p>
+      <p name="userLabel">C &amp; M PLANE</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPRT" distName="MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPRT-1" version="TNL25R2_2503_111" operation="create">
+      <list name="staticRoutes">
+        <item>
+          <p name="destinationIpPrefixLength">24</p>
+          <p name="destIpAddr">10.0.1.48</p>
+          <p name="gateway">10.0.1.254</p>
+          <p name="preference">1</p>
+          <p name="preSrcIpv4Addr">0.0.0.0</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPRTV6" distName="MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPRTV6-1" version="TNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:TNL" distName="MRBTS-1/TNLSVC-1/TNL-2" version="TNL25R2_2503_111" operation="create">
+      <p name="tnlUsage">fronthaul</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHSVC" distName="MRBTS-1/TNLSVC-1/TNL-2/ETHSVC-1" version="TNL25R2_2503_111" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:ETHIF" distName="MRBTS-1/TNLSVC-1/TNL-2/ETHSVC-1/ETHIF-1" version="TNL25R2_2503_111" operation="create">
+      <p name="linkSelectorDN">MRBTS-1/TNLSVC-1/TNL-2/ETHSVC-1/ETHLK-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:VLANIF" distName="MRBTS-1/TNLSVC-1/TNL-2/ETHSVC-1/ETHIF-1/VLANIF-1" version="TNL25R2_2503_111" operation="create">
+      <p name="vlanId">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHLK" distName="MRBTS-1/TNLSVC-1/TNL-2/ETHSVC-1/ETHLK-1" version="TNL25R2_2503_111" operation="create">
+      <p name="connectorLabel">S-RF1</p>
+      <p name="modDN">MRBTS-1/EQM-1/APEQM-1/CABINET-2/BBMOD-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPNO" distName="MRBTS-1/TNLSVC-1/TNL-2/IPNO-1" version="TNL25R2_2503_111" operation="create">
+      <p name="addressCacheExpirationTime">30</p>
+      <p name="icmpResponseEnabled">true</p>
+      <p name="ipReassemblyTimeout">1000</p>
+      <p name="ndMldDscp">56</p>
+      <p name="retransTimer">1000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPADDRESSV4" distName="MRBTS-1/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPADDRESSV4-1" version="TNL25R2_2503_111" operation="create">
+      <p name="ipAddressAllocationMethod">MANUAL</p>
+      <p name="localIpAddr">72.16.0.96</p>
+      <p name="localIpPrefixLength">24</p>
+    </managedObject>
+  </cmData>
+</raml>

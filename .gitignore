@@ -4,6 +4,7 @@ research/
 
 uploads/
 snapshots/
+.env
 
 .claude/
 .vscode/

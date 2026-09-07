@@ -32,13 +32,37 @@ from .parser import (
     update_param_value,
 )
 
+def _env_bool(name: str, default: bool) -> bool:
+    val = os.environ.get(name)
+    if val is None or val == "":
+        return default
+    return val.strip().lower() not in ("false", "0", "no", "off")
+
+
+def _env_int(name: str, default: int) -> int:
+    val = os.environ.get(name)
+    if not val:
+        return default
+    try:
+        return int(val)
+    except ValueError:
+        return default
+
+
 SCP_DIR = Path(os.environ.get("SCP_DIR", "/data/scp")).resolve()
 UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", "/data/uploads")).resolve()
 SNAPSHOT_DIR = Path(os.environ.get("SNAPSHOT_DIR", "/data/snapshots")).resolve()
+# Baked into the Docker image (not a bind mount, unlike SCP_DIR) -- see
+# Dockerfile's `COPY example ./example` -- so a handful of sample
+# commissioning files are always available to browse, even before you point
+# the tool at your own. INCLUDE_EXAMPLES (.env) turns this off.
+EXAMPLE_DIR = Path(os.environ.get("EXAMPLE_DIR", "/app/example")).resolve()
+INCLUDE_EXAMPLES = _env_bool("INCLUDE_EXAMPLES", True)
 DATA_DIR = Path(__file__).parent / "data"
 FRONTEND_DIST = Path(os.environ.get("FRONTEND_DIST", "/app/frontend_dist"))
-MAX_UPLOAD_BYTES = 25 * 1024 * 1024
-MAX_SNAPSHOTS_PER_FILE = 50
+MAX_UPLOAD_BYTES = _env_int("MAX_UPLOAD_MB", 25) * 1024 * 1024
+MAX_SNAPSHOTS_PER_FILE = _env_int("MAX_SNAPSHOTS_PER_FILE", 50)
+CORS_ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()]
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
@@ -47,7 +71,7 @@ app = FastAPI(title="Nokia RAN Commissioning XML Explorer")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -88,7 +112,8 @@ def _is_safe_filename(filename: str) -> bool:
 
 def _resolve_path(filename: str) -> tuple[Path, str]:
     """Looks up `filename` in the writable uploads dir first, then the
-    read-only scp dir. Returns (path, source) or raises 404/400."""
+    read-only scp dir, then (if enabled) the bundled example dir. Returns
+    (path, source) or raises 404/400."""
     if not _is_safe_filename(filename):
         raise HTTPException(status_code=400, detail="Invalid filename")
 
@@ -100,14 +125,21 @@ def _resolve_path(filename: str) -> tuple[Path, str]:
     if SCP_DIR in scp_path.parents and scp_path.is_file():
         return scp_path, "scp"
 
+    if INCLUDE_EXAMPLES:
+        example_path = (EXAMPLE_DIR / filename).resolve()
+        if EXAMPLE_DIR in example_path.parents and example_path.is_file():
+            return example_path, "example"
+
     raise HTTPException(status_code=404, detail="File not found")
 
 
 def _name_taken(name: str) -> bool:
-    # Filenames must be unique across BOTH dirs: _resolve_path looks in
-    # uploads first, so an upload sharing an scp/ file's name would silently
-    # shadow the original in every lookup by that name.
-    return (UPLOAD_DIR / name).exists() or (SCP_DIR / name).exists()
+    # Filenames must be unique across all read sources: _resolve_path looks
+    # in uploads first, so an upload sharing another source's name would
+    # silently shadow the original in every lookup by that name.
+    if (UPLOAD_DIR / name).exists() or (SCP_DIR / name).exists():
+        return True
+    return INCLUDE_EXAMPLES and (EXAMPLE_DIR / name).exists()
 
 
 def _unique_upload_name(filename: str) -> str:
@@ -235,15 +267,18 @@ def health():
         "scpDir": str(SCP_DIR),
         "scpDirExists": SCP_DIR.is_dir(),
         "uploadDir": str(UPLOAD_DIR),
+        "includeExamples": INCLUDE_EXAMPLES,
+        "exampleDirExists": EXAMPLE_DIR.is_dir(),
     }
 
 
 @app.get("/api/files")
 def list_files():
-    if not SCP_DIR.is_dir():
-        raise HTTPException(status_code=500, detail=f"SCP directory not found: {SCP_DIR}")
     out = []
-    for source, directory in (("upload", UPLOAD_DIR), ("scp", SCP_DIR)):
+    sources = [("upload", UPLOAD_DIR), ("scp", SCP_DIR)]
+    if INCLUDE_EXAMPLES:
+        sources.append(("example", EXAMPLE_DIR))
+    for source, directory in sources:
         if not directory.is_dir():
             continue
         for p in sorted(directory.iterdir()):

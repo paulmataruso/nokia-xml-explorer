@@ -8,15 +8,24 @@ services:
       - "${PORT:-8080}:8000"
     volumes:
       # Read-only mount: the tool only ever reads your commissioning files.
-      - ./scp:/data/scp:ro
+      - ${SCP_HOST_DIR:-./scp}:/data/scp:ro
       # Writable mount: files you upload through the UI land here, on your
       # host, so they survive container restarts and never touch scp/.
-      - ./uploads:/data/uploads
+      - ${UPLOADS_HOST_DIR:-./uploads}:/data/uploads
       # Writable mount: automatic "before this edit" checkpoints, so edits
       # can be undone from the History panel.
-      - ./snapshots:/data/snapshots
+      - ${SNAPSHOTS_HOST_DIR:-./snapshots}:/data/snapshots
     environment:
       - SCP_DIR=/data/scp
       - UPLOAD_DIR=/data/uploads
       - SNAPSHOT_DIR=/data/snapshots
+      # Bundled sample commissioning files (baked into the image from
+      # example/) -- set to false to hide them and show only your own.
+      - INCLUDE_EXAMPLES=${INCLUDE_EXAMPLES:-true}
+      - MAX_UPLOAD_MB=${MAX_UPLOAD_MB:-25}
+      - MAX_SNAPSHOTS_PER_FILE=${MAX_SNAPSHOTS_PER_FILE:-50}
+      # Comma-separated list of allowed origins, or "*" for any. Only
+      # matters if you're exposing this beyond localhost (e.g. behind a
+      # reverse proxy) -- browsers ignore CORS for same-origin requests.
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
     restart: unless-stopped

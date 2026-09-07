@@ -288,13 +288,9 @@ Requires Docker and Docker Compose.
 docker compose up --build
 ```
 
-Then open **http://localhost:8080**.
-
-To use a different host port:
-
-```bash
-PORT=9000 docker compose up --build
-```
+Then open **http://localhost:8080**. A handful of sample commissioning
+files (`example/`) are included and shown out of the box, so there's
+something to explore even before you add your own.
 
 The `scp/` directory is mounted **read-only** into the container — the
 tool never modifies your commissioning files. Drop new `.xml` files into
@@ -307,9 +303,30 @@ across restarts. Delete them from the "Your uploads" list in the sidebar,
 or just delete the file from `uploads/` directly. Automatic pre-edit
 snapshots live in `snapshots/` on your host, one subfolder per file.
 
+### Configuration
+
+Copy `.env.example` to `.env` and adjust as needed — `docker compose` reads
+it automatically, and every setting has a sane default, so this is entirely
+optional:
+
+| Variable | Default | Effect |
+|---|---|---|
+| `PORT` | `8080` | Host port to serve the app on. |
+| `INCLUDE_EXAMPLES` | `true` | Show the bundled sample files alongside your own. Set `false` to hide them. |
+| `SCP_HOST_DIR` | `./scp` | Where your commissioning files live on your machine (read-only). |
+| `UPLOADS_HOST_DIR` | `./uploads` | Where uploaded/generated files are stored (writable). |
+| `SNAPSHOTS_HOST_DIR` | `./snapshots` | Where edit-history snapshots are stored (writable). |
+| `MAX_UPLOAD_MB` | `25` | Max size for a single file uploaded through the UI. |
+| `MAX_SNAPSHOTS_PER_FILE` | `50` | How many snapshots to keep per file before pruning the oldest. |
+| `CORS_ORIGINS` | `*` | Comma-separated allowed origins. Only matters if exposing this beyond localhost. |
+
+e.g. `PORT=9000 docker compose up --build`, or set it in `.env` for
+anything longer-lived.
+
 ## Project layout
 
 ```
+example/                Bundled sample commissioning files, baked into the image (INCLUDE_EXAMPLES=false to hide)
 scp/                    Your Nokia commissioning/configuration XML files (read-only mount)
 uploads/                Files uploaded through the UI, and editable copies of scp/ files (writable mount)
 snapshots/              Automatic pre-edit checkpoints, one folder per file (writable mount)

@@ -278,7 +278,8 @@ export default function App() {
   }, [files, fileFilter]);
 
   const uploadedFiles = visibleFiles.filter((f) => f.source === "upload");
-  const scpFiles = visibleFiles.filter((f) => f.source !== "upload");
+  const scpFiles = visibleFiles.filter((f) => f.source === "scp");
+  const exampleFiles = visibleFiles.filter((f) => f.source === "example");
 
   const selectedFileInfo = useMemo(
     () => files.find((f) => f.name === selectedFile) || null,
@@ -573,6 +574,33 @@ export default function App() {
                   </li>
                 ))}
               </ul>
+
+              {exampleFiles.length > 0 && (
+                <>
+                  <div className="sidebar-title">Example files ({exampleFiles.length})</div>
+                  <ul className="file-list">
+                    {exampleFiles.map((f) => (
+                      <li
+                        key={f.name}
+                        className={
+                          "file-item" +
+                          (selectedFile === f.name ? " selected" : "") +
+                          (!f.supported ? " unsupported" : "")
+                        }
+                        onClick={() => f.supported && setSelectedFile(f.name)}
+                        title={
+                          f.supported
+                            ? `${f.name} (${formatBytes(f.sizeBytes)}) — bundled sample file`
+                            : "Unsupported file type — not a RAML XML file"
+                        }
+                      >
+                        <span className="file-name">{f.name}</span>
+                        <span className="file-size">{formatBytes(f.sizeBytes)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </aside>
 
             <Resizer

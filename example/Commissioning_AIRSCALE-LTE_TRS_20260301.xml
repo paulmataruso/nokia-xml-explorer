@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<raml xmlns="raml21.xsd" version="2.1">
+<cmData id="3221225472" scope="all" type="plan">
+<header>
+<log action="created" appInfo="Flexi TRS Manager" appVersion="18.0.223.39" dateTime="2026-03-01T16:37:07" user="BTSSM"/>
+</header>
+<managedObject class="NOKLTE:FTM" distName="MRBTS-5680/LNBTS-5680/FTM-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="systemTitle">AIRSCALE-LTE</p>
+<p name="softwareReleaseVersion">FTM_FL18SP_TL18SP_SR18SP_2018.09.20_0218</p>
+<p name="userLabel"/>
+<p name="locationName"/>
+</managedObject>
+<managedObject class="NOKLTE:UNIT" distName="MRBTS-5680/LNBTS-5680/FTM-1/UNIT-1" version="FL18SP_1803_04_1803_01">
+<p name="unitTypeExpected">473095A</p>
+</managedObject>
+<managedObject class="NOKLTE:ETHLK" distName="MRBTS-5680/LNBTS-5680/FTM-1/ETHLK-0-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="administrativeState">unlocked</p>
+<p name="speedAndDuplex">AUTODETECT</p>
+<p name="l2ShaperRate">RT_LINE_RATE</p>
+<p name="l2IngressRate">RT_LINE_RATE</p>
+<p name="acceptableFrameTypes">ADMIT_ALL</p>
+<p name="portDefaultPriority">0</p>
+<p name="portDefaultVlanId">1</p>
+<p name="l2BurstSize">0</p>
+<p name="linkOAMEnabled">false</p>
+<p name="linkOAMProfile"/>
+<p name="flushFdbOnLos">false</p>
+<p name="l2ShaperBurstSize">1M</p>
+<p name="syncEAutoNegMode">automatic</p>
+<list name="l2VlanIdList">
+<item>
+<p name="highValue">4094</p>
+<p name="lowValue">2</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:ETHLK" distName="MRBTS-5680/LNBTS-5680/FTM-1/ETHLK-0-2" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="administrativeState">locked</p>
+<p name="speedAndDuplex">AUTODETECT</p>
+<p name="l2ShaperRate">RT_LINE_RATE</p>
+<p name="l2IngressRate">RT_LINE_RATE</p>
+<p name="acceptableFrameTypes">ADMIT_ALL</p>
+<p name="portDefaultPriority">0</p>
+<p name="portDefaultVlanId">1</p>
+<p name="l2BurstSize">0</p>
+<p name="linkOAMEnabled">false</p>
+<p name="linkOAMProfile"/>
+<p name="flushFdbOnLos">false</p>
+<p name="l2ShaperBurstSize">1M</p>
+<p name="syncEAutoNegMode">automatic</p>
+<list name="l2VlanIdList">
+<item>
+<p name="highValue">4094</p>
+<p name="lowValue">2</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:ETHLK" distName="MRBTS-5680/LNBTS-5680/FTM-1/ETHLK-0-3" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="administrativeState">locked</p>
+<p name="speedAndDuplex">AUTODETECT</p>
+<p name="l2ShaperRate">RT_LINE_RATE</p>
+<p name="l2IngressRate">RT_LINE_RATE</p>
+<p name="acceptableFrameTypes">ADMIT_ALL</p>
+<p name="portDefaultPriority">0</p>
+<p name="portDefaultVlanId">1</p>
+<p name="l2BurstSize">0</p>
+<p name="linkOAMEnabled">false</p>
+<p name="linkOAMProfile"/>
+<p name="flushFdbOnLos">false</p>
+<p name="l2ShaperBurstSize">1M</p>
+<p name="syncEAutoNegMode">automatic</p>
+<list name="l2VlanIdList">
+<item>
+<p name="highValue">4094</p>
+<p name="lowValue">2</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:ETHLK" distName="MRBTS-5680/LNBTS-5680/FTM-1/ETHLK-0-4" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="administrativeState">locked</p>
+<p name="speedAndDuplex">AUTODETECT</p>
+<p name="l2ShaperRate">RT_LINE_RATE</p>
+<p name="l2IngressRate">RT_LINE_RATE</p>
+<p name="acceptableFrameTypes">ADMIT_ALL</p>
+<p name="portDefaultPriority">0</p>
+<p name="portDefaultVlanId">1</p>
+<p name="l2BurstSize">0</p>
+<p name="linkOAMEnabled">false</p>
+<p name="linkOAMProfile"/>
+<p name="flushFdbOnLos">false</p>
+<p name="l2ShaperBurstSize">1M</p>
+<p name="syncEAutoNegMode">automatic</p>
+<list name="l2VlanIdList">
+<item>
+<p name="highValue">4094</p>
+<p name="lowValue">2</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:ETHLK" distName="MRBTS-5680/LNBTS-5680/FTM-1/ETHLK-0-5" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="administrativeState">locked</p>
+<p name="speedAndDuplex">AUTODETECT</p>
+<p name="l2ShaperRate">RT_LINE_RATE</p>
+<p name="l2IngressRate">RT_LINE_RATE</p>
+<p name="acceptableFrameTypes">ADMIT_ALL</p>
+<p name="portDefaultPriority">0</p>
+<p name="portDefaultVlanId">1</p>
+<p name="l2BurstSize">0</p>
+<p name="linkOAMEnabled">false</p>
+<p name="linkOAMProfile"/>
+<p name="flushFdbOnLos">false</p>
+<p name="l2ShaperBurstSize">1M</p>
+<p name="syncEAutoNegMode">automatic</p>
+<list name="l2VlanIdList">
+<item>
+<p name="highValue">4094</p>
+<p name="lowValue">2</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:IPNO" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="actDualUPlaneIpAddress">false</p>
+<p name="actIPv6Mplane">false</p>
+<p name="mPlaneIpAddress">10.0.1.54</p>
+<p name="uPlaneIpAddress">10.0.1.54</p>
+<p name="cPlaneIpAddress">10.0.1.54</p>
+<p name="cPlaneIpAddressSec">0.0.0.0</p>
+<p name="uPlane2IpAddress">0.0.0.0</p>
+<p name="uPlaneIpv6Address">::</p>
+<p name="cPlaneIpv6Address">::</p>
+<p name="cPlaneIpv6AddressSec">::</p>
+<p name="uPlane2Ipv6Address">::</p>
+<p name="sPlaneIpAddress">10.0.1.54</p>
+<p name="srcIpForCmpCrl">10.0.1.54</p>
+<p name="ftmBtsSubnetAddress">172.16.0.221</p>
+<p name="ftmBtsSubnetPrefixLength">24</p>
+<p name="btsId">5680</p>
+<p name="oamIpAddr">10.0.1.175</p>
+<p name="secOmsIpAddr">0.0.0.0</p>
+<p name="actFastIpRerouting">false</p>
+<p name="bfdHoldUpTime">0</p>
+<p name="mainTransportNwId">0</p>
+<p name="actSeparationRanSharing">false</p>
+<p name="omsTls">forced</p>
+<p name="icmpResponseEnabled">true</p>
+<p name="actDynamicFirewall">false</p>
+<p name="servingOmsAdminSetting">automatic</p>
+<p name="wfqSchedOamWeight">10</p>
+<p name="oamTlvReply">false</p>
+<p name="enableSoam">false</p>
+<p name="twampReflectorPort">5000</p>
+<p name="twampMessageRate">RATE_10</p>
+<p name="actIpTnlMeasure">false</p>
+<p name="actIpv6">false</p>
+<p name="retransTimer">1000</p>
+<p name="tlsRenegotiationInterval">86400</p>
+<list name="twampFlag"/>
+<list name="addTransportNwIpAddrList"/>
+</managedObject>
+<managedObject class="NOKLTE:L2SWI" distName="MRBTS-5680/LNBTS-5680/FTM-1/L2SWI-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="portDefaultPriority">0</p>
+<p name="portDefaultVlanId">1</p>
+<p name="priorityQueuePcp1">4</p>
+<p name="priorityQueuePcp7">1</p>
+<p name="priorityQueuePcp6">2</p>
+<p name="priorityQueuePcp5">3</p>
+<p name="priorityQueuePcp3">4</p>
+<p name="priorityQueuePcp2">4</p>
+<p name="priorityQueuePcp4">3</p>
+<p name="priorityQueuePcp0">6</p>
+<p name="qosClassification">DSCP</p>
+<p name="vlanAwareSwitch">false</p>
+<p name="priorityQueueNonIP">1</p>
+<p name="priorityQueueUntagged">1</p>
+<p name="enableLayer2Switching">false</p>
+<p name="l2PriorityQueueWeight2">8</p>
+<p name="l2PriorityQueueWeight3">4</p>
+<p name="l2PriorityQueueWeight4">1</p>
+<p name="l2PriorityQueueWeight5">1</p>
+<p name="l2PriorityQueueWeight6">1</p>
+<list name="dscpMap">
+<item>
+<p name="dscp">0</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">1</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">2</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">3</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">4</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">5</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">6</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">7</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">8</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">9</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">10</p>
+<p name="priorityQueue">4</p>
+</item>
+<item>
+<p name="dscp">11</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">12</p>
+<p name="priorityQueue">4</p>
+</item>
+<item>
+<p name="dscp">13</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">14</p>
+<p name="priorityQueue">4</p>
+</item>
+<item>
+<p name="dscp">15</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">16</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">17</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">18</p>
+<p name="priorityQueue">4</p>
+</item>
+<item>
+<p name="dscp">19</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">20</p>
+<p name="priorityQueue">4</p>
+</item>
+<item>
+<p name="dscp">21</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">22</p>
+<p name="priorityQueue">4</p>
+</item>
+<item>
+<p name="dscp">23</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">24</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">25</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">26</p>
+<p name="priorityQueue">3</p>
+</item>
+<item>
+<p name="dscp">27</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">28</p>
+<p name="priorityQueue">3</p>
+</item>
+<item>
+<p name="dscp">29</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">30</p>
+<p name="priorityQueue">3</p>
+</item>
+<item>
+<p name="dscp">31</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">32</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">33</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="priorityQueue">2</p>
+</item>
+<item>
+<p name="dscp">35</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">36</p>
+<p name="priorityQueue">2</p>
+</item>
+<item>
+<p name="dscp">37</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">38</p>
+<p name="priorityQueue">2</p>
+</item>
+<item>
+<p name="dscp">39</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">40</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">41</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">42</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">43</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">44</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">45</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">46</p>
+<p name="priorityQueue">1</p>
+</item>
+<item>
+<p name="dscp">47</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">48</p>
+<p name="priorityQueue">1</p>
+</item>
+<item>
+<p name="dscp">49</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">50</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">51</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">52</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">53</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">54</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">55</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">56</p>
+<p name="priorityQueue">1</p>
+</item>
+<item>
+<p name="dscp">57</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">58</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">59</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">60</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">61</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">62</p>
+<p name="priorityQueue">6</p>
+</item>
+<item>
+<p name="dscp">63</p>
+<p name="priorityQueue">6</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:TAC" distName="MRBTS-5680/LNBTS-5680/FTM-1/TAC-1" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:LTAC" distName="MRBTS-5680/LNBTS-5680/FTM-1/TAC-1/LTAC-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="tacLimitGbrNormal">1000000</p>
+<p name="tacLimitGbrHandover">1000000</p>
+<p name="tacLimitGbrEmergency">1000000</p>
+<p name="tacOverbookingLimit">0</p>
+<p name="IncludeMbmsTraffic">true</p>
+<p name="transportNwId">0</p>
+</managedObject>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-1" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-2" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-3" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-4" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-5" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-6" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-7" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:BFDGRP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/BFDGRP-8" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:IPRM" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IPRM-1" operation="update" version="FL18SP_1803_04_1803_01">
+<list name="RmExceptions"/>
+</managedObject>
+<managedObject class="NOKLTE:AMGR" distName="MRBTS-5680/LNBTS-5680/FTM-1/AMGR-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="actParallelUserSessions">false</p>
+<p name="primaryLdapServer">0.0.0.0</p>
+<p name="primaryLdapPort">389</p>
+<p name="ldapConnectionType">TLS</p>
+<p name="checkCnumPasswdExpiry">false</p>
+</managedObject>
+<managedObject class="NOKLTE:LUAC" distName="MRBTS-5680/LNBTS-5680/FTM-1/AMGR-1/LUAC-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="localPasswdExpiryPeriod">0</p>
+<p name="localPasswdWarningPeriod">0</p>
+<p name="btsSessionLoginDelay">1</p>
+<p name="btsAccountLockoutDuration">15</p>
+<p name="btsFailedLoginCountingPeriod">5</p>
+<p name="btsMaxFailedLoginAttempts">5</p>
+<p name="actRestrictLoginToCnum">false</p>
+</managedObject>
+<managedObject class="NOKLTE:SECPRM" distName="MRBTS-5680/LNBTS-5680/FTM-1/SECPRM-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="appLoginBannerText">You are about to access a private system. This system is for the use of authorized users only. All connections are logged to the extent and by means acceptable by the local legislation. Any unauthorized access or access attempts may be punished to the fullest extent possible under the applicable local legislation.</p>
+<p name="idleSessionTimeTwp">45</p>
+</managedObject>
+<managedObject class="NOKLTE:IPRT" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IPRT-1" operation="create" version="FL18SP_1803_04_1803_01">
+<list name="staticRoutes">
+<item>
+<p name="bfdId">0</p>
+<p name="destIpAddr">0.0.0.0</p>
+<p name="gateway">10.0.1.254</p>
+<p name="netmask">0.0.0.0</p>
+<p name="preSrcIpv4Addr">10.0.1.54</p>
+<p name="preference">1</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:IPRTV6" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IPRTV6-1" operation="create" version="FL18SP_1803_04_1803_01">
+<list name="staticIpv6Routes"/>
+</managedObject>
+<managedObject class="NOKLTE:RTPOL" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/RTPOL-1" operation="create" version="FL18SP_1803_04_1803_01">
+<list name="routingPolicies"/>
+</managedObject>
+<managedObject class="NOKLTE:IHCP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IHCP-1" operation="update" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:INTP" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/INTP-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="ntpAlarmThreshold">300</p>
+<p name="ntpSourceIpAddress">10.0.1.54</p>
+<p name="ntpDscp">46</p>
+<p name="utcGpsNtpOffsetChangeDate"/>
+<p name="maxNtpTimeError">1500</p>
+<list name="ntpServers">
+<p>10.0.1.175</p>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:IEIF" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IEIF-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="qosEnabled">true</p>
+<p name="sbs">4000</p>
+<p name="sir">10000000</p>
+<p name="sbsTotal">4000</p>
+<p name="sirTotal">10000000</p>
+<p name="trafficPathShapingEnable">TPS_OFF</p>
+<p name="upperLayerShaping">true</p>
+<p name="mtu">1500</p>
+<p name="wfqSchedQueueWeight">1000</p>
+<p name="localIpAddr">0.0.0.0</p>
+<p name="netmask">0.0.0.0</p>
+<p name="localIpv6Addr">::</p>
+<p name="localIpv6PrefixLength">0</p>
+</managedObject>
+<managedObject class="NOKLTE:IVIF" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IEIF-1/IVIF-1" operation="create" version="FL18SP_1803_04_1803_01">
+<p name="vlanId">333</p>
+<p name="localIpAddr">10.0.1.54</p>
+<p name="netmask">255.255.255.0</p>
+<p name="localIpv6Addr">::</p>
+<p name="localIpv6PrefixLength">0</p>
+<p name="sir">10000000</p>
+<p name="sbs">4000</p>
+<p name="qosEnabled">true</p>
+<p name="wfqSchedQueueWeight">1000</p>
+</managedObject>
+<managedObject class="NOKLTE:TOPB" distName="MRBTS-5680/LNBTS-5680/FTM-1/TOPB-1" operation="create" version="FL18SP_1803_04_1803_01"/>
+<managedObject class="NOKLTE:TOPF" distName="MRBTS-5680/LNBTS-5680/FTM-1/TOPB-1/TOPF-1" operation="create" version="FL18SP_1803_04_1803_01">
+<p name="actTopFreqSynch">false</p>
+<p name="logMeanSyncValue">-4</p>
+<p name="announceRequestMode">ANNOUNCE_ALL</p>
+<p name="ieeeTelecomProfile">IEEE1588</p>
+<p name="topDomainNumber">0</p>
+<list name="acceptedClockQuality">
+<p>6</p>
+<p>7</p>
+<p>13</p>
+<p>14</p>
+</list>
+<list name="topMasters"/>
+</managedObject>
+<managedObject class="NOKLTE:TOPP" distName="MRBTS-5680/LNBTS-5680/FTM-1/TOPB-1/TOPP-1" operation="create" version="FL18SP_1803_04_1803_01">
+<p name="actTopPhaseSynch">false</p>
+<p name="logMeanSyncValue">-7</p>
+<p name="topDomainNumber">0</p>
+<p name="topEthMulticastAddress">01-80-C2-00-00-0E</p>
+<p name="tuningProfile">Normal</p>
+<p name="topStandardProfile">Telecom2008</p>
+<list name="acceptedClockQuality">
+<p>6</p>
+<p>7</p>
+</list>
+<list name="topMasterList"/>
+</managedObject>
+<managedObject class="NOKLTE:SYNC" distName="MRBTS-5680/LNBTS-5680/FTM-1/SYNC-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="actHybridSynch">false</p>
+<p name="actSyncEGen">false</p>
+</managedObject>
+<managedObject class="NOKLTE:STPG" distName="MRBTS-5680/LNBTS-5680/FTM-1/SYNC-1/STPG-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="ssmType">SSM_ITU</p>
+<p name="ssmSelExt2M">EEC1</p>
+<p name="ssmSelSyncE">EEC1</p>
+<p name="ssmSel1ppsTodFh">EEC1</p>
+</managedObject>
+<managedObject class="NOKLTE:CERTH" distName="MRBTS-5680/LNBTS-5680/FTM-1/CERTH-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="cmpServerIpAddress">0.0.0.0</p>
+<p name="cmpServerPort">1024</p>
+<p name="btsCertificateUpdateTime">30</p>
+<p name="caCertificateUpdateTime">90</p>
+<p name="caSubjectName"/>
+<p name="crlUpdatePeriod">24</p>
+<p name="cmpDirectory">pkix</p>
+<p name="CRLUsageEnabled">Enabled</p>
+<p name="CRLDPSource">Certificate_extension</p>
+<p name="secCmpServerIpAddress">0.0.0.0</p>
+<p name="secCmpServerPort">1024</p>
+<p name="secCmpDirectory">pkix</p>
+<p name="secCaSubjectName"/>
+<p name="cmpPollingTimeout">3600</p>
+<list name="CRLDistributionPoint"/>
+</managedObject>
+<managedObject class="NOKLTE:IPSECC" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPSECC-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="ipSecEnabled">false</p>
+<p name="ipSecEmBypassCtrlIpAddr">0.0.0.0</p>
+<p name="ipSecEmBypassEnabled">false</p>
+<p name="ipSecEmBypassPingTimer">30</p>
+<p name="authenticationScheme">CERTIFICATE</p>
+<p name="actIpSecBkupTun">false</p>
+<list name="securityPolicies"/>
+<list name="ipSecTunnels"/>
+<list name="x2IpsecProfile">
+<item>
+<p name="antiReplayEnabled">true</p>
+<p name="antiReplayWindowSize">SIZE_256</p>
+<p name="dpddelay">10</p>
+<p name="encryptionMethod">ENC_AES_128_CBC</p>
+<p name="ikeEncryptionMethod">ENC_AES_128_CBC</p>
+<p name="ikeDiffHellGrp">DH14</p>
+<p name="saMaxLifeTime">86400</p>
+<p name="extendedSequenceNumberMode">NORMAL_SEQUENCE</p>
+<p name="ikeMaxLifeTime">86400</p>
+<p name="ikeAuthenticationMethod">AUTH_HMAC_SHA1_96</p>
+<p name="authenticationMethod">AUTH_HMAC_SHA1_96</p>
+<p name="ipsecPerfForwSecEnabled">false</p>
+<p name="pfsDiffHellGrp">DH14</p>
+<p name="localTunnelEndpointV4">0.0.0.0</p>
+<p name="localTunnelEndpointV6">::</p>
+</item>
+</list>
+<list name="x2TrafficSelectorList">
+<item>
+<p name="x2TrafficSelectorListId">1</p>
+<p name="localIpAddress">10.0.1.54</p>
+<p name="localIpPrefixLength">32</p>
+<p name="localIpPort">36422</p>
+<p name="protocol">132</p>
+</item>
+<item>
+<p name="x2TrafficSelectorListId">2</p>
+<p name="localIpAddress">10.0.1.54</p>
+<p name="localIpPrefixLength">32</p>
+<p name="localIpPort">2152</p>
+<p name="protocol">17</p>
+</item>
+</list>
+<list name="trafficSelectorList"/>
+</managedObject>
+<managedObject class="NOKLTE:IDNS" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/IDNS-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="serverIpAddress">8.8.8.8</p>
+<p name="serverIpAddress2">0.0.0.0</p>
+</managedObject>
+<managedObject class="NOKLTE:QOS" distName="MRBTS-5680/LNBTS-5680/FTM-1/IPNO-1/QOS-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="sseDscpOverwrite">false</p>
+<p name="enablePhbCounters">false</p>
+<list name="perHopBehaviourWeightList">
+<item>
+<p name="assuredForwardingClass1">10</p>
+<p name="assuredForwardingClass2">100</p>
+<p name="assuredForwardingClass3">1000</p>
+<p name="assuredForwardingClass4">10000</p>
+<p name="bestEffort">1</p>
+</item>
+</list>
+<list name="trafficTypesMap">
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD1</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD10</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD11</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD12</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD13</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD14</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD15</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD16</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD2</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD3</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD4</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD5</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD6</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD7</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD8</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">BFD9</p>
+</item>
+<item>
+<p name="dscp">46</p>
+<p name="trafficType">CPLANE</p>
+</item>
+<item>
+<p name="dscp">56</p>
+<p name="trafficType">HighPrioICMPv6</p>
+</item>
+<item>
+<p name="dscp">10</p>
+<p name="trafficType">ICMP</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">IKE</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="trafficType">MPLANE</p>
+</item>
+<item>
+<p name="dscp">46</p>
+<p name="trafficType">SPLANE</p>
+</item>
+<item>
+<p name="dscp">10</p>
+<p name="trafficType">SSE</p>
+</item>
+</list>
+<list name="dscpMap">
+<item>
+<p name="dscp">56</p>
+<p name="pHB">expeditedForwarding</p>
+<p name="vlanPrio">7</p>
+</item>
+<item>
+<p name="dscp">46</p>
+<p name="pHB">expeditedForwarding</p>
+<p name="vlanPrio">6</p>
+</item>
+<item>
+<p name="dscp">38</p>
+<p name="pHB">assuredForwardingClass43</p>
+<p name="vlanPrio">5</p>
+</item>
+<item>
+<p name="dscp">36</p>
+<p name="pHB">assuredForwardingClass42</p>
+<p name="vlanPrio">5</p>
+</item>
+<item>
+<p name="dscp">34</p>
+<p name="pHB">assuredForwardingClass41</p>
+<p name="vlanPrio">5</p>
+</item>
+<item>
+<p name="dscp">30</p>
+<p name="pHB">assuredForwardingClass33</p>
+<p name="vlanPrio">4</p>
+</item>
+<item>
+<p name="dscp">28</p>
+<p name="pHB">assuredForwardingClass32</p>
+<p name="vlanPrio">4</p>
+</item>
+<item>
+<p name="dscp">26</p>
+<p name="pHB">assuredForwardingClass31</p>
+<p name="vlanPrio">4</p>
+</item>
+<item>
+<p name="dscp">22</p>
+<p name="pHB">assuredForwardingClass23</p>
+<p name="vlanPrio">3</p>
+</item>
+<item>
+<p name="dscp">20</p>
+<p name="pHB">assuredForwardingClass22</p>
+<p name="vlanPrio">3</p>
+</item>
+<item>
+<p name="dscp">18</p>
+<p name="pHB">assuredForwardingClass21</p>
+<p name="vlanPrio">3</p>
+</item>
+<item>
+<p name="dscp">14</p>
+<p name="pHB">assuredForwardingClass13</p>
+<p name="vlanPrio">1</p>
+</item>
+<item>
+<p name="dscp">12</p>
+<p name="pHB">assuredForwardingClass12</p>
+<p name="vlanPrio">1</p>
+</item>
+<item>
+<p name="dscp">10</p>
+<p name="pHB">assuredForwardingClass11</p>
+<p name="vlanPrio">1</p>
+</item>
+<item>
+<p name="dscp">0</p>
+<p name="pHB">bestEffort</p>
+<p name="vlanPrio">0</p>
+</item>
+</list>
+</managedObject>
+<managedObject class="NOKLTE:PMTNL" distName="MRBTS-5680/LNBTS-5680/FTM-1/PMTNL-1" operation="update" version="FL18SP_1803_04_1803_01">
+<p name="lte_IP_Stats_Interval">15min</p>
+<p name="lte_PHB_Stats_Interval">15min</p>
+<p name="lte_Ethernet_Link_Interval">15min</p>
+<p name="lte_IPSec_Interval">15min</p>
+<p name="lte_IP_Filtering_Interval">15min</p>
+<p name="lte_VLAN_IP_Stats_Interval">15min</p>
+<p name="lte_VLAN_PHB_Stats_Interval">15min</p>
+<p name="lte_VLAN_Stats_Interval">15min</p>
+<p name="lte_ETHIF_Stats_Interval">15min</p>
+<p name="lte_TWAMP_Stats_Interval">15min</p>
+<p name="lte_TAC_Statistics_Interval">15min</p>
+<p name="lte_TOP_FreqSync_Stats_Interval">15min</p>
+<p name="lte_TOP_PhaseSync_Stats_Interval">15min</p>
+<p name="lte_IPv4_Stats_Interval">15min</p>
+<p name="lte_IPv4_PHB_Stats_Interval">15min</p>
+<p name="lte_VLAN_IPv4_Stats_Interval">15min</p>
+<p name="lte_VLAN_IPv4_PHB_Stats_Interval">15min</p>
+<p name="lte_IPv6_Stats_Interval">15min</p>
+<p name="lte_IPv6_PHB_Stats_Interval">15min</p>
+<p name="lte_VLAN_IPv6_Stats_Interval">15min</p>
+<p name="lte_VLAN_IPv6_PHB_Stats_Interval">15min</p>
+<p name="lte_IPSec_SA_Stats_interval">15min</p>
+<p name="lte_loose_phase_and_time_sync_Stats_interval">15min</p>
+<p name="lte_NTP_Stats_interval">15min</p>
+</managedObject>
+</cmData>
+</raml>

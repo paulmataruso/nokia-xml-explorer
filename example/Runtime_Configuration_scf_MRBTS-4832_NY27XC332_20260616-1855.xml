@@ -1,0 +1,2112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<raml xmlns="raml21.xsd" version="2.1">
+  <cmData type="actual" scope="all" id="3406543200">
+    <header>
+      <log action="create" dateTime="2026-06-16T23:55:30.588Z"/>
+    </header>
+    <managedObject class="com.nokia.srbts.eqmr:EQM_R" distName="MRBTS-4832/EQM_R-1" version="EQMR19A_1904_002" operation="create"/>
+    <managedObject class="com.nokia.srbts.eqmr:APEQM_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="aldScanningInterval">30 sec</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-6</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">ACU-A20-N</p>
+      <p name="serialNumber">6132509000CA</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-1/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">80</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-6/RETU-1</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1/ANTL_R-2</p>
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1/ANTL_R-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-7</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">ACU-A20-N</p>
+      <p name="serialNumber">613270900FA9</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-2/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">80</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-7/RETU-1</p>
+      <p name="maxAngle">100</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="minAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5/ANTL_R-2</p>
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5/ANTL_R-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-3</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">KMDCTS201002</p>
+      <p name="serialNumber">RMC1SA1430054</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">30</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-3/RETU-1</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="sectorID">Beta_1900</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/ANTL_R-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3/RETU_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">50</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-3/RETU-2</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="sectorID">Beta_800</p>
+      <p name="subunitNumber">2</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6/ANTL_R-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-5</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">ACU-A20-N</p>
+      <p name="serialNumber">613230900983</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-4/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">70</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-5/RETU-1</p>
+      <p name="maxAngle">100</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="minAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/ANTL_R-2</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-5" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-4</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">ACU-A20-N</p>
+      <p name="serialNumber">6132409004F3</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-5/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">70</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-4/RETU-1</p>
+      <p name="maxAngle">100</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="minAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/ANTL_R-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-6" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-1</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">ACU-A20-N</p>
+      <p name="serialNumber">6132509005BD</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-6/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">10</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-1/RETU-1</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/ANTL_R-1</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ALD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-7" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-2</p>
+      <p name="controlProtocol">AISG 2.0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">ACU-A20-N</p>
+      <p name="serialNumber">00000613420900976</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RETU_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-7/RETU_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="angle">10</p>
+      <p name="availabilityStatus">off line</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-2/RETU-1</p>
+      <p name="mechanicalAngle">0</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="subunitNumber">1</p>
+      <list name="antlDNList">
+        <p>MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/ANTL_R-2</p>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABINET_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1</p>
+      <p name="productCode">473098A</p>
+      <p name="productName">AMIA AirScale Indoor Subrack</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:BBMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/BBMOD-2</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">473096A.103</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:BBMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/BBMOD-1</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">473096A.103</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:SMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/SMOD-1</p>
+      <p name="function">control</p>
+      <p name="horizontalPosition">1</p>
+      <p name="operationalState">enabled</p>
+      <p name="proceduralStatus">configured</p>
+      <p name="productCode">473095A</p>
+      <p name="productName">ASIA AirScale Common</p>
+      <p name="serialNumber">AH182703545</p>
+      <p name="verticalPosition">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-10" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-11" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-12" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-13" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-14" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-15" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-16" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-17" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">output</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-18" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-19" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-20" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-21" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">output</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-22" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-23" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-24" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">output</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-25" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-26" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">output</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-27" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-28" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-29" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">output</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-30" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-5" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-6" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-7" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">output</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-8" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:EAC_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/EAC_R-9" version="EQMR19A_1904_002" operation="create">
+      <p name="direction">input</p>
+      <p name="lineState">Off</p>
+      <p name="operationalState">disabled</p>
+      <p name="productCode">0000000000</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:FAN_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/FAN_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="fanLocation">201</p>
+      <p name="fanPresent">true</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:FAN_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/FAN_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="fanLocation">202</p>
+      <p name="fanPresent">true</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:GNSSE_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/GNSSE_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="blocking">Unblocked</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-10</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">849144415</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1/ANTL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-10/ANTL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1/ANTL_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-10/ANTL-2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RSL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1/RSL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-10/RSL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="blocking">Unblocked</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">109787622</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/ANTL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3/ANTL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/ANTL_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3/ANTL-2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/ANTL_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3/ANTL-3</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/ANTL_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3/ANTL-4</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RSL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/RSL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3/RSL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="blocking">Unblocked</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">109787622</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/ANTL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2/ANTL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/ANTL_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2/ANTL-2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/ANTL_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2/ANTL-3</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/ANTL_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2/ANTL-4</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RSL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/RSL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2/RSL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="blocking">Unblocked</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">109787622</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/ANTL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1/ANTL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/ANTL_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1/ANTL-2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/ANTL_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1/ANTL-3</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/ANTL_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1/ANTL-4</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RSL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/RSL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1/RSL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="blocking">Unblocked</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-12</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">849144415</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5/ANTL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-12/ANTL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5/ANTL_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-12/ANTL-2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RSL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5/RSL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-12/RSL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RMOD_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6" version="EQMR19A_1904_002" operation="create">
+      <p name="administrativeState">Unlocked</p>
+      <p name="availabilityStatus">not installed</p>
+      <p name="blocking">Unblocked</p>
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-11</p>
+      <p name="operationalState">disabled</p>
+      <p name="proceduralStatus">not initialized</p>
+      <p name="productCode">849144415</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6/ANTL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-11/ANTL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:ANTL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6/ANTL_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-11/ANTL-2</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:RSL_R" distName="MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6/RSL_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-11/RSL-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:HWTOP_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1" version="EQMR19A_1904_002" operation="create"/>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-1</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1</p>
+      <p name="firstEndpointLabel">BACKPLANE</p>
+      <p name="firstEndpointPortId">1</p>
+      <p name="linkModeConfiguration">false</p>
+      <p name="linkModeDC">false</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-2</p>
+      <p name="secondEndpointLabel">BACKPLANE</p>
+      <p name="secondEndpointPortId">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1001" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-7</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-1</p>
+      <p name="firstEndpointLabel">OPT</p>
+      <p name="firstEndpointPortId">4</p>
+      <p name="operationalState">disabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1</p>
+      <p name="secondEndpointLabel">OPT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1002" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-4</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-2</p>
+      <p name="firstEndpointLabel">OPT</p>
+      <p name="firstEndpointPortId">1</p>
+      <p name="operationalState">disabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4</p>
+      <p name="secondEndpointLabel">OPT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1003" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-9</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-1</p>
+      <p name="firstEndpointLabel">OPT</p>
+      <p name="firstEndpointPortId">6</p>
+      <p name="operationalState">disabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5</p>
+      <p name="secondEndpointLabel">OPT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1004" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-8</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-1</p>
+      <p name="firstEndpointLabel">OPT</p>
+      <p name="firstEndpointPortId">5</p>
+      <p name="operationalState">disabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6</p>
+      <p name="secondEndpointLabel">OPT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1005" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-5</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-2</p>
+      <p name="firstEndpointLabel">OPT</p>
+      <p name="firstEndpointPortId">2</p>
+      <p name="operationalState">disabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3</p>
+      <p name="secondEndpointLabel">OPT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-1006" version="EQMR19A_1904_002" operation="create">
+      <p name="availabilityStatus">not installed</p>
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-6</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-2</p>
+      <p name="firstEndpointLabel">OPT</p>
+      <p name="firstEndpointPortId">3</p>
+      <p name="operationalState">disabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2</p>
+      <p name="secondEndpointLabel">OPT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:CABLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/CABLINK_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/CABLINK-2</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1</p>
+      <p name="firstEndpointLabel">BACKPLANE</p>
+      <p name="firstEndpointPortId">2</p>
+      <p name="linkModeConfiguration">false</p>
+      <p name="linkModeDC">false</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-1</p>
+      <p name="secondEndpointLabel">BACKPLANE</p>
+      <p name="secondEndpointPortId">1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-1" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-6</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-1</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1/ANTL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-2" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-2</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-7</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/RSL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-3" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-4</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-5</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/RSL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-4" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-5</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-4</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2/RSL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-5" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-7</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-2</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5/ANTL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-6" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-3</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3/RSL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.eqmr:LOGLINK_R" distName="MRBTS-4832/EQM_R-1/HWTOP_R-1/LOGLINK_R-7" version="EQMR19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/HWTOP-1/LOGLINK-1</p>
+      <p name="firstEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-6</p>
+      <p name="linkModeConfiguration">true</p>
+      <p name="linkModeDC">true</p>
+      <p name="linkModeData">false</p>
+      <p name="linkModeSynchronization">false</p>
+      <p name="operationalState">enabled</p>
+      <p name="secondEndpointDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4/RSL_R-1</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:HW" distName="MRBTS-4832/HW-1" version="EQMHW19A_1904_002" operation="create">
+      <p name="locationName">NY27XC332_BTS_0078_NY_LI_CITY2_Manhattan</p>
+      <p name="swVersion">SBTS19A_ENB_0000_000229_000585</p>
+      <p name="userLabel">NY27XC332</p>
+      <p name="vendorName">Nokia</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-1" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1</p>
+      <p name="inventoryUnitType">AMIA AirScale Indoor Subrack</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">CABINET</p>
+      <p name="vendorUnitTypeNumber">473098A</p>
+      <p name="versionNumber">101</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-10" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-2</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-3</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitTypeNumber">109787622</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-11" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-3</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-2</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitTypeNumber">109787622</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-12" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-1</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-6</p>
+      <p name="serialNumber">6132509005BD</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">ACU-A20-N</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-13" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-1/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-12</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-6/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-14" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-2</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-7</p>
+      <p name="serialNumber">00000613420900976</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">ACU-A20-N</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-15" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-2/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-14</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-7/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-16" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-3</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3</p>
+      <p name="serialNumber">RMC1SA1430054</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">KMDCTS201002</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-17" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-3/RETU-2</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-16</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3/RETU_R-2</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">2</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-18" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-3/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-16</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-3/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-19" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-4</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-5</p>
+      <p name="serialNumber">6132409004F3</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">ACU-A20-N</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-2" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/SMOD-1</p>
+      <p name="inventoryUnitType">ASIA AirScale Common</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-1</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1</p>
+      <p name="serialNumber">AH182703545</p>
+      <p name="state">working</p>
+      <p name="unitPosition">A1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">ASM</p>
+      <p name="vendorUnitTypeNumber">473095A</p>
+      <p name="versionNumber">203</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-20" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-4/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-19</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-5/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-21" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-5</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-4</p>
+      <p name="serialNumber">613230900983</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">ACU-A20-N</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-22" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-5/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-21</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-4/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-23" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-6</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-1</p>
+      <p name="serialNumber">6132509000CA</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">ACU-A20-N</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-24" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-6/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-23</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-1/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-25" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-7</p>
+      <p name="inventoryUnitType">RET</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-2</p>
+      <p name="serialNumber">613270900FA9</p>
+      <p name="state">faulty</p>
+      <p name="vendorUnitFamilyType">ALD</p>
+      <p name="vendorUnitTypeNumber">ACU-A20-N</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-26" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/ALD-7/RETU-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-25</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/ALD_R-2/RETU_R-1</p>
+      <p name="state">faulty</p>
+      <p name="unitPosition">1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">RET</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-27" version="EQMHW19A_1904_002" operation="create">
+      <p name="inventoryUnitType">FAN</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-2</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/FAN_R-1</p>
+      <p name="state">Online</p>
+      <p name="unitPosition">A1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">FAN</p>
+      <p name="versionNumber">203</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-28" version="EQMHW19A_1904_002" operation="create">
+      <p name="inventoryUnitType">FAN</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-2</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/FAN_R-2</p>
+      <p name="state">Online</p>
+      <p name="unitPosition">B1</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">FAN</p>
+      <p name="versionNumber">203</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-3" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/SMOD-1</p>
+      <p name="inventoryUnitType">CORE_ASIA AirScale Common</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-2</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/SMOD_R-1/SMOD_CORE_R-1</p>
+      <p name="serialNumber">AH182702057</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">ASM</p>
+      <p name="vendorUnitTypeNumber">087338A.104</p>
+      <p name="versionNumber">203</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-4" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/BBMOD-2</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-1</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-1</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">FSP</p>
+      <p name="vendorUnitTypeNumber">473096A.103</p>
+      <p name="versionNumber">101</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-5" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/CABINET-1/BBMOD-1</p>
+      <p name="parentDN">MRBTS_R-1/HW_R-1/INVUNIT_R-1</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/CABINET_R-1/BBMOD_R-2</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitFamilyType">FSP</p>
+      <p name="vendorUnitTypeNumber">473096A.103</p>
+      <p name="versionNumber">101</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-6" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-1</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-4</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitTypeNumber">109787622</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-7" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-10</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-1</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitTypeNumber">849144415</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-8" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-11</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-6</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitTypeNumber">849144415</p>
+    </managedObject>
+    <managedObject class="com.nokia.eqm.hw:INVUNIT" distName="MRBTS-4832/HW-1/INVUNIT-9" version="EQMHW19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/EQM-1/APEQM-1/RMOD-12</p>
+      <p name="runtimeDN">MRBTS-4832/EQM_R-1/APEQM_R-1/RMOD_R-5</p>
+      <p name="state">faulty</p>
+      <p name="vendorName">Nokia</p>
+      <p name="vendorUnitTypeNumber">849144415</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNBTS" distName="MRBTS-4832/LNBTS-4832" version="xL19A_1904_002" operation="create">
+      <p name="operationalState">commissioned</p>
+      <p name="supportedNumOfAnrMoi">12000</p>
+      <p name="supportedNumOfLnadj">256</p>
+    </managedObject>
+    <managedObject class="NOKLTE:CTRLTS" distName="MRBTS-4832/LNBTS-4832/CTRLTS-1" version="xL19A_1904_002" operation="create">
+      <p name="ueActiveTrcSessFlag">false</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-0" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-1" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-10" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-104" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-108" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-11" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-12" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-13" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-131" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-134" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-135" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-136" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-138" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-139" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-14" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-142" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-144" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-145" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-146" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-147" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-148" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-149" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-15" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-150" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-151" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-152" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-153" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-154" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-155" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-156" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-157" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-158" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-159" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-16" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-160" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-161" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-162" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-163" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-164" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-165" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-166" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-167" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-168" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-169" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-17" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-170" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-171" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-172" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-173" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-174" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-175" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-176" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-177" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-178" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-179" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-18" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-180" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-181" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-183" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-184" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-185" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-19" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-2" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-20" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-21" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-22" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-23" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-24" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-25" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-26" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-27" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-28" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-29" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-3" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-30" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-31" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-32" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-33" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-34" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-35" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-36" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-37" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-38" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-39" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-4" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-40" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-41" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-42" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-43" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-44" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-45" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-46" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-47" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-48" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-49" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-5" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-50" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-51" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-52" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-53" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-54" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-55" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-56" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-57" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-58" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-59" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-6" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-60" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-61" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-62" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-63" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-64" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-65" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-66" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-67" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-68" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-69" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-7" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-70" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-71" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-72" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-73" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-74" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-75" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-76" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-77" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-8" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-80" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-81" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-82" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-84" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-86" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-87" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-89" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-9" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-90" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-91" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-95" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-96" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNADJX" distName="MRBTS-4832/LNBTS-4832/LNADJX-99" version="xL19A_1904_002" operation="create">
+      <p name="sourceOfData">OM</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNCEL" distName="MRBTS-4832/LNBTS-4832/LNCEL-1" version="xL19A_1904_002" operation="create">
+      <p name="energySavingState">notEnergySaving</p>
+      <p name="eutraCelId">1236993</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="NOKLTE:APUCCH_FDD" distName="MRBTS-4832/LNBTS-4832/LNCEL-1/LNCEL_FDD-0/APUCCH_FDD-0" version="xL19A_1904_002" operation="create">
+      <p name="assignedDeltaPucchShift">1</p>
+      <p name="assignedN1PucchAn">10</p>
+      <p name="assignedNCqiRb">1</p>
+      <p name="assignedNPucchF3Prbs">0</p>
+      <p name="assignedPhichDur">Normal</p>
+      <p name="assignedPhichRes">N = 1/6</p>
+      <p name="assignedPrachFreqOff">1</p>
+      <p name="assignedR10CsiConfIndex2Ri">1</p>
+      <p name="assignedRiConfigIndex">1</p>
+    </managedObject>
+    <managedObject class="NOKLTE:SIB" distName="MRBTS-4832/LNBTS-4832/LNCEL-1/SIB-0" version="xL19A_1904_002" operation="create">
+      <p name="dayLt">1</p>
+      <p name="ltmOff">-16</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNCEL" distName="MRBTS-4832/LNBTS-4832/LNCEL-2" version="xL19A_1904_002" operation="create">
+      <p name="energySavingState">notEnergySaving</p>
+      <p name="eutraCelId">1236994</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="NOKLTE:APUCCH_FDD" distName="MRBTS-4832/LNBTS-4832/LNCEL-2/LNCEL_FDD-0/APUCCH_FDD-0" version="xL19A_1904_002" operation="create">
+      <p name="assignedDeltaPucchShift">1</p>
+      <p name="assignedN1PucchAn">10</p>
+      <p name="assignedNCqiRb">1</p>
+      <p name="assignedNPucchF3Prbs">0</p>
+      <p name="assignedPhichDur">Normal</p>
+      <p name="assignedPhichRes">N = 1/6</p>
+      <p name="assignedPrachFreqOff">1</p>
+      <p name="assignedR10CsiConfIndex2Ri">1</p>
+      <p name="assignedRiConfigIndex">1</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNREL" distName="MRBTS-4832/LNBTS-4832/LNCEL-2/LNREL-4" version="xL19A_1904_002" operation="create">
+      <p name="cellIndOffNeighDelta">0</p>
+      <p name="nrStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:SIB" distName="MRBTS-4832/LNBTS-4832/LNCEL-2/SIB-0" version="xL19A_1904_002" operation="create">
+      <p name="dayLt">1</p>
+      <p name="ltmOff">-16</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNCEL" distName="MRBTS-4832/LNBTS-4832/LNCEL-25" version="xL19A_1904_002" operation="create">
+      <p name="energySavingState">notEnergySaving</p>
+      <p name="eutraCelId">1237017</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="NOKLTE:APUCCH_FDD" distName="MRBTS-4832/LNBTS-4832/LNCEL-25/LNCEL_FDD-0/APUCCH_FDD-0" version="xL19A_1904_002" operation="create">
+      <p name="assignedDeltaPucchShift">1</p>
+      <p name="assignedN1PucchAn">10</p>
+      <p name="assignedNCqiRb">1</p>
+      <p name="assignedNPucchF3Prbs">0</p>
+      <p name="assignedPhichDur">Normal</p>
+      <p name="assignedPhichRes">N = 1/6</p>
+      <p name="assignedPrachFreqOff">1</p>
+      <p name="assignedR10CsiConfIndex2Ri">1</p>
+      <p name="assignedRiConfigIndex">1</p>
+    </managedObject>
+    <managedObject class="NOKLTE:SIB" distName="MRBTS-4832/LNBTS-4832/LNCEL-25/SIB-0" version="xL19A_1904_002" operation="create">
+      <p name="dayLt">1</p>
+      <p name="ltmOff">-16</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNCEL" distName="MRBTS-4832/LNBTS-4832/LNCEL-26" version="xL19A_1904_002" operation="create">
+      <p name="energySavingState">notEnergySaving</p>
+      <p name="eutraCelId">1237018</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="NOKLTE:APUCCH_FDD" distName="MRBTS-4832/LNBTS-4832/LNCEL-26/LNCEL_FDD-0/APUCCH_FDD-0" version="xL19A_1904_002" operation="create">
+      <p name="assignedDeltaPucchShift">1</p>
+      <p name="assignedN1PucchAn">10</p>
+      <p name="assignedNCqiRb">1</p>
+      <p name="assignedNPucchF3Prbs">0</p>
+      <p name="assignedPhichDur">Normal</p>
+      <p name="assignedPhichRes">N = 1/6</p>
+      <p name="assignedPrachFreqOff">1</p>
+      <p name="assignedR10CsiConfIndex2Ri">1</p>
+      <p name="assignedRiConfigIndex">1</p>
+    </managedObject>
+    <managedObject class="NOKLTE:SIB" distName="MRBTS-4832/LNBTS-4832/LNCEL-26/SIB-0" version="xL19A_1904_002" operation="create">
+      <p name="dayLt">1</p>
+      <p name="ltmOff">-16</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNCEL" distName="MRBTS-4832/LNBTS-4832/LNCEL-27" version="xL19A_1904_002" operation="create">
+      <p name="energySavingState">notEnergySaving</p>
+      <p name="eutraCelId">1237019</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="NOKLTE:APUCCH_FDD" distName="MRBTS-4832/LNBTS-4832/LNCEL-27/LNCEL_FDD-0/APUCCH_FDD-0" version="xL19A_1904_002" operation="create">
+      <p name="assignedDeltaPucchShift">1</p>
+      <p name="assignedN1PucchAn">10</p>
+      <p name="assignedNCqiRb">1</p>
+      <p name="assignedNPucchF3Prbs">0</p>
+      <p name="assignedPhichDur">Normal</p>
+      <p name="assignedPhichRes">N = 1/6</p>
+      <p name="assignedPrachFreqOff">1</p>
+      <p name="assignedR10CsiConfIndex2Ri">1</p>
+      <p name="assignedRiConfigIndex">1</p>
+    </managedObject>
+    <managedObject class="NOKLTE:SIB" distName="MRBTS-4832/LNBTS-4832/LNCEL-27/SIB-0" version="xL19A_1904_002" operation="create">
+      <p name="dayLt">1</p>
+      <p name="ltmOff">-16</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNCEL" distName="MRBTS-4832/LNBTS-4832/LNCEL-3" version="xL19A_1904_002" operation="create">
+      <p name="energySavingState">notEnergySaving</p>
+      <p name="eutraCelId">1236995</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="NOKLTE:APUCCH_FDD" distName="MRBTS-4832/LNBTS-4832/LNCEL-3/LNCEL_FDD-0/APUCCH_FDD-0" version="xL19A_1904_002" operation="create">
+      <p name="assignedDeltaPucchShift">1</p>
+      <p name="assignedN1PucchAn">10</p>
+      <p name="assignedNCqiRb">1</p>
+      <p name="assignedNPucchF3Prbs">0</p>
+      <p name="assignedPhichDur">Normal</p>
+      <p name="assignedPhichRes">N = 1/6</p>
+      <p name="assignedPrachFreqOff">1</p>
+      <p name="assignedR10CsiConfIndex2Ri">1</p>
+      <p name="assignedRiConfigIndex">1</p>
+    </managedObject>
+    <managedObject class="NOKLTE:SIB" distName="MRBTS-4832/LNBTS-4832/LNCEL-3/SIB-0" version="xL19A_1904_002" operation="create">
+      <p name="dayLt">1</p>
+      <p name="ltmOff">-16</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-0" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-1" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-10" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-2" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-3" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-4" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-5" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-6" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-7" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-8" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="NOKLTE:LNMME" distName="MRBTS-4832/LNBTS-4832/LNMME-9" version="xL19A_1904_002" operation="create">
+      <p name="s1LinkStatus">unavailable</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CACERT_R" distName="MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1/CACERT_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="caType">Trust Anchor</p>
+      <p name="configDN">MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1</p>
+      <p name="fingerprint">58:A1:DC:B3:FC:6B:9E:6C:16:BF:D3:7B:BF:3A:5C:65:A3:DC:3E:0B</p>
+      <p name="issuedTo">O = Nokia, CN = Nokia Root CA</p>
+      <p name="issuer">O = Nokia, CN = Nokia Root CA</p>
+      <p name="keyUsage">100001100</p>
+      <p name="serialNumber">02</p>
+      <p name="signatureAlgorithm">sha256WithRSAEncryption</p>
+      <p name="source">Vendor</p>
+      <p name="subjectPublicKeyAlgorithm">RSA</p>
+      <p name="trustChain">BTS Vendor Certificate Trust Chain</p>
+      <p name="validFrom">Jun 13 07:36:41 2017 GMT</p>
+      <p name="validTo">Jun 13 07:36:41 2067 GMT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CACERT_R" distName="MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1/CACERT_R-2" version="MNL19A_1904_002" operation="create">
+      <p name="caType">Intermediate Certificate Authority</p>
+      <p name="configDN">MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1</p>
+      <p name="fingerprint">6B:7E:06:58:4D:92:A7:EE:11:65:A7:CC:15:9E:38:57:72:41:10:30</p>
+      <p name="issuedTo">O = Nokia Siemens Networks, CN = Factory Certification Authority</p>
+      <p name="issuer">O = Nokia, CN = Nokia Root CA</p>
+      <p name="keyUsage">110001100</p>
+      <p name="serialNumber">0459</p>
+      <p name="signatureAlgorithm">sha256WithRSAEncryption</p>
+      <p name="source">Vendor</p>
+      <p name="subjectPublicKeyAlgorithm">RSA</p>
+      <p name="trustChain">BTS Vendor Certificate Trust Chain</p>
+      <p name="validFrom">May 19 11:51:51 2017 GMT</p>
+      <p name="validTo">Aug 27 09:12:45 2034 GMT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CACERT_R" distName="MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1/CACERT_R-3" version="MNL19A_1904_002" operation="create">
+      <p name="caType">Trust Anchor</p>
+      <p name="configDN">MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1</p>
+      <p name="fingerprint">B7:61:3D:5A:EB:3A:98:33:7A:9B:51:A5:A6:BC:75:F3:7E:63:31:4F</p>
+      <p name="issuedTo">O = Nokia, CN = Nokia Root CA</p>
+      <p name="issuer">O = Nokia, CN = Nokia Root CA</p>
+      <p name="keyUsage">100001100</p>
+      <p name="serialNumber">01</p>
+      <p name="signatureAlgorithm">sha256WithRSAEncryption</p>
+      <p name="source">Vendor</p>
+      <p name="subjectPublicKeyAlgorithm">RSA</p>
+      <p name="trustChain">BTS Vendor Certificate Trust Chain</p>
+      <p name="validFrom">May 19 11:43:51 2017 GMT</p>
+      <p name="validTo">Aug 27 09:12:45 2034 GMT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CACERT_R" distName="MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1/CACERT_R-4" version="MNL19A_1904_002" operation="create">
+      <p name="caType">Intermediate Certificate Authority</p>
+      <p name="configDN">MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1</p>
+      <p name="fingerprint">16:FC:BC:26:DB:ED:AC:2B:52:F3:1A:51:E6:E9:97:3C:E2:72:E8:92</p>
+      <p name="issuedTo">O = Nokia, CN = Factory Certification Authority</p>
+      <p name="issuer">O = Nokia, CN = Nokia Root CA</p>
+      <p name="keyUsage">110001100</p>
+      <p name="serialNumber">04</p>
+      <p name="signatureAlgorithm">sha256WithRSAEncryption</p>
+      <p name="source">Vendor</p>
+      <p name="subjectPublicKeyAlgorithm">RSA</p>
+      <p name="trustChain">BTS Vendor Certificate Trust Chain</p>
+      <p name="validFrom">Jun 13 08:41:21 2017 GMT</p>
+      <p name="validTo">Jun 13 07:36:41 2067 GMT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CMP_R" distName="MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1/CMP_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1</p>
+      <p name="state">CMP_Unitialized</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:NECERT_R" distName="MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1/NECERT_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="configDN">MRBTS-4832/MNL-1/MNLENT-1/CERTHENT-1</p>
+      <p name="fingerprint">CB:B6:FB:FD:2B:CF:F9:C3:28:23:26:F6:2F:19:91:61:49:7C:13:C1</p>
+      <p name="issuedTo">O = Nokia Solutions and Networks, CN = AH182703545.nokiasolutionsandnetworks.com</p>
+      <p name="issuer">O = Nokia Siemens Networks, CN = Factory Certification Authority</p>
+      <p name="serialNumber">8BF715297A</p>
+      <p name="signatureAlgorithm">sha256WithRSAEncryption</p>
+      <p name="source">Vendor</p>
+      <p name="subjectAlternateName">DNS:AH182703545.nokiasolutionsandnetworks.com</p>
+      <p name="subjectPublicKeyAlgorithm">RSA</p>
+      <p name="trustChain">BTS Vendor Certificate Trust Chain</p>
+      <p name="validFrom">Jul  7 07:48:34 2018 GMT</p>
+      <p name="validTo">Jul  4 08:18:34 2030 GMT</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:MPLANENW_R" distName="MRBTS-4832/MNL-1/MNLENT-1/MPLANENW-1/MPLANENW_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="oamTlsStatus">notConnected</p>
+      <p name="tls11EnabledStatus">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:SECADM_R" distName="MRBTS-4832/MNL-1/MNLENT-1/SECADM-1/SECADM_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="serviceAccountSshStatus">enabled</p>
+      <p name="servicePortStatus">disabled</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:CLOCK_R" distName="MRBTS-4832/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/CLOCK_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="activeSyncMode">FreqSync</p>
+      <p name="activeTimeSource">1pps/ToD from Sync Hub Master</p>
+      <p name="selectedSyncInput">NONE</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:NTP_R" distName="MRBTS-4832/MNL-1/MNLENT-1/SYNC-1/CLOCK-1/NTP-1/NTP_R-1" version="MNL19A_1904_002" operation="create">
+      <list name="ntpServerStatusList">
+        <item>
+          <p name="ntpServerIpAddr">112.255.255.252</p>
+          <p name="ntpStatus">Unavailable</p>
+        </item>
+        <item>
+          <p name="ntpServerIpAddr">112.255.255.253</p>
+          <p name="ntpStatus">Unavailable</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:RFRES" distName="MRBTS-4832/MNL-1/MNLENT-1/TEST-1/RFREQ-1/RFRES-1" version="MNL19A_1904_002" operation="create">
+      <p name="actualStartTime">24.03.2023 00:00:58</p>
+      <p name="actualStopTime">24.03.2023 00:01:23</p>
+      <p name="fwdTestDisp">Pass</p>
+      <p name="result">success</p>
+      <p name="rvrsTestDisp">Pass</p>
+      <p name="testOutcome">Inconclusive</p>
+      <p name="testOutcomeAdditionalInfo">Timeout: No TX measurements available; RF diagnostic thresholds not defined for downlink EARFCN 8665</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:RFRES" distName="MRBTS-4832/MNL-1/MNLENT-1/TEST-1/RFREQ-1/RFRES-2" version="MNL19A_1904_002" operation="create">
+      <p name="actualStartTime">24.03.2023 00:00:58</p>
+      <p name="actualStopTime">24.03.2023 00:01:23</p>
+      <p name="fwdTestDisp">Pass</p>
+      <p name="result">success</p>
+      <p name="rvrsTestDisp">Pass</p>
+      <p name="testOutcome">Inconclusive</p>
+      <p name="testOutcomeAdditionalInfo">Timeout: No TX measurements available; RF diagnostic thresholds not defined for downlink EARFCN 8665</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:RFRES" distName="MRBTS-4832/MNL-1/MNLENT-1/TEST-1/RFREQ-1/RFRES-25" version="MNL19A_1904_002" operation="create">
+      <p name="actualStartTime">24.03.2023 00:00:58</p>
+      <p name="actualStopTime">24.03.2023 00:01:23</p>
+      <p name="fwdTestDisp">Pass</p>
+      <p name="result">success</p>
+      <p name="rvrsTestDisp">Pass</p>
+      <p name="testOutcome">Inconclusive</p>
+      <p name="testOutcomeAdditionalInfo">Timeout: No TX measurements available; RF diagnostic thresholds not defined for downlink EARFCN 8763</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:RFRES" distName="MRBTS-4832/MNL-1/MNLENT-1/TEST-1/RFREQ-1/RFRES-26" version="MNL19A_1904_002" operation="create">
+      <p name="actualStartTime">24.03.2023 00:00:58</p>
+      <p name="actualStopTime">24.03.2023 00:01:23</p>
+      <p name="fwdTestDisp">Pass</p>
+      <p name="result">success</p>
+      <p name="rvrsTestDisp">Pass</p>
+      <p name="testOutcome">Inconclusive</p>
+      <p name="testOutcomeAdditionalInfo">Timeout: No TX measurements available; RF diagnostic thresholds not defined for downlink EARFCN 8763</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:RFRES" distName="MRBTS-4832/MNL-1/MNLENT-1/TEST-1/RFREQ-1/RFRES-27" version="MNL19A_1904_002" operation="create">
+      <p name="actualStartTime">24.03.2023 00:00:58</p>
+      <p name="actualStopTime">24.03.2023 00:01:23</p>
+      <p name="fwdTestDisp">Pass</p>
+      <p name="result">success</p>
+      <p name="rvrsTestDisp">Pass</p>
+      <p name="testOutcome">Inconclusive</p>
+      <p name="testOutcomeAdditionalInfo">Timeout: No TX measurements available; RF diagnostic thresholds not defined for downlink EARFCN 8763</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:RFRES" distName="MRBTS-4832/MNL-1/MNLENT-1/TEST-1/RFREQ-1/RFRES-3" version="MNL19A_1904_002" operation="create">
+      <p name="actualStartTime">24.03.2023 00:00:58</p>
+      <p name="actualStopTime">24.03.2023 00:01:23</p>
+      <p name="fwdTestDisp">Pass</p>
+      <p name="result">success</p>
+      <p name="rvrsTestDisp">Pass</p>
+      <p name="testOutcome">Inconclusive</p>
+      <p name="testOutcomeAdditionalInfo">Timeout: No TX measurements available; RF diagnostic thresholds not defined for downlink EARFCN 8665</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:TRBLCADM_R" distName="MRBTS-4832/MNL-1/MNLENT-1/TRBLCADM-1/TRBLCADM_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="remoteSyslogTransmissionStatus">false</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:MNL_R" distName="MRBTS-4832/MNL-1/MNL_R-1" version="MNL19A_1904_002" operation="create">
+      <p name="activeLTERATSWVersion">SBTS19A_ENB_0000_000229_000585</p>
+      <p name="activeSWActivationTime">2019-11-06T06:23:35.409-05:00</p>
+      <p name="activeSWReleaseVersion">SBTS19A_ENB_0000_000229_000585</p>
+      <p name="configDataRevisionNumber">1</p>
+      <p name="passiveSWReleaseVersion">FL19_ENB_0000_020042_000002</p>
+      <p name="productVariant">sBTS</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHIF_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/ETHSVC-1/ETHIF-1/ETHIF_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="macAddr">48:ec:5b:62:10:ba</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHIF_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/ETHSVC-1/ETHIF-2/ETHIF_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="macAddr">48:ec:5b:62:10:c0</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:ETHLK_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/ETHSVC-1/ETHLK-1/ETHLK_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="detectedClock">NOT_APPLICABLE</p>
+      <p name="detectedSpeedAndDuplex">NOT_DETECTED</p>
+      <p name="operationalState">disabled</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPSECC_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPAPP-1/IPSECC-1/IPSECC_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="ipSecEmBypassState">Off</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPADDRESSV4_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPADDRESSV4-1/IPADDRESSV4_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="localIpAddrAllocated">114.9.78.186</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPIF_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1/IPIF_R-1" version="TNL19A_1904_002" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:IPADDRESSV4_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-2/IPADDRESSV4-1/IPADDRESSV4_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="localIpAddrAllocated">10.209.102.186</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPIF_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-2/IPIF_R-1" version="TNL19A_1904_002" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:IPRT_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPRT-1/IPRT_R-1" version="TNL19A_1904_002" operation="create">
+      <list name="forwardingEntries">
+        <item>
+          <p name="destIpAddr">10.209.102.184</p>
+          <p name="destinationIpPrefixLength">29</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-2</p>
+          <p name="preSrcIpv4Addr">10.209.102.186</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">direct</p>
+        </item>
+        <item>
+          <p name="destIpAddr">114.9.78.184</p>
+          <p name="destinationIpPrefixLength">29</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preSrcIpv4Addr">114.9.78.186</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">direct</p>
+        </item>
+        <item>
+          <p name="destIpAddr">114.248.4.112</p>
+          <p name="destinationIpPrefixLength">28</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.148.68.128</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.254.224.0</p>
+          <p name="destinationIpPrefixLength">25</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.88.143.64</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">0.0.0.0</p>
+          <p name="destinationIpPrefixLength">0</p>
+          <p name="gateway">10.209.102.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-2</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.255.183.128</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">113.246.14.80</p>
+          <p name="destinationIpPrefixLength">28</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.88.170.64</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.252.124.0</p>
+          <p name="destinationIpPrefixLength">22</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">114.247.14.80</p>
+          <p name="destinationIpPrefixLength">28</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.88.147.64</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.148.67.128</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.88.156.64</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.92.192</p>
+          <p name="destinationIpPrefixLength">27</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.255.229.128</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.37.0</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.255.228.128</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">113.245.16.112</p>
+          <p name="destinationIpPrefixLength">28</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.8.192</p>
+          <p name="destinationIpPrefixLength">27</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.45.0</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.88.160.64</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.92.0</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.254.224.128</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.252.199.0</p>
+          <p name="destinationIpPrefixLength">24</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.32.192</p>
+          <p name="destinationIpPrefixLength">27</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">112.249.14.80</p>
+          <p name="destinationIpPrefixLength">28</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.84.0</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.255.228.0</p>
+          <p name="destinationIpPrefixLength">25</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.88.166.64</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.254.196.0</p>
+          <p name="destinationIpPrefixLength">24</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.255.229.0</p>
+          <p name="destinationIpPrefixLength">25</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.4.0</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.245.232.0</p>
+          <p name="destinationIpPrefixLength">22</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.13.0</p>
+          <p name="destinationIpPrefixLength">26</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.40.192</p>
+          <p name="destinationIpPrefixLength">27</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">112.249.4.112</p>
+          <p name="destinationIpPrefixLength">28</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">10.255.183.0</p>
+          <p name="destinationIpPrefixLength">25</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">112.255.255.0</p>
+          <p name="destinationIpPrefixLength">24</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.64.192</p>
+          <p name="destinationIpPrefixLength">27</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+        <item>
+          <p name="destIpAddr">68.29.0.192</p>
+          <p name="destinationIpPrefixLength">27</p>
+          <p name="gateway">114.9.78.185</p>
+          <p name="ipIfDN">MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPIF-1</p>
+          <p name="preference">1</p>
+          <p name="routeIpMtu">1500</p>
+          <p name="routeType">indirect</p>
+        </item>
+      </list>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.tnl:IPRTV6_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/IPNO-1/IPRTV6-1/IPRTV6_R-1" version="TNL19A_1904_002" operation="create"/>
+    <managedObject class="com.nokia.srbts.tnl:TNL_R" distName="MRBTS-4832/TNLSVC-1/TNL-1/TNL_R-1" version="TNL19A_1904_002" operation="create">
+      <p name="actFastIpRerouting">false</p>
+      <p name="actIpSecBkupTun">false</p>
+      <p name="actIpV4BasedIub">false</p>
+      <p name="actIpV4BasedS1X2">true</p>
+    </managedObject>
+    <managedObject class="com.nokia.srbts.mnl:BBADM" distName="MRBTS-4832/MNL-1/MNLENT-1/BBADM-1" version="MNL19A_1904_002" operation="create"/>
+    <managedObject class="com.nokia.srbts.mnl:CAPCFG" distName="MRBTS-4832/MNL-1/MNLENT-1/CAPCFG-1" version="MNL19A_1904_002" operation="create">
+      <p name="cellsWithIqcDsApplied">0</p>
+      <p name="enbBbCapacityUsage">1</p>
+      <p name="enbHwRelease">AirScale</p>
+    </managedObject>
+  </cmData>
+</raml>

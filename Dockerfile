@@ -17,8 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app ./app
 COPY --from=frontend-build /build/dist ./frontend_dist
+COPY example ./example
 
 ENV SCP_DIR=/data/scp \
+    EXAMPLE_DIR=/app/example \
     FRONTEND_DIST=/app/frontend_dist \
     PYTHONUNBUFFERED=1
 
