@@ -1,0 +1,4392 @@
+{
+ "ACBPR": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Defines an Access Class Barring profile, specifying which access classes (AC0-AC15 groups) are barred, for how long, and with what probability factor, including special exceptions for MMTEL voice/video and SMS. It is referenced by cell system information (SIB) configuration to control which UEs are permitted to attempt RRC connection during congestion.",
+  "fullNames": [
+   "NOKLTE:ACBPR"
+  ],
+  "occurrences": 36,
+  "officialFullName": "Access Class Barring Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "ACBPR"
+  ]
+ },
+ "ADJI": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"ADJI\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "ADJI"
+  ],
+  "occurrences": 1,
+  "sampleParams": [
+   "ADJIChangeOrigin",
+   "AdjiCI",
+   "AdjiCPICHTxPwr",
+   "AdjiComLoadMeasDRNCCellNCHO",
+   "AdjiEcNoOffsetNCHO",
+   "AdjiHandlingBlockedCellSLHO",
+   "AdjiLAC",
+   "AdjiMCC",
+   "AdjiMNC",
+   "AdjiNCHOHSPASupport"
+  ]
+ },
+ "ADJS": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"ADJS\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "ADJS"
+  ],
+  "occurrences": 1,
+  "sampleParams": [
+   "ADJSChangeOrigin",
+   "AdjsCI",
+   "AdjsCPICHTxPwr",
+   "AdjsDERR",
+   "AdjsEcNoOffset",
+   "AdjsLAC",
+   "AdjsMCC",
+   "AdjsMNC",
+   "AdjsRAC",
+   "AdjsRNCid"
+  ]
+ },
+ "ALARMSUPP": {
+  "category": "Site-Common",
+  "confidence": "high",
+  "description": "ALARMSUPP defines alarm and fault suppression rules for the BTS/gNB, letting operators specify lists of allowed/suppressed alarm and fault IDs and severities so that specific alarms are muted (e.g. during planned maintenance or for known non-actionable conditions). It is a site-level operations-and-maintenance configuration object.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:ALARMSUPP"
+  ],
+  "occurrences": 27
+ },
+ "ALD": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "ALD (Antenna Line Device) represents a generic RET or TMA (Tower-Mounted Amplifier) device controlled over the antenna interface (typically AISG protocol), identified by its control protocol, product code, and serial number. It is the general antenna-line accessory object that RETU and TMA-specific objects build upon.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:ALD"
+  ],
+  "occurrences": 14,
+  "officialFullName": "Antenna line device",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "ALD"
+  ]
+ },
+ "ALD_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "ALD_R is the resource/state counterpart of ALD, reporting the antenna line device's availability, operational, and procedural status alongside its control-protocol and hardware identification fields.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:ALD_R"
+  ],
+  "occurrences": 14,
+  "officialFullName": "Antenna line device_Runtime",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "ALD_R"
+  ]
+ },
+ "AMGR": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Configures centralized account/authentication management for the BTS, including LDAP server connectivity, restricted local-access policy, and password-complexity rules, supporting integration with an external corporate LDAP/AAA directory. It works alongside LUAC (local account policy) to govern operator access to the element.",
+  "fullNames": [
+   "NOKLTE:AMGR",
+   "com.nokia.srbts.mnl:AMGR"
+  ],
+  "occurrences": 60,
+  "officialFullName": "User account management",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "AMGR"
+  ]
+ },
+ "AMLEPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "low",
+  "description": "Defines a mobility/load-balancing profile per target carrier frequency, specifying call-admission-control (CAC) headroom and threshold values used by an adaptive mobility load-balancing feature to decide when UEs should be steered toward that frequency layer. The precise feature name behind the 'AMLE' abbreviation is uncertain, but the parameters clearly tie it to inter-frequency, load-based mobility control.",
+  "fullNames": [
+   "NOKLTE:AMLEPR"
+  ],
+  "occurrences": 78,
+  "officialFullName": "Active Mode Load Equalization Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "AMLEPR"
+  ]
+ },
+ "ANR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "The Automatic Neighbor Relation function object for an LTE cell/eNodeB, controlling automatic addition and removal of neighbor relations (LTE, NR, UTRAN) based on measurement thresholds, inactivity timers, and guard periods, minimizing manual neighbor list engineering. It works together with ANRPRL profiles to define per-frequency thresholds.",
+  "fullNames": [
+   "NOKLTE:ANR"
+  ],
+  "occurrences": 48,
+  "officialFullName": "Automatic Neighbor Relationship basic configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "ANR"
+  ]
+ },
+ "ANRPRL": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Defines an Automatic Neighbor Relation (ANR) profile per target carrier frequency, specifying the RSRP/RSRQ thresholds a candidate neighbor cell must exceed before being added as a confirmed neighbor, plus limits on how many inter-frequency/intra-frequency neighbors ANR may add. It works together with the ANR function object to automate neighbor relation discovery and pruning.",
+  "fullNames": [
+   "NOKLTE:ANRPRL"
+  ],
+  "occurrences": 96,
+  "officialFullName": "Automatic Neighbor Relationship Profile LTE",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "ANRPRL"
+  ]
+ },
+ "ANRPRW": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "An Automatic Neighbor Relation (ANR) profile specific to UTRAN (3G/WCDMA) neighbors, defining the Ec/No and RSCP detection thresholds used to qualify a detected 3G cell as a valid neighbor, RNC-ID coding/type/alignment settings for building the target cell identity, and flags controlling PS handover, CSFB-to-PS handover, and SRVCC toward that UTRAN neighbor. It governs how the LTE cell automatically builds and manages its list of 3G neighbor relations.",
+  "fullNames": [
+   "NOKLTE:ANRPRW"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Automatic Neighbor Relationship Profile WCDMA",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "ANRPRW"
+  ]
+ },
+ "ANTL": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "An Antenna Line Device object representing RF line equipment mounted at or near the antenna, such as a Remote Electrical Tilt (RET) actuator or Tower-Mounted Amplifier (TMA), typically controlled over AISG-style signaling. Its parameters cover antenna port mapping, uplink/downlink path delay calibration, timing advance, and receiver sensitivity, and it sits under a CABINET/APEQM branch, linked to the radio module via a CABLINK.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:ANTL"
+  ],
+  "occurrences": 302,
+  "officialFullName": "Antenna line",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "RMOD",
+   "ANTL"
+  ]
+ },
+ "ANTL_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "The runtime/inventory counterpart to the ANTL configuration object, reporting the live operational and administrative state of an antenna line device (RET/TMA), including measured antenna path delays, VSWR alarm thresholds, and TX/RX capability flags. It reflects actual detected hardware status rather than planned configuration.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:ANTL_R"
+  ],
+  "occurrences": 90,
+  "officialFullName": "Runtime Antenna Line",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "ANTL_R"
+  ]
+ },
+ "APEQM": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "The Auto Plug-and-Play Equipment root object, under which automatically discovered hardware is organized before or as it is commissioned. Its parameters include scanning intervals and alarm thresholds (BER, eCPRI timing window) related to the auto-discovery and monitoring process, plus SFP operating mode.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:APEQM"
+  ],
+  "occurrences": 69,
+  "officialFullName": "Access Point Equipment",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM"
+  ]
+ },
+ "APEQM_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "APEQM_R is the resource-side root of the auto-discovery/plug-and-play equipment subtree, controlling (via aldScanningInterval) how often the system scans for newly connected antenna line devices (RET/TMA) to auto-detect and register them.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:APEQM_R"
+  ],
+  "occurrences": 18,
+  "officialFullName": "Access Point Equipment_Runtime",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R"
+  ]
+ },
+ "APUCCH_FDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "The FDD counterpart to APUCCH_TDD, configuring adaptive/dynamic PUCCH resource allocation (handover reservation thresholds, minimum RRC/emergency session reservations, PRACH frequency offset, CSI report format) for an FDD LTE cell.",
+  "fullNames": [
+   "NOKLTE:APUCCH_FDD"
+  ],
+  "occurrences": 34,
+  "officialFullName": "Automatic PUCCH Allocation Configuration for FDD Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNCEL_FDD",
+   "APUCCH_FDD"
+  ]
+ },
+ "APUCCH_TDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Configures the adaptive (dynamic) PUCCH (Physical Uplink Control Channel) resource allocation algorithm for a TDD LTE cell, including thresholds for adding PUCCH resources on handover, minimum reserved resources for emergency/RRC sessions, and PRACH frequency offset assignment. It lets the eNodeB dynamically size PUCCH capacity based on load rather than using a fixed allocation.",
+  "fullNames": [
+   "NOKLTE:APUCCH_TDD"
+  ],
+  "occurrences": 50,
+  "officialFullName": "Automatic PUCCH Allocation Configuration for TDD Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNCEL_TDD",
+   "APUCCH_TDD"
+  ]
+ },
+ "BBADM": {
+  "category": "Equipment",
+  "confidence": "low",
+  "description": "A baseband administration object under the site management-network-layer (mnl) branch, used to hold administrative settings or actions related to baseband module management (such as activation, decommissioning, or capacity administration). No sample parameters were captured in this dataset, so its exact scope is inferred mainly from its name and namespace.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:BBADM"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Baseband Administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "BBADM"
+  ]
+ },
+ "BBMOD": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Represents a Baseband Module (BBU) - the hardware unit performing digital baseband processing (channel coding, modulation, scheduling) for LTE and/or NR cells. Parameters cover administrative state, baseband pool sizing and usage, board configuration type, and FDD/NR cell configuration tradeoffs, and it sits under a CABINET/APEQM branch, connected to radio modules via CABLINK.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:BBMOD"
+  ],
+  "occurrences": 46,
+  "officialFullName": "Baseband Module",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "CABINET",
+   "BBMOD"
+  ]
+ },
+ "BBMOD_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "A runtime/status mirror of the baseband module (BBMOD) hardware object, reporting administrative and operational state, availability status, and inventory details (product code/name, board product code, serial numbers) of a baseband processing module. Fields such as eutraSupport, geranSupport, and nrSupport indicate which radio access technologies the board's hardware can process. It lives in the equipment hardware tree beneath the BBU/system module, reflecting live hardware-discovery data for a baseband unit.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:BBMOD_R"
+  ],
+  "occurrences": 11,
+  "officialFullName": "Runtime Baseband Module",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "CABINET_R",
+   "BBMOD_R"
+  ]
+ },
+ "BBPOOL": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Represents a baseband resource pool that groups multiple baseband hardware units/power groups (bbPwrGroupDNList) and lists the cells sharing that pooled baseband capacity (bbPoolCellsList) for a given radio technology (bbPoolTech). This supports Nokia's baseband pooling/capacity-sharing feature, letting several cells dynamically share processing resources across baseband modules, and sits under the equipment/baseband management branch.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:BBPOOL"
+  ],
+  "occurrences": 10,
+  "officialFullName": "Baseband Pool",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "BBADM",
+   "BBPOOL"
+  ]
+ },
+ "BBPOOLALLOC": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Configures how baseband processing capacity is allocated to a cell or function from a shared baseband resource pool, specifying the allocation mode and the hosting baseband/physical pool IDs. It is part of Nokia's baseband pooling architecture that lets multiple cells share BBMOD processing capacity flexibly.",
+  "fullNames": [
+   "NOKLTE:BBPOOLALLOC"
+  ],
+  "occurrences": 37,
+  "officialFullName": "Baseband Pool Allocation",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "BBPOOLALLOC"
+  ]
+ },
+ "BFDGRP": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "Represents a Bidirectional Forwarding Detection (BFD) group used to configure fast failure detection for one or more transport-layer paths or routes. It groups related BFD sessions for management purposes within the transport network configuration; it carries no directly sampled parameters in this dataset.",
+  "fullNames": [
+   "NOKLTE:BFDGRP"
+  ],
+  "occurrences": 208,
+  "officialFullName": "BFD group",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "BFDGRP"
+  ]
+ },
+ "BRGPRT": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents a Layer-2 bridge port associated with an underlying Ethernet link (via ethlkDN), configuring VLAN membership/default VLAN, ingress frame-type acceptance, and traffic-shaping parameters (burst size, shaper rate) for that port within the internal Ethernet switch fabric. It works alongside ETHLK and L2SWI to build the site's internal Layer-2 switching topology.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:BRGPRT"
+  ],
+  "occurrences": 35,
+  "officialFullName": "Physical L2 bridge port",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "L2SWI",
+   "BRGPRT"
+  ]
+ },
+ "BTOOTH": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "BTOOTH configures the Bluetooth radio interface built into some AirScale/Flexi Zone modules, used for short-range local commissioning and maintenance access (e.g. from a technician's tablet). Parameters control whether Bluetooth is enabled, device name, pairing modes (legacy vs. Secure Simple Pairing) and their shared secrets, inquiry/scan response behavior, and pairing-relationship timers.",
+  "fullNames": [
+   "NOKLTE:BTOOTH"
+  ],
+  "occurrences": 20,
+  "officialFullName": "Bluetooth Manager",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "BTOOTH"
+  ]
+ },
+ "BWP_PROFILE": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Defines a 5G NR Bandwidth Part (BWP) profile, specifying its type and the common resource block start/size for uplink and downlink (or the encoded locationAndBandwidth value). BWPs let an NR cell allocate different frequency-domain resource regions to UEs, and this profile is referenced by NR cell/UE configuration.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:BWP_PROFILE"
+  ],
+  "occurrences": 58
+ },
+ "CABINET": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Represents a physical cabinet or outdoor enclosure housing BTS hardware modules. Its parameters (temperature sensor readings and high-temperature alarm threshold) reflect its role in environmental monitoring of the equipment it contains, and it sits under EQM/APEQM as the parent of modules such as SMOD, BBMOD, and RMOD.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:CABINET"
+  ],
+  "occurrences": 69,
+  "officialFullName": "Cabinet",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "CABINET"
+  ]
+ },
+ "CABINET_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "CABINET_R is the resource/state object for a physical cabinet or enclosure, recording inventory details (product code, product name, serial number) and a configuration-object reference (configDN) linking back to the corresponding CABINET configuration object.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:CABINET_R"
+  ],
+  "occurrences": 18,
+  "officialFullName": "Runtime Cabinet",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "CABINET_R"
+  ]
+ },
+ "CABLINK": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Represents a physical fronthaul/interconnect cable (e.g. a CPRI or eCPRI fiber link) between two hardware endpoints, identified by their distinguished names and port IDs, along with configured link speed, radio protocol type, and IQ compression mode. It is commonly used to model the link between a baseband module (BBMOD) and a radio module (RMOD).",
+  "fullNames": [
+   "com.nokia.srbts.eqm:CABLINK"
+  ],
+  "occurrences": 96,
+  "officialFullName": "Cable Link",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "HWTOP",
+   "CABLINK"
+  ]
+ },
+ "CABLINK_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "CABLINK_R is the resource/state object for a physical fiber or copper cable link (commonly a CPRI/eCPRI fronthaul link) connecting a baseband module to a radio module, reporting availability/operational status, fiber length, link speed, IQ compression setting, and which functions (data, synchronization, DC power) the link mode carries. The '_R' suffix marks it as the runtime state counterpart to the equipment's cabling configuration, sitting under the equipment (eqmr) branch of the hierarchy.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:CABLINK_R"
+  ],
+  "occurrences": 29,
+  "officialFullName": "Runtime Cable Link",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "HWTOP_R",
+   "CABLINK_R"
+  ]
+ },
+ "CACERT_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "CACERT_R is a resource object representing a trusted CA (Certificate Authority) certificate installed in the BTS/gNB's PKI trust store, recording standard X.509 fields such as issuer, subject, validity period, serial number, key identifiers, signature algorithm, and trust chain. It supports certificate-based authentication used for IPsec, TLS, and CMP enrollment.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CACERT_R"
+  ],
+  "occurrences": 20,
+  "officialFullName": "Runtime CA Certificate",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CERTHENT",
+   "CACERT_R"
+  ]
+ },
+ "CADPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A Carrier Aggregation deployment/decision profile for LTE, defining the A3/A6 measurement-event thresholds, time-to-trigger, and hysteresis used to decide when to add or swap a secondary component carrier (SCell), along with limits on MIMO layers per duplex mode and maximum SCell swaps. It is a feature-configuration object referenced by an LTE cell to govern its carrier-aggregation behavior rather than a physical or radio object itself.",
+  "fullNames": [
+   "NOKLTE:CADPR"
+  ],
+  "occurrences": 12,
+  "officialFullName": "Carrier Aggregation Default Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CADPR"
+  ]
+ },
+ "CADPRCBRS": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A Carrier Aggregation deployment profile variant specific to CBRS-band secondary cells, defining the A3/A6 event thresholds, time-to-trigger, hysteresis, RSRP/RSRQ measurement thresholds (scellMeasThreshRsrp/Rsrq), and frequency priority used when deciding whether to add a CBRS-band SCell via carrier aggregation. It mirrors CADPR but is tailored to the constraints of shared CBRS spectrum.",
+  "fullNames": [
+   "NOKLTE:CADPRCBRS"
+  ],
+  "occurrences": 5
+ },
+ "CADPRLAA": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "A Carrier Aggregation deployment profile variant for LAA (unlicensed-band) secondary cells, defining A3/A6 measurement-event thresholds and hysteresis, frequency priority including a DFS-specific priority (sFreqPrioDfs), and RSRP measurement thresholds used when deciding whether to add an LAA SCell via carrier aggregation. It mirrors CADPR/CADPRCBRS but is tailored to LAA unlicensed-spectrum SCells.",
+  "fullNames": [
+   "NOKLTE:CADPRLAA"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Carrier Aggregation Default Profile for License-Assisted Access",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CADPRLAA"
+  ]
+ },
+ "CAGENB": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "medium",
+  "description": "CAGENB configures inter-eNB Carrier Aggregation cluster behavior, listing the group of eNodeBs (caClusterEnbList, referenced by lnBtsId) that participate together in cross-node carrier aggregation, plus related CA scheduling parameters -- SCell scheduling weight based on minimum CQI, fast load-balancing thresholds, uplink pathloss-based SCell activation offsets/thresholds, PRB usage thresholds, and SRIO link counts used for inter-baseband coordination.",
+  "fullNames": [
+   "NOKLTE:CAGENB"
+  ],
+  "occurrences": 17,
+  "officialFullName": "Carrier Aggregation Generic eNB configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CAGENB"
+  ]
+ },
+ "CAIMLBP": {
+  "category": "Feature-Function-Config",
+  "confidence": "low",
+  "description": "Configures the Primary Cell (PCell) side of a carrier-aggregation-related inter-frequency mobility/load-balancing feature, specifying the downlink EARFCN of the candidate PCell frequency layer (earfcnDL) and a reference to its cell configuration (pcellConfig). It works together with CAIMLBS (the SCell counterpart) to define candidate frequency layers for CA-aware mobility load balancing.",
+  "fullNames": [
+   "NOKLTE:CAIMLBP"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Carrier Aggregation Idle Mode LB Configuration For PCells",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CAGENB",
+   "CAIMLBP"
+  ]
+ },
+ "CAIMLBS": {
+  "category": "Feature-Function-Config",
+  "confidence": "low",
+  "description": "The Secondary Cell (SCell) counterpart to CAIMLBP, specifying the downlink EARFCN of a candidate SCell frequency layer (earfcnDL), a reference to its cell configuration (scellConfig), and the maximum number of SCells allowed (maxNumScells) for carrier-aggregation-aware inter-frequency mobility/load-balancing decisions.",
+  "fullNames": [
+   "NOKLTE:CAIMLBS"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Carrier Aggregation Idle Mode LB Configuration For SCells",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CAGENB",
+   "CAIMLBP",
+   "CAIMLBS"
+  ]
+ },
+ "CAPCFG": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Represents the BTS's baseband capacity/licensing configuration, reporting the current baseband capacity usage of the eNodeB (enbBbCapacityUsage), the hardware release level (enbHwRelease), and which cells have IQ-compression/data-sharing (iqcDs) features applied. It is used to track and report available versus consumed baseband processing capacity.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CAPCFG"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Capacity configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CAPCFG"
+  ]
+ },
+ "CAPR": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "medium",
+  "description": "CAPR (Carrier Aggregation Profile) configures the A3/A6 measurement-event parameters (offset, hysteresis, time-to-trigger, reporting interval) used to trigger and manage secondary cell (SCell) addition and SCell swapping for LTE carrier aggregation, along with the DL EARFCN, frequency-priority settings, RSRP threshold for SCell measurement, and the maximum number of SCell swaps allowed.",
+  "fullNames": [
+   "NOKLTE:CAPR"
+  ],
+  "occurrences": 15,
+  "officialFullName": "Carrier Aggregation Default Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "CAPR"
+  ]
+ },
+ "CAREL": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Defines a Carrier Aggregation relation between an LTE primary cell (PCell) and a candidate secondary cell (SCell), including whether PCell swapping and SCell beamforming are allowed, the SCell's selection priority, and its downlink scheduling weight factor. It is used to configure which cells may be aggregated together for a UE and how they are prioritized.",
+  "fullNames": [
+   "NOKLTE:CAREL"
+  ],
+  "occurrences": 67,
+  "officialFullName": "Carrier Aggregation Relation",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "CAREL"
+  ]
+ },
+ "CATMPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "A large feature-configuration profile for LTE Cat-M1/eMTC (enhanced Machine-Type Communication / LTE-M IoT), covering link-adaptation step sizes and MCS deltas per coverage-enhancement mode (amcCStepUpModeACatM, amcDeltaC.../iniMcsDl/UlModeACatM), HARQ retransmission limits for Msg3/downlink/uplink, RRC connection inactivity timer, default paging cycle, and per-coverage-level (Cat-M CE Level) behavior. It fully parameterizes how the cell serves Cat-M/eMTC IoT devices across normal and extended coverage.",
+  "fullNames": [
+   "NOKLTE:CATMPR"
+  ],
+  "occurrences": 3,
+  "officialFullName": "CAT-M Profile Configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CATMPR"
+  ]
+ },
+ "CBRSCERTH": {
+  "category": "Security",
+  "confidence": "medium",
+  "description": "CBRSCERTH controls certificate-handling behavior specific to CBRS (Citizens Broadband Radio Service) operation, notably whether the BTS downloads the SAS PKI's Certificate Revocation List (CRL), which is required to validate the certificate chain used for authenticating with the Spectrum Access System.",
+  "fullNames": [
+   "NOKLTE:CBRSCERTH"
+  ],
+  "occurrences": 18
+ },
+ "CBRSPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Defines a CBRS (Citizens Broadband Radio Service, US 3.5 GHz shared spectrum, band 48) Spectrum Access System (SAS) connection profile, including the primary/secondary SAS server addresses, HTTPS proxy, certificate-management method and TLS settings, WInnForum protocol version (wINNFTSVersion), and supported channel bandwidths. It governs how the BTS, acting as a CBSD, registers with and obtains spectrum grants from a SAS.",
+  "fullNames": [
+   "NOKLTE:CBRSPR"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Citizens Broadband Radio Service Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CBRSPR"
+  ]
+ },
+ "CBSD": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "CBSD represents a CBRS-band (Citizens Broadband Radio Service) radio device registration, holding the antenna's physical characteristics (azimuth, beamwidth, downtilt, gain, model), the FCC ID and device serial number, call sign, and CBRS-specific identifiers (assigned CBSD ID, frequency type, PAL/GAA group IDs) and operating state needed to register with and request spectrum grants from a Spectrum Access System (SAS).",
+  "fullNames": [
+   "NOKLTE:CBSD"
+  ],
+  "occurrences": 15,
+  "officialFullName": "Citizens Broadband radio Service Device",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CBSD"
+  ]
+ },
+ "CBSDCEL": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "CBSDCEL holds the CBRS (Citizens Broadband Radio Service, US 3.5GHz shared spectrum) SAS-related parameters for an individual LTE cell operating as a CBSD (Citizens Broadband radio Service Device), including desired/fallback TDD frame and subframe configuration, desired maximum power for different channel bandwidths, PRACH frequency offsets, and CQI resource block counts. It complements the base LNCEL cell object for LTE cells deployed in the US CBRS band and works together with the CBSD device object to request spectrum grants from the SAS.",
+  "fullNames": [
+   "NOKLTE:CBSDCEL"
+  ],
+  "occurrences": 30
+ },
+ "CDFIM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "CDFIM configures Access Class Barring (ACB) for an LTE cell per 3GPP TS 36.331 -- separate barring factors/probabilities for Access Classes 0-9 (with an adaptive/overload variant) and Access Classes 10-15 (each with its own overload variant) -- used to control which categories of UEs are barred from initiating RRC connection establishment during congestion or overload conditions.",
+  "fullNames": [
+   "NOKLTE:CDFIM"
+  ],
+  "occurrences": 12,
+  "officialFullName": "CDMA2000 frequency Idle Mode parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "CDFIM"
+  ]
+ },
+ "CELLMAPPING": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Has no configurable parameters of its own; it functions as a mapping/association container, most likely linking logical cell objects to the physical or baseband hardware resources (e.g. a baseband pool or specific RF module) that serve them.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CELLMAPPING"
+  ],
+  "occurrences": 70,
+  "officialFullName": "Cell Mapping",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CELLMAPPING"
+  ]
+ },
+ "CERTH": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Configures certificate lifecycle management for the BTS, including CRL distribution point/usage, CMP (Certificate Management Protocol) server address and polling settings, and automatic certificate/CA renewal and deletion behavior. It underlies the PKI-based security used for secure O&M, TLS, and IPsec connections.",
+  "fullNames": [
+   "NOKLTE:CERTH",
+   "com.nokia.srbts.mnl:CERTH"
+  ],
+  "occurrences": 60,
+  "officialFullName": "Certificate management",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "CERTH"
+  ]
+ },
+ "CERTHENT": {
+  "category": "Security",
+  "confidence": "medium",
+  "description": "A sub-entry of the certificate-handling configuration that associates a specific source IPv4 address (via cmpCrlSrcIpv4AddressDN) with CMP/CRL traffic, likely used when the BTS has multiple IP interfaces and must pin certificate-management traffic to a particular source address.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CERTHENT"
+  ],
+  "occurrences": 35,
+  "officialFullName": "Certificate Management",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CERTHENT"
+  ]
+ },
+ "CHANNEL": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Represents a logical signal channel (e.g. an uplink or downlink RET/TMA control channel) belonging to an antenna line device, referenced back to its parent via antlDN, with a direction attribute indicating its role. It is a low-level equipment object used to model the individually controllable channels of an antenna line device such as a RET motor or tower-mounted amplifier, typically sitting as a child of an ANTL object.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CHANNEL"
+  ],
+  "occurrences": 639,
+  "officialFullName": "Channel",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CELLMAPPING",
+   "LCELW",
+   "CHANNELGROUP",
+   "CHANNEL"
+  ]
+ },
+ "CHANNELGROUP": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Groups multiple CHANNEL objects together for collective configuration or reporting, likely representing a bank of RET/TMA control channels on a single antenna line device. It has no directly configurable parameters of its own and functions mainly as an organizational container.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CHANNELGROUP"
+  ],
+  "occurrences": 107,
+  "officialFullName": "Channel Group",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CELLMAPPING",
+   "LCELW",
+   "CHANNELGROUP"
+  ]
+ },
+ "CLOCK": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures the clock/timing distribution settings of a system module (SMOD), including which synchronization inputs (1PPS, 2M048, PDH, backplane, fronthaul-slave) are accepted, their priority order, whether the module acts as sync master, and total delay compensation from the site's synchronization hub module. It is a child of an SMOD and central to the site's timing/frequency synchronization chain.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CLOCK"
+  ],
+  "occurrences": 90,
+  "officialFullName": "Clock",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK"
+  ]
+ },
+ "CLOCK_FDD": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures the BTS's synchronization clock behavior for FDD (Frequency Division Duplex) operation, specifically whether this unit acts as the synchronization master (syncMaster) in the timing distribution scheme. It is the FDD counterpart to CLOCK_TDD.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CLOCK_FDD"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Clock FDD",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "CLOCK_FDD"
+  ]
+ },
+ "CLOCK_R": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "CLOCK_R is the resource/state object for the node's synchronization clock subsystem, reporting the currently active synchronization mode and time source (e.g. GNSS, SyncE, PTP), which sync input is currently selected, whether SyncE-assisted handover mode is in use, and automatically detected cable/link delay. It reflects the runtime outcome of the STPG/TOP/GNSSI synchronization configuration.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CLOCK_R"
+  ],
+  "occurrences": 19,
+  "officialFullName": "Runtime Clock",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "CLOCK_R"
+  ]
+ },
+ "CLOCK_TDD": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures the BTS's synchronization clock behavior specifically for TDD (Time Division Duplex) operation, including whether the unit acts as a synchronization slave in a dual-mode (FDD+TDD) deployment (dualModeSyncSlave). It is part of the timing/synchronization subsystem that works alongside GNSS/PTP/SyncE sources to keep TDD cells frame-aligned.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CLOCK_TDD"
+  ],
+  "occurrences": 10,
+  "officialFullName": "Clock TDD",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "CLOCK_TDD"
+  ]
+ },
+ "CMASPRIO": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"CMASPRIO\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "NOKLTE:CMASPRIO"
+  ],
+  "occurrences": 1,
+  "sampleParams": [
+   "cmasDefaultPrio",
+   "cmasDefaultSsf",
+   "cmasMsgIdPriorityList",
+   "cmasPrio",
+   "cmasSsf",
+   "msgIdFirst",
+   "msgIdLast"
+  ]
+ },
+ "CMD": {
+  "category": "Other",
+  "confidence": "low",
+  "description": "Has no configurable parameters and appears to represent a command/action trigger object, likely used to invoke management operations such as resets or diagnostics, rather than persistent configuration.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMD"
+  ],
+  "occurrences": 55,
+  "officialFullName": "Command",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "CMD"
+  ]
+ },
+ "CMP": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Configures the Certificate Management Protocol (CMP) client used by the BTS to automatically enroll and renew its PKI certificates, including the CMP server path/port, certificate validation behavior, key length, and CA/certificate update scheduling.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMP"
+  ],
+  "occurrences": 34,
+  "officialFullName": "Certificate management protocol",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "CERTH",
+   "CMP"
+  ]
+ },
+ "CMPECDSA": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "CMPECDSA configures automatic certificate enrollment/renewal via the Certificate Management Protocol (CMP) using ECDSA key pairs, including the CMP server address/port/type, polling timeout, key length, and certificate update timestamps for both the CA and the network element's own certificate. It is a security object supporting PKI-based mutual authentication (e.g. for IPsec/TLS) on the BTS/gNB.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMPECDSA"
+  ],
+  "occurrences": 29
+ },
+ "CMPECDSA_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "A runtime status object tracking a Certificate Management Protocol (CMP) enrollment operation that uses ECDSA (elliptic-curve) key/signature algorithms, recording the current enrollment state and the target certificate's distinguished name (targetDN). It is the ECDSA-specific counterpart to CMP_R.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMPECDSA_R"
+  ],
+  "occurrences": 3
+ },
+ "CMPFH": {
+  "category": "Security",
+  "confidence": "medium",
+  "description": "CMPFH configures Certificate Management Protocol (CMP) enrollment specifically for the fronthaul interface, tracking the CA and network-element certificate key length and update timestamps used to secure fronthaul connections (e.g. between DU and RU) with PKI-issued certificates. It parallels the general CMPECDSA object but is scoped to fronthaul security.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMPFH"
+  ],
+  "occurrences": 27
+ },
+ "CMPFHEXT": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "CMPFHEXT extends CMPFH with X.509 extended-key-usage settings (TLS client authentication and TLS server authentication flags) used when requesting fronthaul security certificates, controlling what the issued certificate may be used for.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMPFHEXT"
+  ],
+  "occurrences": 27
+ },
+ "CMP_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "A runtime status object tracking a Certificate Management Protocol (CMP) operation used to automatically enroll or renew a security certificate on the BTS, recording the current state of the enrollment (state), the config object it applies to (configDN), and the target distinguished name (targetDN) of the resulting certificate. It supports the node's PKI-based certificate lifecycle management.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CMP_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Runtime Certificate Management Protocol",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CERTHENT",
+   "CMP_R"
+  ]
+ },
+ "CRLH": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Configures Certificate Revocation List (CRL) handling for the BTS's PKI-based security, including the download protocol, distribution point source, update period, and whether CRL checking is enabled, used to verify that peer certificates (e.g. for IPsec/TLS) have not been revoked.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CRLH"
+  ],
+  "occurrences": 34,
+  "officialFullName": "Certificate revocation list handler",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "CERTH",
+   "CRLH"
+  ]
+ },
+ "CRLH_R": {
+  "category": "Security",
+  "confidence": "medium",
+  "description": "A Certificate Revocation List (CRL) handling runtime object tracking the status of a CRL retrieval/update operation (state) and the target CRL distribution point or certificate it applies to (targetDN). It supports the BTS's PKI trust management by ensuring revoked certificates are recognized.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CRLH_R"
+  ],
+  "occurrences": 3,
+  "officialFullName": "Runtime Certificate Revocation List Handler",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CERTHENT",
+   "CRLH_R"
+  ]
+ },
+ "CTRLTS": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "Configures the BTS-level trace/MDT (Minimization of Drive Tests) collection settings, including cell- and UE-trace reporting modes, external trace/UE-trace reporting toggles, the maximum number of concurrent UE trace sessions, the IP address and port of the trace collection entity (netActIpAddr, tceTracePortNum), and whether subscriber location is captured for MDT. It is the node-level control point for signaling/subscriber tracing used for network optimization and troubleshooting.",
+  "fullNames": [
+   "NOKLTE:CTRLTS"
+  ],
+  "occurrences": 6,
+  "officialFullName": "Trace Control",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CTRLTS"
+  ]
+ },
+ "CUPLANEFHNW": {
+  "category": "Transport-Networking",
+  "confidence": "low",
+  "description": "CUPLANEFHNW appears to be a grouping/container object for Control-plane/User-plane fronthaul network settings (fronthaul network configuration between baseband/DU and radio/RU functions), based on its name and its placement in the mnl management namespace. No sample parameters were captured, so its exact configurable fields are unknown, but it likely aggregates fronthaul (eCPRI/RoE) network-related sub-configuration.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CUPLANEFHNW"
+  ],
+  "occurrences": 29
+ },
+ "DNS": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Configures the Domain Name System client settings used by the BTS's management/O&M interface, specifying primary and secondary DNS server IP addresses and whether that configuration is provided locally or via another source (dnsServerConfigSource). It is a node-level transport/management-networking object used to resolve hostnames for OAM, NTP, or other services.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:DNS"
+  ],
+  "occurrences": 9,
+  "officialFullName": "DNS access",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "DNS"
+  ]
+ },
+ "DRX": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Defines a Discontinuous Reception (DRX) profile for an LTE cell, specifying the DRX cycle length, on-duration timer, inactivity timer, and retransmission timer, along with device-type applicability, used to let idle-but-connected UEs periodically switch off their receiver to save battery. Multiple numbered profiles allow different DRX behavior to be assigned by priority or QCI.",
+  "fullNames": [
+   "NOKLTE:DRX"
+  ],
+  "occurrences": 85,
+  "officialFullName": "Discontinuous Reception (RX)",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "DRX"
+  ]
+ },
+ "DSCP2PCPMAP": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "DSCP2PCPMAP is a QoS marking table that maps each IP DSCP value to an Ethernet 802.1p/PCP (Priority Code Point) VLAN priority, translating IP-layer QoS markings into Layer-2 VLAN priority tags for consistent QoS treatment across the transport network.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:DSCP2PCPMAP"
+  ],
+  "occurrences": 21,
+  "officialFullName": "DSCP2PCPMAP",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "QOS",
+   "DSCP2PCPMAP"
+  ]
+ },
+ "DSCP2QMAP": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "DSCP2QMAP is a QoS marking table that maps each IP DSCP (Differentiated Services Code Point) value to an internal egress scheduling queue, allowing the transport network to apply consistent per-hop QoS treatment for traffic based on its DSCP marking.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:DSCP2QMAP"
+  ],
+  "occurrences": 22,
+  "officialFullName": "DSCP to Queue Mapping",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "QOS",
+   "DSCP2QMAP"
+  ]
+ },
+ "DSCPTOQMAP": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "Defines a DiffServ Code Point (DSCP) to egress-queue mapping table used by the BTS's Ethernet/IP QoS scheduler. Its ~64 parameters (queueForDscp00 through queueForDscp63) each assign one of the 64 possible DSCP marking values to a specific hardware transmit queue, so IP packets carrying different DSCP markings (voice, signaling, best-effort data, etc.) receive different queuing/scheduling treatment. It sits under the transport network layer (tnl) configuration, typically associated with an Ethernet or IP interface.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:DSCPTOQMAP"
+  ],
+  "occurrences": 12,
+  "officialFullName": "DSCP to Queue Mapping",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "L2SWI",
+   "DSCPTOQMAP"
+  ]
+ },
+ "EAC_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "A runtime/inventory object exposing the live operational status of an external alarm/contact interface port (line state, operational state, port ID, product code), used to monitor auxiliary alarm or environmental sensor connections on the equipment. It is a read-only 'runtime' companion object reflecting the current status of the corresponding hardware port rather than planned configuration.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:EAC_R"
+  ],
+  "occurrences": 202,
+  "officialFullName": "Runtime External Alarm Control",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "EAC_R"
+  ]
+ },
+ "ECPRIMASTER": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures the BTS to act as a synchronization master over the eCPRI fronthaul interface, defining a PTP-style domain number, multicast Ethernet address, sync/announce message rates, SSM handling, an applicable standard profile, and a phase-holdover alarm threshold \u2014 the eCPRI/fronthaul counterpart to PTPMASTER, used when the BTS distributes timing to a connected radio unit over eCPRI.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:ECPRIMASTER"
+  ],
+  "occurrences": 2
+ },
+ "ENDCDMEASCONF": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"ENDCDMEASCONF\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "NOKLTE:ENDCDMEASCONF"
+  ],
+  "occurrences": 1,
+  "sampleParams": [
+   "b1NrBeamReportQuantity",
+   "b1NrBeamThreshRsrp",
+   "b1NrMaxNumBeams",
+   "b1NrReportAmount",
+   "b1NrReportInterval",
+   "b1ThresholdNrRsrp",
+   "b1TimeToTriggerRsrp",
+   "b1TimeToTriggerRsrq",
+   "b1TriggerQuantity",
+   "carrierFreqNrCell"
+  ]
+ },
+ "EQM": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "The Equipment Management root object for the site, serving as the parent container under which all physical hardware objects (cabinets, modules, radio units, antenna line devices, etc.) are organized. It carries no configurable parameters of its own and functions purely as a structural anchor.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:EQM"
+  ],
+  "occurrences": 69,
+  "officialFullName": "Equipment",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM"
+  ]
+ },
+ "EQM_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "EQM_R is the resource/state counterpart of the EQM equipment-management root object; it represents the runtime state root of the physical equipment tree for the site but exposes no directly configurable parameters of its own, serving as an organizational anchor for the eqmr (equipment resource) branch below it (cabinets, modules, links, etc.).",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:EQM_R"
+  ],
+  "occurrences": 18,
+  "officialFullName": "Equipment_Runtime",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R"
+  ]
+ },
+ "ETHAPP": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "ETHAPP configures Ethernet service-OAM (Connectivity Fault Management, IEEE 802.1ag/ITU-T Y.1731) application behavior on a transport link, including whether service OAM is enabled, whether remote Maintenance End Point (MEP) MAC addresses are auto-learned, and whether optional TLV fields are included in CFM replies.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:ETHAPP"
+  ],
+  "occurrences": 18,
+  "officialFullName": "Ethernet applications",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHAPP"
+  ]
+ },
+ "ETHIF": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "Represents a logical Ethernet interface used for traffic shaping, referencing a link selector and configuring committed/sustained information-rate totals and shaping overhead, plus whether egress frames carry priority tagging. It sits above the physical ETHLK object in the transport stack to police and shape outgoing traffic.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:ETHIF"
+  ],
+  "occurrences": 58,
+  "officialFullName": "Plain ethernet network interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "ETHIF"
+  ]
+ },
+ "ETHIF_R": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "A runtime status mirror of an Ethernet interface, reporting its hardware MAC address (macAddr). It reflects the live state of a physical/logical Ethernet port configured elsewhere (e.g., under an Ethernet-link or IP-interface object) in the transport network layer.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:ETHIF_R"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Read only Ethernet Interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "ETHIF",
+   "ETHIF_R"
+  ]
+ },
+ "ETHLK": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents a physical Ethernet link (port) on the BTS, configuring link-layer parameters such as accepted frame types, administrative state, clock recovery mode, Ethernet OAM (802.3ah, dying-gasp) settings, and ingress/egress rate shaping. It is a foundational transport-layer object that logical interfaces such as ETHIF, BRGPRT, and VLANIF are built on top of.",
+  "fullNames": [
+   "NOKLTE:ETHLK",
+   "com.nokia.srbts.tnl:ETHLK"
+  ],
+  "occurrences": 125,
+  "officialFullName": "Ethernet link",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "ETHLK"
+  ]
+ },
+ "ETHLK_R": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "A runtime status mirror of a physical Ethernet link, reporting the auto-detected clock source (detectedClock), negotiated speed/duplex (detectedSpeedAndDuplex), 802.1X/EAP port-authentication status (eapPortStatus), and overall operational state of the link.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:ETHLK_R"
+  ],
+  "occurrences": 6,
+  "officialFullName": "Read only Ethernet Link",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "ETHLK",
+   "ETHLK_R"
+  ]
+ },
+ "ETHSVC": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "Represents a configured Ethernet service instance (e.g. an EVC-style service) on the transport network, with a configurable utilization-measurement sampling interval used to monitor the service's traffic load.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:ETHSVC"
+  ],
+  "occurrences": 43,
+  "officialFullName": "Ethernet services",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC"
+  ]
+ },
+ "EXCCU": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"EXCCU\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "EXCCU"
+  ],
+  "occurrences": 1,
+  "sampleParams": []
+ },
+ "FAN_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "FAN_R is the resource/state object for a cooling fan unit within a cabinet or module, reporting whether the fan is physically present, its location, and its administrative/operational/availability/usage state, used for thermal-management health monitoring.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:FAN_R"
+  ],
+  "occurrences": 19,
+  "officialFullName": "Runtime Fan",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "FAN_R"
+  ]
+ },
+ "FEATCADM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "The site-wide Feature Control Administration object, holding a very large number of 'act*' boolean switches that enable or disable optional software features and capabilities across the BTS, such as antenna path delay measurement, ALD sharing, anti-theft protection, and various automatic sleeping-cell detection/recovery mechanisms. It functions as the central feature-activation toggle object for the site.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:FEATCADM"
+  ],
+  "occurrences": 70,
+  "officialFullName": "Feature Common Administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "FEATCADM"
+  ]
+ },
+ "FEATLADM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "FEATLADM is a feature-license administration object collecting miscellaneous licensed-feature activation toggles that don't belong to a single functional area -- dual-stack IPv4/IPv6 for S1/X2, dynamic firewall for S1/X2, baseband power saving for load-balancing scenarios, combined uplink CoMP/NB-IoT mode, QCI-based network slicing, and TAC preemption. It centralizes activation flags for cross-domain licensed features.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:FEATLADM"
+  ],
+  "occurrences": 16,
+  "officialFullName": "Feature LTE Administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "FEATCADM",
+   "FEATLADM"
+  ]
+ },
+ "FIREWALL": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Represents the BTS's built-in security firewall configuration under the transport network layer, controlling which IP traffic is permitted to or from the management and signaling interfaces. No sample parameters were captured in this dataset, but the class name and tnl namespace indicate it is the container for firewall rule/policy activation on the node.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:FIREWALL"
+  ],
+  "occurrences": 11,
+  "officialFullName": "Firewall",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "FIREWALL"
+  ]
+ },
+ "FMCADM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "The site-wide Fault Management Configuration Administration object, controlling which categories of alarms are raised or suppressed and configuring automatic recovery/reset behavior in response to faults, such as cabinet temperature alarms, eCPRI timing-window alarms, automatic BTS commissioning, and forced unit resets. It centralizes fault-handling policy for the site.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:FMCADM"
+  ],
+  "occurrences": 70,
+  "officialFullName": "Fault Management Common Administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "FMCADM"
+  ]
+ },
+ "FSTSCH": {
+  "category": "QoS",
+  "confidence": "medium",
+  "description": "Defines an egress traffic-scheduling/shaping profile applied to an IP interface (ipIfDN), configuring a WFQ (Weighted Fair Queuing) scheduler with per-DiffServ-class weights (weightAF1-4, weightBE), an overall shaping rate (spShapingRate), and burst-size/rate parameters (sbs, sir). It is a QoS object in the transport network layer controlling how outbound traffic of different priority classes is scheduled onto the egress link.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:FSTSCH"
+  ],
+  "occurrences": 4,
+  "officialFullName": "First level scheduler",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "QOS",
+   "FSTSCH"
+  ]
+ },
+ "FTM": {
+  "category": "Equipment",
+  "confidence": "low",
+  "description": "FTM appears to be a module/unit descriptor object (in the older Flexi/NOKLTE product line) that records physical port assignments -- daisy-chain port, LMT (Local Maintenance Terminal) port, primary backhaul port, SFN (site synchronization frame) port -- along with site identity fields like location name, system title, user label, and the active software release version. It functions as a hardware/module identity and port-mapping record within the equipment hierarchy.",
+  "fullNames": [
+   "NOKLTE:FTM"
+  ],
+  "occurrences": 26,
+  "officialFullName": "Flexi transport module",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM"
+  ]
+ },
+ "GNSSE": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures the GNSS (satellite navigation) receiver/engine used for the site's frequency, phase, and location synchronization, including which constellations are enabled (GPS, GLONASS, Galileo, BeiDou, NavIC, QZSS), antenna cable-length compensation, holdover behavior, and location reporting mode. It is a key input to the site's overall SYNC/CLOCK synchronization chain.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:GNSSE"
+  ],
+  "occurrences": 33,
+  "officialFullName": "External global navigation satellite system",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "GNSSE"
+  ]
+ },
+ "GNSSE_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Represents the external GNSS receiver/antenna unit used as the BTS's primary synchronization timing source, reporting administrative/operational state, antenna position, and which satellite constellations are enabled and tracked (GPS, GLONASS, Galileo/OSNMA, BeiDou, NavIC) along with receiver holdover mode. It is an equipment object in the eqmr hardware branch that underlies the site's GNSS-based synchronization.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:GNSSE_R"
+  ],
+  "occurrences": 8,
+  "officialFullName": "Runtime External Global Navigation Satellite System",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "CABINET_R",
+   "SMOD_R",
+   "GNSSE_R"
+  ]
+ },
+ "GNSSI": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "GNSSI represents the GNSS (Global Navigation Satellite System, e.g. GPS/GLONASS/BeiDou) receiver interface used by the BTS/gNB for precise time and frequency synchronization and location determination. Its parameters control the GNSS antenna LNA power supply, receiver control mode, cable/line delay compensation, and location mode. It typically sits under the site's synchronization/module (mnl) branch and feeds the timing reference into the clock subsystem (e.g. CLOCK_R, TOP/TOPF).",
+  "fullNames": [
+   "com.nokia.srbts.mnl:GNSSI"
+  ],
+  "occurrences": 32,
+  "officialFullName": "Internal Global Navigation Satellite System",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "GNSSI"
+  ]
+ },
+ "GNSSI_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Represents the internal/integrated GNSS receiver module used for the BTS's timing reference, exposing its antenna location (latitude/longitude/altitude), configured satellite constellation mode, and a unit name. It is an equipment object in the equipment-runtime (eqmr) hardware branch, providing the physical/positional basis for the site's synchronization source.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:GNSSI_R"
+  ],
+  "occurrences": 10,
+  "officialFullName": "Runtime Internal Global Navigation Satellite System",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "CABINET_R",
+   "SMOD_R",
+   "GNSSI_R"
+  ]
+ },
+ "HW": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "A generic, vendor/technology-neutral hardware inventory object (from the standardized com.nokia.eqm.hw namespace) representing a physical equipment item, recording its installation location name, running software version, an operator-assigned user label, and vendor name. It parallels the proprietary Nokia EQM hardware tree with a more standards-aligned hardware inventory representation.",
+  "fullNames": [
+   "com.nokia.eqm.hw:HW"
+  ],
+  "occurrences": 5
+ },
+ "HWTOP": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Has no configurable parameters; it represents the hardware topology structure of the site (the physical interconnection/relationship map between equipment units) rather than a functional configuration object.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:HWTOP"
+  ],
+  "occurrences": 37,
+  "officialFullName": "Hardware Topology",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "HWTOP"
+  ]
+ },
+ "HWTOP_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Represents the auto-discovered hardware topology of the BTS, i.e., the interconnection map between plug-and-play equipment modules (cabinets, baseband/radio modules, cabling). No sample parameters were captured, consistent with it being primarily a structural/relationship object populated by hardware auto-discovery under the equipment-runtime (eqmr) branch.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:HWTOP_R"
+  ],
+  "occurrences": 8,
+  "officialFullName": "Runtime Hardware Topology",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "HWTOP_R"
+  ]
+ },
+ "IAFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Holds intra-frequency idle-mode mobility parameters for an LTE cell, including the intra-frequency neighbor cell list, their physical cell IDs, and per-neighbor cell reselection offset (Qoffset), used to control idle-mode camping and reselection behavior among cells on the same carrier frequency. It is the intra-frequency counterpart to IRFIM.",
+  "fullNames": [
+   "NOKLTE:IAFIM"
+  ],
+  "occurrences": 33,
+  "officialFullName": "Intra frequency Idle Mode parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "IAFIM"
+  ]
+ },
+ "IBRGPRT": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "IBRGPRT models a port on the BTS's internal Ethernet bridge/switch, configuring the default (native) VLAN ID and 802.1p priority applied to untagged traffic entering that internal bridge port. It is a transport-layer object supporting the internal Layer-2 switching fabric that interconnects modules and external network interfaces.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IBRGPRT"
+  ],
+  "occurrences": 32,
+  "officialFullName": "Internal bridge port",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "L2SWI",
+   "IBRGPRT"
+  ]
+ },
+ "IDNS": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "IDNS configures the internal DNS client used by the BTS/gNB, holding up to two DNS server IP addresses for resolving FQDNs used elsewhere in the configuration (e.g. NTP server names, core-network endpoint names).",
+  "fullNames": [
+   "NOKLTE:IDNS"
+  ],
+  "occurrences": 26,
+  "officialFullName": "DNS Access",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "IDNS"
+  ]
+ },
+ "IEIF": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "IEIF represents an IP Ethernet interface used for external transport connectivity, configuring the local IPv4/IPv6 address, netmask/prefix length, MTU, and QoS traffic-shaping parameters (subscribed/sustainable information rate, weighted-fair-queue scheduling weight, upper-layer and traffic-path shaping). It is a base transport interface object in the Flexi Zone (NOKLTE) product line, analogous to an AirScale IP network interface.",
+  "fullNames": [
+   "NOKLTE:IEIF"
+  ],
+  "occurrences": 26,
+  "officialFullName": "Plain Ethernet network interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "IEIF"
+  ]
+ },
+ "IFGDPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "low",
+  "description": "Defines a priority group of frequency layers with a structure similar to IFGPR (algorithm selection, group size/priority), likely used in a different mobility-triggering context such as dedicated-priority assignment at RRC release; its precise distinction from IFGPR is inferred rather than confirmed.",
+  "fullNames": [
+   "NOKLTE:IFGDPR"
+  ],
+  "occurrences": 33,
+  "officialFullName": "Inter Frequency Group Default PRofile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "IFGDPR"
+  ]
+ },
+ "IFGPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Defines a priority group of inter-frequency layers used for idle-mode cell reselection, with an algorithm selection plus group size/priority settings that let a set of frequencies be steered as a unit rather than individually. It sits under LNCEL/LNBTS as part of the idle-mode mobility configuration.",
+  "fullNames": [
+   "NOKLTE:IFGPR"
+  ],
+  "occurrences": 93,
+  "officialFullName": "Inter Frequency Group Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "IFGPR"
+  ]
+ },
+ "IHCP": {
+  "category": "Feature-Function-Config",
+  "confidence": "low",
+  "description": "The precise meaning of this class could not be confidently determined; no sample parameters were captured for this dataset. Based on its NOKLTE namespace and naming pattern (similar to other control-parameter/profile classes in the LTE mobility and feature-configuration family), it most likely holds a set of handover- or header-compression-related control parameters, but this is a low-confidence guess.",
+  "fullNames": [
+   "NOKLTE:IHCP"
+  ],
+  "occurrences": 6,
+  "officialFullName": "DHCP access",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "IHCP"
+  ]
+ },
+ "INTP": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "INTP is the Flexi Zone (NOKLTE) internal NTP client configuration object, functionally equivalent to the AirScale NTP class -- it configures NTP server addresses, DSCP marking, maximum time error and alarm thresholds, sync port mode, and UTC-GPS offset handling for time synchronization.",
+  "fullNames": [
+   "NOKLTE:INTP"
+  ],
+  "occurrences": 26,
+  "officialFullName": "NTP Server Configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "INTP"
+  ]
+ },
+ "INVUNIT": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "A generic hardware inventory record representing any physical field-replaceable unit (module, cabinet part, cable, etc.), capturing its serial number, vendor name, unit type/family, hardware/firmware version, and position within its parent assembly. It is populated automatically via plug-and-play/auto-discovery and used for asset tracking and hardware-to-configuration matching rather than functional configuration.",
+  "fullNames": [
+   "com.nokia.eqm.hw:INVUNIT"
+  ],
+  "occurrences": 84
+ },
+ "INVUNIT_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "INVUNIT_R is a generic hardware-inventory resource record used across the equipment hierarchy, capturing the vendor name, vendor unit family/type numbers, serial number, hardware/software version number, and inventory unit type for any physical or logical unit tracked for asset/inventory-management purposes.",
+  "fullNames": [
+   "com.nokia.srbts.hwinv:INVUNIT_R"
+  ],
+  "occurrences": 16,
+  "officialFullName": "INVUNIT_R",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "INVUNIT_R"
+  ]
+ },
+ "IPADDRESSV4": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents an IPv4 address assigned to an IP interface, including the allocation method (static/dynamic), the local address, and its prefix length. It is a child of an IPIF/IPNO object and is fundamental to the site's IP addressing plan.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPADDRESSV4"
+  ],
+  "occurrences": 36,
+  "officialFullName": "IPv4 Address",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPIF",
+   "IPADDRESSV4"
+  ]
+ },
+ "IPADDRESSV4_R": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "A runtime status object for an IPv4 address bound to one of the BTS's IP interfaces, indicating whether that local address has actually been allocated/assigned (localIpAddrAllocated). It is used to confirm that DHCP or static address assignment succeeded.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPADDRESSV4_R"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Read only IPv4 address",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPIF",
+   "IPADDRESSV4",
+   "IPADDRESSV4_R"
+  ]
+ },
+ "IPADDRESSV6": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"IPADDRESSV6\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPADDRESSV6"
+  ],
+  "occurrences": 2,
+  "officialFullName": "IPv6 Address",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPIF",
+   "IPADDRESSV6"
+  ],
+  "sampleParams": [
+   "ipAddressAllocationMethod",
+   "localIpAddr",
+   "localIpPrefixLength"
+  ]
+ },
+ "IPAPP": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "IPAPP configures IP-layer application/measurement features on a transport interface; the observed parameter (twampSenderMessageRate) configures the message-transmission rate for a TWAMP (Two-Way Active Measurement Protocol) sender session used to measure network performance (delay/jitter/loss) over the backhaul.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPAPP"
+  ],
+  "occurrences": 23,
+  "officialFullName": "IP application",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP"
+  ]
+ },
+ "IPIF": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents a logical IP interface bound to an underlying link (e.g. VLANIF or ETHIF), with a configurable label and IP MTU size. It is the anchor point on which IP addresses (IPADDRESSV4) and routes (IPRT) are configured.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPIF"
+  ],
+  "occurrences": 40,
+  "officialFullName": "IP interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPIF"
+  ]
+ },
+ "IPIF_R": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "A runtime status mirror of an IP interface (logical Layer-3 interface bound to an Ethernet/VLAN port), reflecting its live operational state. No sample parameters were captured, consistent with a lightweight state-mirroring object paired with its configuration counterpart in the transport network layer.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPIF_R"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Read only IP Interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPIF",
+   "IPIF_R"
+  ]
+ },
+ "IPNO": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "The main IP networking configuration object for the BTS transport layer, controlling higher-level IP behavior such as dynamic/multiple IP addressing, IPv6 support, dynamic firewall, fast IP rerouting, and RAN-sharing IP separation. It anchors the site's IP transport configuration alongside IPIF, IPRT, and IPADDRESSV4.",
+  "fullNames": [
+   "NOKLTE:IPNO",
+   "com.nokia.srbts.tnl:IPNO"
+  ],
+  "occurrences": 71,
+  "officialFullName": "IP services",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO"
+  ]
+ },
+ "IPRM": {
+  "category": "Transport-Networking",
+  "confidence": "low",
+  "description": "An 'IP (routing) resource manager' object holding a list of routing exceptions (RmExceptions) \u2014 special-case traffic or destinations that bypass the BTS's normal IP routing policy. It is part of the older Flexi Zone transport-networking configuration.",
+  "fullNames": [
+   "NOKLTE:IPRM"
+  ],
+  "occurrences": 6,
+  "officialFullName": "Restricted mode configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "IPRM"
+  ]
+ },
+ "IPRT": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents an IPv4 static route on the BTS transport network, defining a destination network/prefix, gateway, netmask, MTU, and preference/metric. It is used to direct specific traffic (e.g. O&M, S1, X2) over the correct next hop.",
+  "fullNames": [
+   "NOKLTE:IPRT",
+   "com.nokia.srbts.tnl:IPRT"
+  ],
+  "occurrences": 61,
+  "officialFullName": "IP routing table",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPRT"
+  ]
+ },
+ "IPRTV6": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "The IPv6 counterpart to IPRT, holding a list of static IPv6 routes configured on the BTS's transport network layer.",
+  "fullNames": [
+   "NOKLTE:IPRTV6",
+   "com.nokia.srbts.tnl:IPRTV6"
+  ],
+  "occurrences": 59,
+  "officialFullName": "IPv6 routing table",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPRTV6"
+  ]
+ },
+ "IPRTV6_R": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "The IPv6 counterpart of IPRT_R, representing a runtime IPv6 routing-table entry for the BTS's transport network layer. No sample parameters were captured in this dataset, but by analogy with IPRT_R it would report destination prefix, next-hop, and route-type/state information for an IPv6 route.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPRTV6_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Read only IPv6 Routing Table",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPRTV6",
+   "IPRTV6_R"
+  ]
+ },
+ "IPRT_R": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "A runtime IP routing-table entry, showing a destination address and prefix length, next-hop gateway, egress IP interface (ipIfDN), route preference/metric, path MTU, route type (e.g., static/connected), and forwarding-entry counters. It mirrors the live state of a statically or dynamically configured IPv4 route used by the BTS's transport network layer.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPRT_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Read only IP Routing Table",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "IPRT",
+   "IPRT_R"
+  ]
+ },
+ "IPSECC": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Configures an IPsec tunnel/connection used to secure transport traffic (e.g. S1/X2 or O&M) between the BTS and a security gateway, including IKE authentication and encryption methods, Diffie-Hellman group, anti-replay window, dead-peer-detection settings, and backup tunnel behavior. It is central to secure backhaul transport.",
+  "fullNames": [
+   "NOKLTE:IPSECC",
+   "com.nokia.srbts.tnl:IPSECC"
+  ],
+  "occurrences": 49,
+  "officialFullName": "IP security object",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "IPSECC"
+  ]
+ },
+ "IPSECC_R": {
+  "category": "Security",
+  "confidence": "medium",
+  "description": "A runtime status object for an IPsec security association/client on the BTS, reporting whether an emergency/administrative bypass of IPsec protection is currently active (ipSecEmBypassState). It supports monitoring of the transport-layer security tunnel that protects S1/X2/OAM traffic.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:IPSECC_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Read only IP Security",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "IPSECC",
+   "IPSECC_R"
+  ]
+ },
+ "IRFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Holds inter-frequency idle-mode mobility parameters for a neighboring LTE carrier layer, such as cell reselection priorities, idle-mode load-balancing thresholds, measurement bandwidth, and MBMS neighbor cell configuration used to steer idle-mode UEs between frequency layers. It is typically instantiated per target frequency under an LNCEL/LNBTS branch alongside other inter-frequency mobility objects.",
+  "fullNames": [
+   "NOKLTE:IRFIM"
+  ],
+  "occurrences": 433,
+  "officialFullName": "Inter frequency Idle Mode parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "IRFIM"
+  ]
+ },
+ "ISHPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A feature-configuration profile for inter-cell load/interference coordination, exchanging load information between neighboring cells (nCellsLoadExchange, periodicityLoadExchange, restartPeriodLoadExchange) and adjusting resource-allocation preferences (prefResIncreaseThreshold/DecreaseThreshold/LowerLimit/StepSize) or resource blanking (blankingPosition) when a defined number of neighbors are highly loaded (nHighLoadNeighbor, limitHighLoadNeighbor), with fast-ramp options for GBR/non-GBR traffic. It functions similarly to eICIC/ICIC-style interference-and-load coordination between cells.",
+  "fullNames": [
+   "NOKLTE:ISHPR"
+  ],
+  "occurrences": 4,
+  "officialFullName": "Downlink Interference Shaping Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "ISHPR"
+  ]
+ },
+ "IVIF": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "IVIF represents an IP VLAN interface -- a VLAN sub-interface layered on top of a physical Ethernet interface -- configuring the local IPv4/IPv6 address, netmask, VLAN ID, and QoS shaping parameters (SIR, weighted-fair-queue weight). It is used in the Flexi Zone (NOKLTE) product line to carry tagged transport traffic (e.g. for OAM, S1/X2, or synchronization) on a dedicated VLAN.",
+  "fullNames": [
+   "NOKLTE:IVIF"
+  ],
+  "occurrences": 24,
+  "officialFullName": "VLAN interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "IEIF",
+   "IVIF"
+  ]
+ },
+ "L2SWI": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents a Layer-2 switch interface configuration, controlling DSCP-to-queue mapping, layer-2 QoS/switching enablement, and priority-queue weighting (including weighted-fair-queuing weights for assured-forwarding classes). It underlies the BTS's internal Ethernet switch fabric QoS behavior.",
+  "fullNames": [
+   "NOKLTE:L2SWI",
+   "com.nokia.srbts.tnl:L2SWI"
+  ],
+  "occurrences": 58,
+  "officialFullName": "L2 bridge",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "L2SWI"
+  ]
+ },
+ "LAA": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Configures the LAA (License Assisted Access) feature, which lets an LTE cell opportunistically use unlicensed 5 GHz spectrum as a supplemental downlink carrier via carrier aggregation. Parameters cover Listen-Before-Talk clear-channel-assessment thresholds (ccaThresholdXr), a frequency hold-off timer after a channel becomes busy, an SCell-release timer tied to interference detection (idcLaaScellReleaseTimer), dynamic power control (DPC) evaluation/kickdown timers, and the applicable ITU region for regulatory rules (lteUItuRegion).",
+  "fullNames": [
+   "NOKLTE:LAA"
+  ],
+  "occurrences": 3,
+  "officialFullName": "License Assisted Access Configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNBTS_FDD",
+   "LAA"
+  ]
+ },
+ "LANE": {
+  "category": "Equipment",
+  "confidence": "low",
+  "description": "Represents an individual Ethernet lane/port on a switch or interface module, exposing its administrative state (administrativeState). It is an equipment-level object representing a physical port that can be independently enabled or disabled, distinct from its logical IP/Ethernet-link configuration.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:LANE"
+  ],
+  "occurrences": 4
+ },
+ "LANE_R": {
+  "category": "Equipment",
+  "confidence": "low",
+  "description": "LANE_R is a resource object representing an individual physical/logical 'lane' within a multi-lane interface (such as a CPRI/eCPRI fronthaul link or a multi-lane optical/electrical interconnect), reporting only its operational state. It is a fine-grained equipment status object beneath a link or port object.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:LANE_R"
+  ],
+  "occurrences": 15
+ },
+ "LBPUCCHRDPR": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "medium",
+  "description": "Defines a load-based PUCCH resource reduction profile, specifying RRC-connected-UE thresholds and countdown timers used to dynamically compress or expand PUCCH capacity as cell load changes. It works together with the adaptive PUCCH (APUCCH) configuration to balance control-channel capacity against uplink data capacity under varying load.",
+  "fullNames": [
+   "NOKLTE:LBPUCCHRDPR"
+  ],
+  "occurrences": 48,
+  "officialFullName": "Load Based PUCCH Region Default PRofile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LBPUCCHRDPR"
+  ]
+ },
+ "LBPUCCHRPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A load-based PUCCH resource-adaptation profile, defining upper/lower thresholds of RRC-connected UE count that trigger expansion or contraction of PUCCH control-channel resources, along with countdown timers used to smooth those expansion/compression transitions (countdownPucchCompr/Expr). It helps the eNodeB dynamically balance PUCCH capacity against PUSCH data capacity as cell load changes.",
+  "fullNames": [
+   "NOKLTE:LBPUCCHRPR"
+  ],
+  "occurrences": 3,
+  "officialFullName": "Load Based PUCCH Region PRofile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LBPUCCHRPR"
+  ]
+ },
+ "LCELL": {
+  "category": "Feature-Function-Config",
+  "confidence": "low",
+  "description": "Appears to be a site- or cell-level container for cross-RAT radio spectrum-sharing feature toggles, such as dynamic LTE/WCDMA shared spectrum operation and distributed-antenna-system MIMO activation. Its exact scope is not fully certain from the parameter set alone, but it groups spectrum-sharing controls rather than per-cell radio resource parameters.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:LCELL"
+  ],
+  "occurrences": 85,
+  "officialFullName": "LTE local cell parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CELLMAPPING",
+   "LCELL"
+  ]
+ },
+ "LCELNR": {
+  "category": "Feature-Function-Config",
+  "confidence": "low",
+  "description": "LCELNR appears to link an LTE cell's configuration to 5G NR interworking features, based on its parameter names referencing antenna-sharing/distributed-MIMO with NR (actAsiDistMimoNr) and simplified channel configuration for massive-MIMO active antennas (actSimplChConfMAA). It likely toggles LTE/NR active-antenna-sharing feature behavior for a cell involved in dynamic spectrum sharing or shared-antenna deployments.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:LCELNR"
+  ],
+  "occurrences": 22
+ },
+ "LLOCK": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "Implements a 'location lock'/site-movement-detection feature that monitors whether the BTS has been physically relocated or tampered with, using GNSS position drift (gnssTriggerDistance) and/or detection of unexpected neighbor cells (detectionMethods, minimumNumberOfNeighbors, neighborsDetectionTime) as triggers, with a configurable alarming period and automatic-disable behavior. It is a site-integrity/self-protection feature-configuration object rather than a radio or hardware object.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:LLOCK"
+  ],
+  "occurrences": 10
+ },
+ "LNADJ": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Defines a classic X2 neighbor relation from an LTE cell to another LTE eNodeB, storing the target eNB's ID, PLMN identity, control-plane IP address, and whether RLF-based (Radio Link Failure) reconfiguration/reporting is supported toward that neighbor (rlfBasedRCRsupported). It is the LTE-to-LTE counterpart of LNADJGNB and underlies X2-based handovers between eNodeBs.",
+  "fullNames": [
+   "NOKLTE:LNADJ"
+  ],
+  "occurrences": 2,
+  "officialFullName": "Neighbouring LTE BTS",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNADJ"
+  ]
+ },
+ "LNADJGNB": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Defines a neighbor relation from an LTE cell/eNB to an external 5G gNB, used to support EN-DC (E-UTRAN-NR Dual Connectivity). It stores the target gNB's global ID, PLMN identity (mcc/mnc), control-plane IP address, and the operational status of the X2 link toward that gNB (x2ToGnbLinkStatus). It sits under the LTE BTS's mobility/neighbor configuration and is a prerequisite for adding NR secondary cells to LTE UEs.",
+  "fullNames": [
+   "NOKLTE:LNADJGNB"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Neighbouring gNB",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNADJGNB"
+  ]
+ },
+ "LNADJL": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "LNADJL defines an adjacent (neighbor) LTE cell relation, identifying the target cell by its PLMN identity list, ECGI, downlink EARFCN, physical cell ID (PCI), and tracking area code (TAC). It is used by mobility procedures (handover and idle-mode reselection) to describe LTE neighbor cells of a serving LNCEL, part of the LNADJ/LNADJL/LNADJX/LNREL family of neighbor-relation objects.",
+  "fullNames": [
+   "NOKLTE:LNADJL"
+  ],
+  "occurrences": 24,
+  "officialFullName": "Neighbouring LTE BTS Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNADJ",
+   "LNADJL"
+  ]
+ },
+ "LNADJX": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Defines an adjacency (neighbor cell) relation from an LTE cell to an external CDMA2000 (1x) cell, identified by band class, PN offset, and sector/market IDs rather than 3GPP cell identifiers. It supports legacy inter-RAT mobility toward 1x networks (e.g. measurement reporting or CS fallback) and is configured as a child relation object under an LNCEL.",
+  "fullNames": [
+   "NOKLTE:LNADJX"
+  ],
+  "occurrences": 420,
+  "officialFullName": "Neighbouring CDMA 1xRTT BTS Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNADJX"
+  ]
+ },
+ "LNBTS": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Represents the logical LTE eNodeB (BTS) function of the site - the parent object under MRBTS for all LTE-specific configuration (cells, neighbor relations, MME connections, mobility, and radio features). It holds an extremely large number of eNodeB-wide 'act*' feature-activation and behavior parameters governing carrier aggregation, access barring, SRVCC, and dozens of other LTE features.",
+  "fullNames": [
+   "NOKLTE:LNBTS"
+  ],
+  "occurrences": 54,
+  "officialFullName": "LTE Basestation RNW parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS"
+  ]
+ },
+ "LNBTS_FDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "LNBTS_FDD is the Flexi Zone (NOKLTE) logical LTE FDD eNodeB object -- the parent BTS-level object for one or more LNCEL_FDD cells -- hosting eNB-wide feature-activation toggles spanning VoLTE/SRVCC support, dual-band operation, flexible baseband usage, LAA (License Assisted Access) coexistence and dynamic power control, high-priority service handling, and inter-frequency service-based handover. It sits directly under MRBTS in the site hierarchy.",
+  "fullNames": [
+   "NOKLTE:LNBTS_FDD"
+  ],
+  "occurrences": 15,
+  "officialFullName": "All Common FDD-Cell Configuration Parameter",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNBTS_FDD"
+  ]
+ },
+ "LNBTS_TDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "The TD-LTE-specific companion object to LNBTS, holding eNodeB-wide feature-activation parameters that apply only to TDD deployments, such as CBRS support, handover to TD-SCDMA, and TDD-specific voice and interference-shaping features. It is instantiated alongside LNBTS for TD-LTE sites.",
+  "fullNames": [
+   "NOKLTE:LNBTS_TDD"
+  ],
+  "occurrences": 34,
+  "officialFullName": "All Common TFDD-Cell Configuration Parameter",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNBTS_TDD"
+  ]
+ },
+ "LNCEL": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Represents an LTE cell (FDD or TDD) - the fundamental logical radio cell object of an eNodeB, under which the vast majority of LTE radio resource management, mobility, and feature parameters are configured (hundreds of distinct parameters spanning measurement events, handover thresholds, and redirection behavior). It sits under an LNBTS object and is the parent for cell-specific child objects such as LNREL, SIB, DRX, and PUCCH configuration.",
+  "fullNames": [
+   "NOKLTE:LNCEL"
+  ],
+  "occurrences": 91,
+  "officialFullName": "LTE BTS CELL RNW parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL"
+  ]
+ },
+ "LNCEL_FDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "LNCEL_FDD is the LTE FDD-mode cell managed object (the Flexi Zone/NOKLTE-namespace counterpart to the AirScale LNCEL class), representing a single LTE FDD cell's radio configuration. With over a hundred parameters it governs numerous cell-level feature activations and radio behaviors -- MIMO modes (including Massive MIMO), carrier types (donut/liquid/slim cell), PUCCH allocation strategy, CAT-M support, and O-RAN interface activation. It sits under an LNBTS (logical eNodeB) object in the site hierarchy.",
+  "fullNames": [
+   "NOKLTE:LNCEL_FDD"
+  ],
+  "occurrences": 34,
+  "officialFullName": "FDD Specific Cell Parameter",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNCEL_FDD"
+  ]
+ },
+ "LNCEL_TDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "The TDD-specific extension/companion object to LNCEL, holding a very large set of TD-LTE physical-layer and radio-resource parameters (advanced beamforming, MU-MIMO, adaptive PRB allocation for retransmissions, high-speed UE handling, etc.) that apply only to TDD cells. It is instantiated together with the base LNCEL object for TD-LTE cells.",
+  "fullNames": [
+   "NOKLTE:LNCEL_TDD"
+  ],
+  "occurrences": 57,
+  "officialFullName": "TDD Specific Cell Parameter",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNCEL_TDD"
+  ]
+ },
+ "LNHENB": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Configures parameters used to detect and handle Home eNodeBs (HeNBs/femtocells) as potential neighbors of a macro LTE cell, including the PCI range to scan (pciFirst/pciLast), the carrier frequency to search (freqEutra), the cell individual offset to apply, and the eNB-ID size used when decoding the detected HeNB's identity. It supports macro-to-femto mobility/CSG handling scenarios.",
+  "fullNames": [
+   "NOKLTE:LNHENB"
+  ],
+  "occurrences": 4,
+  "officialFullName": "Home eNB Set",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNHENB"
+  ]
+ },
+ "LNHOIF": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Configures inter-frequency handover parameters for an LTE cell, including the A3/A5 measurement event offsets, hysteresis, time-to-trigger, and report amount/interval used to trigger measurement reporting and handovers toward other LTE frequency layers. It holds many per-device-type and per-QCI variants of these thresholds (e.g. CAT-M, HPUE, QCI1) and sits under an LNCEL.",
+  "fullNames": [
+   "NOKLTE:LNHOIF"
+  ],
+  "occurrences": 407,
+  "officialFullName": "Handover parameters to Neigbouring Interfrequency LTE Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNHOIF"
+  ]
+ },
+ "LNHOX": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "LNHOX configures LTE handover/CSFB target parameters toward CDMA2000 1xRTT, specifying the target 1xRTT ARFCN, band class, carrier frequency, search-window size, signal-strength threshold, and the maximum number of 1xRTT CSFB targets -- used by CDMA-operator LTE deployments (e.g. legacy Verizon/Sprint networks) to redirect voice calls to the CDMA network. It belongs to the LNHOIF/LNADJX/LNHOX family of LTE inter-RAT handover objects.",
+  "fullNames": [
+   "NOKLTE:LNHOX"
+  ],
+  "occurrences": 12,
+  "officialFullName": "Handover parameters to Neigbouring CDMA2000 1xRTT Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNHOX"
+  ]
+ },
+ "LNMME": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "Represents a configured MME (Mobility Management Entity) peer for the S1-MME interface of an LTE eNodeB, holding its primary IP address, name, supported PLMN list, RAT support, and current S1 link status. Multiple LNMME instances under an LNBTS define the pool of MMEs the eNodeB can connect to.",
+  "fullNames": [
+   "NOKLTE:LNMME"
+  ],
+  "occurrences": 100,
+  "officialFullName": "LTE Mobility Management Entity",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNMME"
+  ]
+ },
+ "LNREL": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Represents a standard LTE-to-LTE neighbor cell relation (an ANR-managed handover relation) identified by the target cell's ECGI (PLMN, eNB ID, cell ID), with flags controlling whether handover and relation removal are allowed. It is the core object underlying both automatically discovered and manually configured neighbor relations between eNodeBs, sitting as a child of an LNCEL.",
+  "fullNames": [
+   "NOKLTE:LNREL"
+  ],
+  "occurrences": 229,
+  "officialFullName": "LTE Neighbor Relation",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNREL"
+  ]
+ },
+ "LNRELGNBCELL": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Defines an LTE cell's relation to a specific target 5G NR cell (identified by nrCellId and its PLMN, nrCgiPlmnId) for EN-DC dual connectivity, including whether dual connectivity to that specific NR cell is allowed (lteNrDualConnectAllowed), its current status, and whether it may be removed by SON/ANR (removeAllowed). It is a child of the LNADJGNB neighbor-gNB relation, narrowing the relation down to individual candidate NR cells.",
+  "fullNames": [
+   "NOKLTE:LNRELGNBCELL"
+  ],
+  "occurrences": 5,
+  "officialFullName": "LTE Neighbor Relation to gNB Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNRELGNBCELL"
+  ]
+ },
+ "LNRELX": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Defines a neighbor relation from an LTE cell to an external CDMA2000 cell, paralleling LNADJX but additionally governing whether removal, CS fallback (e1xCsfbAllowed), and SRVCC handover are permitted toward that neighbor. It is used for inter-RAT mobility control between LTE and legacy CDMA2000 networks and sits under an LNCEL.",
+  "fullNames": [
+   "NOKLTE:LNRELX"
+  ],
+  "occurrences": 372,
+  "officialFullName": "LTE Neighbor Relation to CDMA2000 1xRTT",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNRELX"
+  ]
+ },
+ "LNUPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A cell-level profile for LTE operation in unlicensed spectrum (LTE-U/LAA, bands 46/255), covering antenna gain, band-255 measurement penalty, multiple clear-channel-assessment thresholds for data/discovery-signal transmissions, DFS (Dynamic Frequency Selection) channel offset for radar avoidance, discovery reference signal (DRS) measurement timing, LTE/Wi-Fi coexistence enablement, and maximum transmit power limits for unlicensed bands 46a/46b.",
+  "fullNames": [
+   "NOKLTE:LNUPR"
+  ],
+  "occurrences": 3,
+  "officialFullName": "LTE-U Cell Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNBTS_FDD",
+   "LAA",
+   "LNUPR"
+  ]
+ },
+ "LOGLINK": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "LOGLINK represents a logical link between two managed-object endpoints in the equipment hierarchy (e.g. between a baseband and radio module), specifying the endpoints via distinguished names and which functions the link mode carries (data, DC power). It models inter-module connectivity independent of the specific physical cable object (CABLINK).",
+  "fullNames": [
+   "com.nokia.srbts.eqm:LOGLINK"
+  ],
+  "occurrences": 14,
+  "officialFullName": "Logical Link",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "HWTOP",
+   "LOGLINK"
+  ]
+ },
+ "LOGLINK_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "LOGLINK_R is the resource/state counterpart of LOGLINK, reporting the logical inter-module link's operational state in addition to its endpoint identities and carried link modes (data, DC power, synchronization).",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:LOGLINK_R"
+  ],
+  "occurrences": 14,
+  "officialFullName": "Runtime Logical Link",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "HWTOP_R",
+   "LOGLINK_R"
+  ]
+ },
+ "LTAC": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "Defines LTE Tracking-Area-Code-specific admission control limits, such as GBR bearer limits for normal, handover, and emergency traffic and an overbooking limit, tied to a specific transport network ID. It lets an eNodeB apply different resource/admission policies per tracking area.",
+  "fullNames": [
+   "NOKLTE:LTAC",
+   "com.nokia.srbts.mnl:LTAC"
+  ],
+  "occurrences": 60,
+  "officialFullName": "LTE Transport Admission Control",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TAC",
+   "LTAC"
+  ]
+ },
+ "LTEENB": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Represents an external LTE eNodeB as seen from the 5G gNB side (found under the nrbts namespace), used to configure the EN-DC/X2 relationship where this gNB acts as the NR secondary node to that LTE master eNB. It records the eNodeB's ID and PLMN, its IP address and the gNB's local CU-side IP address used for the X2-C connection, and the administrative lock state and link status of that X2 connection.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:LTEENB"
+  ],
+  "occurrences": 1
+ },
+ "LUAC": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Configures local user account security policy on the BTS, including account lockout duration and threshold, failed-login counting, password expiry/warning periods, and username length constraints, independent of any centralized LDAP authentication. It governs local (non-LDAP) operator login security.",
+  "fullNames": [
+   "NOKLTE:LUAC",
+   "com.nokia.srbts.mnl:LUAC"
+  ],
+  "occurrences": 60,
+  "officialFullName": "Local user account",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "AMGR",
+   "LUAC"
+  ]
+ },
+ "LUAC_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "A local user-account runtime object reporting when a local (non-RADIUS/TACACS) operator account's password was last changed (localPasswdLastChangedTime), supporting security-compliance auditing of local BTS login credentials.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:LUAC_R"
+  ],
+  "occurrences": 3,
+  "officialFullName": "Runtime Local User Account",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "AMGR",
+   "LUAC",
+   "LUAC_R"
+  ]
+ },
+ "MFIRECEL": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Represents cell-level radio configuration specific to MulteFire (standalone LTE-in-unlicensed-spectrum) operation, covering PRACH/PUCCH interlace allocation and reservation counts, PDSCH random-data fill behavior, transmission-opportunity retransmission counts, synchronous/asynchronous DMTC profile references, and the UE-side clear-channel-assessment threshold. It functions as the MulteFire equivalent of a standard LTE cell (LNCEL) object, configuring the specific PHY/MAC adaptations MulteFire requires for unlicensed-spectrum access.",
+  "fullNames": [
+   "NOKLTE:MFIRECEL"
+  ],
+  "occurrences": 1
+ },
+ "MFIREPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "A MulteFire feature profile (MulteFire is standalone LTE operation in unlicensed spectrum without an anchor licensed carrier), configuring Listen-Before-Talk clear-channel-assessment success-rate monitoring (thresholds, hysteresis, sample counts, monitoring period), discovery reference signal timing, LTE/Wi-Fi coexistence, and non-GBR bearer thresholds for unlicensed operation.",
+  "fullNames": [
+   "NOKLTE:MFIREPR"
+  ],
+  "occurrences": 1
+ },
+ "MFNDMTCPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Configures the Discovery signals Measurement Timing Configuration (DMTC) used for neighbor-cell discovery-signal measurements in a MulteFire deployment, specifying the DMTC window length, its period, and its time offset. It allows a MulteFire cell/UE to know when and where to look for neighboring cells' discovery bursts in unlicensed spectrum.",
+  "fullNames": [
+   "NOKLTE:MFNDMTCPR"
+  ],
+  "occurrences": 1
+ },
+ "MNL": {
+  "category": "Site-Common",
+  "confidence": "medium",
+  "description": "Appears to be the root 'management/non-radio-layer' container object for a broad family of site administration classes (clock, time, security, fault/performance/feature configuration, certificate handling, etc. all share its com.nokia.srbts.mnl namespace as siblings). Its own parameters cover miscellaneous site-level settings such as planned product variant, time zone, VNF IP address, and hardware-versus-plan validation.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:MNL"
+  ],
+  "occurrences": 71,
+  "officialFullName": "Management Layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL"
+  ]
+ },
+ "MNLENT": {
+  "category": "Synchronization",
+  "confidence": "low",
+  "description": "A generic sub-entity under the management/non-radio-layer branch, apparently used to configure CPRI synchronization-loss recovery behavior (break time, delay-compensation type, recovery reset delay) for a referenced target unit type. Its exact scope is inferred mainly from its parameter names rather than confirmed documentation.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:MNLENT"
+  ],
+  "occurrences": 71,
+  "officialFullName": "Management Layer Entity",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT"
+  ]
+ },
+ "MNL_R": {
+  "category": "Site-Common",
+  "confidence": "high",
+  "description": "MNL_R is a node-level resource/state object reporting the overall software and configuration state of a multi-technology (LTE+5G shared) BTS, including the active LTE and 5G RAT software release versions, activation timestamp, configuration-data revision number, information-model version, and which RF technologies are shared across RATs on the site. It functions as a top-level software/version-inventory record.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:MNL_R"
+  ],
+  "occurrences": 17,
+  "officialFullName": "Runtime Management Layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNL_R"
+  ]
+ },
+ "MODPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "A mobility/load-balancing decision profile for an LTE cell, defining frequency-layer priority lists used for various load-balancing triggers (dedicated LTE load balancing, VoLTE handover, service-based handover, SRVCC-to-WCDMA), the percentage of UEs subject to idle-mode load balancing, inter-RAT mode behavior, carrier-aggregation blocking rules, and the target-cell selection method. It centralizes the policy inputs used by the eNodeB's mobility load-balancing algorithms.",
+  "fullNames": [
+   "NOKLTE:MODPR"
+  ],
+  "occurrences": 6,
+  "officialFullName": "Mobility Default Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "MODPR"
+  ]
+ },
+ "MOIMP": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Configures idle-mode mobility priorities for an LTE cell, defining cell-reselection priorities and weights toward other E-UTRAN carrier frequencies (idleLBEutCelResPrio/Weight, with variants for 2/3/4 component carriers) and toward UTRAN (3G) FDD frequencies, used for idle-mode load balancing between frequency layers. It sits under the LTE cell's mobility configuration and directly influences which frequency layer idle UEs preferentially camp on.",
+  "fullNames": [
+   "NOKLTE:MOIMP"
+  ],
+  "occurrences": 10,
+  "officialFullName": "Mobility Idle Mode Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "MOPR",
+   "MOIMP"
+  ]
+ },
+ "MOPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "MOPR (Mobility/Load-Balancing Operator Profile) defines operator-managed frequency-layer lists used to steer idle and connected-mode UEs across LTE and inter-RAT frequency layers for specific purposes -- CS fallback to WCDMA, dedicated VoLTE handover targets, PS handover to WCDMA, SRVCC targets, and general load-balancing candidate layers -- along with idle-mode load-balancing percentages and a target-cell-selection method, allowing fine-grained mobility/load-balancing policy per cell.",
+  "fullNames": [
+   "NOKLTE:MOPR"
+  ],
+  "occurrences": 12,
+  "officialFullName": "Mobility Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "MOPR"
+  ]
+ },
+ "MORED": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "MORED configures RRC connection release with redirection ('mobility redirect') behavior, controlling redirection priority and target frequency/RAT (e.g. redirecting to UTRAN), whether GSM/UTRAN system information is embedded in the redirect message, and priority handling for CS fallback and emergency calls. It supports inter-RAT mobility and CSFB procedures from an LTE cell.",
+  "fullNames": [
+   "NOKLTE:MORED"
+  ],
+  "occurrences": 24,
+  "officialFullName": "Mobility Profile for Redirection",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "MOPR",
+   "MORED"
+  ]
+ },
+ "MPLANENW": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Configures management-plane (O&M) network connectivity settings for the BTS, including the DSCP marking used for O&M traffic, the OAM peer/controller IP address, and TLS security parameters (supported versions, cipher restrictions, certificate types, renegotiation interval) protecting the management channel. It secures and prioritizes the link used for remote element management.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:MPLANENW"
+  ],
+  "occurrences": 60,
+  "officialFullName": "Management Plane Network",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "MPLANENW"
+  ]
+ },
+ "MPLANENW_R": {
+  "category": "Security",
+  "confidence": "medium",
+  "description": "A runtime status object for the management-plane network's transport security, reporting whether TLS is enabled for OAM traffic (oamTlsStatus) and whether the older, less-secure TLS 1.1 protocol is still enabled (tls11EnabledStatus). It supports security-posture monitoring of the O&M channel.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:MPLANENW_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Runtime Management Plane Network",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "MPLANENW",
+   "MPLANENW_R"
+  ]
+ },
+ "MPUCCH_FDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "MPUCCH_FDD configures PUCCH (Physical Uplink Control Channel) resource management and RRC connection admission limits for an LTE FDD cell, including PUCCH format 1/3 resource allocation (deltaPucchShift, n1PucchAn, nPucchF3Prbs), CQI reporting resource blocks, scheduling-request period, PHICH duration, and minimum/maximum numbers of RRC connections (including reserved emergency-session capacity). It is a feature/resource configuration child of an LNCEL_FDD cell.",
+  "fullNames": [
+   "NOKLTE:MPUCCH_FDD"
+  ],
+  "occurrences": 23,
+  "officialFullName": "Manual PUCCH Allocation Configuration for FDD Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNCEL_FDD",
+   "MPUCCH_FDD"
+  ]
+ },
+ "MPUCCH_TDD": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Configures the manual/static PUCCH resource allocation for a TDD LTE cell - fixed sizes for CQI, ACK/NACK, and format-3 PUCCH resources, PHICH duration/resources, and maximum/minimum RRC connection counts - serving as the counterpart to the adaptive APUCCH_TDD configuration. It defines the baseline fixed PUCCH capacity plan for the cell.",
+  "fullNames": [
+   "NOKLTE:MPUCCH_TDD"
+  ],
+  "occurrences": 50,
+  "officialFullName": "Manual PUCCH Allocation Configuration for TDD Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNCEL_TDD",
+   "MPUCCH_TDD"
+  ]
+ },
+ "MRBTS": {
+  "category": "Site-Common",
+  "confidence": "high",
+  "description": "The root managed object representing the entire physical BTS/gNB site, under which all other equipment and logical function objects (EQM, LNBTS, NRBTS, etc.) are nested. Its parameters cover the site's identity and physical location, such as BTS name, latitude/longitude/altitude, and overall blocking state.",
+  "fullNames": [
+   "com.nokia.mrbts:MRBTS",
+   "com.nokia.srbts:MRBTS"
+  ],
+  "occurrences": 77,
+  "officialFullName": "Multiradio BTS Site",
+  "officialHierarchy": [
+   "MRBTS"
+  ]
+ },
+ "MRBTSDESC": {
+  "category": "Site-Common",
+  "confidence": "high",
+  "description": "MRBTSDESC holds descriptive metadata about the MRBTS site object, including a human-readable descriptive name, integration/commissioning information, the MRBTS configuration type, and target-parameter information used during commissioning. It is a small companion object to the MRBTS root, carrying site-identification and integration bookkeeping rather than radio/equipment configuration.",
+  "fullNames": [
+   "com.nokia.srbts:MRBTSDESC"
+  ],
+  "occurrences": 18,
+  "officialFullName": "MRBTS Descriptive",
+  "officialHierarchy": [
+   "MRBTS",
+   "MRBTSDESC"
+  ]
+ },
+ "MTRACE": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Configures cell-level subscriber and radio tracing (call/measurement trace, similar in scope to CTRLTS but at the cell rather than BTS level), including EUTRAN trace ID and its PLMN components, per-cell trace mode and maximum concurrently traced UEs/MDT UEs, angle-of-arrival tracing, PCMD (Per Call Measurement Data) and UE-throughput measurement-report activation, and MDT anonymization behavior. It supports network optimization, troubleshooting, and regulatory/measurement tracing at the individual cell level.",
+  "fullNames": [
+   "NOKLTE:MTRACE"
+  ],
+  "occurrences": 3,
+  "officialFullName": "Cell Trace Session",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CTRLTS",
+   "MTRACE"
+  ]
+ },
+ "NBIOTPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "A large feature-configuration profile for NB-IoT (Narrowband Internet of Things), covering HARQ ACK/NACK repetition counts per coverage class (CE Level 0/1/2) for Msg4, coverage-enhancement search-space profiles for extended/normal/robust coverage, default paging cycle and number of paging repetitions, initial MCS for DL/UL, and repetition counts for NPDCCH random access, NPDSCH, and NPUSCH. It fully parameterizes how the cell serves NB-IoT devices across different coverage conditions.",
+  "fullNames": [
+   "NOKLTE:NBIOTPR"
+  ],
+  "occurrences": 2,
+  "officialFullName": "Profiles for IoT \u2018semi-static\u2019 parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "NBIOTPR"
+  ]
+ },
+ "NECERT_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Represents an installed X.509 certificate on the network element, exposing standard certificate fields such as issuer and subject (issuedTo/issuer), serial number, signature algorithm, key usage, subject alternate name, key identifiers, trust chain, and validity period (validFrom/validTo). It is used to inventory and monitor the certificates the BTS uses for IPsec, TLS/OAM, or 802.1X security.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:NECERT_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "NE Certificate",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CERTHENT",
+   "NECERT_R"
+  ]
+ },
+ "NOTE": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"NOTE\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:NOTE"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Note",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "NOTES",
+   "NOTE"
+  ],
+  "sampleParams": [
+   "attribName",
+   "attribValue",
+   "attribute"
+  ]
+ },
+ "NOTES": {
+  "category": "Site-Common",
+  "confidence": "medium",
+  "description": "A free-text annotation object used to attach operator comments or documentation notes to the BTS configuration for record-keeping purposes. It carries no functional radio, transport, or hardware parameters \u2014 it exists purely to hold human-readable notes within the configuration file.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:NOTES"
+  ],
+  "occurrences": 3,
+  "officialFullName": "Notes",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "NOTES"
+  ]
+ },
+ "NRBEAMMAP": {
+  "category": "NR-Radio-Cell",
+  "confidence": "medium",
+  "description": "Defines the mapping between logical beam identifiers and the physical antenna beam patterns (azimuth/elevation weights) used by the Active Antenna System for NR SSB/CSI-RS beamforming and beam sweeping on this cell.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRBEAMMAP"
+  ],
+  "occurrences": 1
+ },
+ "NRBTS": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRBTS is the top-level logical 5G gNB object (the NR counterpart to LNBTS), sitting under the MRBTS site root and representing the entire gNB's identity and node-wide configuration. With over 500 parameters it primarily consists of feature-activation toggles (3GPP release features, RTPM performance monitoring, TCP MSS clamping, QoS-flow handling, mobility and load-control behaviors) that apply across all NR cells and DUs hosted by this gNB.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRBTS"
+  ],
+  "occurrences": 22
+ },
+ "NRCBRSPR": {
+  "category": "Other",
+  "confidence": "medium",
+  "description": "An NR CBRS profile object holding the Priority Access License (PAL) / General Authorized Access (GAA) channel and priority configuration a cell uses when operating in the shared CBRS band, referenced by cells that need CBRS-specific spectrum-sharing behavior.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCBRSPR"
+  ],
+  "occurrences": 1
+ },
+ "NRCBSD": {
+  "category": "Other",
+  "confidence": "medium",
+  "description": "Represents this base station's identity/registration as a CBSD (Citizens Broadband Radio Service Device) for operation in the US CBRS band (3.55-3.7 GHz, NR band n48). Holds the FCC ID, serial number, and registration data the SAS (Spectrum Access System) uses to authorize and manage the device's spectrum grants.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCBSD"
+  ],
+  "occurrences": 1
+ },
+ "NRCBSDCELL": {
+  "category": "NR-Radio-Cell",
+  "confidence": "medium",
+  "description": "Links an NR cell to its CBSD (Citizens Broadband Radio Service Device) registration and the specific SAS-granted CBRS channel/frequency it is authorized to transmit on, tying the logical cell to its CBRS spectrum grant.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCBSDCELL"
+  ],
+  "occurrences": 1
+ },
+ "NRCELL": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRCELL is the core 5G NR cell managed object, representing a single NR cell's full radio configuration. Its very large parameter set (500+) covers mobility measurement events (A1/A2/etc. thresholds for both SA and NSA/EN-DC modes, and voice-over-NR specific variants), among many other cell-level radio parameters. It is the NR analog of LNCEL and sits under an NRBTS/NRDU in the site hierarchy.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCELL"
+  ],
+  "occurrences": 22
+ },
+ "NRCELLGRP": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRCELLGRP configures a group of NR cells that share scheduling and resource-management behavior, covering scheduler load/HARQ tuning (maxDlHarqTx, forgetting ratios per frequency range), CSI reporting periodicity and load-based adjustment, beamforming grid selection, PUCCH beam constraints for FR2 (mmWave), and handover admission counts. It groups related NRCELL instances (e.g. cells sharing a baseband/carrier resource pool) under an NRDU.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCELLGRP"
+  ],
+  "occurrences": 22
+ },
+ "NRCELL_FDD": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Represents a 5G NR cell configured for FDD (Frequency Division Duplex) operation, as distinct from the more common TDD NR cell, with separate downlink and uplink NR-ARFCN center frequencies (nrarfcnDl/nrarfcnUl) and channel bandwidths (chBwDl/chBwUl), asymmetric-bandwidth guard-band handling, and O-RAN fronthaul activation (actOran). It sits under an NR DU/gNB in the site hierarchy, functioning as the FDD counterpart to the standard NRCELL object.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCELL_FDD"
+  ],
+  "occurrences": 3
+ },
+ "NRCUUP": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRCUUP represents the gNB-CU-UP (Centralized Unit, User-Plane) function in a disaggregated gNB architecture, identified by its own gNB-CU-UP ID and holding the local and remote IP addresses used for the E1 interface (and user-plane transport) between the CU control-plane and user-plane functions. It models the split-gNB architecture alongside NRDU (the DU function).",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCUUP"
+  ],
+  "occurrences": 22
+ },
+ "NRDCDPR": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A dual-connectivity (EN-DC) profile controlling how an LTE cell manages adding and maintaining an NR secondary cell group, including power-headroom-reporting timers (tPeriodicPhr/tProhibitPhr), maximum power offsets allotted to the LTE (MCG) and NR (SCG) legs (enDCpMaxEUTRApowerOffset/enDCpMaxNRpowerOffset), the pathloss-change trigger for B1 measurement (dlPathlossChg/bufTrigForB1Nr), and bearer-context-list sorting behavior. It is a feature-configuration object rather than a physical/radio object.",
+  "fullNames": [
+   "NOKLTE:NRDCDPR"
+  ],
+  "occurrences": 7,
+  "officialFullName": "New Radio Dual Connectivity Default Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "NRDCDPR"
+  ]
+ },
+ "NRDRB": {
+  "category": "NR-Radio-Cell",
+  "confidence": "medium",
+  "description": "NRDRB represents the Data Radio Bearer (DRB) configuration for a 5G NR cell/DU, defining bearer-level behavior such as PDCP status reporting on resume, discard timers, dual-connectivity (X2/Xx) transmission coordination between the master and secondary node, and downlink data-split buffering thresholds for split bearers. It is a child configuration object under an NR cell or gNB-DU that governs how user-plane data bearers are handled across the split RLC/PDCP/MAC layers described by its sibling objects (NRDRB_PDCP, NRDRB_MAC, NRDRB_RLC_AM).",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB"
+  ],
+  "occurrences": 33
+ },
+ "NRDRB_5QI": {
+  "category": "QoS",
+  "confidence": "medium",
+  "description": "Maps one or more 5QI (5G QoS Identifier) values to a Data Radio Bearer configuration for NR and indicates whether data forwarding is used for that DRB (e.g. during handover), controlling how NR QoS flows are grouped onto radio bearers with consistent scheduling and treatment.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB_5QI"
+  ],
+  "occurrences": 47
+ },
+ "NRDRB_MAC": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRDRB_MAC configures MAC-layer scheduling behavior for a 5G NR Data Radio Bearer's logical channel, including the logical channel group ID (lcgid), prioritized bit rate, scheduling priority, and delay target used by the gNB scheduler for QoS-aware resource allocation. It is a child object of NRDRB, alongside NRDRB_PDCP and NRDRB_RLC_AM, together modeling the full NR user-plane protocol stack per bearer.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB_MAC"
+  ],
+  "occurrences": 32
+ },
+ "NRDRB_PDCP": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRDRB_PDCP configures the PDCP (Packet Data Convergence Protocol) sublayer behavior for a 5G NR Data Radio Bearer, including reordering timers (tReorderingDl/Ul), buffer discard thresholds, header-compression context limits (maxCidAllowed), and CU flow-control profile selection used in split CU/DU deployments. It is a child object of NRDRB and directly implements 3GPP PDCP-layer parameters for the bearer.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB_PDCP"
+  ],
+  "occurrences": 33
+ },
+ "NRDRB_RLC_AM": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRDRB_RLC_AM configures RLC Acknowledged Mode (AM) behavior for a 5G NR Data Radio Bearer, including ARQ retransmission thresholds, poll timers/counters (dlTPollRetr, dlPollByte/PDU), reassembly timers, and the DU-side flow-control profile. It is a child of NRDRB and implements the 3GPP RLC-AM sublayer for bearers requiring reliable delivery.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB_RLC_AM"
+  ],
+  "occurrences": 22
+ },
+ "NRDRB_RLC_UM": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Configures RLC (Radio Link Control) parameters for a 5G NR Data Radio Bearer operating in Unacknowledged Mode (UM), including the UM sequence-number length and the DL/UL reassembly timers used to reorder and discard RLC UM PDUs. It is a child configuration object of an NR cell/bearer profile, used for delay-sensitive traffic (e.g., voice) that does not require RLC retransmission.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB_RLC_UM"
+  ],
+  "occurrences": 10
+ },
+ "NRDRX": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Defines a Discontinuous Reception (DRX) profile for a 5G NR cell, specifying the DRX long cycle, on-duration timer, inactivity timer, and HARQ RTT/retransmission timers for both uplink and downlink, used to let connected UEs periodically power down their receiver to conserve battery. It is the NR counterpart to the LTE DRX/SDRX objects.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRX"
+  ],
+  "occurrences": 89
+ },
+ "NRDU": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRDU represents the gNB-DU (Distributed Unit) function of a split gNB, identified by its gNB-DU ID/name and RRC version, holding the local CU IP address used for the F1 interface. It also carries carrier-aggregation feature toggles (inter-gNB CA, non-beamformed/beamformed CA mixing, CA with 3 transmit paths) and administrative state, and typically hosts one or more NRCELL/NRCELLGRP instances beneath it.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDU"
+  ],
+  "occurrences": 22
+ },
+ "NRIAFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "NRIAFIM configures intra-frequency idle-mode mobility parameters for NR, including the minimum required RX level for cell reselection (qRxLevMin), intra-frequency search thresholds (sIntraSearchP/Q), the cell-reselection timer (tReselectionNr), and the number of transmitted SSBs used for measurement averaging. It governs how idle UEs reselect between NR cells on the same frequency.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRIAFIM"
+  ],
+  "occurrences": 13
+ },
+ "NRIRFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "NR equivalent of the LTE IRFIM object: holds Inter-RAT / Inter-Frequency idle-mode mobility parameters (cell reselection priorities, thresholds, and related tuning) that control how idle-mode UEs move between this NR frequency layer and other NR or LTE frequency layers.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRIRFIM"
+  ],
+  "occurrences": 1
+ },
+ "NRMEASDPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "NRMEASDPR ('NR measurement/dual-connectivity profile') defines LTE-to-NR measurement configuration used for EN-DC (dual connectivity) NR secondary-node addition, including RSRP/RSRQ filter coefficients (separate for the measured serving vs. NR reference signal), whether measurement gaps are enabled for NR measurements, quantity-config selection, and B1-event retry/supervision timers. It is configured on the LTE anchor cell to control when/how the UE measures and reports NR cells for EN-DC.",
+  "fullNames": [
+   "NOKLTE:NRMEASDPR"
+  ],
+  "occurrences": 17
+ },
+ "NRPLMN": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Defines a Public Land Mobile Network identity (MCC/MNC with MNC length) broadcast or supported by an NR cell/gNB, analogous to the LTE PLMN list object but in the NR namespace. Multiple instances allow a shared or multi-operator gNB to advertise several PLMNs.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPLMN"
+  ],
+  "occurrences": 39
+ },
+ "NRPLMN_SUPPORT": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "Declares a Public Land Mobile Network (PLMN, via mcc/mnc) that an NR cell or gNB supports, together with the associated network slice identifiers (S-NSSAI, expressed via sst and the AMF list snssaiAMFList/snssaiAMFNumber) usable by that PLMN. It links the 5G radio access network's broadcast PLMN/slice support to the 5G core's AMF pool, and typically sits under an NR cell or gNB's core-network-facing configuration.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPLMN_SUPPORT"
+  ],
+  "occurrences": 4
+ },
+ "NRPMCCP": {
+  "category": "NR-Radio-Cell",
+  "confidence": "medium",
+  "description": "NRPMCCP is a performance-monitoring control object that enables specific NR counter categories -- historical measurement-report statistics, uplink RIP (Received Interference Power) counters, radio quality measurement counts, tracking-area counters, and throughput distribution updates -- governing which NR performance counters are actively collected.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPMCCP"
+  ],
+  "occurrences": 20
+ },
+ "NRPMRNL": {
+  "category": "NR-Radio-Cell",
+  "confidence": "medium",
+  "description": "NRPMRNL is a performance-monitoring configuration object that enables/controls a very large set of NR 'Radio Network Layer' measurement indicator counters (beamforming, carrier aggregation, cell availability, cell-group measurements, and many others prefixed 'miNr...'). It does not represent physical or radio configuration itself but rather which NR PM counter families are collected for reporting.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPMRNL"
+  ],
+  "occurrences": 22
+ },
+ "NRRFSP_PROFILE": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "NRRFSP_PROFILE defines an RFSP (RAT/Frequency Selection Priority) index profile for 5G NR -- a subscriber-group priority value, normally supplied by the core network (AMF/HSS), that the gNB uses to bias idle-mode camping and inter-frequency/inter-RAT redirection decisions for that subscriber group.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRRFSP_PROFILE"
+  ],
+  "occurrences": 20
+ },
+ "NRSASUSERGROUP": {
+  "category": "Other",
+  "confidence": "medium",
+  "description": "Holds Spectrum Access System (SAS) user/group credential and grouping information for CBRS operation -- the operator/user account details the SAS uses to authenticate spectrum grant requests for this site's CBSDs.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRSASUSERGROUP"
+  ],
+  "occurrences": 1
+ },
+ "NRSCTP": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "NRSCTP configures an SCTP association profile used for NG-interface signaling transport between the gNB and the 5G core (AMF), tuning parameters such as heartbeat interval, retransmission counts/timeouts (RTO min/initial/max), max burst, SACK delay, and payload size. It is the NR/5G counterpart to LTE's SCTP association object, supporting the NGAP signaling protocol.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRSCTP"
+  ],
+  "occurrences": 22
+ },
+ "NRSPID_PROFILE": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "NRSPID_PROFILE defines an SPID (Subscriber Profile ID for RAT/Frequency Priority) value for NR, analogous to the RFSP profile, used to apply subscriber-group-specific camping and mobility priorities across frequency layers/RATs.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRSPID_PROFILE"
+  ],
+  "occurrences": 20
+ },
+ "NRSYSINFO_PROFILE": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "NRSYSINFO_PROFILE defines System Information Block (SIB) broadcast configuration for an NR cell per 3GPP TS 38.331 -- SIB scheduling list, periodicity, broadcast status, and scope -- together with idle/inactive-mode cell-reselection relaxation parameters (measurement relaxation hysteresis for high/medium mobility states, cell-change-count thresholds, Qhyst) that reduce UE measurement activity for stationary or low-mobility devices.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRSYSINFO_PROFILE"
+  ],
+  "occurrences": 13
+ },
+ "NRX2LINK_TRUST": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Defines a trusted X2 peer for NR/EN-DC purposes, specifying the IPv4 address of a trusted peer node (ipV4Addr) and a trust-control setting (x2LinkTrustCtrl) that governs whether X2 signaling from that address is accepted. It is a security/access-control object protecting the gNB's X2-C interface from untrusted peers.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRX2LINK_TRUST"
+  ],
+  "occurrences": 2
+ },
+ "NTP": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "NTP configures the Network Time Protocol client used by the BTS/gNB for coarse time synchronization, including the list of NTP server IP addresses/FQDNs, DSCP marking for NTP traffic, maximum tolerated time error, alarming threshold, and UTC-GPS leap-second offset handling. It is a synchronization support object that complements GNSS/PTP-based sync sources.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:NTP"
+  ],
+  "occurrences": 31,
+  "officialFullName": "Network Time Protocol",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "NTP"
+  ]
+ },
+ "NTPS": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures NTP-based synchronization on the older Flexi Zone LTE product line, listing the NTP servers to sync against (ntpSyncServers), the local IP address mapping used to reach them (ntpSyncLocalIpMapping), and how frequently the client polls them (ntpSyncPollingRate). It is functionally equivalent to the AirScale NTP client configuration (NTP_R).",
+  "fullNames": [
+   "NOKLTE:NTPS"
+  ],
+  "occurrences": 3,
+  "officialFullName": "NTP Frequency sync",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "IPNO",
+   "NTPS"
+  ]
+ },
+ "NTP_R": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "A runtime status object for the Network Time Protocol client, listing the configured NTP server address(es), each server's per-server sync status, the stratum number of the reference clock, and the overall NTP synchronization status. It reflects the live state of time synchronization used for O&M/logging timestamps and possibly a coarse frequency reference.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:NTP_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Runtime Network Time Protocol",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "NTP",
+   "NTP_R"
+  ]
+ },
+ "PCP2QMAP": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "Defines a mapping from Ethernet 802.1p Priority Code Point (PCP) values (0-7) to internal hardware transmit queues, analogous to DSCPTOQMAP but keyed on the VLAN tag's priority bits rather than the IP DSCP field. It is used by the transport network layer's QoS scheduler to prioritize Layer-2-tagged traffic.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:PCP2QMAP"
+  ],
+  "occurrences": 7,
+  "officialFullName": "PCP to queue mapping",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "L2SWI",
+   "PCP2QMAP"
+  ]
+ },
+ "PDCCH": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "PDCCH configures Physical Downlink Control Channel behavior for an NR cell, specifically the aggregation-level (AL) selection strategy for different DCI (Downlink Control Information) message types -- dedicated scheduling, paging, random-access completion/Msg2, and system information -- along with proactive/reactive downgrade rules between AL16 and AL8 to manage control-channel capacity.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:PDCCH"
+  ],
+  "occurrences": 20
+ },
+ "PDCCH_CONFIG_COMMON": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "PDCCH_CONFIG_COMMON defines the common (cell-wide) PDCCH search-space and CORESET configuration for an NR cell per 3GPP TS 38.331 -- including CORESET ID, DCI format, monitoring symbol/slot offset, periodicity, search-space type (common vs. UE-specific), and the number of PDCCH candidates configured per aggregation level. It complements PDCCH's aggregation-level selection logic with the standardized control-resource-set definition.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:PDCCH_CONFIG_COMMON"
+  ],
+  "occurrences": 20
+ },
+ "PDCCH_CONFIG_DEDICATED": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Defines the UE-specific (dedicated) PDCCH (Physical Downlink Control Channel) configuration for a 5G NR cell, including the CORESET (Control Resource Set) definition, CCE-to-REG mapping, interleaver and REG bundle sizes, DCI format, monitoring periodicity/offset, and the number of PDCCH candidates configured per aggregation level (AL1/2/4/8/16). This is a standard 3GPP NR physical-layer control-channel configuration object nested under an NR cell/BWP.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:PDCCH_CONFIG_DEDICATED"
+  ],
+  "occurrences": 10
+ },
+ "PDSCH": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "PDSCH represents Physical Downlink Shared Channel configuration for a 5G NR cell, the standard 3GPP downlink data channel used to carry user-plane and some control data. The observed parameter (pdschRat0RbgConfig) configures resource-block-group sizing for PDSCH scheduling. It sits as a child configuration object under an NR cell/DU.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:PDSCH"
+  ],
+  "occurrences": 30
+ },
+ "PFOE_R": {
+  "category": "Equipment",
+  "confidence": "low",
+  "description": "A runtime equipment-status object in the equipment-runtime (eqmr) namespace; no sample parameters were captured in this dataset. Based on its naming pattern (similar to POE) and placement alongside other hardware runtime-mirror classes, it most likely reports Power-over-Ethernet feed/output status for a hardware port, but this is a low-confidence inference.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:PFOE_R"
+  ],
+  "occurrences": 1
+ },
+ "PKTFLTR": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Represents an IP packet filter rule object, typically referenced by or associated with the FIREWALL class, used to define match criteria (source/destination address, port, protocol) for permitting or blocking specific traffic flows at the BTS's transport network layer. No sample parameters were captured, but it functions as a security/traffic-filtering building block.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:PKTFLTR"
+  ],
+  "occurrences": 11,
+  "officialFullName": "IP Packet Filter",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "FIREWALL",
+   "PKTFLTR"
+  ]
+ },
+ "PLMN": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"PLMN\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [],
+  "occurrences": 1,
+  "sampleParams": []
+ },
+ "PMCADM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "The site-wide Performance Management Configuration Administration object, setting the PM reporting interval and the destination IP/file-count limits used when uploading performance measurement files. It governs how and where the BTS exports its counter and KPI data.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:PMCADM"
+  ],
+  "occurrences": 70,
+  "officialFullName": "Performance measurement common administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "PMCADM"
+  ]
+ },
+ "PMCADM_R": {
+  "category": "Site-Common",
+  "confidence": "low",
+  "description": "A performance-management collection/administration runtime object under the site management-network-layer branch. No sample parameters were captured in this dataset, so its precise scope is inferred generically as controlling or reporting on PM (performance measurement) data-collection administration for the node.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:PMCADM_R"
+  ],
+  "occurrences": 3
+ },
+ "PMCCP": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A small performance-management configuration object defining thresholds used to trigger enhanced or fast reporting, such as a fast RRC-connection-setup-request threshold and a PRB (Physical Resource Block) utilization threshold. It supports proactive congestion and quality monitoring.",
+  "fullNames": [
+   "NOKLTE:PMCCP"
+  ],
+  "occurrences": 48,
+  "officialFullName": "Performance Monitoring Counters Configuration Parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "PMRNL",
+   "PMCCP"
+  ]
+ },
+ "PMMNL": {
+  "category": "Synchronization",
+  "confidence": "medium",
+  "description": "A performance-monitoring/statistics configuration object in the site management-network-layer (mnl) branch, controlling collection intervals and enabling of measurement counters related to synchronization and fronthaul quality: GNSS antenna speed and time-error stats, PTP/eCPRI master statistics, O-RAN radio-unit/transport statistics, and SyncE network-rearrangement counts. It configures which sync/fronthaul-related PM counters the BTS collects and how often.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:PMMNL"
+  ],
+  "occurrences": 12,
+  "officialFullName": "Performance Management Administration for Management Layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "PMMNL"
+  ]
+ },
+ "PMPLM": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A performance-management configuration object defining a set of graduated cell/uplane-load threshold bins (0a-0e) and tracking how often each load level occurs, used to bucket and report load distribution over time for capacity monitoring.",
+  "fullNames": [
+   "NOKLTE:PMPLM"
+  ],
+  "occurrences": 35
+ },
+ "PMQAP": {
+  "category": "QoS",
+  "confidence": "medium",
+  "description": "Defines a QoS-aware performance measurement profile that segments PM counters by dimensions such as ARP range, QCI range, UE category, and PLMN, letting operators collect KPIs broken down by service or QoS class rather than only in aggregate.",
+  "fullNames": [
+   "NOKLTE:PMQAP"
+  ],
+  "occurrences": 60,
+  "officialFullName": "Performance Monitoring QCI and ARP Profiles identifier",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "PMRNL",
+   "PMQAP"
+  ]
+ },
+ "PMRNL": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "A performance-management configuration object that enables or disables specific measurement-type ('mt*') counter groups covering a broad range of areas - baseband pooling, carrier-aggregation relations, cell availability/load/throughput, and CAT-M accessibility/mobility/retainability KPIs. It controls which PM statistics categories are actively collected and reported.",
+  "fullNames": [
+   "NOKLTE:PMRNL"
+  ],
+  "occurrences": 48,
+  "officialFullName": "PM counters configuration for radio network layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "PMRNL"
+  ]
+ },
+ "PMRPQH": {
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "Configures performance-measurement histogram reporting for handover-related radio measurements, enabling or disabling collection of statistics for A3 intra/inter-frequency handover events, A5 events, B2 events, and RSRP-based A3 inter-frequency handover, plus the bin size and minimum value used to build RSRP/RSRQ histograms (cfgrsrpbinsize/cfgrsrpmin/cfgrsrqbinsize/cfgrsrqmin). It supports RF/mobility performance analysis by shaping how measurement-report statistics are bucketed and stored.",
+  "fullNames": [
+   "NOKLTE:PMRPQH"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Performance Monitoring RSRP and RSRQ Histogram",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "PMRNL",
+   "PMRPQH"
+  ]
+ },
+ "PMTNL": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "PMTNL (Performance Monitoring - Transport Network Layer) is a measurement-configuration object that defines the reporting/collection intervals for a wide range of transport-layer performance counters, including Ethernet interface/link utilization, IP interface and node statistics, per-hop-behavior (QoS), IPsec SA statistics, and bridge-port statistics. It does not represent physical hardware but rather controls which transport PM counter groups are active and how often they are sampled, typically as a site-level configuration object.",
+  "fullNames": [
+   "NOKLTE:PMTNL",
+   "com.nokia.srbts.tnl:PMTNL"
+  ],
+  "occurrences": 31,
+  "officialFullName": "Performance Management Administration for the Transport Network Layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "PMTNL"
+  ]
+ },
+ "PMTNLINT": {
+  "category": "Transport-Networking",
+  "confidence": "low",
+  "description": "PMTNLINT is closely related to PMTNL, defining a similar set of transport-network-layer performance-measurement interval settings (Ethernet, IP, IPsec, bridge-port statistics), likely scoped to a specific transport interface instance rather than the whole node. It is a performance-monitoring configuration object in the transport (tnl) domain.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:PMTNLINT"
+  ],
+  "occurrences": 29
+ },
+ "PNASC": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "PNASC configures port-based network access control (IEEE 802.1X) on an Ethernet port, including a guard timer for the EAP authentication exchange and a destination group for unauthenticated/authenticated traffic, used to restrict network access on the BTS's transport ports until a device or link is authenticated.",
+  "fullNames": [
+   "NOKLTE:PNASC"
+  ],
+  "occurrences": 20,
+  "officialFullName": "Port Network Access Security for FZM",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "PNASC"
+  ]
+ },
+ "POE": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "Enables or disables Power-over-Ethernet feed (actPowerPoE) on a given Ethernet port of the BTS, used to power an externally connected device (such as a small radio unit, media converter, or access point) directly over the data cable. It is a transport/hardware-adjacent networking object in the Flexi Zone product line.",
+  "fullNames": [
+   "NOKLTE:POE"
+  ],
+  "occurrences": 8,
+  "officialFullName": "Power over Ethernet",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "POE"
+  ]
+ },
+ "POWERGROUP_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "A runtime status object representing a power supply/power-distribution group within the BTS cabinet, exposing its operationalState. It groups one or more power feeds or power modules that supply DC power to baseband, radio, or auxiliary equipment, and is reported under the equipment management hardware tree.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:POWERGROUP_R"
+  ],
+  "occurrences": 11,
+  "officialFullName": "Runtime Powergroup",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "CABINET_R",
+   "SMOD_R",
+   "POWERGROUP_R"
+  ]
+ },
+ "PREEMPPR": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"PREEMPPR\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "NOKLTE:PREEMPPR"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Preemption Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "PREEMPPR"
+  ],
+  "sampleParams": [
+   "mcc",
+   "mnc",
+   "mncLength",
+   "preferredPreempCandList",
+   "searchAllCandForEmergency",
+   "searchRestPreempCand"
+  ]
+ },
+ "PTPMASTER": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures the BTS to act as an IEEE 1588 PTP (Precision Time Protocol) master/grandmaster clock, specifying the PTP domain number, multicast MAC address used for PTP messages, BMCA priority (priority2), the applicable PTP profile (standardProfile, e.g. G.8275.1), the phase-holdover alarm threshold, and the physical port used to transmit PTP master messages (ptpMasterPortDN). It allows the node to distribute precise time/phase to downstream nodes rather than only consuming it.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:PTPMASTER"
+  ],
+  "occurrences": 2
+ },
+ "QOS": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "Defines QoS marking and mapping rules for transport traffic, mapping DSCP values and traffic types to per-hop-behavior classes (assured-forwarding classes, best-effort, VLAN priority) and enabling per-hop-behavior counters. It governs how outgoing IP packets from the BTS are prioritized across the backhaul network.",
+  "fullNames": [
+   "NOKLTE:QOS",
+   "com.nokia.srbts.tnl:QOS"
+  ],
+  "occurrences": 48,
+  "officialFullName": "QoS profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "QOS"
+  ]
+ },
+ "REDRT": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Configures RRC connection release redirection targets and priorities for an LTE cell, controlling which inter-RAT frequency/band (CDMA, UTRAN, GERAN) a UE is redirected to, for example during CS fallback or emergency calls, and whether target-RAT system information is piggy-backed in the redirect message. It sits under an LNCEL and is central to CSFB and inter-RAT redirection behavior.",
+  "fullNames": [
+   "NOKLTE:REDRT"
+  ],
+  "occurrences": 122,
+  "officialFullName": "Redirection target parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "REDRT"
+  ]
+ },
+ "RETU": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "RETU represents a RET (Remote Electrical Tilt) actuator unit that mechanically controls the downtilt angle of one or more antenna sub-units. Parameters define the current/min/max electrical tilt angle, mechanical tilt offset, the sector it serves, and the list of antenna line devices (ANTL) it is associated with. It sits under the equipment hierarchy, connected via the antenna line to the associated RF module.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:RETU"
+  ],
+  "occurrences": 16,
+  "officialFullName": "RET Unit",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "ALD",
+   "RETU"
+  ]
+ },
+ "RETU_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "RETU_R is the resource/state counterpart of RETU, reporting the RET actuator's availability, operational, and procedural status in addition to the same tilt-angle and antenna-line-association parameters, reflecting the real-time state of the antenna tilt hardware.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:RETU_R"
+  ],
+  "occurrences": 16,
+  "officialFullName": "Runtime RET Unit",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "ALD_R",
+   "RETU_R"
+  ]
+ },
+ "RFREQ": {
+  "category": "Other",
+  "confidence": "low",
+  "description": "The exact purpose of this class could not be confidently determined; no sample parameters were captured for this dataset. Given the abbreviation and its placement under the site management-network-layer (mnl) namespace, it may relate to a radio- or reference-frequency management setting, but this is a low-confidence, largely speculative interpretation.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:RFREQ"
+  ],
+  "occurrences": 3,
+  "officialFullName": "RF Test Request",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TEST",
+   "RFREQ"
+  ]
+ },
+ "RFRES": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "RFRES stores the results of an RF test or calibration procedure run on the radio/antenna hardware (e.g. a forward/reverse power or return-loss test), recording the actual start/stop time, forward and reverse test dispositions, overall test outcome, and any additional outcome details. It is likely produced by running a test defined via the TEST object.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:RFRES"
+  ],
+  "occurrences": 12,
+  "officialFullName": "RF Test Result",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TEST",
+   "RFREQ",
+   "RFRES"
+  ]
+ },
+ "RFTHLD": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "RFTHLD defines alarm threshold levels for RF hardware health metrics on a radio module -- power error (high/low), operating temperature (high/low), receive antenna RSSI and RTWP (Received Total Wideband Power), and transmit antenna VSWR (Voltage Standing Wave Ratio, indicating antenna/feeder faults) -- used to raise equipment alarms when RF hardware readings exceed acceptable bounds.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:RFTHLD"
+  ],
+  "occurrences": 14,
+  "officialFullName": "RF Test Threshold",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TEST",
+   "RFTHLD"
+  ]
+ },
+ "RIBS": {
+  "category": "Feature-Function-Config",
+  "confidence": "low",
+  "description": "RIBS appears to reference a specific 'source' LTE cell by its EARFCN and cell ID, suggesting it supports a coordination or interference-management feature (for example, identifying a nearby/interfering cell that a mitigation or coexistence scheme should account for). Its exact purpose could not be determined with confidence from the available parameters alone.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:RIBS"
+  ],
+  "occurrences": 24
+ },
+ "RIBS_R": {
+  "category": "Site-Common",
+  "confidence": "low",
+  "description": "A runtime status object in the site management-network-layer (mnl) branch reporting a synchronization status (ribsSyncStatus) between some internal information base and its replica, most likely related to configuration or routing-table synchronization between redundant control units. The precise scope of 'RIBS' could not be determined with confidence from the available parameters.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:RIBS_R"
+  ],
+  "occurrences": 7
+ },
+ "RIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Configures RAN Information Management (RIM) procedure parameters used by the eNodeB to exchange system-information and load-related messages with GERAN/UTRAN nodes over the core network, primarily to support Circuit-Switched Fallback (CSFB) \u2014 including keep-alive, polling, and RIM-info-request timers for GERAN (G) and UTRAN (U), maximum system-information sizes under good/weak radio conditions, and the radio-condition threshold used to decide CSFB behavior. RIM is a standard 3GPP inter-RAT signaling mechanism.",
+  "fullNames": [
+   "NOKLTE:RIM"
+  ],
+  "occurrences": 3,
+  "officialFullName": "RAN Information Management",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "RIM"
+  ]
+ },
+ "RMOD": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Represents a Radio Module \u2014 a Remote Radio Head (RRH) or Active Antenna System unit performing RF transmission/reception and digital baseband-to-RF conversion. Its parameters cover administrative state, PIM cancellation, energy-saving mode, CPRI/RF sharing, digital combining mode, and management IP protocol version, and it sits under a CABINET/APEQM branch, connected to a BBMOD via a CABLINK.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:RMOD"
+  ],
+  "occurrences": 106,
+  "officialFullName": "Radio Module",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "RMOD"
+  ]
+ },
+ "RMOD_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "The runtime/inventory counterpart to the RMOD configuration object, reporting a radio module's live operational status - administrative/availability state, active software build/version, chassis serial number, and the list of LTE/NR cells currently active on it. It reflects actual detected hardware and service state rather than planned configuration.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:RMOD_R"
+  ],
+  "occurrences": 34,
+  "officialFullName": "Runtime Radio Module",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R"
+  ]
+ },
+ "RNC": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"RNC\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [],
+  "occurrences": 2,
+  "sampleParams": []
+ },
+ "RSL": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "RSL configures a physical serial control/signaling link -- likely the AISG/RS-485-style link that carries DC phantom power and HDLC-framed control data between a radio/baseband module and its connected antenna line devices (RET motors, TMAs) -- via the dcVoltageEnabled and hdlcCommunicationAllowed flags. It sits in the equipment (eqm) hierarchy alongside ALD/ANTL-related objects.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:RSL"
+  ],
+  "occurrences": 23,
+  "officialFullName": "RSL",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "RMOD",
+   "RSL"
+  ]
+ },
+ "RSL_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "RSL_R is the resource/state counterpart of RSL, reporting administrative/operational/availability/usage status for the antenna-line control/signaling link (DC voltage and HDLC communication settings) in addition to its configuration parameters.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:RSL_R"
+  ],
+  "occurrences": 14,
+  "officialFullName": "Runtime RS485 Port",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "RSL_R"
+  ]
+ },
+ "RTPOL": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Defines a policy-based routing rule for the transport network, matching traffic by source IP address/prefix and directing it to a specific routing table (via routingTableDN/Ptr) with a defined evaluation order, letting the BTS route different traffic classes over different paths.",
+  "fullNames": [
+   "NOKLTE:RTPOL",
+   "com.nokia.srbts.tnl:RTPOL"
+  ],
+  "occurrences": 38,
+  "officialFullName": "Routing policy",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPNO",
+   "RTPOL"
+  ]
+ },
+ "SASUSERGROUP": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Defines a CBRS SAS (Spectrum Access System) user/CBSD group identifier used when registering the BTS's CBRS-band radios with a Spectrum Access System, allowing multiple CBSDs (e.g., co-located sectors) to be grouped under one operator/deployment for coordinated spectrum grants. No sample parameters were captured, but it functions alongside CBRSPR in CBRS deployments.",
+  "fullNames": [
+   "NOKLTE:SASUSERGROUP"
+  ],
+  "occurrences": 2,
+  "officialFullName": "SAS User Group",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "SASUSERGROUP"
+  ]
+ },
+ "SCTP": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "Configures an SCTP association's transport-layer reliability parameters (retransmission counts, RTO min/max, heartbeat interval, SACK delay/frequency, and setup retry timing for S1/X2/M3 interfaces). SCTP is the transport protocol underlying LTE control-plane signaling (S1-MME, X2, M3), and this object tunes its resilience characteristics.",
+  "fullNames": [
+   "NOKLTE:SCTP"
+  ],
+  "occurrences": 48,
+  "officialFullName": "Stream Control Transmission Protocol parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "SCTP"
+  ]
+ },
+ "SDRX": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Defines a 'smart' DRX profile that extends standard DRX with an additional short-cycle stage and inactivity-factor-based switching logic, letting the eNodeB adapt UE sleep cycles more aggressively for battery savings while limiting latency impact. It is referenced by cells or QCI-based profiles that enable smart DRX behavior.",
+  "fullNames": [
+   "NOKLTE:SDRX"
+  ],
+  "occurrences": 85,
+  "officialFullName": "Smart Discontinuous Reception (RX)",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "SDRX"
+  ]
+ },
+ "SECADM": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "The site-wide Security Administration object, configuring platform security policy such as SSH service accounts, service-port hardening, password/certificate strength rules (minimum RSA key length, disallowing weak SHA-1 chains), login banners, and web UI session timeouts. It centralizes security hardening settings for the BTS.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:SECADM"
+  ],
+  "occurrences": 71,
+  "officialFullName": "Security administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SECADM"
+  ]
+ },
+ "SECADM_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "A security-administration runtime status object reporting the current state of node-security hardening settings, specifically whether SSH access is enabled for service accounts (serviceAccountSshStatus) and the open/closed status of various service ports (servicePortStatus). It supports security-compliance monitoring on the BTS's management plane.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:SECADM_R"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Runtime Security Administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SECADM",
+   "SECADM_R"
+  ]
+ },
+ "SECPRM": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "SECPRM holds general security-related O&M parameters for the BTS, such as the login banner text shown to users on management interfaces and the idle session timeout for local craft/terminal access. It is a site-level security configuration object in the Flexi Zone (NOKLTE) product line.",
+  "fullNames": [
+   "NOKLTE:SECPRM"
+  ],
+  "occurrences": 26,
+  "officialFullName": "Security parameter",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "SECPRM"
+  ]
+ },
+ "SERVEDAMF": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "SERVEDAMF configures an AMF (Access and Mobility Management Function) instance served by the gNB over the NG interface, holding the AMF's IP address, name, region/set/pointer identifiers that together form its GUAMI, PLMN identity (MCC/MNC), default-AMF flag, and NG link status. It is the 5G-core-facing counterpart to LTE's served-MME configuration.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:SERVEDAMF"
+  ],
+  "occurrences": 20
+ },
+ "SFP": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Represents a physical SFP/SFP+ pluggable optical or electrical transceiver module inserted into an Ethernet or CPRI/eCPRI port of the BTS, identified by the hardware port it occupies (hwPortId). It is an equipment inventory object under the equipment (EQM) hardware branch.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:SFP"
+  ],
+  "occurrences": 6
+ },
+ "SFP_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "SFP_R is the resource/state object for a pluggable optical/electrical transceiver (SFP/SFP+) installed in a network port, reporting administrative/operational/availability status, connector and compliance codes, manufacture date code, and -- for tunable DWDM optics -- the tuning method, channel range, grid spacing, and currently tuned channel/frequency. It sits under the equipment (eqmr) hierarchy, typically as a child of an Ethernet port or link object.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:SFP_R"
+  ],
+  "occurrences": 19,
+  "officialFullName": "Runtime Small Form-factor Pluggable",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "SFP_R"
+  ]
+ },
+ "SIB": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "Configures the content of System Information Blocks broadcast by an LTE cell, including access-class-barring parameters for specific services (MMTEL voice/video, SMS) and their associated barring timers and factors. It directly controls what UEs read from broadcast signaling before and during RRC connection establishment, and sits under an LNCEL.",
+  "fullNames": [
+   "NOKLTE:SIB"
+  ],
+  "occurrences": 91,
+  "officialFullName": "System Information Broadcast",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "SIB"
+  ]
+ },
+ "SLCELLDRCONF": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Configures the 'sleeping cell' detection-and-recovery self-healing feature, capping the maximum number of automatic recovery actions allowed per day at different granularities: per baseband unit (Bbu), per BTS, per cell, and per RF module (Rfm). It is a SON/self-healing feature-configuration object under the site management-network-layer branch, preventing automated recovery actions from looping excessively.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:SLCELLDRCONF"
+  ],
+  "occurrences": 6
+ },
+ "SMOD": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Represents a System Module - a control or auxiliary hardware module within a cabinet responsible for functions such as clock distribution, climate control, and port management. Parameters cover its physical position in the subrack, operating/port mode, climate-control profiling, and planned product code, and it is the parent of the CLOCK object.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:SMOD"
+  ],
+  "occurrences": 69,
+  "officialFullName": "System Module",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "CABINET",
+   "SMOD"
+  ]
+ },
+ "SMOD_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "SMOD_R is the resource/state object for a System Module (a core baseband/control board), reporting its administrative/operational/procedural/usage state, physical slot position, hardware inventory identifiers (product code, serial number, core HW board identifiers), and which radio access technologies (EUTRA/LTE, UTRAN/3G, GERAN/2G) it can support in a shared/multi-RAT deployment.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:SMOD_R"
+  ],
+  "occurrences": 18,
+  "officialFullName": "Runtime System Module",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "CABINET_R",
+   "SMOD_R"
+  ]
+ },
+ "SNSSAI": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "SNSSAI represents an S-NSSAI (Single Network Slice Selection Assistance Information), the 3GPP identifier for a 5G network slice, defined by its Slice/Service Type (sst) and associated PLMN(s). The gNB broadcasts and applies this object to support network-slice-aware cell access and admission control for 5G core network slicing.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:SNSSAI"
+  ],
+  "occurrences": 13
+ },
+ "STPG": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "STPG (synchronization timing priority group) defines a prioritized list of synchronization sources (e.g. SyncE, external 2.048MHz reference, 1PPS/ToD via fronthaul) with per-source priority, SSM (Synchronization Status Message) usage and quality thresholds, and clock protocol selection, used by the clock subsystem to automatically select the best available timing reference.",
+  "fullNames": [
+   "NOKLTE:STPG"
+  ],
+  "occurrences": 26,
+  "officialFullName": "Synchronization Protection Group",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "SYNC",
+   "STPG"
+  ]
+ },
+ "SYNC": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "The site's overall synchronization configuration object, controlling the BTS synchronization mode (e.g. hybrid sync, eCPRI master clock, SyncE generation), UTC offset validity checking, phase-error recovery thresholds, and manual frame-timing adjustment. It coordinates timing sources such as GNSS, PTP (TOPP), SyncE, and CLOCK inputs into the BTS's overall synchronization state.",
+  "fullNames": [
+   "NOKLTE:SYNC",
+   "com.nokia.srbts.mnl:SYNC"
+  ],
+  "occurrences": 117,
+  "officialFullName": "Synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC"
+  ]
+ },
+ "SYNCE": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures Synchronous Ethernet (SyncE) on a specific Ethernet link (ethlkDN), including SSM (Synchronization Status Message) handling \u2014 whether SSM is enabled, the minimum acceptable quality level, timeout behavior, and forced network re-arrangement on major SSM events. SyncE distributes a physical-layer frequency reference over Ethernet as an alternative/complement to GNSS or PTP.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:SYNCE"
+  ],
+  "occurrences": 2,
+  "officialFullName": "Synchronous Ethernet",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "SYNCE"
+  ]
+ },
+ "SYNC_R": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "A runtime synchronization-quality status object reporting the BTS's absolute time error and local (relative) time error versus its reference clock, used to monitor whether the node's timing meets the accuracy required for TDD/NR frame alignment and other sync-sensitive functions.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:SYNC_R"
+  ],
+  "occurrences": 3
+ },
+ "TAC": {
+  "category": "Core-Network-Interface",
+  "confidence": "medium",
+  "description": "A container object for Tracking Area Code definitions used by the eNodeB, under which per-TAC configuration (see LTAC) is defined. It has no parameters of its own and serves purely as a grouping/parent node.",
+  "fullNames": [
+   "NOKLTE:TAC",
+   "com.nokia.srbts.mnl:TAC"
+  ],
+  "occurrences": 60,
+  "officialFullName": "Transport Admission Control",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TAC"
+  ]
+ },
+ "TEST": {
+  "category": "Equipment",
+  "confidence": "low",
+  "description": "TEST appears to be a generic maintenance/diagnostic test object (with no directly configurable parameters observed), likely serving as a trigger or parent container for hardware test procedures whose outcomes are recorded in related objects such as RFRES.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TEST"
+  ],
+  "occurrences": 15,
+  "officialFullName": "Test",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TEST"
+  ]
+ },
+ "TGTTHRESHPR": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"TGTTHRESHPR\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "NOKLTE:TGTTHRESHPR"
+  ],
+  "occurrences": 2,
+  "officialFullName": "Target Threshold Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "TGTTHRESHPR"
+  ],
+  "sampleParams": [
+   "thresholdOffsetRsrpMinTargetToSource",
+   "thresholdOffsetRsrqMinTargetToSource",
+   "thresholdRsrpMinTarget",
+   "thresholdRsrqMinTarget"
+  ]
+ },
+ "TIME": {
+  "category": "Site-Common",
+  "confidence": "high",
+  "description": "Configures the local time zone and daylight-saving-time (DST) transition rules for the site, including the UTC offset before and after a DST change and the date on which the change takes effect. It is a site-wide administrative object used to correctly timestamp logs, alarms, and PM data.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TIME"
+  ],
+  "occurrences": 90,
+  "officialFullName": "Time synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "TIME"
+  ]
+ },
+ "TMSWPR": {
+  "category": "LTE-Radio-Cell",
+  "confidence": "high",
+  "description": "TMSWPR (Transmission Mode Switch Profile) defines the CQI thresholds and prohibit/hysteresis timers that govern automatic switching between LTE MIMO transmission modes (e.g. TM3, TM7, TM8, TM9) based on measured channel quality, including specific thresholds for 256QAM-capable UEs and beamforming-related CQI thresholds.",
+  "fullNames": [
+   "NOKLTE:TMSWPR"
+  ],
+  "occurrences": 12,
+  "officialFullName": "Transmission Mode SWitch PRofile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "TMSWPR"
+  ]
+ },
+ "TNL": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "The root container object for the Transport Network Layer configuration branch, holding a general usage-type tag and label. It is the parent for the site's Ethernet, IP, VLAN, routing, and QoS transport configuration objects (ETHLK, IPNO, VLANIF, IPRT, QOS, etc.).",
+  "fullNames": [
+   "com.nokia.srbts.tnl:TNL"
+  ],
+  "occurrences": 45,
+  "officialFullName": "Transport network layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL"
+  ]
+ },
+ "TNLSVC": {
+  "category": "Transport-Networking",
+  "confidence": "low",
+  "description": "Has no configurable parameters of its own; it appears to represent a Transport Network Layer service container, likely grouping or representing a bundled transport service configuration under the TNL branch.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:TNLSVC"
+  ],
+  "occurrences": 35,
+  "officialFullName": "Transport Network Layer Service",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC"
+  ]
+ },
+ "TNL_R": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "A top-level transport-network-layer runtime/feature-status object reporting whether various transport features are active on the node: automatic X2/Xn mesh establishment, dynamic IPsec, fast IP re-routing, IPsec backup tunnels and packet-switched tunnels, and IPv4-based Iub/S1/X2 transport. It gives a consolidated view of which advanced transport capabilities are currently enabled.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:TNL_R"
+  ],
+  "occurrences": 5,
+  "officialFullName": "Read only Transport Network Layer",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "TNL_R"
+  ]
+ },
+ "TOP": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "TOP is the top-level 'Timing over Packet' (PTP/IEEE 1588) synchronization object, referencing the S-plane IP address used for PTP messaging and the PTP domain number. It anchors the packet-timing configuration alongside the more specific TOPB (boundary clock) and TOPF (frequency sync) objects.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TOP"
+  ],
+  "occurrences": 23,
+  "officialFullName": "TOP synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "TOP"
+  ]
+ },
+ "TOPB": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "TOPB configures the 'Timing over Packet' Boundary Clock function (IEEE 1588 PTP), enabling the node to act as a boundary clock and/or a master clock towards downstream devices for packet-based frequency/phase synchronization.",
+  "fullNames": [
+   "NOKLTE:TOPB"
+  ],
+  "occurrences": 26,
+  "officialFullName": "ToP base MO",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "TOPB"
+  ]
+ },
+ "TOPF": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "TOPF configures Timing-over-Packet (PTP/IEEE 1588) frequency synchronization behavior, including the accepted clock quality, the telecom PTP profile in use, announce-message request mode, sync message logging interval, PTP domain number, and the list of candidate master clocks. It works alongside TOPB and TOP to establish packet-based timing references.",
+  "fullNames": [
+   "NOKLTE:TOPF"
+  ],
+  "occurrences": 26,
+  "officialFullName": "TOP frequency synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "TOP",
+   "TOPF"
+  ]
+ },
+ "TOPP": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Configures a Precision Time Protocol (PTP, 'Timing over Packet') synchronization profile, including the accepted master clock class/quality, the list and priority of PTP master candidates, the PTP domain number, multicast address, and standard profile used. It underlies packet-based phase/time synchronization for the site, working alongside the SYNC and CLOCK objects.",
+  "fullNames": [
+   "NOKLTE:TOPP",
+   "com.nokia.srbts.mnl:TOPP"
+  ],
+  "occurrences": 48,
+  "officialFullName": "TOP phase synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "TOP",
+   "TOPP"
+  ]
+ },
+ "TOPP_R": {
+  "category": "Site-Common",
+  "confidence": "low",
+  "description": "A management-plane runtime object under the site management-network-layer branch, exposing only a reference to another managed object (targetDN). Its exact purpose could not be confidently determined from the limited data, but the naming and lone targetDN parameter suggest a pointer/status object linking to a related configuration or topology target, similar in pattern to CMP_R/CRLH_R/CMPECDSA_R.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TOPP_R"
+  ],
+  "occurrences": 2,
+  "officialFullName": "Runtime TOP Phase Synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "TOP",
+   "TOPP",
+   "TOPP_R"
+  ]
+ },
+ "TRACKINGAREA": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "TRACKINGAREA defines a 5G System Tracking Area, holding the 5GS Tracking Area Code (fiveGsTac) and the list of network slices (S-NSSAI, via snssaiList/snssaiDN) associated with that tracking area, used for mobility management (paging/registration areas) and network-slice-aware cell selection within the gNB's coverage.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:TRACKINGAREA"
+  ],
+  "occurrences": 22
+ },
+ "TRBLCADM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "The site-wide Troubleshooting Configuration Administration object, controlling diagnostic and logging features such as core-dump file collection, internal tracing, and remote syslog transmission, plus the timers/thresholds for automatic self-healing procedures like antenna- or PRACH-based sleeping-cell detection and recovery. It centralizes diagnostic and self-healing policy for the site.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TRBLCADM"
+  ],
+  "occurrences": 67,
+  "officialFullName": "Troubleshooting common administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TRBLCADM"
+  ]
+ },
+ "TRBLCADM_R": {
+  "category": "Site-Common",
+  "confidence": "medium",
+  "description": "A troubleshooting/logging administration runtime object reporting the transmission status of remote syslog messages (remoteSyslogTransmissionStatus) from the BTS to a centralized log collector, used to verify that diagnostic/event logs are successfully being exported off the node.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TRBLCADM_R"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Runtime Troubleshooting Common Administration",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "TRBLCADM",
+   "TRBLCADM_R"
+  ]
+ },
+ "TRSNW": {
+  "category": "Transport-Networking",
+  "confidence": "medium",
+  "description": "Represents a Transport Network selection/association object, used mainly in older Flexi Zone LTE configurations, that indicates which underlying IP transport network (identified by transportNwId) carries a cell's or interface's control-plane (cPlane) and user-plane (uPlane) traffic. It references a specific local IPv4 address (ipV4AddressDN1) and a flag showing whether that transport network is currently in use. It typically sits under an LTE cell or BTS transport-configuration branch, linking radio/logical objects to a concrete IP transport path.",
+  "fullNames": [
+   "NOKLTE:TRSNW"
+  ],
+  "occurrences": 12,
+  "officialFullName": "Transport Network",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "TRSNW"
+  ]
+ },
+ "TWAMP": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "Implements a TWAMP (Two-Way Active Measurement Protocol, RFC 5357) test session used to actively measure round-trip transport-network performance between the BTS and a TWAMP responder, configured with source/destination IP addresses and port, DSCP marking of test packets, test-message size, and alarm thresholds for packet-loss ratio (plrAlarmThreshold) and round-trip time (rttAlarmThreshold). It is a network-performance-monitoring/QoS-verification object in the transport layer.",
+  "fullNames": [
+   "NOKLTE:TWAMP"
+  ],
+  "occurrences": 1,
+  "officialFullName": "TWAMP session",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "TWAMP"
+  ]
+ },
+ "TWAMPREFLECT": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"TWAMPREFLECT\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:TWAMPREFLECT"
+  ],
+  "occurrences": 1,
+  "officialFullName": "TWAMP reflector configuration object",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "IPAPP",
+   "TWAMPREFLECT"
+  ],
+  "sampleParams": [
+   "refWaitTimeout",
+   "twampReflectorEnabled",
+   "twampReflectorLocalIpAddressDN",
+   "twampReflectorUdpEchoEnabled"
+  ]
+ },
+ "UFFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "UFFIM configures idle-mode inter-RAT mobility parameters toward UTRAN (3G/WCDMA) frequency layers -- including reselection priority, minimum quality/RSCP thresholds (qQualMinUtra, qRxLevMinUtra), reselection timer, and high/low reselection thresholds for a UTRA FDD carrier frequency. It supports LTE-to-UMTS cell reselection decisions for idle UEs.",
+  "fullNames": [
+   "NOKLTE:UFFIM"
+  ],
+  "occurrences": 21,
+  "officialFullName": "Utran FDD frequency Idle Mode parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "UFFIM"
+  ]
+ },
+ "ULCOMP": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Configures the Uplink Coordinated Multi-Point (UL CoMp) feature for an LTE cell, listing the cooperating cells that jointly receive a UE's uplink signal (ulCoMpCellList) and the SINR threshold used to decide when to trigger CoMp joint reception (ulCoMpSinrThreshold). It improves uplink performance for cell-edge UEs by combining signals received at multiple sites/sectors.",
+  "fullNames": [
+   "NOKLTE:ULCOMP"
+  ],
+  "occurrences": 4,
+  "officialFullName": "Uplink coordinated multipoint set",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "ULCOMP"
+  ]
+ },
+ "UNIT": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "UNIT is a plug-and-play equipment slot placeholder that declares the expected hardware unit type for a given physical slot (e.g. a specific module or plug-in card), used by the auto-configuration/commissioning process to validate that the correct hardware has been installed. It typically sits under the EQM/APEQM equipment hierarchy.",
+  "fullNames": [
+   "NOKLTE:UNIT"
+  ],
+  "occurrences": 26,
+  "officialFullName": "Hardware Unit",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "UNIT"
+  ]
+ },
+ "VLANIF": {
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "Represents a VLAN interface, tagging traffic with a specific VLAN ID for logical segmentation of the transport network (e.g. separating O&M, user-plane, and signaling traffic). It sits above an Ethernet link/bridge port and beneath IP interfaces in the transport stack.",
+  "fullNames": [
+   "com.nokia.srbts.tnl:VLANIF"
+  ],
+  "occurrences": 45,
+  "officialFullName": "VLAN network interface",
+  "officialHierarchy": [
+   "MRBTS",
+   "TNLSVC",
+   "TNL",
+   "ETHSVC",
+   "ETHIF",
+   "VLANIF"
+  ]
+ },
+ "WBTS": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"WBTS\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [],
+  "occurrences": 2,
+  "sampleParams": []
+ },
+ "WCEL": {
+  "category": "Other",
+  "confidence": "heuristic",
+  "description": "No curated description is available for managed object class \"WCEL\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "fullNames": [
+   "WCEL"
+  ],
+  "occurrences": 3,
+  "sampleParams": [
+   "ACBarredList",
+   "AICHTraTime",
+   "AMROverSC",
+   "AMROverTransmission",
+   "AMROverTxNC",
+   "AMROverTxNonHSPA",
+   "AMROverTxTotal",
+   "AMRSF",
+   "AMRTargetSC",
+   "AMRTargetTransmission"
+  ]
+ },
+ "WIFICNF": {
+  "category": "Transport-Networking",
+  "confidence": "low",
+  "description": "Configures a Wi-Fi-capable network port or interface on the BTS (e.g., an integrated local maintenance/O&M Wi-Fi access point), including which Ethernet frame types are accepted, whether Wi-Fi is activated (actWiFi), the VLAN IDs available over that interface, and the default 802.1p priority for untagged frames. It is a transport/networking configuration object from the older Flexi Zone product line.",
+  "fullNames": [
+   "NOKLTE:WIFICNF"
+  ],
+  "occurrences": 8,
+  "officialFullName": "Integrated WiFi Configuration",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "FTM",
+   "WIFICNF"
+  ]
+ },
+ "XPARAM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "XPARAM ('X' = CDMA2000) carries CDMA2000 1xRTT/1xEV-DO air-interface parameters broadcast or used for LTE-to-CDMA interworking, including fast power-control initial setpoints per radio configuration (fpcFchInitSetptRC3-12), GCSNA signaling timers, band class, and IMSI-format-related flags (imsi11and12, homeRegIncluded). It complements LNHOX by supplying the detailed CDMA-side parameters needed for CSFB/handover to 1xRTT.",
+  "fullNames": [
+   "NOKLTE:XPARAM"
+  ],
+  "occurrences": 12,
+  "officialFullName": "CDMA2000 1xXRTT Parameter",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "XPARAM"
+  ]
+ }
+}

@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+research
+ref
+scp
+uploads
+snapshots
+.git
+**/__pycache__
+**/*.pyc
+.claude
