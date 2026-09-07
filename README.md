@@ -129,21 +129,11 @@ everywhere the name appears. Where the official dictionaries don't reach
 still apply — treat those as **engineering-reference-grade, not
 vendor-official** documentation.
 
-**Note on `ref/`:** the source documents there — Nokia's parameter
-dictionaries, MO class trees, and legacy XML generator spreadsheets — are
-Nokia customer/partner documentation and carry Nokia's own confidentiality
-notice. The original documents themselves are never published: `ref/` is
-excluded from both the Docker build context/image (`.dockerignore`) and
-this git repo (`.gitignore`). Treat `ref/` itself the way you'd treat any
-other Nokia-confidential material you already had access to.
-`backend/app/data/*.json` (the merged knowledge base this repo *does* ship)
-is derived from that material — parameter names, data types, descriptions,
-ranges, and defaults extracted programmatically — not the original
-documents, but not a from-scratch rewrite either. If your own access to
-Nokia's documentation doesn't permit redistributing that in derived form,
-remove `backend/app/data/*.json` before publishing your own fork; the app
-falls back to an empty knowledge base (plain tree view, editing, and
-generation all still work) rather than failing.
+Note: `ref/` (the source parameter dictionaries and spreadsheets) isn't
+included in this repo or the Docker image — only the merged, derived
+knowledge base in `backend/app/data/` ships. If those files are ever
+missing, the app falls back to an empty knowledge base (plain tree view,
+editing, and generation all still work).
 
 ## Generating new XML
 

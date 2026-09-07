@@ -1,35 +1,24 @@
-# --- Nokia-confidential / private source material -------------------------
-# Source Nokia reference documents (parameter dictionaries, MO class trees,
-# legacy XML generator spreadsheets) are customer/partner-confidential and
-# must never be published. See README.md "Note on ref/".
 ref/
-# Real Nokia commissioning/configuration XML files -- live network data.
 scp/
-# Intermediate research pipeline data derived from ref/.
 research/
 
-# --- Runtime-generated / user data --------------------------------------
 uploads/
 snapshots/
 
-# --- Tooling / editor ----------------------------------------------------
 .claude/
 .vscode/
 .idea/
 *.swp
 
-# --- Python ----------------------------------------------------------------
 __pycache__/
 *.pyc
 *.pyo
 .venv/
 venv/
 
-# --- Node / frontend build -------------------------------------------------
 node_modules/
 frontend/dist/
 npm-debug.log*
 
-# --- OS cruft ----------------------------------------------------------
 .DS_Store
 Thumbs.db
