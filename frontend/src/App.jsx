@@ -27,6 +27,7 @@ import { AddObjectModal } from "./components/AddObjectModal.jsx";
 import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
 import { ToastStack } from "./components/Toast.jsx";
+import { SiteManagementModal } from "./components/SiteManagementModal.jsx";
 import { ConfirmDialog } from "./components/ConfirmDialog.jsx";
 import { PromptDialog } from "./components/PromptDialog.jsx";
 import { filterTree, collectExpandableIds, clamp } from "./utils.js";
@@ -103,6 +104,7 @@ export default function App() {
   const [toasts, setToasts] = useState([]);
   const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, confirmLabel, danger, onConfirm }
   const [promptDialog, setPromptDialog] = useState(null); // { title, message, initialValue, placeholder, confirmLabel, onConfirm }
+  const [siteManagementOpen, setSiteManagementOpen] = useState(false);
 
   const treeScrollRef = useRef(null);
   const rawScrollRef = useRef(null);
@@ -272,7 +274,17 @@ export default function App() {
   const dismissToast = (id) => setToasts((prev) => prev.filter((t) => t.id !== id));
 
   const handleActivate = (node) => setFocusId(node.id);
-  const handleRawActivate = (node) => setFocusId(RAW_TO_LOGICAL_ALIAS[node.id] || node.id);
+  // Raw-pane nodes are a different shape (tag/attrs/text) than logical-tree
+  // nodes (kind/class/value) that ExplainPanel knows how to render -- both
+  // trees share the same id scheme (see parser.py), so a click in the raw
+  // pane looks up the matching logical node and selects THAT, rather than
+  // trying to hand the raw node itself to ExplainPanel.
+  const handleRawActivate = (node) => {
+    const logicalId = RAW_TO_LOGICAL_ALIAS[node.id] || node.id;
+    setFocusId(logicalId);
+    const logicalNode = tree ? findNodeInForest(tree.children, logicalId) : null;
+    if (logicalNode) handleSelectExplain(logicalNode);
+  };
 
   const handleSelectExplain = (node) => {
     setSelectedNode(node);
@@ -559,6 +571,9 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <h1>Nokia AirScale / Flexi Zone XML Explorer</h1>
+        <button className="site-mgmt-link" onClick={() => setSiteManagementOpen(true)}>
+          🗂 Site Management
+        </button>
         {tree && (
           <div className="stats">
             {tree.stats.managedObjects.toLocaleString()} objects · {tree.stats.parameters.toLocaleString()} parameters
@@ -1011,6 +1026,14 @@ export default function App() {
           confirmLabel={promptDialog.confirmLabel}
           onConfirm={promptDialog.onConfirm}
           onCancel={() => setPromptDialog(null)}
+        />
+      )}
+
+      {siteManagementOpen && (
+        <SiteManagementModal
+          onClose={() => setSiteManagementOpen(false)}
+          onOpenFile={(filename) => setSelectedFile(filename)}
+          addToast={addToast}
         />
       )}
 

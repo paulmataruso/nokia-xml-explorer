@@ -124,6 +124,59 @@ def resolve_default_for_xml(data_type: str, official_default, example_values: li
     return None
 
 
+def resolve_known_values(data_type: str, official_range, example_values: list[str]):
+    """The full closed set of legal values for a boolean/enum parameter --
+    used by the frontend to offer a dropdown instead of free text wherever
+    the set of choices is actually knowable, not just "whatever we've
+    happened to observe." Returns None for anything that isn't a closed set
+    (string/integer/decimal free-form fields).
+
+    Corpus exampleValues alone are NOT sufficient here: many enum params
+    (e.g. CLOCK.syncInputType) were never exercised in the 78-file corpus at
+    all (observed=false, exampleValues=[]), yet the official dictionary
+    fully enumerates every legal option in `officialRange` (e.g. "1: 1pps/
+    ToD from Sync Hub Master \\n2: ... \\n15: TOPP"). Parsing that range is
+    what makes a dropdown possible for parameters we've never actually seen
+    a real value for. Corpus casing still wins when both sources agree on
+    an option (same principle as resolve_default_for_xml), and any
+    corpus-observed value the docs don't happen to list is still included
+    rather than dropped -- documentation can lag what real deployments do.
+    """
+    if data_type == "boolean":
+        obs = {v.lower(): v for v in example_values}
+        return [obs.get("true", "true"), obs.get("false", "false")]
+
+    if data_type == "enum":
+        options: list[str] = []
+        if official_range:
+            for line in str(official_range).split("\n"):
+                line = line.strip()
+                if not line:
+                    continue
+                label = line.split(":", 1)[1].strip() if ":" in line else line
+                if label:
+                    options.append(label)
+        if not options and not example_values:
+            return None
+
+        def match_case(label: str) -> str:
+            for ex in example_values:
+                if ex.lower() == label.lower():
+                    return ex
+            return label
+
+        seen: set[str] = set()
+        resolved: list[str] = []
+        for o in [match_case(o) for o in options] + list(example_values):
+            key = o.lower()
+            if key not in seen:
+                seen.add(key)
+                resolved.append(o)
+        return resolved or None
+
+    return None
+
+
 def official_param_entry(official: dict) -> dict:
     """An official-only (never observed in scp/) scalar parameter entry."""
     data_type = official_data_type(official)
@@ -140,6 +193,7 @@ def official_param_entry(official: dict) -> dict:
         "requiredOnCreation": official.get("Required on Creation"),
         "trulyRequired": is_truly_required(official),
         "resolvedDefault": resolve_default_for_xml(data_type, official.get("Default Value"), []),
+        "knownValues": resolve_known_values(data_type, official.get("Range and step"), []),
         "fullName": official.get("Full Name"),
     }
 
@@ -202,10 +256,27 @@ def index_official_params(rows: list[dict]):
     """by_class_param: (class, name) -> row, for precise per-(class,param)
     lookups. by_class: class -> {name: row} for scalar params only (rows
     with Data Type == "Structure" are list/table containers, not settable
-    values, and go in by_class_lists instead)."""
+    values, and go in by_class_lists instead). by_name_any_class: name ->
+    the richest (longest documented range) row for that name across EVERY
+    class -- a fallback for when a corpus-observed (class, name) pair has
+    no exact-class row at all.
+
+    Real bug this fixes: Nokia's dictionary documents some shared parameter
+    names (timeZone, availabilityStatus, operationalState, a3TimeToTrigger,
+    ...) under only one or a few classes even though many other classes
+    also genuinely use the identical parameter -- e.g. `timeZone` is fully
+    enumerated (~543 IANA zone options) only under class TIME; a
+    corpus-observed MNL.timeZone has no official row of its own at all, so
+    without this fallback it silently got treated as free-form with only
+    whatever tiny handful of values this corpus happened to contain (3, in
+    one real case) instead of the full documented range. 53 parameter names
+    were confirmed to have this gap across various classes. The exact-match
+    dict above still always wins when it has an entry; this is purely a
+    fallback for the fully-unmatched case."""
     by_class_param: dict[tuple[str, str], dict] = {}
     by_class: dict[str, dict[str, dict]] = defaultdict(dict)
     by_class_lists: dict[str, set[str]] = defaultdict(set)
+    by_name_any_class: dict[str, dict] = {}
     for row in rows:
         cls = _s(row.get("MO Class")).rsplit("/", 1)[-1]
         name = row.get("Abbreviated Name")
@@ -216,9 +287,15 @@ def index_official_params(rows: list[dict]):
             by_class_param[key] = row
         if row.get("Data Type") == "Structure":
             by_class_lists[cls].add(name)
-        elif name not in by_class[cls]:
+            continue
+        if name not in by_class[cls]:
             by_class[cls][name] = row
-    return by_class_param, by_class, by_class_lists
+        existing = by_name_any_class.get(name)
+        existing_len = len(_s(existing.get("Range and step"))) if existing else -1
+        this_len = len(_s(row.get("Range and step")))
+        if this_len > existing_len:
+            by_name_any_class[name] = row
+    return by_class_param, by_class, by_class_lists, by_name_any_class
 
 
 def load_official_classes() -> dict[str, dict]:
@@ -235,7 +312,7 @@ def load_official_classes() -> dict[str, dict]:
 
 def main():
     params_kb = json.loads((DATA_DIR / "parameters.json").read_text())
-    official_by_class_param, official_by_class, official_by_class_lists = index_official_params(load_official_rows())
+    official_by_class_param, official_by_class, official_by_class_lists, official_by_name_any_class = index_official_params(load_official_rows())
     official_classes = load_official_classes()
 
     class_parent_counter = defaultdict(Counter)
@@ -295,7 +372,7 @@ def main():
         param_entries = {}
         for name, info in params.items():
             kb_entry = params_kb.get(name, {})
-            official = official_by_class_param.get((cls, name))
+            official = official_by_class_param.get((cls, name)) or official_by_name_any_class.get(name)
             examples = [v for v, _ in info["values"].most_common(MAX_EXAMPLES)]
             entry = {
                 "dataType": kb_entry.get("dataType", "string"),
@@ -315,6 +392,13 @@ def main():
                     entry["dataType"], official.get("Default Value"), examples
                 )
                 entry["fullName"] = official.get("Full Name")
+            # Not nested under `if official` -- a boolean is a closed set
+            # regardless of official grounding, and a researched (non-
+            # official) enum with corpus examples still benefits from a
+            # dropdown even with no documented range to parse.
+            entry["knownValues"] = resolve_known_values(
+                entry["dataType"], official.get("Range and step") if official else None, examples
+            )
             param_entries[name] = entry
 
         # Widen with official-only scalar parameters never exercised by our

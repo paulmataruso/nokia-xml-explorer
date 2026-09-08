@@ -104,7 +104,7 @@ function RawRow({
             ×
           </button>
         )}
-        <EditableValue value={node.text} onSave={(v) => onSaveEdit(node.id, v)} />
+        <EditableValue value={node.text} onSave={(v) => onSaveEdit(node.id, v)} knownValues={node.knownValues} />
         <span className="mono raw-text">{closeTag(node)}</span>
         <RequiredBadge node={node} />
       </div>

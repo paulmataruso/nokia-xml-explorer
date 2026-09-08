@@ -4,6 +4,7 @@ research/
 
 uploads/
 snapshots/
+sitemgmt/
 .env
 
 .claude/
@@ -23,3 +24,4 @@ npm-debug.log*
 
 .DS_Store
 Thumbs.db
+PROJECT_STATE.md

@@ -88,6 +88,23 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   class string, and a matching `version` borrowed from a sibling in the same
   file. Every generated object is re-parsed before being written, and, like
   any other edit, automatically snapshotted first.
+- **🗂 Site Management** (top of the page): a virtual folder/tag/site
+  catalog over every file the app knows about — uploads, `scp/`, and
+  `example/` alike. Folders and tags are pure metadata (see
+  `backend/app/sitemgmt.py`); creating, nesting, or deleting a folder, or
+  tagging/filing a file, never touches, moves, or renames the real file, so
+  even read-only reference files can be organized freely. Drag a file (or
+  a whole folder) onto another folder in the sidebar to file it there —
+  drop onto "Unfiled" or the blank area below the tree to un-file/un-nest.
+  Every file is auto-classified **SRAN** / **Legacy** / **Mixed** by
+  scanning for the `com.nokia.srbts:*` vs. `NOKLTE:*`/`com.nokia.mrbts:*`
+  namespace markers, no manual tagging needed for that axis. The search box
+  matches file names, tags, and site first, falling back to a raw
+  byte-level scan of the file's own content (with a match snippet) when
+  nothing else hits — genuine full-text search, not just a filename
+  filter. Filter by tag/site/type and sort by name/size/modified/site/type,
+  independently of the folder view. Click a file to open it in the main
+  explorer immediately, or right-click for more.
 
 ## The knowledge base — how it was built, and its limits
 
@@ -331,6 +348,7 @@ optional:
 | `SCP_HOST_DIR` | `./scp` | Where your commissioning files live on your machine (read-only). |
 | `UPLOADS_HOST_DIR` | `./uploads` | Where uploaded/generated files are stored (writable). |
 | `SNAPSHOTS_HOST_DIR` | `./snapshots` | Where edit-history snapshots are stored (writable). |
+| `SITEMGMT_HOST_DIR` | `./sitemgmt` | Where Site Management's folder/tag/site metadata is stored (writable). |
 | `MAX_UPLOAD_MB` | `25` | Max size for a single file uploaded through the UI. |
 | `MAX_SNAPSHOTS_PER_FILE` | `50` | How many snapshots to keep per file before pruning the oldest. |
 | `CORS_ORIGINS` | `*` | Comma-separated allowed origins. Only matters if exposing this beyond localhost. |
@@ -345,6 +363,7 @@ example/                Bundled sample commissioning files, baked into the image
 scp/                    Your Nokia commissioning/configuration XML files (read-only mount)
 uploads/                Files uploaded through the UI, and editable copies of scp/ files (writable mount)
 snapshots/              Automatic pre-edit checkpoints, one folder per file (writable mount)
+sitemgmt/               Site Management's folder/tag/site metadata (writable mount, see backend/app/sitemgmt.py)
 ref/                    Source Nokia reference documents (xlsx/xls/HTML docs) -- not shipped in the image
 ref/pdf/                Flat copy of every PDF found anywhere under ref/ (manuals, install/EPD/quick guides), for easy browsing
 ref/extracted/          JSON extracted from ref/ by extract_official_reference.py / extract_sbts18a_reference.py

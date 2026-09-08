@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from . import sitemgmt as sm
 from . import structural
 from .heuristics import generate as heuristic_generate
 from .parser import (
@@ -64,10 +65,43 @@ MAX_UPLOAD_BYTES = _env_int("MAX_UPLOAD_MB", 25) * 1024 * 1024
 MAX_SNAPSHOTS_PER_FILE = _env_int("MAX_SNAPSHOTS_PER_FILE", 50)
 CORS_ORIGINS = [o.strip() for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()]
 
+SITE_MGMT_DIR = Path(os.environ.get("SITE_MGMT_DIR", "/data/sitemgmt")).resolve()
+
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+SITE_MGMT_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Nokia RAN Commissioning XML Explorer")
+
+# Site Management: virtual folders/tags/site over the existing flat file
+# sources -- see sitemgmt.py for why this is metadata-only, never a real
+# filesystem reorganization.
+_SITE_STORE = sm.SiteManagementStore(SITE_MGMT_DIR / "metadata.json")
+_FAMILY_CACHE: dict[str, tuple[float, str]] = {}
+_SOURCE_DIRS = {"upload": UPLOAD_DIR, "scp": SCP_DIR, "example": EXAMPLE_DIR}
+
+
+def _dir_for_source(source: str) -> Path:
+    """Unlike _resolve_path (which follows upload>scp>example PRIORITY to
+    find a file by name alone), this maps a known (source, filename) pair
+    -- already disambiguated by the caller -- straight to its real path.
+    Needed because a filename isn't always unique across sources (example/
+    deliberately mirrors a few real scp/ files), so resolving by name alone
+    can silently pick the wrong one of two same-named files."""
+    base = _SOURCE_DIRS.get(source)
+    if base is None:
+        raise HTTPException(status_code=400, detail=f"Unknown source {source!r}")
+    return base
+
+
+def _file_family(path: Path, filename: str) -> str:
+    stat = path.stat()
+    cached = _FAMILY_CACHE.get(filename)
+    if cached and cached[0] == stat.st_mtime:
+        return cached[1]
+    family = sm.detect_family(path.read_bytes())
+    _FAMILY_CACHE[filename] = (stat.st_mtime, family)
+    return family
 
 app.add_middleware(
     CORSMiddleware,
@@ -170,6 +204,7 @@ def _save_snapshot(filename: str, content: bytes) -> None:
 def _invalidate_caches(filename: str) -> None:
     _TREE_CACHE.pop(filename, None)
     _RAW_CACHE.pop(filename, None)
+    _FAMILY_CACHE.pop(filename, None)
 
 
 def _param_meta(short_class: str | None, name: str | None) -> dict | None:
@@ -196,14 +231,17 @@ def _annotate_required_logical(node: dict) -> None:
     Creation == Mandatory, regardless of whether it has a default -- drives
     hiding the delete control, since a Mandatory param must always have a
     slot in the file), trulyRequired (Mandatory, no official default --
-    informational), and requiredMissing (Mandatory AND currently
-    blank/absent -- drives red highlighting) so the frontend doesn't need to
-    re-derive the class catalog itself."""
+    informational), requiredMissing (Mandatory AND currently blank/absent --
+    drives red highlighting), and knownValues (the full closed set of legal
+    values for a boolean/enum parameter, or None for free-form fields --
+    drives showing a dropdown instead of free text when editing) so the
+    frontend doesn't need to re-derive the class catalog itself."""
     if node.get("kind") == "param":
         meta = _param_meta(node.get("class"), node.get("label"))
         node["mandatory"] = bool(meta and meta.get("requiredOnCreation") == "Mandatory")
         node["trulyRequired"] = bool(meta and meta.get("trulyRequired"))
         node["requiredMissing"] = _is_required_missing(meta, bool(node.get("value")))
+        node["knownValues"] = (meta or {}).get("knownValues") or None
     for child in node.get("children", None) or []:
         _annotate_required_logical(child)
 
@@ -220,6 +258,7 @@ def _annotate_required_raw(node: dict, current_class: str | None = None) -> None
         node["mandatory"] = bool(meta and meta.get("requiredOnCreation") == "Mandatory")
         node["trulyRequired"] = bool(meta and meta.get("trulyRequired"))
         node["requiredMissing"] = _is_required_missing(meta, bool(node.get("text")))
+        node["knownValues"] = (meta or {}).get("knownValues") or None
     for child in node.get("children", None) or []:
         _annotate_required_raw(child, current_class)
 
@@ -260,6 +299,28 @@ class SetObjectParamRequest(BaseModel):
     value: str
 
 
+class CreateFolderRequest(BaseModel):
+    name: str
+    parentId: str | None = None
+
+
+class UpdateFolderRequest(BaseModel):
+    name: str | None = None
+    parentId: str | None = None
+
+
+class UpdateFileMetaRequest(BaseModel):
+    # Required, not inferred from the URL's {filename} alone -- some
+    # filenames exist in more than one source (example/ deliberately
+    # mirrors a few real scp/ files), so filename alone doesn't uniquely
+    # identify which physical file this metadata belongs to. The caller
+    # already knows this from whatever file listing it got the name from.
+    source: str
+    folderId: str | None = None
+    tags: list[str] | None = None
+    site: str | None = None
+
+
 @app.get("/api/health")
 def health():
     return {
@@ -293,6 +354,147 @@ def list_files():
                 "source": source,
             })
     return out
+
+
+# ---------------------------------------------------------------------------
+# Site Management: a virtual folder/tag/site organization layer over the
+# upload/scp/example sources above -- see sitemgmt.py. Every endpoint here
+# is metadata-only; none of them touch a real file's bytes or location.
+# ---------------------------------------------------------------------------
+
+@app.get("/api/sitemgmt/tree")
+def sitemgmt_tree():
+    files = []
+    for f in list_files():
+        path = _dir_for_source(f["source"]) / f["name"]
+        cache_key = f"{f['source']}:{f['name']}"
+        meta = _SITE_STORE.get_file_meta(f["source"], f["name"])
+        family = _file_family(path, cache_key) if f["supported"] else "unknown"
+        files.append({**f, **meta, "family": family})
+    return {
+        "folders": _SITE_STORE.list_folders(),
+        "files": files,
+        "allTags": _SITE_STORE.all_tags(),
+        "allSites": _SITE_STORE.all_sites(),
+    }
+
+
+@app.post("/api/sitemgmt/folders")
+def create_folder(payload: CreateFolderRequest):
+    name = payload.name.strip()
+    if not name:
+        raise HTTPException(status_code=400, detail="Folder name can't be empty")
+    try:
+        return _SITE_STORE.create_folder(name, payload.parentId)
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@app.put("/api/sitemgmt/folders/{folder_id}")
+def update_folder(folder_id: str, payload: UpdateFolderRequest):
+    fields_set = payload.model_fields_set
+    name = payload.name.strip() if (payload.name and "name" in fields_set) else None
+    try:
+        return _SITE_STORE.update_folder(
+            folder_id,
+            name=name,
+            parent_id=payload.parentId,
+            parent_id_set="parentId" in fields_set,
+        )
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.delete("/api/sitemgmt/folders/{folder_id}")
+def delete_folder(folder_id: str):
+    try:
+        _SITE_STORE.delete_folder(folder_id)
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    return {"ok": True}
+
+
+@app.put("/api/sitemgmt/files/{filename}")
+def update_file_meta(filename: str, payload: UpdateFileMetaRequest):
+    # Validates against the SPECIFIC (source, filename) pair the caller
+    # asked for -- not _resolve_path's name-only priority lookup, which
+    # would silently resolve to a different file when the name exists in
+    # more than one source.
+    path = _dir_for_source(payload.source) / filename
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail=f"No {payload.source} file named {filename!r}")
+    fields_set = payload.model_fields_set
+    try:
+        return _SITE_STORE.update_file_meta(
+            payload.source,
+            filename,
+            folder_id=payload.folderId,
+            folder_id_set="folderId" in fields_set,
+            tags=payload.tags,
+            site=payload.site,
+            site_set="site" in fields_set,
+        )
+    except KeyError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/sitemgmt/search")
+def sitemgmt_search(
+    q: str | None = None,
+    tag: str | None = None,
+    site: str | None = None,
+    family: str | None = None,
+    sortBy: str = "name",
+    sortDir: str = "asc",
+):
+    """Matches filename, tags, and site unconditionally; falls back to a
+    raw byte-level scan of the file's own content ("search inside the
+    file") only when none of those already matched, so a hit is always
+    attributed to the most relevant/cheapest place it was actually found."""
+    ql = q.strip().lower() if q and q.strip() else None
+    results = []
+    for f in list_files():
+        meta = _SITE_STORE.get_file_meta(f["source"], f["name"])
+        if tag and tag.lower() not in [t.lower() for t in meta.get("tags", [])]:
+            continue
+        if site and (meta.get("site") or "").lower() != site.lower():
+            continue
+        path = _dir_for_source(f["source"]) / f["name"]
+        cache_key = f"{f['source']}:{f['name']}"
+        fam = _file_family(path, cache_key) if f["supported"] else "unknown"
+        if family and fam != family:
+            continue
+
+        matched_in = None
+        snippet = None
+        if ql:
+            if ql in f["name"].lower():
+                matched_in = "name"
+            elif any(ql in t.lower() for t in meta.get("tags", [])):
+                matched_in = "tag"
+            elif ql in (meta.get("site") or "").lower():
+                matched_in = "site"
+            elif f["supported"]:
+                snippet = sm.content_snippet(path.read_bytes(), q)
+                if snippet:
+                    matched_in = "content"
+            if matched_in is None:
+                continue
+
+        results.append({**f, **meta, "family": fam, "matchedIn": matched_in, "matchSnippet": snippet})
+
+    reverse = sortDir == "desc"
+    key_fn = {
+        "name": lambda r: r["name"].lower(),
+        "size": lambda r: r["sizeBytes"],
+        "mtime": lambda r: r["mtime"],
+        "site": lambda r: (r.get("site") or "").lower(),
+        "family": lambda r: r.get("family") or "",
+    }.get(sortBy) or (lambda r: r["name"].lower())
+    results.sort(key=key_fn, reverse=reverse)
+    return results
 
 
 @app.post("/api/upload")
@@ -335,6 +537,7 @@ def delete_uploaded_file(filename: str):
     path.unlink()
     shutil.rmtree(SNAPSHOT_DIR / filename, ignore_errors=True)
     _invalidate_caches(filename)
+    _SITE_STORE.forget_file("upload", filename)
     return {"deleted": filename}
 
 

@@ -15,10 +15,14 @@ services:
       # Writable mount: automatic "before this edit" checkpoints, so edits
       # can be undone from the History panel.
       - ${SNAPSHOTS_HOST_DIR:-./snapshots}:/data/snapshots
+      # Writable mount: Site Management's folders/tags/site metadata (pure
+      # organization, never the files themselves -- see sitemgmt.py).
+      - ${SITEMGMT_HOST_DIR:-./sitemgmt}:/data/sitemgmt
     environment:
       - SCP_DIR=/data/scp
       - UPLOAD_DIR=/data/uploads
       - SNAPSHOT_DIR=/data/snapshots
+      - SITE_MGMT_DIR=/data/sitemgmt
       # Bundled sample commissioning files (baked into the image from
       # example/) -- set to false to hide them and show only your own.
       - INCLUDE_EXAMPLES=${INCLUDE_EXAMPLES:-true}

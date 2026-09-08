@@ -164,7 +164,7 @@ function TreeRow({
         )}
         {node.kind === "param" && canEditThis && (
           <span className="value">
-            = <EditableValue value={node.value} onSave={(v) => onSaveEdit(node.id, v)} />
+            = <EditableValue value={node.value} onSave={(v) => onSaveEdit(node.id, v)} knownValues={node.knownValues} />
           </span>
         )}
         {node.kind === "param" && !canEditThis && node.value != null && (

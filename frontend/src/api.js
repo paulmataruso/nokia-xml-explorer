@@ -1,7 +1,11 @@
 const API_BASE = "/api";
 
 async function getJSON(path) {
-  const res = await fetch(`${API_BASE}${path}`);
+  // no-store: several GET endpoints here (notably /sitemgmt/tree) are
+  // re-fetched immediately after a write to show its result -- without
+  // this, a browser's default HTTP cache heuristics can serve a stale
+  // response for the identical URL instead of hitting the server again.
+  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`${res.status} ${res.statusText}: ${text}`);
@@ -68,6 +72,7 @@ export async function deleteFile(filename) {
 async function jsonRequest(path, method, body) {
   const res = await fetch(`${API_BASE}${path}`, {
     method,
+    cache: "no-store",
     headers: { "Content-Type": "application/json" },
     body: body != null ? JSON.stringify(body) : undefined,
   });
@@ -149,4 +154,36 @@ export function renameObject(filename, distName, newInstanceId) {
 
 export function deleteObjectParam(filename, distName, paramName) {
   return jsonRequest(`/files/${encodeURIComponent(filename)}/objects/param`, "DELETE", { distName, paramName });
+}
+
+export function getSiteManagementTree() {
+  return getJSON("/sitemgmt/tree");
+}
+
+export function createFolder(name, parentId) {
+  return jsonRequest("/sitemgmt/folders", "POST", { name, parentId: parentId ?? null });
+}
+
+export function updateFolder(folderId, patch) {
+  return jsonRequest(`/sitemgmt/folders/${encodeURIComponent(folderId)}`, "PUT", patch);
+}
+
+export function deleteFolder(folderId) {
+  return jsonRequest(`/sitemgmt/folders/${encodeURIComponent(folderId)}`, "DELETE");
+}
+
+export function updateFileMeta(filename, patch) {
+  return jsonRequest(`/sitemgmt/files/${encodeURIComponent(filename)}`, "PUT", patch);
+}
+
+export function searchSiteManagement({ q, tag, site, family, sortBy, sortDir } = {}) {
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (tag) params.set("tag", tag);
+  if (site) params.set("site", site);
+  if (family) params.set("family", family);
+  if (sortBy) params.set("sortBy", sortBy);
+  if (sortDir) params.set("sortDir", sortDir);
+  const qs = params.toString();
+  return getJSON(`/sitemgmt/search${qs ? `?${qs}` : ""}`);
 }
