@@ -1,6 +1,7 @@
 import React from "react";
 import { Highlight } from "./Highlight.jsx";
 import { EditableValue } from "./EditableValue.jsx";
+import { collectExpandableIds } from "../utils.js";
 
 const KIND_META = {
   mo: { color: "#5aa9e6" },
@@ -17,6 +18,7 @@ export function TreeView({
   depth = 0,
   expanded,
   onToggle,
+  onToggleSubtree,
   onSelect,
   onActivate,
   selectedId,
@@ -38,6 +40,7 @@ export function TreeView({
           depth={depth}
           expanded={expanded}
           onToggle={onToggle}
+          onToggleSubtree={onToggleSubtree}
           onSelect={onSelect}
           onActivate={onActivate}
           selectedId={selectedId}
@@ -60,6 +63,7 @@ function TreeRow({
   depth,
   expanded,
   onToggle,
+  onToggleSubtree,
   onSelect,
   onActivate,
   selectedId,
@@ -82,11 +86,19 @@ function TreeRow({
   const canDeleteParam = editable && node.kind === "param" && !node.mandatory && node.ownerDistName && onDeleteParam;
 
   const handleRowClick = () => {
-    if (hasChildren) onToggle(node.id);
+    if (hasChildren) {
+      // A "list" node's children are table rows (items), each of which is
+      // independently collapsed by default -- one click on the list would
+      // otherwise only reveal the rows, still collapsed, needing a further
+      // click per row to see its fields. Expand/collapse the whole
+      // list+rows+fields subtree in one click instead.
+      if (node.kind === "list" && onToggleSubtree) {
+        onToggleSubtree(collectExpandableIds(node), !isOpen);
+      } else {
+        onToggle(node.id);
+      }
+    }
     onActivate && onActivate(node);
-  };
-  const handleDoubleClick = (e) => {
-    e.stopPropagation();
     onSelect(node);
   };
   const handleDeleteObject = (e) => {
@@ -115,9 +127,8 @@ function TreeRow({
         style={{ paddingLeft: 8 + depth * 18 }}
         data-tree-id={node.id}
         onClick={handleRowClick}
-        onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
-        title="Click to expand/collapse and sync with raw XML — double-click for a full explanation — right-click for more actions"
+        title="Click to expand/collapse, sync with raw XML, and see a full explanation — right-click for more actions"
       >
         <span className={"caret" + (hasChildren ? "" : " empty")}>
           {hasChildren ? (isOpen ? "▾" : "▸") : ""}
@@ -179,6 +190,7 @@ function TreeRow({
           depth={depth + 1}
           expanded={expanded}
           onToggle={onToggle}
+          onToggleSubtree={onToggleSubtree}
           onSelect={onSelect}
           onActivate={onActivate}
           selectedId={selectedId}

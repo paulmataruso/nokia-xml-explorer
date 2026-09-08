@@ -26,6 +26,9 @@ import { HistoryPanel } from "./components/HistoryPanel.jsx";
 import { AddObjectModal } from "./components/AddObjectModal.jsx";
 import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
+import { ToastStack } from "./components/Toast.jsx";
+import { ConfirmDialog } from "./components/ConfirmDialog.jsx";
+import { PromptDialog } from "./components/PromptDialog.jsx";
 import { filterTree, collectExpandableIds, clamp } from "./utils.js";
 import { findPath, findPathInForest, findNodeInForest, collectRawMatches } from "./rawTreeUtils.js";
 
@@ -65,14 +68,14 @@ export default function App() {
   const [explainCollapsed, setExplainCollapsed] = useState(false);
 
   // --- Raw XML side-by-side view ---
-  const [showRawView, setShowRawView] = useState(false);
+  const [showRawView, setShowRawView] = useState(true);
   const [rawTree, setRawTree] = useState(null);
   const [rawLoading, setRawLoading] = useState(false);
   const [rawError, setRawError] = useState(null);
   const [rawExpanded, setRawExpanded] = useState(() => new Set());
   const [rawQuery, setRawQuery] = useState("");
   const [rawMatchIndex, setRawMatchIndex] = useState(0);
-  const [rawLayout, setRawLayout] = useState("side"); // "side" | "stacked"
+  const [rawLayout, setRawLayout] = useState("stacked"); // "side" | "stacked" -- "stacked" == horizontal split (top/bottom)
   const [splitWidth, setSplitWidth] = useState(DEFAULT_SPLIT_WIDTH);
   const [splitHeight, setSplitHeight] = useState(DEFAULT_SPLIT_HEIGHT);
 
@@ -97,6 +100,9 @@ export default function App() {
   const [missingRequired, setMissingRequired] = useState([]);
   const [requiredFieldsOpen, setRequiredFieldsOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState(null); // { x, y, node }
+  const [toasts, setToasts] = useState([]);
+  const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, confirmLabel, danger, onConfirm }
+  const [promptDialog, setPromptDialog] = useState(null); // { title, message, initialValue, placeholder, confirmLabel, onConfirm }
 
   const treeScrollRef = useRef(null);
   const rawScrollRef = useRef(null);
@@ -238,6 +244,33 @@ export default function App() {
     });
   };
 
+  // Used for "expand/collapse a whole subtree in one click" (e.g. a <list>
+  // and every <item> row under it) -- ids is every expandable id within
+  // that subtree (see collectExpandableIds), expand is true/false for the
+  // whole batch rather than toggling each individually.
+  const toggleSubtree = (ids, expand) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      ids.forEach((id) => (expand ? next.add(id) : next.delete(id)));
+      return next;
+    });
+  };
+
+  const toggleRawSubtree = (ids, expand) => {
+    setRawExpanded((prev) => {
+      const next = new Set(prev);
+      ids.forEach((id) => (expand ? next.add(id) : next.delete(id)));
+      return next;
+    });
+  };
+
+  const addToast = (message, type = "info", ttlMs = 6000) => {
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setToasts((prev) => [...prev, { id, message, type }]);
+    if (ttlMs) setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), ttlMs);
+  };
+  const dismissToast = (id) => setToasts((prev) => prev.filter((t) => t.id !== id));
+
   const handleActivate = (node) => setFocusId(node.id);
   const handleRawActivate = (node) => setFocusId(RAW_TO_LOGICAL_ALIAS[node.id] || node.id);
 
@@ -324,18 +357,27 @@ export default function App() {
     const label = distName.split("/").pop();
     const hasNestedObject = (n) =>
       (n.children || []).some((c) => c.kind === "mo" || c.tag === "managedObject" || hasNestedObject(c));
-    const confirmMsg = hasNestedObject(node)
+    const message = hasNestedObject(node)
       ? `Delete ${label} and every object nested under it? A snapshot is saved first, so this can be undone from History.`
       : `Delete ${label}? A snapshot is saved first, so this can be undone from History.`;
-    if (!window.confirm(confirmMsg)) return;
-    deleteObject(selectedFile, distName)
-      .then((res) => {
-        const deleted = new Set(res.deleted || [distName]);
-        if (selectedNode && deleted.has(selectedNode.distName || selectedNode.id)) setSelectedNode(null);
-        if (focusId && deleted.has(focusId)) setFocusId(null);
-        return refetchAfterEdit();
-      })
-      .catch((e) => alert(String(e.message || e)));
+    setConfirmDialog({
+      title: "Delete object",
+      message,
+      confirmLabel: "Delete",
+      danger: true,
+      onConfirm: () => {
+        setConfirmDialog(null);
+        deleteObject(selectedFile, distName)
+          .then((res) => {
+            const deleted = new Set(res.deleted || [distName]);
+            if (selectedNode && deleted.has(selectedNode.distName || selectedNode.id)) setSelectedNode(null);
+            if (focusId && deleted.has(focusId)) setFocusId(null);
+            addToast(deleted.size > 1 ? `Deleted ${label} and ${deleted.size - 1} nested object(s).` : `Deleted ${label}.`, "success");
+            return refetchAfterEdit();
+          })
+          .catch((e) => addToast(String(e.message || e), "error"));
+      },
+    });
   };
 
   const handleDeleteParam = (node) => {
@@ -344,7 +386,7 @@ export default function App() {
     if (!distName || !paramName) return;
     deleteObjectParam(selectedFile, distName, paramName)
       .then(() => refetchAfterEdit())
-      .catch((e) => alert(String(e.message || e)));
+      .catch((e) => addToast(String(e.message || e), "error"));
   };
 
   // Changes just the trailing instance number (e.g. LNCEL-1 -> LNCEL-0),
@@ -355,19 +397,27 @@ export default function App() {
   const handleRenameObject = (node) => {
     const distName = node.id;
     const label = distName.split("/").pop();
+    const shortClass = label.includes("-") ? label.slice(0, label.lastIndexOf("-")) : label;
     const currentId = label.includes("-") ? label.slice(label.lastIndexOf("-") + 1) : "";
-    const input = window.prompt(`New instance ID for ${label}:`, currentId);
-    if (input == null) return;
-    const newId = input.trim();
-    if (!newId || newId === currentId) return;
-    renameObject(selectedFile, distName, newId)
-      .then(() => {
-        const isStale = (id) => id === distName || (id || "").startsWith(distName + "/");
-        if (selectedNode && (isStale(selectedNode.distName) || isStale(selectedNode.id))) setSelectedNode(null);
-        if (focusId && isStale(focusId)) setFocusId(null);
-        return refetchAfterEdit();
-      })
-      .catch((e) => alert(String(e.message || e)));
+    setPromptDialog({
+      title: "Rename object",
+      message: `New instance ID for ${label}:`,
+      initialValue: currentId,
+      confirmLabel: "Rename",
+      onConfirm: (newId) => {
+        setPromptDialog(null);
+        if (newId === currentId) return;
+        renameObject(selectedFile, distName, newId)
+          .then(() => {
+            const isStale = (id) => id === distName || (id || "").startsWith(distName + "/");
+            if (selectedNode && (isStale(selectedNode.distName) || isStale(selectedNode.id))) setSelectedNode(null);
+            if (focusId && isStale(focusId)) setFocusId(null);
+            addToast(`Renamed to ${shortClass}-${newId}.`, "success");
+            return refetchAfterEdit();
+          })
+          .catch((e) => addToast(String(e.message || e), "error"));
+      },
+    });
   };
 
   // Right-click menu (either pane) -- position-independent alternative to
@@ -391,6 +441,17 @@ export default function App() {
     if (isObject) {
       return [
         { type: "label", label: node.label || node.id },
+        {
+          label: "Add object here…",
+          onClick: () => {
+            // AddObjectModal defaults its parent field from focusId (see
+            // focusedDistName below) -- syncing focus to the right-clicked
+            // node first means the modal opens targeting THIS object, not
+            // whatever was last single-clicked elsewhere.
+            setFocusId(node.id);
+            setAddObjectOpen(true);
+          },
+        },
         { label: "Rename (change instance ID)…", onClick: () => handleRenameObject(node) },
         { label: "Delete object", danger: true, onClick: () => handleDeleteObject(node) },
       ];
@@ -419,11 +480,18 @@ export default function App() {
   };
 
   const handleNewFile = () => {
-    const name = window.prompt("New file name:", "New_Commissioning_File.xml");
-    if (!name) return;
-    createNewFile(name)
-      .then((res) => refreshFiles().then(() => setSelectedFile(res.name)))
-      .catch((e) => setFilesError(String(e.message || e)));
+    setPromptDialog({
+      title: "New file",
+      message: "New file name:",
+      initialValue: "New_Commissioning_File.xml",
+      confirmLabel: "Create",
+      onConfirm: (name) => {
+        setPromptDialog(null);
+        createNewFile(name)
+          .then((res) => refreshFiles().then(() => setSelectedFile(res.name)))
+          .catch((e) => setFilesError(String(e.message || e)));
+      },
+    });
   };
 
   // A logical "mo"/"mo-placeholder" node's id IS its distName (see
@@ -746,6 +814,7 @@ export default function App() {
                               nodes={displayNodes}
                               expanded={expanded}
                               onToggle={toggle}
+                              onToggleSubtree={toggleSubtree}
                               onSelect={handleSelectExplain}
                               onActivate={handleActivate}
                               selectedId={selectedNode?.id}
@@ -838,6 +907,7 @@ export default function App() {
                                   root={rawTree.root}
                                   expanded={rawExpanded}
                                   onToggle={toggleRaw}
+                                  onToggleSubtree={toggleRawSubtree}
                                   onActivate={handleRawActivate}
                                   focusId={focusId}
                                   query={rawQuery}
@@ -920,6 +990,31 @@ export default function App() {
           onClose={() => setContextMenu(null)}
         />
       )}
+
+      {confirmDialog && (
+        <ConfirmDialog
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          confirmLabel={confirmDialog.confirmLabel}
+          danger={confirmDialog.danger}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog(null)}
+        />
+      )}
+
+      {promptDialog && (
+        <PromptDialog
+          title={promptDialog.title}
+          message={promptDialog.message}
+          initialValue={promptDialog.initialValue}
+          placeholder={promptDialog.placeholder}
+          confirmLabel={promptDialog.confirmLabel}
+          onConfirm={promptDialog.onConfirm}
+          onCancel={() => setPromptDialog(null)}
+        />
+      )}
+
+      <ToastStack toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

@@ -1083,6 +1083,87 @@ mark {
   flex-shrink: 0;
 }
 
+.confirm-dialog {
+  width: 440px;
+}
+
+.confirm-dialog .modal-body p {
+  margin: 0 0 10px;
+  line-height: 1.5;
+  font-size: 13.5px;
+}
+
+.prompt-input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.prompt-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-danger {
+  background: #f85149;
+  border-color: #f85149;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #ff6a61;
+  border-color: #ff6a61;
+  color: #fff;
+}
+
+.toast-stack {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.toast {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text);
+  cursor: pointer;
+  animation: toast-in 0.15s ease-out;
+}
+
+.toast-success {
+  border-left-color: #3fb950;
+}
+
+.toast-error {
+  border-left-color: #f85149;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .field-row {
   display: flex;
   align-items: center;
@@ -1090,6 +1171,10 @@ mark {
   gap: 10px;
   padding: 6px 0;
   font-size: 12.5px;
+}
+
+.add-object-modal {
+  width: 780px;
 }
 
 .required-fields-modal {
@@ -1277,14 +1362,18 @@ mark {
 }
 
 .param-form {
-  max-height: 320px;
+  max-height: 420px;
   overflow-y: auto;
   border-top: 1px solid var(--border);
   margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 0 20px;
 }
 
 .param-form .field-row {
   border-bottom: 1px dashed var(--border);
+  min-width: 0;
 }
 
 .param-search-add {

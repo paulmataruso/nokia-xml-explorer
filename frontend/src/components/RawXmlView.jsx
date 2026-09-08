@@ -1,6 +1,7 @@
 import React from "react";
 import { Highlight } from "./Highlight.jsx";
 import { EditableValue } from "./EditableValue.jsx";
+import { collectExpandableIds } from "../utils.js";
 
 function attrString(attrs) {
   return Object.entries(attrs || {})
@@ -35,6 +36,7 @@ function RawRow({
   depth,
   expanded,
   onToggle,
+  onToggleSubtree,
   onActivate,
   focusId,
   query,
@@ -56,7 +58,16 @@ function RawRow({
   const canDeleteObject = editable && node.tag === "managedObject" && onDeleteObject;
 
   const handleClick = () => {
-    if (hasChildren) onToggle(node.id);
+    if (hasChildren) {
+      // Same reasoning as TreeView: a <list>'s <item> rows are each
+      // independently collapsed by default, so expand the whole
+      // list+rows+fields subtree in one click instead of one level at a time.
+      if (node.tag === "list" && onToggleSubtree) {
+        onToggleSubtree(collectExpandableIds(node), !isOpen);
+      } else {
+        onToggle(node.id);
+      }
+    }
     onActivate && onActivate(node);
   };
   const handleDeleteParam = (e) => {
@@ -170,6 +181,7 @@ function RawRow({
               depth={depth + 1}
               expanded={expanded}
               onToggle={onToggle}
+              onToggleSubtree={onToggleSubtree}
               onActivate={onActivate}
               focusId={focusId}
               query={query}
@@ -194,6 +206,7 @@ export function RawXmlView({
   root,
   expanded,
   onToggle,
+  onToggleSubtree,
   onActivate,
   focusId,
   query,
@@ -210,6 +223,7 @@ export function RawXmlView({
         depth={0}
         expanded={expanded}
         onToggle={onToggle}
+        onToggleSubtree={onToggleSubtree}
         onActivate={onActivate}
         focusId={focusId}
         query={query}

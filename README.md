@@ -1,5 +1,13 @@
 # Nokia AirScale / Flexi Zone XML Explorer
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Python 3.12](https://img.shields.io/badge/backend-Python%203.12-3776AB?logo=python&logoColor=white)](backend/)
+[![React + Vite](https://img.shields.io/badge/frontend-React%20%2B%20Vite-61DAFB?logo=react&logoColor=white)](frontend/)
+[![Docker](https://img.shields.io/badge/deploy-Docker%20Compose-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
+[![GitHub tag](https://img.shields.io/github/v/tag/paulmataruso/nokia-xml-explorer)](https://github.com/paulmataruso/nokia-xml-explorer/tags)
+[![GitHub last commit](https://img.shields.io/github/last-commit/paulmataruso/nokia-xml-explorer)](https://github.com/paulmataruso/nokia-xml-explorer/commits/main)
+[![GitHub Repo stars](https://img.shields.io/github/stars/paulmataruso/nokia-xml-explorer?style=flat)](https://github.com/paulmataruso/nokia-xml-explorer/stargazers)
+
 A self-hosted web tool for browsing, editing, and generating Nokia RAN
 commissioning/configuration XML files (the RAML `raml21.xsd` "SCF"/CM-data
 format used by BTS Site Manager and NetAct for AirScale and Flexi Zone
@@ -8,16 +16,23 @@ explaining every managed object class and configuration parameter — no more
 scrolling through thousands of lines of flat XML to find what a parameter
 does or whether a file is actually complete.
 
+Supports both the older `com.nokia.mrbts:*`/`NOKLTE:*` (Flexi Zone/BTS Site
+Manager) object model **and** the current unified **SRAN** (SingleRAN)
+AirScale object model (`com.nokia.srbts:*`, including 5G NR) — the parser
+and knowledge base are built to handle both namespace families in the same
+file, which is normal (see `ref_bts_parameters_lte18.xlsx` vs.
+`SBTS_Parameters_18A.xls` in [Knowledge base](#the-knowledge-base--how-it-was-built-and-its-limits)).
+
 Runs entirely locally in a single Docker container. Your commissioning
 files never leave your machine.
 
-**Status:** early, functional, actively developed. `v0.01`.
+**Status:** early, functional, actively developed. `v0.02`.
 
 ![Browsing a commissioning file side-by-side with its raw XML, with a full parameter explanation on the right](screenshots/main-page.png)
 
-Double-click any object, parameter, or table row for a plain-English
-explanation sourced from Nokia's own parameter dictionaries. The raw XML
-pane on the bottom stays in sync with whatever you click above.
+Click any object, parameter, or table row for a plain-English explanation
+sourced from Nokia's own parameter dictionaries. The raw XML pane stays in
+sync with whatever you click above.
 
 ![Generating a new object, with Mandatory-but-unfilled fields red-flagged and a Required Fields table open](screenshots/xml-edit.png)
 
@@ -405,3 +420,9 @@ they're offline tooling, not a runtime dependency of the app itself.
   RATs (2G/3G), or had negligible incremental coverage (+0.4% of corpus
   occurrences from the standalone Flexi Zone dictionary) for the effort of a
   full extraction.
+
+## License
+
+[GNU AGPL v3.0](LICENSE). If the network-copyleft terms don't work for your
+use case, commercial licensing is available — open an issue or contact the
+maintainer.
