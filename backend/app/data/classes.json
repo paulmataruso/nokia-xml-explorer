@@ -12,7 +12,18 @@
    "MRBTS",
    "LNBTS",
    "ACBPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Access Class Barring is broadcast via SIB2's ac-BarringInfo, a 3GPP-defined RRC structure.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "ADJI": {
   "category": "Other",
@@ -33,7 +44,12 @@
    "AdjiMCC",
    "AdjiMNC",
    "AdjiNCHOHSPASupport"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ADJS": {
   "category": "Other",
@@ -54,7 +70,12 @@
    "AdjsMNC",
    "AdjsRAC",
    "AdjsRNCid"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ALARMSUPP": {
   "category": "Site-Common",
@@ -63,7 +84,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:ALARMSUPP"
   ],
-  "occurrences": 27
+  "occurrences": 27,
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ALD": {
   "category": "Equipment",
@@ -79,7 +105,12 @@
    "EQM",
    "APEQM",
    "ALD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "ALD_R": {
   "category": "Equipment",
@@ -95,7 +126,12 @@
    "EQM_R",
    "APEQM_R",
    "ALD_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "AMGR": {
   "category": "Security",
@@ -111,7 +147,12 @@
    "MRBTS",
    "MNL",
    "AMGR"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "AMLEPR": {
   "category": "Mobility-Neighbor-Relations",
@@ -127,7 +168,12 @@
    "LNBTS",
    "LNCEL",
    "AMLEPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Frequency-layer prioritization for idle-mode reselection is broadcast via standardized SIB IEs (TS 36.331), but this specific mobility/load-balancing decision profile and its thresholds are Nokia's own algorithm.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ANR": {
   "category": "Mobility-Neighbor-Relations",
@@ -142,7 +188,18 @@
    "MRBTS",
    "LNBTS",
    "ANR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "This IS the Automatic Neighbor Relation function the spec is named for.",
+   "specs": [
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "ANRPRL": {
   "category": "Mobility-Neighbor-Relations",
@@ -157,7 +214,18 @@
    "MRBTS",
    "LNBTS",
    "ANRPRL"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "ANRPRW": {
   "category": "Mobility-Neighbor-Relations",
@@ -172,7 +240,18 @@
    "MRBTS",
    "LNBTS",
    "ANRPRW"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "ANTL": {
   "category": "Equipment",
@@ -189,7 +268,12 @@
    "APEQM",
    "RMOD",
    "ANTL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "ANTL_R": {
   "category": "Equipment",
@@ -206,7 +290,12 @@
    "APEQM_R",
    "RMOD_R",
    "ANTL_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "APEQM": {
   "category": "Equipment",
@@ -221,7 +310,12 @@
    "MRBTS",
    "EQM",
    "APEQM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "APEQM_R": {
   "category": "Equipment",
@@ -236,7 +330,12 @@
    "MRBTS",
    "EQM_R",
    "APEQM_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "APUCCH_FDD": {
   "category": "LTE-Radio-Cell",
@@ -253,7 +352,18 @@
    "LNCEL",
    "LNCEL_FDD",
    "APUCCH_FDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Configures the RRC PUCCH-Config information element.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "APUCCH_TDD": {
   "category": "LTE-Radio-Cell",
@@ -270,7 +380,18 @@
    "LNCEL",
    "LNCEL_TDD",
    "APUCCH_TDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Configures the RRC PUCCH-Config information element.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "BBADM": {
   "category": "Equipment",
@@ -286,7 +407,12 @@
    "MNL",
    "MNLENT",
    "BBADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BBMOD": {
   "category": "Equipment",
@@ -303,7 +429,12 @@
    "APEQM",
    "CABINET",
    "BBMOD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BBMOD_R": {
   "category": "Equipment",
@@ -320,7 +451,12 @@
    "APEQM_R",
    "CABINET_R",
    "BBMOD_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BBPOOL": {
   "category": "Equipment",
@@ -337,7 +473,12 @@
    "MNLENT",
    "BBADM",
    "BBPOOL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BBPOOLALLOC": {
   "category": "Equipment",
@@ -353,7 +494,12 @@
    "LNBTS",
    "LNCEL",
    "BBPOOLALLOC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BFDGRP": {
   "category": "Transport-Networking",
@@ -370,7 +516,12 @@
    "TNL",
    "IPAPP",
    "BFDGRP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 5880, BFD), not 3GPP. Fast link-failure detection, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "BRGPRT": {
   "category": "Transport-Networking",
@@ -388,7 +539,12 @@
    "ETHSVC",
    "L2SWI",
    "BRGPRT"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BTOOTH": {
   "category": "Equipment",
@@ -404,7 +560,12 @@
    "LNBTS",
    "FTM",
    "BTOOTH"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "BWP_PROFILE": {
   "category": "NR-Radio-Cell",
@@ -413,7 +574,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:BWP_PROFILE"
   ],
-  "occurrences": 58
+  "occurrences": 58,
+  "threeGpp": {
+   "note": "Bandwidth Parts are defined via the RRC BWP-Downlink/BWP-Uplink information elements.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "CABINET": {
   "category": "Equipment",
@@ -429,7 +601,12 @@
    "EQM",
    "APEQM",
    "CABINET"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CABINET_R": {
   "category": "Equipment",
@@ -445,7 +622,12 @@
    "EQM_R",
    "APEQM_R",
    "CABINET_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CABLINK": {
   "category": "Equipment",
@@ -461,7 +643,12 @@
    "EQM",
    "HWTOP",
    "CABLINK"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CABLINK_R": {
   "category": "Equipment",
@@ -477,7 +664,12 @@
    "EQM_R",
    "HWTOP_R",
    "CABLINK_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CACERT_R": {
   "category": "Security",
@@ -494,7 +686,12 @@
    "MNLENT",
    "CERTHENT",
    "CACERT_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CADPR": {
   "category": "Feature-Function-Config",
@@ -509,7 +706,12 @@
    "MRBTS",
    "LNBTS",
    "CADPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CADPRCBRS": {
   "category": "Feature-Function-Config",
@@ -518,7 +720,12 @@
   "fullNames": [
    "NOKLTE:CADPRCBRS"
   ],
-  "occurrences": 5
+  "occurrences": 5,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CADPRLAA": {
   "category": "Feature-Function-Config",
@@ -533,7 +740,12 @@
    "MRBTS",
    "LNBTS",
    "CADPRLAA"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CAGENB": {
   "category": "LTE-Radio-Cell",
@@ -548,7 +760,18 @@
    "MRBTS",
    "LNBTS",
    "CAGENB"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Carrier Aggregation itself, and its RRC-signalled measurement/configuration IEs, are 3GPP-standardized (see also TS 36.300 for the overall CA description); this specific profile/decision object is Nokia's own OAM wrapper around those standardized IEs.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "CAIMLBP": {
   "category": "Feature-Function-Config",
@@ -564,7 +787,12 @@
    "LNBTS",
    "CAGENB",
    "CAIMLBP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CAIMLBS": {
   "category": "Feature-Function-Config",
@@ -581,7 +809,12 @@
    "CAGENB",
    "CAIMLBP",
    "CAIMLBS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CAPCFG": {
   "category": "Equipment",
@@ -597,7 +830,12 @@
    "MNL",
    "MNLENT",
    "CAPCFG"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CAPR": {
   "category": "LTE-Radio-Cell",
@@ -613,7 +851,18 @@
    "LNBTS",
    "LNCEL",
    "CAPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Carrier Aggregation itself, and its RRC-signalled measurement/configuration IEs, are 3GPP-standardized (see also TS 36.300 for the overall CA description); this specific profile/decision object is Nokia's own OAM wrapper around those standardized IEs.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "CAREL": {
   "category": "LTE-Radio-Cell",
@@ -629,7 +878,18 @@
    "LNBTS",
    "LNCEL",
    "CAREL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Carrier Aggregation itself, and its RRC-signalled measurement/configuration IEs, are 3GPP-standardized (see also TS 36.300 for the overall CA description); this specific profile/decision object is Nokia's own OAM wrapper around those standardized IEs.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "CATMPR": {
   "category": "Feature-Function-Config",
@@ -644,7 +904,12 @@
    "MRBTS",
    "LNBTS",
    "CATMPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CBRSCERTH": {
   "category": "Security",
@@ -653,7 +918,12 @@
   "fullNames": [
    "NOKLTE:CBRSCERTH"
   ],
-  "occurrences": 18
+  "occurrences": 18,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CBRSPR": {
   "category": "Feature-Function-Config",
@@ -668,7 +938,12 @@
    "MRBTS",
    "LNBTS",
    "CBRSPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CBSD": {
   "category": "Equipment",
@@ -683,7 +958,12 @@
    "MRBTS",
    "LNBTS",
    "CBSD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CBSDCEL": {
   "category": "LTE-Radio-Cell",
@@ -692,7 +972,12 @@
   "fullNames": [
    "NOKLTE:CBSDCEL"
   ],
-  "occurrences": 30
+  "occurrences": 30,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CDFIM": {
   "category": "Feature-Function-Config",
@@ -708,7 +993,12 @@
    "LNBTS",
    "LNCEL",
    "CDFIM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CELLMAPPING": {
   "category": "Equipment",
@@ -724,7 +1014,12 @@
    "MNL",
    "MNLENT",
    "CELLMAPPING"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CERTH": {
   "category": "Security",
@@ -740,7 +1035,12 @@
    "MRBTS",
    "MNL",
    "CERTH"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CERTHENT": {
   "category": "Security",
@@ -756,7 +1056,12 @@
    "MNL",
    "MNLENT",
    "CERTHENT"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CHANNEL": {
   "category": "Equipment",
@@ -775,7 +1080,12 @@
    "LCELW",
    "CHANNELGROUP",
    "CHANNEL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CHANNELGROUP": {
   "category": "Equipment",
@@ -793,7 +1103,12 @@
    "CELLMAPPING",
    "LCELW",
    "CHANNELGROUP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "CLOCK": {
   "category": "Synchronization",
@@ -810,7 +1125,12 @@
    "MNLENT",
    "SYNC",
    "CLOCK"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CLOCK_FDD": {
   "category": "Synchronization",
@@ -828,7 +1148,12 @@
    "SYNC",
    "CLOCK",
    "CLOCK_FDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CLOCK_R": {
   "category": "Synchronization",
@@ -846,7 +1171,12 @@
    "SYNC",
    "CLOCK",
    "CLOCK_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CLOCK_TDD": {
   "category": "Synchronization",
@@ -864,7 +1194,12 @@
    "SYNC",
    "CLOCK",
    "CLOCK_TDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMASPRIO": {
   "category": "Other",
@@ -882,7 +1217,12 @@
    "cmasSsf",
    "msgIdFirst",
    "msgIdLast"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMD": {
   "category": "Other",
@@ -897,7 +1237,12 @@
    "MRBTS",
    "MNL",
    "CMD"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMP": {
   "category": "Security",
@@ -913,7 +1258,12 @@
    "MNL",
    "CERTH",
    "CMP"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMPECDSA": {
   "category": "Security",
@@ -922,7 +1272,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPECDSA"
   ],
-  "occurrences": 29
+  "occurrences": 29,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMPECDSA_R": {
   "category": "Security",
@@ -931,7 +1286,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPECDSA_R"
   ],
-  "occurrences": 3
+  "occurrences": 3,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMPFH": {
   "category": "Security",
@@ -940,7 +1300,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPFH"
   ],
-  "occurrences": 27
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMPFHEXT": {
   "category": "Security",
@@ -949,7 +1314,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPFHEXT"
   ],
-  "occurrences": 27
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CMP_R": {
   "category": "Security",
@@ -966,7 +1336,12 @@
    "MNLENT",
    "CERTHENT",
    "CMP_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CRLH": {
   "category": "Security",
@@ -982,7 +1357,12 @@
    "MNL",
    "CERTH",
    "CRLH"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CRLH_R": {
   "category": "Security",
@@ -999,7 +1379,12 @@
    "MNLENT",
    "CERTHENT",
    "CRLH_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CTRLTS": {
   "category": "Feature-Function-Config",
@@ -1014,7 +1399,12 @@
    "MRBTS",
    "LNBTS",
    "CTRLTS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "CUPLANEFHNW": {
   "category": "Transport-Networking",
@@ -1023,7 +1413,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CUPLANEFHNW"
   ],
-  "occurrences": 29
+  "occurrences": 29,
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "DNS": {
   "category": "Transport-Networking",
@@ -1039,7 +1434,12 @@
    "MNL",
    "MNLENT",
    "DNS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 1035 and successors), not 3GPP. unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "DRX": {
   "category": "Feature-Function-Config",
@@ -1055,7 +1455,12 @@
    "LNBTS",
    "LNCEL",
    "DRX"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "DSCP2PCPMAP": {
   "category": "QoS",
@@ -1073,7 +1478,12 @@
    "IPNO",
    "QOS",
    "DSCP2PCPMAP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "DSCP2QMAP": {
   "category": "QoS",
@@ -1091,7 +1501,12 @@
    "IPNO",
    "QOS",
    "DSCP2QMAP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "DSCPTOQMAP": {
   "category": "QoS",
@@ -1109,7 +1524,12 @@
    "ETHSVC",
    "L2SWI",
    "DSCPTOQMAP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "EAC_R": {
   "category": "Equipment",
@@ -1126,7 +1546,12 @@
    "APEQM_R",
    "RMOD_R",
    "EAC_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ECPRIMASTER": {
   "category": "Synchronization",
@@ -1135,7 +1560,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:ECPRIMASTER"
   ],
-  "occurrences": 2
+  "occurrences": 2,
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "ENDCDMEASCONF": {
   "category": "Other",
@@ -1156,7 +1586,12 @@
    "b1TimeToTriggerRsrq",
    "b1TriggerQuantity",
    "carrierFreqNrCell"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "EQM": {
   "category": "Equipment",
@@ -1170,7 +1605,12 @@
   "officialHierarchy": [
    "MRBTS",
    "EQM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "EQM_R": {
   "category": "Equipment",
@@ -1184,7 +1624,12 @@
   "officialHierarchy": [
    "MRBTS",
    "EQM_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ETHAPP": {
   "category": "Transport-Networking",
@@ -1200,7 +1645,12 @@
    "TNLSVC",
    "TNL",
    "ETHAPP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IEEE (802.1ag) and ITU-T (Y.1731), not 3GPP. Ethernet Connectivity Fault Management, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "ETHIF": {
   "category": "Transport-Networking",
@@ -1217,7 +1667,12 @@
    "TNL",
    "ETHSVC",
    "ETHIF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ETHIF_R": {
   "category": "Transport-Networking",
@@ -1235,7 +1690,12 @@
    "ETHSVC",
    "ETHIF",
    "ETHIF_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ETHLK": {
   "category": "Transport-Networking",
@@ -1253,7 +1713,12 @@
    "TNL",
    "ETHSVC",
    "ETHLK"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ETHLK_R": {
   "category": "Transport-Networking",
@@ -1271,7 +1736,12 @@
    "ETHSVC",
    "ETHLK",
    "ETHLK_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "ETHSVC": {
   "category": "Transport-Networking",
@@ -1287,7 +1757,12 @@
    "TNLSVC",
    "TNL",
    "ETHSVC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "EXCCU": {
   "category": "Other",
@@ -1297,7 +1772,12 @@
    "EXCCU"
   ],
   "occurrences": 1,
-  "sampleParams": []
+  "sampleParams": [],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FAN_R": {
   "category": "Equipment",
@@ -1314,7 +1794,12 @@
    "APEQM_R",
    "RMOD_R",
    "FAN_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FEATCADM": {
   "category": "Feature-Function-Config",
@@ -1330,7 +1815,12 @@
    "MNL",
    "MNLENT",
    "FEATCADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FEATLADM": {
   "category": "Feature-Function-Config",
@@ -1347,7 +1837,12 @@
    "MNLENT",
    "FEATCADM",
    "FEATLADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FIREWALL": {
   "category": "Security",
@@ -1364,7 +1859,12 @@
    "TNL",
    "IPAPP",
    "FIREWALL"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FMCADM": {
   "category": "Feature-Function-Config",
@@ -1380,7 +1880,12 @@
    "MNL",
    "MNLENT",
    "FMCADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FSTSCH": {
   "category": "QoS",
@@ -1398,7 +1903,12 @@
    "IPNO",
    "QOS",
    "FSTSCH"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "FTM": {
   "category": "Equipment",
@@ -1413,7 +1923,12 @@
    "MRBTS",
    "LNBTS",
    "FTM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "GNSSE": {
   "category": "Synchronization",
@@ -1431,7 +1946,12 @@
    "SYNC",
    "CLOCK",
    "GNSSE"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "GNSSE_R": {
   "category": "Equipment",
@@ -1449,7 +1969,12 @@
    "CABINET_R",
    "SMOD_R",
    "GNSSE_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "GNSSI": {
   "category": "Synchronization",
@@ -1467,7 +1992,12 @@
    "SYNC",
    "CLOCK",
    "GNSSI"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "GNSSI_R": {
   "category": "Equipment",
@@ -1485,7 +2015,12 @@
    "CABINET_R",
    "SMOD_R",
    "GNSSI_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "HW": {
   "category": "Equipment",
@@ -1494,7 +2029,12 @@
   "fullNames": [
    "com.nokia.eqm.hw:HW"
   ],
-  "occurrences": 5
+  "occurrences": 5,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "HWTOP": {
   "category": "Equipment",
@@ -1509,7 +2049,12 @@
    "MRBTS",
    "EQM",
    "HWTOP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "HWTOP_R": {
   "category": "Equipment",
@@ -1524,7 +2069,12 @@
    "MRBTS",
    "EQM_R",
    "HWTOP_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IAFIM": {
   "category": "Mobility-Neighbor-Relations",
@@ -1540,7 +2090,18 @@
    "LNBTS",
    "LNCEL",
    "IAFIM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "IBRGPRT": {
   "category": "Transport-Networking",
@@ -1558,7 +2119,12 @@
    "ETHSVC",
    "L2SWI",
    "IBRGPRT"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IDNS": {
   "category": "Transport-Networking",
@@ -1575,7 +2141,12 @@
    "FTM",
    "IPNO",
    "IDNS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 1035 and successors), not 3GPP. unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "IEIF": {
   "category": "Transport-Networking",
@@ -1592,7 +2163,12 @@
    "FTM",
    "IPNO",
    "IEIF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IFGDPR": {
   "category": "Mobility-Neighbor-Relations",
@@ -1608,7 +2184,12 @@
    "LNBTS",
    "LNCEL",
    "IFGDPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Frequency-layer prioritization for idle-mode reselection is broadcast via standardized SIB IEs (TS 36.331), but this specific mobility/load-balancing decision profile and its thresholds are Nokia's own algorithm.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IFGPR": {
   "category": "Mobility-Neighbor-Relations",
@@ -1624,7 +2205,12 @@
    "LNBTS",
    "LNCEL",
    "IFGPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Frequency-layer prioritization for idle-mode reselection is broadcast via standardized SIB IEs (TS 36.331), but this specific mobility/load-balancing decision profile and its thresholds are Nokia's own algorithm.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IHCP": {
   "category": "Feature-Function-Config",
@@ -1641,7 +2227,12 @@
    "FTM",
    "IPNO",
    "IHCP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "INTP": {
   "category": "Synchronization",
@@ -1658,7 +2249,12 @@
    "FTM",
    "IPNO",
    "INTP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 5905, NTPv4), not 3GPP. Coarse time sync, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "INVUNIT": {
   "category": "Equipment",
@@ -1667,7 +2263,12 @@
   "fullNames": [
    "com.nokia.eqm.hw:INVUNIT"
   ],
-  "occurrences": 84
+  "occurrences": 84,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "INVUNIT_R": {
   "category": "Equipment",
@@ -1684,7 +2285,12 @@
    "APEQM_R",
    "RMOD_R",
    "INVUNIT_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPADDRESSV4": {
   "category": "Transport-Networking",
@@ -1702,7 +2308,12 @@
    "IPNO",
    "IPIF",
    "IPADDRESSV4"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPADDRESSV4_R": {
   "category": "Transport-Networking",
@@ -1721,7 +2332,12 @@
    "IPIF",
    "IPADDRESSV4",
    "IPADDRESSV4_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPADDRESSV6": {
   "category": "Other",
@@ -1744,7 +2360,12 @@
    "ipAddressAllocationMethod",
    "localIpAddr",
    "localIpPrefixLength"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPAPP": {
   "category": "QoS",
@@ -1760,7 +2381,12 @@
    "TNLSVC",
    "TNL",
    "IPAPP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPIF": {
   "category": "Transport-Networking",
@@ -1777,7 +2403,12 @@
    "TNL",
    "IPNO",
    "IPIF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPIF_R": {
   "category": "Transport-Networking",
@@ -1795,7 +2426,12 @@
    "IPNO",
    "IPIF",
    "IPIF_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPNO": {
   "category": "Transport-Networking",
@@ -1812,7 +2448,12 @@
    "TNLSVC",
    "TNL",
    "IPNO"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPRM": {
   "category": "Transport-Networking",
@@ -1829,7 +2470,12 @@
    "FTM",
    "IPNO",
    "IPRM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPRT": {
   "category": "Transport-Networking",
@@ -1847,7 +2493,12 @@
    "TNL",
    "IPNO",
    "IPRT"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPRTV6": {
   "category": "Transport-Networking",
@@ -1865,7 +2516,12 @@
    "TNL",
    "IPNO",
    "IPRTV6"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPRTV6_R": {
   "category": "Transport-Networking",
@@ -1883,7 +2539,12 @@
    "IPNO",
    "IPRTV6",
    "IPRTV6_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPRT_R": {
   "category": "Transport-Networking",
@@ -1901,7 +2562,12 @@
    "IPNO",
    "IPRT",
    "IPRT_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IPSECC": {
   "category": "Security",
@@ -1919,7 +2585,23 @@
    "TNL",
    "IPAPP",
    "IPSECC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP mandates IPsec for backhaul/network-domain security (see each spec's Network Domain Security annex); the specific IPsec tunnel/certificate configuration mechanics here are Nokia's own O&M implementation of that requirement, not themselves 3GPP-specified.",
+   "specs": [
+    {
+     "spec": "TS 33.401",
+     "title": "3GPP System Architecture Evolution (SAE); Security architecture",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/33_series/33.401/"
+    },
+    {
+     "spec": "TS 33.501",
+     "title": "Security architecture and procedures for 5G system",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/33_series/33.501/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "IPSECC_R": {
   "category": "Security",
@@ -1937,7 +2619,23 @@
    "IPAPP",
    "IPSECC",
    "IPSECC_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP mandates IPsec for backhaul/network-domain security (see each spec's Network Domain Security annex); the specific IPsec tunnel/certificate configuration mechanics here are Nokia's own O&M implementation of that requirement, not themselves 3GPP-specified.",
+   "specs": [
+    {
+     "spec": "TS 33.401",
+     "title": "3GPP System Architecture Evolution (SAE); Security architecture",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/33_series/33.401/"
+    },
+    {
+     "spec": "TS 33.501",
+     "title": "Security architecture and procedures for 5G system",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/33_series/33.501/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "IRFIM": {
   "category": "Mobility-Neighbor-Relations",
@@ -1953,7 +2651,18 @@
    "LNBTS",
    "LNCEL",
    "IRFIM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "ISHPR": {
   "category": "Feature-Function-Config",
@@ -1968,7 +2677,12 @@
    "MRBTS",
    "LNBTS",
    "ISHPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "IVIF": {
   "category": "Transport-Networking",
@@ -1986,7 +2700,12 @@
    "IPNO",
    "IEIF",
    "IVIF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IEEE (802.1Q), not 3GPP. VLAN tagging, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "L2SWI": {
   "category": "Transport-Networking",
@@ -2004,7 +2723,12 @@
    "TNL",
    "ETHSVC",
    "L2SWI"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LAA": {
   "category": "Feature-Function-Config",
@@ -2020,7 +2744,12 @@
    "LNBTS",
    "LNBTS_FDD",
    "LAA"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LANE": {
   "category": "Equipment",
@@ -2029,7 +2758,12 @@
   "fullNames": [
    "com.nokia.srbts.eqm:LANE"
   ],
-  "occurrences": 4
+  "occurrences": 4,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LANE_R": {
   "category": "Equipment",
@@ -2038,7 +2772,12 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:LANE_R"
   ],
-  "occurrences": 15
+  "occurrences": 15,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LBPUCCHRDPR": {
   "category": "LTE-Radio-Cell",
@@ -2053,7 +2792,12 @@
    "MRBTS",
    "LNBTS",
    "LBPUCCHRDPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Built on top of standardized concepts (PUCCH resource config / transmission mode, TS 36.331 and TS 36.213 respectively), but the load-based decision logic and thresholds in this specific profile are Nokia's own algorithm, not something 3GPP specifies.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LBPUCCHRPR": {
   "category": "Feature-Function-Config",
@@ -2068,7 +2812,12 @@
    "MRBTS",
    "LNBTS",
    "LBPUCCHRPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LCELL": {
   "category": "Feature-Function-Config",
@@ -2085,7 +2834,12 @@
    "MNLENT",
    "CELLMAPPING",
    "LCELL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LCELNR": {
   "category": "Feature-Function-Config",
@@ -2094,7 +2848,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:LCELNR"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LLOCK": {
   "category": "Feature-Function-Config",
@@ -2103,7 +2862,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:LLOCK"
   ],
-  "occurrences": 10
+  "occurrences": 10,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LNADJ": {
   "category": "Mobility-Neighbor-Relations",
@@ -2118,7 +2882,23 @@
    "MRBTS",
    "LNBTS",
    "LNADJ"
-  ]
+  ],
+  "threeGpp": {
+   "note": "LTE-to-LTE neighbor relations are governed by the ANR management spec (TS 32.511) and configured/signalled via TS 36.331's mobility IEs.",
+   "specs": [
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    },
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNADJGNB": {
   "category": "Mobility-Neighbor-Relations",
@@ -2133,7 +2913,23 @@
    "MRBTS",
    "LNBTS",
    "LNADJGNB"
-  ]
+  ],
+  "threeGpp": {
+   "note": "LTE-NR (EN-DC) neighbor relations are governed by the multi-connectivity spec (TS 37.340), with ANR concepts from TS 32.511 also applying.",
+   "specs": [
+    {
+     "spec": "TS 37.340",
+     "title": "NR; Multi-connectivity; Overall description; Stage-2",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/37_series/37.340/"
+    },
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNADJL": {
   "category": "Mobility-Neighbor-Relations",
@@ -2149,7 +2945,23 @@
    "LNBTS",
    "LNADJ",
    "LNADJL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "LTE-to-LTE neighbor relations are governed by the ANR management spec (TS 32.511) and configured/signalled via TS 36.331's mobility IEs.",
+   "specs": [
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    },
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNADJX": {
   "category": "Mobility-Neighbor-Relations",
@@ -2164,7 +2976,12 @@
    "MRBTS",
    "LNBTS",
    "LNADJX"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by 3GPP2 (a separate standards body for CDMA2000, not part of 3GPP), not 3GPP. CDMA2000 1xRTT/1xEV-DO air-interface parameters are specified in 3GPP2's own C.S00xx document series, entirely outside 3GPP's remit.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "LNBTS": {
   "category": "LTE-Radio-Cell",
@@ -2178,7 +2995,18 @@
   "officialHierarchy": [
    "MRBTS",
    "LNBTS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Corresponds to the E-UTRAN NRM's ENBFunction IOC.",
+   "specs": [
+    {
+     "spec": "TS 28.658",
+     "title": "Telecommunication management; Evolved Universal Terrestrial Radio Access Network (E-UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.658/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNBTS_FDD": {
   "category": "LTE-Radio-Cell",
@@ -2193,7 +3021,18 @@
    "MRBTS",
    "LNBTS",
    "LNBTS_FDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Corresponds to the E-UTRAN NRM's ENBFunction IOC.",
+   "specs": [
+    {
+     "spec": "TS 28.658",
+     "title": "Telecommunication management; Evolved Universal Terrestrial Radio Access Network (E-UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.658/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNBTS_TDD": {
   "category": "LTE-Radio-Cell",
@@ -2208,7 +3047,18 @@
    "MRBTS",
    "LNBTS",
    "LNBTS_TDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Corresponds to the E-UTRAN NRM's ENBFunction IOC.",
+   "specs": [
+    {
+     "spec": "TS 28.658",
+     "title": "Telecommunication management; Evolved Universal Terrestrial Radio Access Network (E-UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.658/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNCEL": {
   "category": "LTE-Radio-Cell",
@@ -2223,7 +3073,23 @@
    "MRBTS",
    "LNBTS",
    "LNCEL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "The class itself corresponds to the E-UTRAN NRM's EUtranCellFDD/TDD IOC (TS 28.658); most of its individual RRC-facing parameters (SIB content, mobility thresholds, PUCCH/PDCCH config, etc.) are themselves specified in TS 36.331.",
+   "specs": [
+    {
+     "spec": "TS 28.658",
+     "title": "Telecommunication management; Evolved Universal Terrestrial Radio Access Network (E-UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.658/"
+    },
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNCEL_FDD": {
   "category": "LTE-Radio-Cell",
@@ -2239,7 +3105,23 @@
    "LNBTS",
    "LNCEL",
    "LNCEL_FDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "The class itself corresponds to the E-UTRAN NRM's EUtranCellFDD/TDD IOC (TS 28.658); most of its individual RRC-facing parameters (SIB content, mobility thresholds, PUCCH/PDCCH config, etc.) are themselves specified in TS 36.331.",
+   "specs": [
+    {
+     "spec": "TS 28.658",
+     "title": "Telecommunication management; Evolved Universal Terrestrial Radio Access Network (E-UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.658/"
+    },
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNCEL_TDD": {
   "category": "LTE-Radio-Cell",
@@ -2255,7 +3137,23 @@
    "LNBTS",
    "LNCEL",
    "LNCEL_TDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "The class itself corresponds to the E-UTRAN NRM's EUtranCellFDD/TDD IOC (TS 28.658); most of its individual RRC-facing parameters (SIB content, mobility thresholds, PUCCH/PDCCH config, etc.) are themselves specified in TS 36.331.",
+   "specs": [
+    {
+     "spec": "TS 28.658",
+     "title": "Telecommunication management; Evolved Universal Terrestrial Radio Access Network (E-UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.658/"
+    },
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNHENB": {
   "category": "Mobility-Neighbor-Relations",
@@ -2270,7 +3168,18 @@
    "MRBTS",
    "LNBTS",
    "LNHENB"
-  ]
+  ],
+  "threeGpp": {
+   "note": "HeNB (Home eNodeB) detection/handling is a 3GPP-defined mobility feature; the OAM parameters for managing it as a neighbor are Nokia's own, but the underlying concept and RRC signalling are standardized.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNHOIF": {
   "category": "Mobility-Neighbor-Relations",
@@ -2286,7 +3195,18 @@
    "LNBTS",
    "LNCEL",
    "LNHOIF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNHOX": {
   "category": "Mobility-Neighbor-Relations",
@@ -2302,7 +3222,12 @@
    "LNBTS",
    "LNCEL",
    "LNHOX"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by 3GPP2 (a separate standards body for CDMA2000, not part of 3GPP), not 3GPP. CDMA2000 1xRTT/1xEV-DO air-interface parameters are specified in 3GPP2's own C.S00xx document series, entirely outside 3GPP's remit.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "LNMME": {
   "category": "Core-Network-Interface",
@@ -2317,7 +3242,18 @@
    "MRBTS",
    "LNBTS",
    "LNMME"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Represents an S1-MME peer; the S1AP protocol and its IEs are entirely 3GPP-defined.",
+   "specs": [
+    {
+     "spec": "TS 36.413",
+     "title": "Evolved Universal Terrestrial Radio Access Network (E-UTRAN); S1 Application Protocol (S1AP)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.413/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNREL": {
   "category": "Mobility-Neighbor-Relations",
@@ -2333,7 +3269,23 @@
    "LNBTS",
    "LNCEL",
    "LNREL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "LTE-to-LTE neighbor relations are governed by the ANR management spec (TS 32.511) and configured/signalled via TS 36.331's mobility IEs.",
+   "specs": [
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    },
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNRELGNBCELL": {
   "category": "Mobility-Neighbor-Relations",
@@ -2349,7 +3301,23 @@
    "LNBTS",
    "LNCEL",
    "LNRELGNBCELL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "LTE-NR (EN-DC) neighbor relations are governed by the multi-connectivity spec (TS 37.340), with ANR concepts from TS 32.511 also applying.",
+   "specs": [
+    {
+     "spec": "TS 37.340",
+     "title": "NR; Multi-connectivity; Overall description; Stage-2",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/37_series/37.340/"
+    },
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LNRELX": {
   "category": "Mobility-Neighbor-Relations",
@@ -2365,7 +3333,12 @@
    "LNBTS",
    "LNCEL",
    "LNRELX"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by 3GPP2 (a separate standards body for CDMA2000, not part of 3GPP), not 3GPP. CDMA2000 1xRTT/1xEV-DO air-interface parameters are specified in 3GPP2's own C.S00xx document series, entirely outside 3GPP's remit.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "LNUPR": {
   "category": "Feature-Function-Config",
@@ -2382,7 +3355,12 @@
    "LNBTS_FDD",
    "LAA",
    "LNUPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LOGLINK": {
   "category": "Equipment",
@@ -2398,7 +3376,12 @@
    "EQM",
    "HWTOP",
    "LOGLINK"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LOGLINK_R": {
   "category": "Equipment",
@@ -2414,7 +3397,12 @@
    "EQM_R",
    "HWTOP_R",
    "LOGLINK_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LTAC": {
   "category": "Core-Network-Interface",
@@ -2432,7 +3420,18 @@
    "MNLENT",
    "TAC",
    "LTAC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LTEENB": {
   "category": "Mobility-Neighbor-Relations",
@@ -2441,7 +3440,23 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:LTEENB"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "LTE-NR (EN-DC) neighbor relations are governed by the multi-connectivity spec (TS 37.340), with ANR concepts from TS 32.511 also applying.",
+   "specs": [
+    {
+     "spec": "TS 37.340",
+     "title": "NR; Multi-connectivity; Overall description; Stage-2",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/37_series/37.340/"
+    },
+    {
+     "spec": "TS 32.511",
+     "title": "Telecommunication management; Automatic Neighbour Relation (ANR) management; Concepts and requirements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.511/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "LUAC": {
   "category": "Security",
@@ -2458,7 +3473,12 @@
    "MNL",
    "AMGR",
    "LUAC"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "LUAC_R": {
   "category": "Security",
@@ -2475,7 +3495,12 @@
    "AMGR",
    "LUAC",
    "LUAC_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MFIRECEL": {
   "category": "LTE-Radio-Cell",
@@ -2484,7 +3509,12 @@
   "fullNames": [
    "NOKLTE:MFIRECEL"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Standardized by the MulteFire Alliance (an independent industry alliance, not part of 3GPP), not 3GPP. MulteFire re-uses LTE radio technology in unlicensed spectrum without requiring a licensed anchor carrier, but is specified outside 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "MFIREPR": {
   "category": "Feature-Function-Config",
@@ -2493,7 +3523,12 @@
   "fullNames": [
    "NOKLTE:MFIREPR"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MFNDMTCPR": {
   "category": "Feature-Function-Config",
@@ -2502,7 +3537,12 @@
   "fullNames": [
    "NOKLTE:MFNDMTCPR"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MNL": {
   "category": "Site-Common",
@@ -2516,7 +3556,12 @@
   "officialHierarchy": [
    "MRBTS",
    "MNL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MNLENT": {
   "category": "Synchronization",
@@ -2531,7 +3576,12 @@
    "MRBTS",
    "MNL",
    "MNLENT"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MNL_R": {
   "category": "Site-Common",
@@ -2546,7 +3596,12 @@
    "MRBTS",
    "MNL",
    "MNL_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MODPR": {
   "category": "Mobility-Neighbor-Relations",
@@ -2561,7 +3616,18 @@
    "MRBTS",
    "LNBTS",
    "MODPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MOIMP": {
   "category": "Mobility-Neighbor-Relations",
@@ -2577,7 +3643,18 @@
    "LNBTS",
    "MOPR",
    "MOIMP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MOPR": {
   "category": "Mobility-Neighbor-Relations",
@@ -2592,7 +3669,18 @@
    "MRBTS",
    "LNBTS",
    "MOPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MORED": {
   "category": "Mobility-Neighbor-Relations",
@@ -2608,7 +3696,18 @@
    "LNBTS",
    "MOPR",
    "MORED"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MPLANENW": {
   "category": "Transport-Networking",
@@ -2624,7 +3723,12 @@
    "MNL",
    "MNLENT",
    "MPLANENW"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MPLANENW_R": {
   "category": "Security",
@@ -2641,7 +3745,12 @@
    "MNLENT",
    "MPLANENW",
    "MPLANENW_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MPUCCH_FDD": {
   "category": "LTE-Radio-Cell",
@@ -2658,7 +3767,18 @@
    "LNCEL",
    "LNCEL_FDD",
    "MPUCCH_FDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Configures the RRC PUCCH-Config information element.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MPUCCH_TDD": {
   "category": "LTE-Radio-Cell",
@@ -2675,7 +3795,18 @@
    "LNCEL",
    "LNCEL_TDD",
    "MPUCCH_TDD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Configures the RRC PUCCH-Config information element.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MRBTS": {
   "category": "Site-Common",
@@ -2689,7 +3820,18 @@
   "officialFullName": "Multiradio BTS Site",
   "officialHierarchy": [
    "MRBTS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Corresponds to the generic NRM's top-level ManagedElement IOC; the granular equipment hierarchy underneath it (cabinets/modules/etc.) is Nokia's own extension beyond what 3GPP's generic model specifies.",
+   "specs": [
+    {
+     "spec": "TS 28.622",
+     "title": "Telecommunication management; Generic Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.622/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "MRBTSDESC": {
   "category": "Site-Common",
@@ -2703,7 +3845,12 @@
   "officialHierarchy": [
    "MRBTS",
    "MRBTSDESC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Free-text/descriptive metadata about the site -- not part of the 3GPP NRM's attribute set.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "MTRACE": {
   "category": "Feature-Function-Config",
@@ -2719,7 +3866,12 @@
    "LNBTS",
    "CTRLTS",
    "MTRACE"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NBIOTPR": {
   "category": "Feature-Function-Config",
@@ -2734,7 +3886,12 @@
    "MRBTS",
    "LNBTS",
    "NBIOTPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NECERT_R": {
   "category": "Security",
@@ -2751,7 +3908,12 @@
    "MNLENT",
    "CERTHENT",
    "NECERT_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NOTE": {
   "category": "Other",
@@ -2772,7 +3934,12 @@
    "attribName",
    "attribValue",
    "attribute"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NOTES": {
   "category": "Site-Common",
@@ -2787,7 +3954,12 @@
    "MRBTS",
    "MNL",
    "NOTES"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRBEAMMAP": {
   "category": "NR-Radio-Cell",
@@ -2796,7 +3968,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRBEAMMAP"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Beam management procedures themselves are standardized (TS 38.213/38.214), but this specific logical-beam-ID-to-physical-antenna-pattern mapping table is Nokia's own implementation detail, not a 3GPP-defined structure.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRBTS": {
   "category": "NR-Radio-Cell",
@@ -2805,7 +3982,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRBTS"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "Aggregates the 5G NRM's GNBCUCPFunction/GNBDUFunction concepts under one site-level object.",
+   "specs": [
+    {
+     "spec": "TS 28.541",
+     "title": "Management and orchestration; 5G Network Resource Model (NRM); Stage 2 and stage 3",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.541/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRCBRSPR": {
   "category": "Other",
@@ -2814,7 +4002,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCBRSPR"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "NRCBSD": {
   "category": "Other",
@@ -2823,7 +4016,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCBSD"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "NRCBSDCELL": {
   "category": "NR-Radio-Cell",
@@ -2832,7 +4030,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCBSDCELL"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "NRCELL": {
   "category": "NR-Radio-Cell",
@@ -2841,7 +4044,23 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCELL"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "The class corresponds to the 5G NRM's NRCellDU/NRCellCU IOCs (TS 28.541); most of its RRC-facing parameters are themselves specified in TS 38.331.",
+   "specs": [
+    {
+     "spec": "TS 28.541",
+     "title": "Management and orchestration; 5G Network Resource Model (NRM); Stage 2 and stage 3",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.541/"
+    },
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRCELLGRP": {
   "category": "NR-Radio-Cell",
@@ -2850,7 +4069,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCELLGRP"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "A cell-grouping construct within the 5G NRM's cell hierarchy.",
+   "specs": [
+    {
+     "spec": "TS 28.541",
+     "title": "Management and orchestration; 5G Network Resource Model (NRM); Stage 2 and stage 3",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.541/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRCELL_FDD": {
   "category": "NR-Radio-Cell",
@@ -2859,7 +4089,23 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCELL_FDD"
   ],
-  "occurrences": 3
+  "occurrences": 3,
+  "threeGpp": {
+   "note": "The class corresponds to the 5G NRM's NRCellDU/NRCellCU IOCs (TS 28.541); most of its RRC-facing parameters are themselves specified in TS 38.331.",
+   "specs": [
+    {
+     "spec": "TS 28.541",
+     "title": "Management and orchestration; 5G Network Resource Model (NRM); Stage 2 and stage 3",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.541/"
+    },
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRCUUP": {
   "category": "NR-Radio-Cell",
@@ -2868,7 +4114,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCUUP"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "Corresponds to the 5G NRM's GNBCUUPFunction IOC.",
+   "specs": [
+    {
+     "spec": "TS 28.541",
+     "title": "Management and orchestration; 5G Network Resource Model (NRM); Stage 2 and stage 3",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.541/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRDCDPR": {
   "category": "Feature-Function-Config",
@@ -2883,7 +4140,12 @@
    "MRBTS",
    "LNBTS",
    "NRDCDPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDRB": {
   "category": "NR-Radio-Cell",
@@ -2892,7 +4154,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB"
   ],
-  "occurrences": 33
+  "occurrences": 33,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDRB_5QI": {
   "category": "QoS",
@@ -2901,7 +4168,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_5QI"
   ],
-  "occurrences": 47
+  "occurrences": 47,
+  "threeGpp": {
+   "note": "The 5QI (5G QoS Identifier) standardized characteristics table is defined in this spec, \u00a75.7.4.",
+   "specs": [
+    {
+     "spec": "TS 23.501",
+     "title": "System architecture for the 5G System (5GS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/23_series/23.501/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRDRB_MAC": {
   "category": "NR-Radio-Cell",
@@ -2910,7 +4188,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_MAC"
   ],
-  "occurrences": 32
+  "occurrences": 32,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDRB_PDCP": {
   "category": "NR-Radio-Cell",
@@ -2919,7 +4202,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_PDCP"
   ],
-  "occurrences": 33
+  "occurrences": 33,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDRB_RLC_AM": {
   "category": "NR-Radio-Cell",
@@ -2928,7 +4216,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_RLC_AM"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDRB_RLC_UM": {
   "category": "NR-Radio-Cell",
@@ -2937,7 +4230,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_RLC_UM"
   ],
-  "occurrences": 10
+  "occurrences": 10,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDRX": {
   "category": "Feature-Function-Config",
@@ -2946,7 +4244,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRX"
   ],
-  "occurrences": 89
+  "occurrences": 89,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "NRDU": {
   "category": "NR-Radio-Cell",
@@ -2955,7 +4258,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDU"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "Corresponds to the 5G NRM's GNBDUFunction IOC.",
+   "specs": [
+    {
+     "spec": "TS 28.541",
+     "title": "Management and orchestration; 5G Network Resource Model (NRM); Stage 2 and stage 3",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.541/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRIAFIM": {
   "category": "Mobility-Neighbor-Relations",
@@ -2964,7 +4278,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRIAFIM"
   ],
-  "occurrences": 13
+  "occurrences": 13,
+  "threeGpp": {
+   "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRIRFIM": {
   "category": "Mobility-Neighbor-Relations",
@@ -2973,7 +4298,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRIRFIM"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRMEASDPR": {
   "category": "Mobility-Neighbor-Relations",
@@ -2982,7 +4318,18 @@
   "fullNames": [
    "NOKLTE:NRMEASDPR"
   ],
-  "occurrences": 17
+  "occurrences": 17,
+  "threeGpp": {
+   "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRPLMN": {
   "category": "NR-Radio-Cell",
@@ -2991,7 +4338,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPLMN"
   ],
-  "occurrences": 39
+  "occurrences": 39,
+  "threeGpp": {
+   "note": "Broadcast PLMN identity is carried in SIB1's PLMN-IdentityInfoList, a 3GPP-defined RRC structure.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRPLMN_SUPPORT": {
   "category": "Core-Network-Interface",
@@ -3000,7 +4358,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPLMN_SUPPORT"
   ],
-  "occurrences": 4
+  "occurrences": 4,
+  "threeGpp": {
+   "note": "Per-PLMN NG-RAN support/broadcast is signalled via NGAP and SIB1.",
+   "specs": [
+    {
+     "spec": "TS 38.413",
+     "title": "NG-RAN; NG Application Protocol (NGAP)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.413/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRPMCCP": {
   "category": "NR-Radio-Cell",
@@ -3009,7 +4378,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPMCCP"
   ],
-  "occurrences": 20
+  "occurrences": 20,
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of NR/5GC performance measurements in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected.",
+   "specs": [
+    {
+     "spec": "TS 28.552",
+     "title": "Management and orchestration; 5G performance measurements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.552/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRPMRNL": {
   "category": "NR-Radio-Cell",
@@ -3018,7 +4398,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPMRNL"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of NR/5GC performance measurements in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected.",
+   "specs": [
+    {
+     "spec": "TS 28.552",
+     "title": "Management and orchestration; 5G performance measurements",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.552/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRRFSP_PROFILE": {
   "category": "Mobility-Neighbor-Relations",
@@ -3027,7 +4418,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRRFSP_PROFILE"
   ],
-  "occurrences": 20
+  "occurrences": 20,
+  "threeGpp": {
+   "note": "RFSP Index and Subscriber Profile ID (SPID) are standardized Information Elements carried over S1AP (also referenced from the core network side in TS 23.401's Annex on RAT/Frequency Selection Priority).",
+   "specs": [
+    {
+     "spec": "TS 36.413",
+     "title": "Evolved Universal Terrestrial Radio Access Network (E-UTRAN); S1 Application Protocol (S1AP)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.413/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRSASUSERGROUP": {
   "category": "Other",
@@ -3036,7 +4438,12 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSASUSERGROUP"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "NRSCTP": {
   "category": "Core-Network-Interface",
@@ -3045,7 +4452,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSCTP"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "SCTP is itself an IETF protocol (RFC 4960), but 3GPP specifies its use as the NG-interface signalling transport in this spec.",
+   "specs": [
+    {
+     "spec": "TS 38.412",
+     "title": "NG-RAN; NG signalling transport",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.412/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRSPID_PROFILE": {
   "category": "Mobility-Neighbor-Relations",
@@ -3054,7 +4472,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSPID_PROFILE"
   ],
-  "occurrences": 20
+  "occurrences": 20,
+  "threeGpp": {
+   "note": "RFSP Index and Subscriber Profile ID (SPID) are standardized Information Elements carried over S1AP (also referenced from the core network side in TS 23.401's Annex on RAT/Frequency Selection Priority).",
+   "specs": [
+    {
+     "spec": "TS 36.413",
+     "title": "Evolved Universal Terrestrial Radio Access Network (E-UTRAN); S1 Application Protocol (S1AP)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.413/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRSYSINFO_PROFILE": {
   "category": "NR-Radio-Cell",
@@ -3063,7 +4492,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSYSINFO_PROFILE"
   ],
-  "occurrences": 13
+  "occurrences": 13,
+  "threeGpp": {
+   "note": "NR System Information Blocks and their content are 3GPP-defined broadcast structures.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NRX2LINK_TRUST": {
   "category": "Security",
@@ -3072,7 +4512,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRX2LINK_TRUST"
   ],
-  "occurrences": 2
+  "occurrences": 2,
+  "threeGpp": {
+   "note": "3GPP requires inter-node interfaces to be secured (see the Network Domain Security annex); this specific trusted-peer list mechanism is Nokia's own implementation.",
+   "specs": [
+    {
+     "spec": "TS 33.501",
+     "title": "Security architecture and procedures for 5G system",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/33_series/33.501/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "NTP": {
   "category": "Synchronization",
@@ -3090,7 +4541,12 @@
    "SYNC",
    "CLOCK",
    "NTP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 5905, NTPv4), not 3GPP. Coarse time sync, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "NTPS": {
   "category": "Synchronization",
@@ -3107,7 +4563,12 @@
    "FTM",
    "IPNO",
    "NTPS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 5905, NTPv4), not 3GPP. Coarse time sync, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "NTP_R": {
   "category": "Synchronization",
@@ -3126,7 +4587,12 @@
    "CLOCK",
    "NTP",
    "NTP_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 5905, NTPv4), not 3GPP. Coarse time sync, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "PCP2QMAP": {
   "category": "QoS",
@@ -3144,7 +4610,12 @@
    "ETHSVC",
    "L2SWI",
    "PCP2QMAP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "PDCCH": {
   "category": "NR-Radio-Cell",
@@ -3153,7 +4624,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:PDCCH"
   ],
-  "occurrences": 20
+  "occurrences": 20,
+  "threeGpp": {
+   "note": "Configures the RRC PDCCH-Config / PDCCH-ConfigCommon information elements.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PDCCH_CONFIG_COMMON": {
   "category": "NR-Radio-Cell",
@@ -3162,7 +4644,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:PDCCH_CONFIG_COMMON"
   ],
-  "occurrences": 20
+  "occurrences": 20,
+  "threeGpp": {
+   "note": "Configures the RRC PDCCH-Config / PDCCH-ConfigCommon information elements.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PDCCH_CONFIG_DEDICATED": {
   "category": "NR-Radio-Cell",
@@ -3171,7 +4664,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:PDCCH_CONFIG_DEDICATED"
   ],
-  "occurrences": 10
+  "occurrences": 10,
+  "threeGpp": {
+   "note": "Configures the RRC PDCCH-Config / PDCCH-ConfigCommon information elements.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PDSCH": {
   "category": "NR-Radio-Cell",
@@ -3180,7 +4684,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:PDSCH"
   ],
-  "occurrences": 30
+  "occurrences": 30,
+  "threeGpp": {
+   "note": "Configures the RRC PDSCH-Config information element.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PFOE_R": {
   "category": "Equipment",
@@ -3189,7 +4704,12 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:PFOE_R"
   ],
-  "occurrences": 1
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "PKTFLTR": {
   "category": "Security",
@@ -3207,7 +4727,12 @@
    "IPAPP",
    "FIREWALL",
    "PKTFLTR"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "PLMN": {
   "category": "Other",
@@ -3215,7 +4740,12 @@
   "description": "No curated description is available for managed object class \"PLMN\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
   "fullNames": [],
   "occurrences": 1,
-  "sampleParams": []
+  "sampleParams": [],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "PMCADM": {
   "category": "Feature-Function-Config",
@@ -3231,7 +4761,18 @@
    "MNL",
    "MNLENT",
    "PMCADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMCADM_R": {
   "category": "Site-Common",
@@ -3240,7 +4781,18 @@
   "fullNames": [
    "com.nokia.srbts.mnl:PMCADM_R"
   ],
-  "occurrences": 3
+  "occurrences": 3,
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMCCP": {
   "category": "Feature-Function-Config",
@@ -3256,7 +4808,18 @@
    "LNBTS",
    "PMRNL",
    "PMCCP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMMNL": {
   "category": "Synchronization",
@@ -3272,7 +4835,18 @@
    "MNL",
    "MNLENT",
    "PMMNL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMPLM": {
   "category": "Feature-Function-Config",
@@ -3281,7 +4855,18 @@
   "fullNames": [
    "NOKLTE:PMPLM"
   ],
-  "occurrences": 35
+  "occurrences": 35,
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMQAP": {
   "category": "QoS",
@@ -3297,7 +4882,18 @@
    "LNBTS",
    "PMRNL",
    "PMQAP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMRNL": {
   "category": "Feature-Function-Config",
@@ -3312,7 +4908,18 @@
    "MRBTS",
    "LNBTS",
    "PMRNL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMRPQH": {
   "category": "Feature-Function-Config",
@@ -3328,7 +4935,18 @@
    "LNBTS",
    "PMRNL",
    "PMRPQH"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMTNL": {
   "category": "Transport-Networking",
@@ -3345,7 +4963,18 @@
    "TNLSVC",
    "TNL",
    "PMTNL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PMTNLINT": {
   "category": "Transport-Networking",
@@ -3354,7 +4983,18 @@
   "fullNames": [
    "com.nokia.srbts.tnl:PMTNLINT"
   ],
-  "occurrences": 29
+  "occurrences": 29,
+  "threeGpp": {
+   "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
+   "specs": [
+    {
+     "spec": "TS 32.425",
+     "title": "Telecommunication management; Performance Management (PM); Performance measurements Evolved Universal Terrestrial Radio Access Network (E-UTRAN)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/32_series/32.425/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "PNASC": {
   "category": "Security",
@@ -3370,7 +5010,12 @@
    "LNBTS",
    "FTM",
    "PNASC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by IEEE (802.1X), not 3GPP. Port-based network access control is an IEEE Ethernet standard, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "POE": {
   "category": "Transport-Networking",
@@ -3386,7 +5031,12 @@
    "LNBTS",
    "FTM",
    "POE"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IEEE (802.3af/at/bt), not 3GPP. Power-over-Ethernet, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "POWERGROUP_R": {
   "category": "Equipment",
@@ -3404,7 +5054,12 @@
    "CABINET_R",
    "SMOD_R",
    "POWERGROUP_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "PREEMPPR": {
   "category": "Other",
@@ -3427,7 +5082,12 @@
    "preferredPreempCandList",
    "searchAllCandForEmergency",
    "searchRestPreempCand"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "PTPMASTER": {
   "category": "Synchronization",
@@ -3436,7 +5096,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:PTPMASTER"
   ],
-  "occurrences": 2
+  "occurrences": 2,
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "QOS": {
   "category": "QoS",
@@ -3454,7 +5119,12 @@
    "TNL",
    "IPNO",
    "QOS"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "REDRT": {
   "category": "Mobility-Neighbor-Relations",
@@ -3470,7 +5140,18 @@
    "LNBTS",
    "LNCEL",
    "REDRT"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "RETU": {
   "category": "Equipment",
@@ -3487,7 +5168,12 @@
    "APEQM",
    "ALD",
    "RETU"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "RETU_R": {
   "category": "Equipment",
@@ -3504,7 +5190,12 @@
    "APEQM_R",
    "ALD_R",
    "RETU_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "RFREQ": {
   "category": "Other",
@@ -3521,7 +5212,12 @@
    "MNLENT",
    "TEST",
    "RFREQ"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RFRES": {
   "category": "Equipment",
@@ -3539,7 +5235,12 @@
    "TEST",
    "RFREQ",
    "RFRES"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RFTHLD": {
   "category": "Equipment",
@@ -3556,7 +5257,12 @@
    "MNLENT",
    "TEST",
    "RFTHLD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RIBS": {
   "category": "Feature-Function-Config",
@@ -3565,7 +5271,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:RIBS"
   ],
-  "occurrences": 24
+  "occurrences": 24,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RIBS_R": {
   "category": "Site-Common",
@@ -3574,7 +5285,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:RIBS_R"
   ],
-  "occurrences": 7
+  "occurrences": 7,
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RIM": {
   "category": "Mobility-Neighbor-Relations",
@@ -3589,7 +5305,18 @@
    "MRBTS",
    "LNBTS",
    "RIM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "RMOD": {
   "category": "Equipment",
@@ -3605,7 +5332,12 @@
    "EQM",
    "APEQM",
    "RMOD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RMOD_R": {
   "category": "Equipment",
@@ -3621,7 +5353,12 @@
    "EQM_R",
    "APEQM_R",
    "RMOD_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RNC": {
   "category": "Other",
@@ -3629,7 +5366,12 @@
   "description": "No curated description is available for managed object class \"RNC\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
   "fullNames": [],
   "occurrences": 2,
-  "sampleParams": []
+  "sampleParams": [],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "RSL": {
   "category": "Equipment",
@@ -3646,7 +5388,12 @@
    "APEQM",
    "RMOD",
    "RSL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "RSL_R": {
   "category": "Equipment",
@@ -3663,7 +5410,12 @@
    "APEQM_R",
    "RMOD_R",
    "RSL_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by AISG (Antenna Interface Standards Group), not 3GPP. Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "RTPOL": {
   "category": "Transport-Networking",
@@ -3681,7 +5433,12 @@
    "TNL",
    "IPNO",
    "RTPOL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SASUSERGROUP": {
   "category": "Feature-Function-Config",
@@ -3696,7 +5453,12 @@
    "MRBTS",
    "LNBTS",
    "SASUSERGROUP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "SCTP": {
   "category": "Core-Network-Interface",
@@ -3711,7 +5473,18 @@
    "MRBTS",
    "LNBTS",
    "SCTP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "SCTP is itself an IETF protocol (RFC 4960), but 3GPP specifies its use as the S1-interface signalling transport in this spec.",
+   "specs": [
+    {
+     "spec": "TS 36.412",
+     "title": "Evolved Universal Terrestrial Radio Access Network (E-UTRAN); S1 signalling transport",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.412/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "SDRX": {
   "category": "Feature-Function-Config",
@@ -3727,7 +5500,12 @@
    "LNBTS",
    "LNCEL",
    "SDRX"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SECADM": {
   "category": "Security",
@@ -3743,7 +5521,12 @@
    "MNL",
    "MNLENT",
    "SECADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SECADM_R": {
   "category": "Security",
@@ -3760,7 +5543,12 @@
    "MNLENT",
    "SECADM",
    "SECADM_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SECPRM": {
   "category": "Security",
@@ -3776,7 +5564,12 @@
    "LNBTS",
    "FTM",
    "SECPRM"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SERVEDAMF": {
   "category": "Core-Network-Interface",
@@ -3785,7 +5578,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:SERVEDAMF"
   ],
-  "occurrences": 20
+  "occurrences": 20,
+  "threeGpp": {
+   "note": "AMF configuration/selection information is carried over NGAP.",
+   "specs": [
+    {
+     "spec": "TS 38.413",
+     "title": "NG-RAN; NG Application Protocol (NGAP)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.413/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "SFP": {
   "category": "Equipment",
@@ -3794,7 +5598,12 @@
   "fullNames": [
    "com.nokia.srbts.eqm:SFP"
   ],
-  "occurrences": 6
+  "occurrences": 6,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SFP_R": {
   "category": "Equipment",
@@ -3811,7 +5620,12 @@
    "APEQM_R",
    "RMOD_R",
    "SFP_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SIB": {
   "category": "LTE-Radio-Cell",
@@ -3827,7 +5641,18 @@
    "LNBTS",
    "LNCEL",
    "SIB"
-  ]
+  ],
+  "threeGpp": {
+   "note": "System Information Blocks and their content are entirely 3GPP-defined broadcast structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "SLCELLDRCONF": {
   "category": "Feature-Function-Config",
@@ -3836,7 +5661,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SLCELLDRCONF"
   ],
-  "occurrences": 6
+  "occurrences": 6,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SMOD": {
   "category": "Equipment",
@@ -3853,7 +5683,12 @@
    "APEQM",
    "CABINET",
    "SMOD"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SMOD_R": {
   "category": "Equipment",
@@ -3870,7 +5705,12 @@
    "APEQM_R",
    "CABINET_R",
    "SMOD_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SNSSAI": {
   "category": "Core-Network-Interface",
@@ -3879,7 +5719,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:SNSSAI"
   ],
-  "occurrences": 13
+  "occurrences": 13,
+  "threeGpp": {
+   "note": "S-NSSAI (network slice identity) is defined in the 5G System Architecture spec (also numbered in TS 23.003).",
+   "specs": [
+    {
+     "spec": "TS 23.501",
+     "title": "System architecture for the 5G System (5GS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/23_series/23.501/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "STPG": {
   "category": "Synchronization",
@@ -3896,7 +5747,12 @@
    "FTM",
    "SYNC",
    "STPG"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SYNC": {
   "category": "Synchronization",
@@ -3913,7 +5769,12 @@
    "MNL",
    "MNLENT",
    "SYNC"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "SYNCE": {
   "category": "Synchronization",
@@ -3931,7 +5792,12 @@
    "SYNC",
    "CLOCK",
    "SYNCE"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8262/G.8264 Synchronous Ethernet), not 3GPP. Frequency distribution over Ethernet physical layer, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "SYNC_R": {
   "category": "Synchronization",
@@ -3940,7 +5806,12 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SYNC_R"
   ],
-  "occurrences": 3
+  "occurrences": 3,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TAC": {
   "category": "Core-Network-Interface",
@@ -3957,7 +5828,18 @@
    "MNL",
    "MNLENT",
    "TAC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "TEST": {
   "category": "Equipment",
@@ -3973,7 +5855,12 @@
    "MNL",
    "MNLENT",
    "TEST"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TGTTHRESHPR": {
   "category": "Other",
@@ -3994,7 +5881,12 @@
    "thresholdOffsetRsrqMinTargetToSource",
    "thresholdRsrpMinTarget",
    "thresholdRsrqMinTarget"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TIME": {
   "category": "Site-Common",
@@ -4011,7 +5903,12 @@
    "MNLENT",
    "SYNC",
    "TIME"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IANA Time Zone Database, not 3GPP. Timezone/DST rules are a general software convention (see the ~543-option tz database), not any telecom standards body's concern.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TMSWPR": {
   "category": "LTE-Radio-Cell",
@@ -4026,7 +5923,12 @@
    "MRBTS",
    "LNBTS",
    "TMSWPR"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Built on top of standardized concepts (PUCCH resource config / transmission mode, TS 36.331 and TS 36.213 respectively), but the load-based decision logic and thresholds in this specific profile are Nokia's own algorithm, not something 3GPP specifies.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TNL": {
   "category": "Transport-Networking",
@@ -4041,7 +5943,12 @@
    "MRBTS",
    "TNLSVC",
    "TNL"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TNLSVC": {
   "category": "Transport-Networking",
@@ -4055,7 +5962,12 @@
   "officialHierarchy": [
    "MRBTS",
    "TNLSVC"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TNL_R": {
   "category": "Transport-Networking",
@@ -4071,7 +5983,12 @@
    "TNLSVC",
    "TNL",
    "TNL_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TOP": {
   "category": "Synchronization",
@@ -4089,7 +6006,12 @@
    "SYNC",
    "CLOCK",
    "TOP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TOPB": {
   "category": "Synchronization",
@@ -4105,7 +6027,12 @@
    "LNBTS",
    "FTM",
    "TOPB"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TOPF": {
   "category": "Synchronization",
@@ -4124,7 +6051,12 @@
    "CLOCK",
    "TOP",
    "TOPF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TOPP": {
   "category": "Synchronization",
@@ -4144,7 +6076,12 @@
    "CLOCK",
    "TOP",
    "TOPP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TOPP_R": {
   "category": "Site-Common",
@@ -4164,7 +6101,12 @@
    "TOP",
    "TOPP",
    "TOPP_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TRACKINGAREA": {
   "category": "Core-Network-Interface",
@@ -4173,7 +6115,18 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:TRACKINGAREA"
   ],
-  "occurrences": 22
+  "occurrences": 22,
+  "threeGpp": {
+   "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "TRBLCADM": {
   "category": "Feature-Function-Config",
@@ -4189,7 +6142,12 @@
    "MNL",
    "MNLENT",
    "TRBLCADM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TRBLCADM_R": {
   "category": "Site-Common",
@@ -4206,7 +6164,12 @@
    "MNLENT",
    "TRBLCADM",
    "TRBLCADM_R"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TRSNW": {
   "category": "Transport-Networking",
@@ -4221,7 +6184,12 @@
    "MRBTS",
    "LNBTS",
    "TRSNW"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "TWAMP": {
   "category": "QoS",
@@ -4238,7 +6206,12 @@
    "TNL",
    "IPAPP",
    "TWAMP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IETF (RFC 5357), not 3GPP. Two-Way Active Measurement Protocol is an IETF specification, not a 3GPP one, even though it's commonly used to measure a mobile backhaul's transport performance.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "TWAMPREFLECT": {
   "category": "Other",
@@ -4261,7 +6234,12 @@
    "twampReflectorEnabled",
    "twampReflectorLocalIpAddressDN",
    "twampReflectorUdpEchoEnabled"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "UFFIM": {
   "category": "Mobility-Neighbor-Relations",
@@ -4277,7 +6255,18 @@
    "LNBTS",
    "LNCEL",
    "UFFIM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
  },
  "ULCOMP": {
   "category": "Feature-Function-Config",
@@ -4292,7 +6281,12 @@
    "MRBTS",
    "LNBTS",
    "ULCOMP"
-  ]
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "UNIT": {
   "category": "Equipment",
@@ -4308,7 +6302,12 @@
    "LNBTS",
    "FTM",
    "UNIT"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "VLANIF": {
   "category": "Transport-Networking",
@@ -4326,7 +6325,12 @@
    "ETHSVC",
    "ETHIF",
    "VLANIF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by the IEEE (802.1Q), not 3GPP. VLAN tagging, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
  },
  "WBTS": {
   "category": "Other",
@@ -4334,7 +6338,12 @@
   "description": "No curated description is available for managed object class \"WBTS\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
   "fullNames": [],
   "occurrences": 2,
-  "sampleParams": []
+  "sampleParams": [],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "WCEL": {
   "category": "Other",
@@ -4355,7 +6364,12 @@
    "AMRSF",
    "AMRTargetSC",
    "AMRTargetTransmission"
-  ]
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "WIFICNF": {
   "category": "Transport-Networking",
@@ -4371,7 +6385,12 @@
    "LNBTS",
    "FTM",
    "WIFICNF"
-  ]
+  ],
+  "threeGpp": {
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
  },
  "XPARAM": {
   "category": "Mobility-Neighbor-Relations",
@@ -4387,6 +6406,11 @@
    "LNBTS",
    "LNCEL",
    "XPARAM"
-  ]
+  ],
+  "threeGpp": {
+   "note": "Standardized by 3GPP2 (a separate standards body for CDMA2000, not part of 3GPP), not 3GPP. CDMA2000 1xRTT/1xEV-DO air-interface parameters are specified in 3GPP2's own C.S00xx document series, entirely outside 3GPP's remit.",
+   "specs": [],
+   "status": "other-standard"
+  }
  }
 }

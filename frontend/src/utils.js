@@ -51,3 +51,26 @@ export function collectExpandableIds(nodeOrNodes) {
 export function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
+
+/**
+ * Parses Nokia's own official-dictionary "3GPP Reference" text (e.g.
+ * "• 3GPP Reference: TS36.331" or a multi-line string listing several)
+ * into a deduped list of {spec, url} pairs, so the Explain panel can render
+ * real clickable links instead of a plain-text citation. `spec` here is
+ * exactly this Nokia-sourced data -- see merge_official_reference.py -- not
+ * something guessed; the parsing just extracts the spec number and builds
+ * the (verified, public, no-login) 3GPP archive URL for it.
+ */
+export function parseThreeGppRefs(raw) {
+  if (!raw) return [];
+  const seen = new Set();
+  const out = [];
+  for (const m of raw.matchAll(/TS\s*(\d+\.\d+)/g)) {
+    const spec = m[1];
+    if (seen.has(spec)) continue;
+    seen.add(spec);
+    const series = spec.split(".")[0];
+    out.push({ spec, url: `https://www.3gpp.org/ftp/Specs/archive/${series}_series/${spec}/` });
+  }
+  return out;
+}

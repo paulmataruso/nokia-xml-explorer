@@ -48,6 +48,7 @@ const RAW_TO_LOGICAL_ALIAS = {
 };
 
 const DEFAULT_SIDEBAR_WIDTH = 280;
+const DEFAULT_EXPLAIN_WIDTH = 400;
 const DEFAULT_SPLIT_WIDTH = 480;
 const DEFAULT_SPLIT_HEIGHT = 320;
 
@@ -66,6 +67,7 @@ export default function App() {
   const [fileFilter, setFileFilter] = useState("");
   const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [explainWidth, setExplainWidth] = useState(DEFAULT_EXPLAIN_WIDTH);
   const [explainCollapsed, setExplainCollapsed] = useState(false);
 
   // --- Raw XML side-by-side view ---
@@ -954,28 +956,34 @@ export default function App() {
             ◀
           </button>
         ) : (
-          <aside className="explain-pane">
-            <div className="pane-header">
-              <span>Explanation</span>
-              <button className="collapse-btn" onClick={() => setExplainCollapsed(true)} title="Collapse explanation panel">
-                ▶
-              </button>
-            </div>
-            {kb ? (
-              <ExplainPanel
-                node={selectedNode}
-                kb={kb}
-                onClose={() => setSelectedNode(null)}
-                editable={canEditNow}
-                filename={selectedFile}
-                onParamAdded={refetchAfterEdit}
-              />
-            ) : (
-              <div className="explain-panel empty">
-                <p>Loading knowledge base…</p>
+          <>
+            <Resizer
+              title="Drag to resize the explanation panel"
+              onDrag={(dx) => setExplainWidth((w) => clamp(w - dx, 280, 800))}
+            />
+            <aside className="explain-pane" style={{ width: explainWidth }}>
+              <div className="pane-header">
+                <span>Explanation</span>
+                <button className="collapse-btn" onClick={() => setExplainCollapsed(true)} title="Collapse explanation panel">
+                  ▶
+                </button>
               </div>
-            )}
-          </aside>
+              {kb ? (
+                <ExplainPanel
+                  node={selectedNode}
+                  kb={kb}
+                  onClose={() => setSelectedNode(null)}
+                  editable={canEditNow}
+                  filename={selectedFile}
+                  onParamAdded={refetchAfterEdit}
+                />
+              ) : (
+                <div className="explain-panel empty">
+                  <p>Loading knowledge base…</p>
+                </div>
+              )}
+            </aside>
+          </>
         )}
       </div>
 

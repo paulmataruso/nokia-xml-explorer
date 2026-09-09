@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { explainNode } from "../knowledge.js";
 import { explainParamFallback } from "../api.js";
 import { AddParamModal } from "./AddParamModal.jsx";
+import { parseThreeGppRefs } from "../utils.js";
+
+const THREEGPP_STATUS_META = {
+  standardized: { label: "3GPP-standardized", color: "#3fb950" },
+  unverified: { label: "Possibly standardized — not individually verified", color: "#58a6ff" },
+  "other-standard": { label: "Standardized (not by 3GPP)", color: "#d29922" },
+  "vendor-specific": { label: "Nokia-specific — no 3GPP reference", color: "#8b949e" },
+};
 
 const CONFIDENCE_META = {
   official: { label: "Official Nokia documentation", color: "#58a6ff" },
@@ -183,7 +191,53 @@ export function ExplainPanel({ node, kb, onClose, editable, filename, onParamAdd
           {info.threeGppRef && (
             <div className="kv-block">
               <div className="k">3GPP reference</div>
-              <div className="v-block">{info.threeGppRef}</div>
+              <div className="v-block">
+                {(() => {
+                  const links = parseThreeGppRefs(info.threeGppRef);
+                  if (links.length === 0) return info.threeGppRef;
+                  return links.map(({ spec, url }, i) => (
+                    <React.Fragment key={spec}>
+                      {i > 0 && ", "}
+                      <a href={url} target="_blank" rel="noopener noreferrer">
+                        3GPP TS {spec}
+                      </a>
+                    </React.Fragment>
+                  ));
+                })()}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {info.threeGpp && (
+        <div className="attr-table threegpp-block">
+          <div className="attr-table-title">3GPP standardization</div>
+          <div
+            className="threegpp-status-badge"
+            style={{ borderColor: THREEGPP_STATUS_META[info.threeGpp.status]?.color }}
+          >
+            {THREEGPP_STATUS_META[info.threeGpp.status]?.label || info.threeGpp.status}
+          </div>
+          {info.threeGpp.specs && info.threeGpp.specs.length > 0 && (
+            <div className="kv-block">
+              <div className="k">Spec{info.threeGpp.specs.length > 1 ? "s" : ""}</div>
+              <div className="v-block">
+                {info.threeGpp.specs.map((s, i) => (
+                  <div key={s.spec}>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                      {s.spec}
+                    </a>
+                    {" — "}
+                    {s.title}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {info.threeGpp.note && (
+            <div className="kv-block">
+              <div className="v-block">{info.threeGpp.note}</div>
             </div>
           )}
         </div>

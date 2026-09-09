@@ -30,6 +30,7 @@ export function explainNode(node, kb) {
         category: cls?.category,
         officialFullName: cls?.officialFullName,
         officialHierarchy: cls?.officialHierarchy,
+        threeGpp: cls?.threeGpp,
         attributes: [
           node.distName && {
             key: "distName",
@@ -79,6 +80,11 @@ export function explainNode(node, kb) {
         relatedFeatures: entry?.relatedFeatures,
         threeGppName: entry?.threeGppName,
         threeGppRef: entry?.threeGppRef,
+        // Only present when threeGppRef isn't -- a lower-confidence,
+        // class-inherited signal built by build_3gpp_param_refs.py, never
+        // shown alongside a real Nokia-sourced threeGppRef (see that
+        // script for why those two are mutually exclusive by construction).
+        threeGpp: entry?.threeGpp,
         officialMoClass: entry?.moClass,
       };
     }

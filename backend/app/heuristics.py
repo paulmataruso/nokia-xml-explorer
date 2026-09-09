@@ -88,6 +88,27 @@ ABBREVIATIONS = {
     "csg": "Closed Subscriber Group", "barring": "access barring",
     "cac": "Call Admission Control", "aal": "Alarm", "oos": "out of service",
     "is": "in service", "reset": "reset", "boot": "boot/startup",
+    # Added from a pass over Nokia's own general product glossary (ref/markdown,
+    # converted from ref/pdf via markitdown) -- each of these was cross-checked
+    # against an actual glossary/manual definition or is an unambiguous
+    # standard 3GPP term, not a guess. See PROJECT_STATE.md for the ones
+    # considered and rejected as too ambiguous to add confidently (e.g. "lho",
+    # "sl", "mt", "mi" -- plausible internal Nokia feature-prefix codes with no
+    # corroborating source found anywhere in the corpus).
+    "nr": "NR (5G New Radio)", "mcs": "Modulation and Coding Scheme",
+    "dtx": "discontinuous transmission", "tdd": "Time Division Duplex",
+    "amr": "Adaptive Multi-Rate (speech codec)",
+    "prach": "Physical Random Access Channel",
+    "hsdpa": "High-Speed Downlink Packet Access",
+    "gbr": "Guaranteed Bit Rate",
+    "cu": "Centralized Unit/Control-User-plane (context-dependent)",
+    "du": "Distributed Unit (5G split RAN)",
+    "cat": "category (e.g. Cat-M / LTE-M device category)",
+    "ec": "Ec (chip energy; part of the WCDMA Ec/No signal-quality ratio)",
+    "fr": "Frequency Range (5G FR1/FR2 spectrum band group)",
+    "vo": "voice (e.g. VoNR/VoLTE -- Voice over NR/LTE)",
+    "dc": "Dual Connectivity/DC power (context-dependent)",
+    "sbts": "SBTS (Single RAN Base Transceiver Station -- Nokia's unified AirScale product line)",
 }
 
 _UNIT_PATTERNS = [

@@ -677,12 +677,12 @@ mark {
 
 /* ---------- Explain panel ---------- */
 .explain-pane {
-  width: 400px;
   flex-shrink: 0;
   border-left: 1px solid var(--border);
   background: var(--bg-alt);
   overflow-y: auto;
   min-height: 0;
+  min-width: 280px;
 }
 
 .explain-panel {
@@ -744,6 +744,16 @@ mark {
   border: 1px solid;
   border-radius: 999px;
   font-size: 11px;
+}
+
+.threegpp-status-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--text);
 }
 
 .add-param-btn {
