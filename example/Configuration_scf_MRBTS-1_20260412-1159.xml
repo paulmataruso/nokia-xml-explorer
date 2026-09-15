@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<raml xmlns="raml21.xsd" version="2.1">
+  <cmData type="plan" scope="all" id="4107451824">
+    <header>
+      <log action="create" dateTime="2026-04-12T15:59:04.312Z"/>
+    </header>
+    <managedObject class="com.nokia.srbts:MRBTS" distName="MRBTS-1" version="SBTS25R2_2502_100" operation="create"/>
+  </cmData>
+</raml>
