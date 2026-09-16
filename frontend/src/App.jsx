@@ -69,6 +69,7 @@ export default function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [explainWidth, setExplainWidth] = useState(DEFAULT_EXPLAIN_WIDTH);
   const [explainCollapsed, setExplainCollapsed] = useState(false);
+  const [highlightOfficial, setHighlightOfficial] = useState(true);
 
   // --- Raw XML side-by-side view ---
   const [showRawView, setShowRawView] = useState(true);
@@ -617,8 +618,12 @@ export default function App() {
               {filesError && <div className="placeholder error">{filesError}</div>}
 
               {uploadedFiles.length > 0 && (
-                <>
-                  <div className="sidebar-title">Your uploads ({uploadedFiles.length})</div>
+                <div className="file-section file-section-uploads">
+                  <div className="file-section-header">
+                    <span className="file-section-icon">📤</span>
+                    <span>Your uploads</span>
+                    <span className="file-section-count">{uploadedFiles.length}</span>
+                  </div>
                   <ul className="file-list file-list-uploads">
                     {uploadedFiles.map((f) => (
                       <li
@@ -638,31 +643,41 @@ export default function App() {
                       </li>
                     ))}
                   </ul>
-                </>
+                </div>
               )}
 
-              <div className="sidebar-title">Commissioning files ({scpFiles.length})</div>
-              <ul className="file-list">
-                {scpFiles.map((f) => (
-                  <li
-                    key={f.name}
-                    className={
-                      "file-item" +
-                      (selectedFile === f.name ? " selected" : "") +
-                      (!f.supported ? " unsupported" : "")
-                    }
-                    onClick={() => f.supported && setSelectedFile(f.name)}
-                    title={f.supported ? `${f.name} (${formatBytes(f.sizeBytes)})` : "Unsupported file type — not a RAML XML file"}
-                  >
-                    <span className="file-name">{f.name}</span>
-                    <span className="file-size">{formatBytes(f.sizeBytes)}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="file-section file-section-scp">
+                <div className="file-section-header">
+                  <span className="file-section-icon">📡</span>
+                  <span>Commissioning files</span>
+                  <span className="file-section-count">{scpFiles.length}</span>
+                </div>
+                <ul className="file-list">
+                  {scpFiles.map((f) => (
+                    <li
+                      key={f.name}
+                      className={
+                        "file-item" +
+                        (selectedFile === f.name ? " selected" : "") +
+                        (!f.supported ? " unsupported" : "")
+                      }
+                      onClick={() => f.supported && setSelectedFile(f.name)}
+                      title={f.supported ? `${f.name} (${formatBytes(f.sizeBytes)})` : "Unsupported file type — not a RAML XML file"}
+                    >
+                      <span className="file-name">{f.name}</span>
+                      <span className="file-size">{formatBytes(f.sizeBytes)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               {exampleFiles.length > 0 && (
-                <>
-                  <div className="sidebar-title">Example files ({exampleFiles.length})</div>
+                <div className="file-section file-section-example">
+                  <div className="file-section-header">
+                    <span className="file-section-icon">📚</span>
+                    <span>Example files</span>
+                    <span className="file-section-count">{exampleFiles.length}</span>
+                  </div>
                   <ul className="file-list">
                     {exampleFiles.map((f) => (
                       <li
@@ -684,7 +699,7 @@ export default function App() {
                       </li>
                     ))}
                   </ul>
-                </>
+                </div>
               )}
             </aside>
 
@@ -771,6 +786,13 @@ export default function App() {
                     )}
                   </div>
                 )}
+                <button
+                  className={"btn official-legend" + (highlightOfficial ? " active" : "")}
+                  onClick={() => setHighlightOfficial((v) => !v)}
+                  title="Toggle blue highlighting for rows sourced verbatim from Nokia's own official parameter dictionary, not researched/heuristic text"
+                >
+                  <span className="official-dot" /> Highlight Official
+                </button>
               </div>
 
               {editMode && !isEditableFile && (
@@ -843,6 +865,7 @@ export default function App() {
                               onDeleteObject={handleDeleteObject}
                               onDeleteParam={handleDeleteParam}
                               onContextMenu={handleContextMenu}
+                              kb={highlightOfficial ? kb : null}
                             />
                           )}
                         </div>
@@ -933,6 +956,7 @@ export default function App() {
                                   onDeleteObject={handleDeleteObject}
                                   onDeleteParam={handleDeleteParam}
                                   onContextMenu={handleContextMenu}
+                                  kb={highlightOfficial ? kb : null}
                                 />
                               </div>
                             )}

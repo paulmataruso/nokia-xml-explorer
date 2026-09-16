@@ -2,6 +2,7 @@ import React from "react";
 import { Highlight } from "./Highlight.jsx";
 import { EditableValue } from "./EditableValue.jsx";
 import { collectExpandableIds } from "../utils.js";
+import { nodeConfidence } from "../knowledge.js";
 
 const KIND_META = {
   mo: { color: "#5aa9e6" },
@@ -30,6 +31,7 @@ export function TreeView({
   onDeleteObject,
   onDeleteParam,
   onContextMenu,
+  kb,
 }) {
   return (
     <ul className="tree-level" role="group">
@@ -52,6 +54,7 @@ export function TreeView({
           onDeleteObject={onDeleteObject}
           onDeleteParam={onDeleteParam}
           onContextMenu={onContextMenu}
+          kb={kb}
         />
       ))}
     </ul>
@@ -75,12 +78,14 @@ function TreeRow({
   onDeleteObject,
   onDeleteParam,
   onContextMenu,
+  kb,
 }) {
   const hasChildren = !!(node.children && node.children.length > 0);
   const isOpen = forceExpand || expanded.has(node.id);
   const meta = KIND_META[node.kind] || { color: "#888" };
   const isSelected = selectedId === node.id;
   const isActive = activeId === node.id;
+  const isOfficial = nodeConfidence(node, kb) === "official";
   const canEditThis = editable && node.kind === "param";
   const canDeleteObject = editable && node.kind === "mo" && onDeleteObject;
   const canDeleteParam = editable && node.kind === "param" && !node.mandatory && node.ownerDistName && onDeleteParam;
@@ -122,13 +127,17 @@ function TreeRow({
           (isSelected ? " selected" : "") +
           (isActive ? " active" : "") +
           (node._matched ? " matched" : "") +
-          (node.requiredMissing ? " required-missing" : "")
+          (node.requiredMissing ? " required-missing" : "") +
+          (isOfficial ? " official-doc" : "")
         }
         style={{ paddingLeft: 8 + depth * 18 }}
         data-tree-id={node.id}
         onClick={handleRowClick}
         onContextMenu={handleContextMenu}
-        title="Click to expand/collapse, sync with raw XML, and see a full explanation — right-click for more actions"
+        title={
+          "Click to expand/collapse, sync with raw XML, and see a full explanation — right-click for more actions" +
+          (isOfficial ? " (sourced from official Nokia documentation)" : "")
+        }
       >
         <span className={"caret" + (hasChildren ? "" : " empty")}>
           {hasChildren ? (isOpen ? "▾" : "▸") : ""}
@@ -202,6 +211,7 @@ function TreeRow({
           onDeleteObject={onDeleteObject}
           onDeleteParam={onDeleteParam}
           onContextMenu={onContextMenu}
+          kb={kb}
         />
       )}
     </li>

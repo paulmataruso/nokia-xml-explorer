@@ -40,7 +40,15 @@ export function EditableValue({ value, onSave, placeholder, knownValues }) {
       cancelingRef.current = false;
       return;
     }
-    const finalValue = overrideDraft !== undefined ? overrideDraft : draft;
+    if (saving) return;
+    // overrideDraft is for callers that already have the exact string to
+    // save (the <select>'s onChange, or an explicit programmatic value) --
+    // NOT for wiring straight into a DOM event handler. Passing a
+    // SyntheticEvent through here by accident (e.g. onBlur={commit}) used
+    // to send the event object itself as the param value, which the
+    // backend's UpdateParamRequest.value: str correctly rejected with a
+    // 422 ("save failed") instead of saving the typed text.
+    const finalValue = typeof overrideDraft === "string" ? overrideDraft : draft;
     if (finalValue === (value ?? "")) {
       setEditing(false);
       return;
@@ -78,7 +86,7 @@ export function EditableValue({ value, onSave, placeholder, knownValues }) {
             value={draft}
             disabled={saving}
             autoFocus
-            onBlur={commit}
+            onBlur={() => commit()}
             onChange={(e) => {
               const v = e.target.value;
               setDraft(v);
@@ -98,7 +106,7 @@ export function EditableValue({ value, onSave, placeholder, knownValues }) {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={handleKeyDown}
-            onBlur={commit}
+            onBlur={() => commit()}
             disabled={saving}
             autoFocus
             onFocus={(e) => e.target.select()}

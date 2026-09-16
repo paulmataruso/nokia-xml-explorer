@@ -246,12 +246,85 @@ body {
   padding: 4px 7px;
 }
 
-.sidebar-title {
-  padding: 10px 12px 4px;
+/* Each file source (uploads/scp/example) gets its own bordered, color-coded
+   card -- a plain text label above a shared flat list wasn't enough
+   separation once scp/example each grew to dozens of same-named files; the
+   accent color on the left edge and header carries through so it's still
+   obvious which section you're in even scrolled mid-list. */
+.file-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 8px 8px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.file-section:last-child {
+  margin-bottom: 8px;
+}
+
+.file-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
   font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--text-dim);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.file-section-icon {
+  font-size: 12px;
+}
+
+.file-section-count {
+  margin-left: auto;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.75;
+}
+
+.file-section .file-list {
+  padding: 4px;
+  margin: 0;
+}
+
+.file-section-uploads {
+  border-left: 3px solid #3fb950;
+  flex: 0 0 auto;
+}
+.file-section-uploads .file-section-header {
+  background: rgba(63, 185, 80, 0.12);
+  color: #3fb950;
+  border-bottom-color: rgba(63, 185, 80, 0.25);
+}
+
+.file-section-scp {
+  border-left: 3px solid #d29922;
+  flex: 1;
+  min-height: 90px;
+}
+.file-section-scp .file-section-header {
+  background: rgba(210, 153, 34, 0.12);
+  color: #d29922;
+  border-bottom-color: rgba(210, 153, 34, 0.25);
+}
+
+.file-section-example {
+  border-left: 3px solid #4dd0c8;
+  flex: 1;
+  min-height: 90px;
+}
+.file-section-example .file-section-header {
+  background: rgba(77, 208, 200, 0.12);
+  color: #4dd0c8;
+  border-bottom-color: rgba(77, 208, 200, 0.25);
 }
 
 .file-filter, .search-box {
@@ -349,6 +422,7 @@ body {
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   padding: 10px 14px 6px;
@@ -543,6 +617,42 @@ body {
   color: #f85149;
   border-color: #f85149;
   font-weight: 600;
+}
+
+.tree-row.official-doc {
+  background: rgba(88, 166, 255, 0.14);
+  box-shadow: inset 2px 0 0 #58a6ff;
+}
+
+.tree-row.official-doc:hover {
+  background: rgba(88, 166, 255, 0.22);
+}
+
+.tree-row.official-doc.selected,
+.tree-row.official-doc.active {
+  background: #1b2837;
+}
+
+/* required-missing is the more urgent signal -- keep its red tint/stripe on
+   top when a row happens to be both Mandatory-and-empty and official-sourced. */
+.tree-row.official-doc.required-missing {
+  background: rgba(248, 81, 73, 0.12);
+  box-shadow: inset 3px 0 0 #f85149;
+}
+
+.official-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.official-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(88, 166, 255, 0.35);
+  box-shadow: inset 0 0 0 1px #58a6ff;
+  flex-shrink: 0;
 }
 
 .node-delete-btn {
@@ -894,6 +1004,24 @@ mark {
 
 .raw-row.required-missing.focused {
   background: #2a1f22;
+}
+
+.raw-row.official-doc {
+  background: rgba(88, 166, 255, 0.14);
+  box-shadow: inset 2px 0 0 #58a6ff;
+}
+
+.raw-row.official-doc:hover {
+  background: rgba(88, 166, 255, 0.22);
+}
+
+.raw-row.official-doc.focused {
+  background: #1b2837;
+}
+
+.raw-row.official-doc.required-missing {
+  background: rgba(248, 81, 73, 0.12);
+  box-shadow: inset 3px 0 0 #f85149;
 }
 
 .raw-caret {

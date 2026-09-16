@@ -2,6 +2,7 @@ import React from "react";
 import { Highlight } from "./Highlight.jsx";
 import { EditableValue } from "./EditableValue.jsx";
 import { collectExpandableIds } from "../utils.js";
+import { nodeConfidence } from "../knowledge.js";
 
 function attrString(attrs) {
   return Object.entries(attrs || {})
@@ -45,6 +46,7 @@ function RawRow({
   onDeleteObject,
   onDeleteParam,
   onContextMenu,
+  kb,
 }) {
   const hasChildren = !!(node.children && node.children.length > 0);
   const isEmpty = !hasChildren && node.text == null;
@@ -52,7 +54,12 @@ function RawRow({
   const isOpen = expanded.has(node.id);
   const isFocused = node.id === focusId;
   const pad = 6 + depth * 16;
-  const rowClass = "raw-row" + (isFocused ? " focused" : "") + (node.requiredMissing ? " required-missing" : "");
+  const isOfficial = nodeConfidence(node, kb) === "official";
+  const rowClass =
+    "raw-row" +
+    (isFocused ? " focused" : "") +
+    (node.requiredMissing ? " required-missing" : "") +
+    (isOfficial ? " official-doc" : "");
   const canEditThis = editable && node.tag === "p";
   const canDeleteParam = editable && node.tag === "p" && !node.mandatory && node.ownerDistName && onDeleteParam;
   const canDeleteObject = editable && node.tag === "managedObject" && onDeleteObject;
@@ -190,6 +197,7 @@ function RawRow({
               onDeleteObject={onDeleteObject}
               onDeleteParam={onDeleteParam}
               onContextMenu={onContextMenu}
+              kb={kb}
             />
           ))}
           <div className="raw-row raw-close" style={{ paddingLeft: pad }}>
@@ -215,6 +223,7 @@ export function RawXmlView({
   onDeleteObject,
   onDeleteParam,
   onContextMenu,
+  kb,
 }) {
   return (
     <div className="raw-tree">
@@ -232,6 +241,7 @@ export function RawXmlView({
         onDeleteObject={onDeleteObject}
         onDeleteParam={onDeleteParam}
         onContextMenu={onContextMenu}
+        kb={kb}
       />
     </div>
   );

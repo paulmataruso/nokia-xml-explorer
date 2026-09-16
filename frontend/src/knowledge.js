@@ -1,3 +1,34 @@
+function shortClassName(fullClass) {
+  if (!fullClass) return null;
+  const idx = fullClass.lastIndexOf(":");
+  return idx === -1 ? fullClass : fullClass.slice(idx + 1);
+}
+
+/**
+ * Cheap, synchronous confidence-tier lookup ("official"/"high"/"medium"/
+ * "low"/"heuristic", or null) for a tree row -- used to color-code rows at
+ * render time, as opposed to explainNode()'s full description build. Works
+ * for both tree shapes: the logical tree (`node.kind`, short `node.class`)
+ * and the raw DOM tree (`node.tag`, namespaced `node.attrs.class`).
+ */
+export function nodeConfidence(node, kb) {
+  if (!kb) return null;
+  const { classesKB, paramsKB } = kb;
+  if (node.kind === "mo" || node.kind === "mo-placeholder") {
+    return classesKB[node.class]?.confidence || null;
+  }
+  if (node.kind === "param" || node.kind === "list") {
+    return paramsKB[node.label]?.confidence || null;
+  }
+  if (node.tag === "managedObject") {
+    return classesKB[shortClassName(node.attrs?.class)]?.confidence || null;
+  }
+  if (node.tag === "p" || node.tag === "list") {
+    return paramsKB[node.attrs?.name]?.confidence || null;
+  }
+  return null;
+}
+
 /**
  * Combines a tree node with the loaded knowledge base (classes.json,
  * parameters.json, structural glossary) to produce the content shown in the
