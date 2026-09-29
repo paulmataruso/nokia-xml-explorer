@@ -278,6 +278,36 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+.file-section-header[role="button"] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.file-section-header[role="button"]:hover {
+  filter: brightness(1.25);
+}
+
+.file-section-header[role="button"]:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.file-section-chevron {
+  width: 10px;
+  font-size: 10px;
+}
+
+/* A collapsed section shrinks to just its header, giving its space to the
+   sections still open. */
+.file-section.collapsed {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+.file-section.collapsed .file-section-header {
+  border-bottom: none;
+}
+
 .file-section-icon {
   font-size: 12px;
 }
@@ -345,14 +375,20 @@ body {
 .file-list {
   list-style: none;
   margin: 0;
-  padding: 0 4px 12px;
+  padding: 0 6px 12px;
   overflow-y: auto;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .file-item {
+  flex-shrink: 0;
   padding: 7px 8px;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--bg);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -373,8 +409,14 @@ body {
   font-size: 11px;
 }
 
+/* Alternate row shading so neighbouring file boxes don't blend together. */
+.file-item:nth-child(even) {
+  background: #19202a;
+}
+
 .file-item:hover {
-  background: var(--panel);
+  background: #212b37;
+  border-color: #3a4454;
   color: var(--text);
 }
 
@@ -1891,4 +1933,151 @@ mark {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ---------- Software-version filter (top bar) ---------- */
+.version-filter {
+  position: relative;
+}
+
+.site-mgmt-link.version-filter-active {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.version-filter-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  min-width: 240px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  padding: 6px;
+  font-size: 12.5px;
+}
+
+.version-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 8px;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.version-filter-clear {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.version-filter-clear:disabled {
+  color: var(--text-dim);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.version-filter-empty {
+  padding: 8px 6px;
+  color: var(--text-dim);
+}
+
+.version-filter-group + .version-filter-group {
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+.version-filter-family,
+.version-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.version-filter-family {
+  font-weight: 600;
+}
+
+.version-filter-item {
+  padding-left: 24px;
+}
+
+.version-filter-family:hover,
+.version-filter-item:hover {
+  background: var(--panel);
+}
+
+.version-filter-count {
+  margin-left: auto;
+  color: var(--text-dim);
+  font-size: 11.5px;
+}
+
+/* ---------- File list metadata chips ---------- */
+.file-item .file-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.file-chip {
+  font-size: 10.5px;
+  line-height: 1.5;
+  padding: 0 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.file-chip-version {
+  font-family: var(--mono);
+  color: var(--accent);
+  border-color: rgba(90, 169, 230, 0.4);
+}
+
+.file-chip-date {
+  font-family: var(--mono);
+}
+
+.file-chip-freq {
+  font-family: var(--mono);
+  color: #7ee2b8;
+  border-color: rgba(126, 226, 184, 0.35);
+}
+
+/* display: contents lets expanded values wrap inline with the other tags. */
+.file-chip-freq-group {
+  display: contents;
+}
+
+.file-chip-toggle {
+  cursor: pointer;
+}
+
+.file-chip-toggle:hover,
+.file-chip-freq-group.open .file-chip-toggle {
+  background: rgba(126, 226, 184, 0.12);
 }

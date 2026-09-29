@@ -28,10 +28,15 @@ import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
 import { ToastStack } from "./components/Toast.jsx";
 import { SiteManagementModal } from "./components/SiteManagementModal.jsx";
+import { VersionFilter, versionKey } from "./components/VersionFilter.jsx";
+import { FileMeta } from "./components/FileMeta.jsx";
+import { FileSection } from "./components/FileSection.jsx";
 import { ConfirmDialog } from "./components/ConfirmDialog.jsx";
 import { PromptDialog } from "./components/PromptDialog.jsx";
 import { filterTree, collectExpandableIds, clamp } from "./utils.js";
 import { findPath, findPathInForest, findNodeInForest, collectRawMatches } from "./rawTreeUtils.js";
+
+const COLLAPSED_SECTIONS_KEY = "nokiaXmlExplorer.collapsedFileSections";
 
 function formatBytes(n) {
   if (n < 1024) return `${n} B`;
@@ -65,6 +70,31 @@ export default function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [query, setQuery] = useState("");
   const [fileFilter, setFileFilter] = useState("");
+  // Selected BTS software releases (e.g. "SBTS20C"); empty = no filter.
+  const [versionFilter, setVersionFilter] = useState(() => new Set());
+  // Sidebar sections ("upload" | "scp" | "example") the user has collapsed,
+  // remembered in this browser across reloads. Storage can be unavailable
+  // (private mode, blocked site data), so failures just fall back to all-open.
+  const [collapsedSections, setCollapsedSections] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(COLLAPSED_SECTIONS_KEY));
+      return new Set(Array.isArray(saved) ? saved : []);
+    } catch {
+      return new Set();
+    }
+  });
+  const toggleSection = (id) =>
+    setCollapsedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      try {
+        localStorage.setItem(COLLAPSED_SECTIONS_KEY, JSON.stringify([...next]));
+      } catch {
+        // Not persisted this time; the in-memory state still applies.
+      }
+      return next;
+    });
   const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [explainWidth, setExplainWidth] = useState(DEFAULT_EXPLAIN_WIDTH);
@@ -321,9 +351,12 @@ export default function App() {
 
   const visibleFiles = useMemo(() => {
     const q = fileFilter.trim().toLowerCase();
-    if (!q) return files;
-    return files.filter((f) => f.name.toLowerCase().includes(q));
-  }, [files, fileFilter]);
+    return files.filter(
+      (f) =>
+        (!q || f.name.toLowerCase().includes(q)) &&
+        (versionFilter.size === 0 || versionFilter.has(versionKey(f)))
+    );
+  }, [files, fileFilter, versionFilter]);
 
   const uploadedFiles = visibleFiles.filter((f) => f.source === "upload");
   const scpFiles = visibleFiles.filter((f) => f.source === "scp");
@@ -577,6 +610,7 @@ export default function App() {
         <button className="site-mgmt-link" onClick={() => setSiteManagementOpen(true)}>
           🗂 Site Management
         </button>
+        <VersionFilter files={files} selected={versionFilter} onChange={setVersionFilter} />
         {tree && (
           <div className="stats">
             {tree.stats.managedObjects.toLocaleString()} objects · {tree.stats.parameters.toLocaleString()} parameters
@@ -618,42 +652,76 @@ export default function App() {
               {filesError && <div className="placeholder error">{filesError}</div>}
 
               {uploadedFiles.length > 0 && (
-                <div className="file-section file-section-uploads">
-                  <div className="file-section-header">
-                    <span className="file-section-icon">📤</span>
-                    <span>Your uploads</span>
-                    <span className="file-section-count">{uploadedFiles.length}</span>
-                  </div>
-                  <ul className="file-list file-list-uploads">
-                    {uploadedFiles.map((f) => (
-                      <li
-                        key={f.name}
-                        className={"file-item" + (selectedFile === f.name ? " selected" : "")}
-                        onClick={() => setSelectedFile(f.name)}
-                        title={`${f.name} (${formatBytes(f.sizeBytes)})`}
-                      >
+                <FileSection
+                  className="file-section-uploads"
+                  listClassName="file-list-uploads"
+                  icon="📤"
+                  title="Your uploads"
+                  count={uploadedFiles.length}
+                  collapsed={collapsedSections.has("upload")}
+                  onToggle={() => toggleSection("upload")}
+                >
+                  {uploadedFiles.map((f) => (
+                    <li
+                      key={f.name}
+                      className={"file-item" + (selectedFile === f.name ? " selected" : "")}
+                      onClick={() => setSelectedFile(f.name)}
+                      title={`${f.name} (${formatBytes(f.sizeBytes)})`}
+                    >
+                      <span className="file-main">
                         <span className="file-name">{f.name}</span>
-                        <button
-                          className="delete-btn"
-                          onClick={(e) => handleDelete(e, f.name)}
-                          title="Delete this upload"
-                        >
-                          ×
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                        <FileMeta file={f} />
+                      </span>
+                      <button
+                        className="delete-btn"
+                        onClick={(e) => handleDelete(e, f.name)}
+                        title="Delete this upload"
+                      >
+                        ×
+                      </button>
+                    </li>
+                  ))}
+                </FileSection>
               )}
 
-              <div className="file-section file-section-scp">
-                <div className="file-section-header">
-                  <span className="file-section-icon">📡</span>
-                  <span>Commissioning files</span>
-                  <span className="file-section-count">{scpFiles.length}</span>
-                </div>
-                <ul className="file-list">
-                  {scpFiles.map((f) => (
+              <FileSection
+                className="file-section-scp"
+                icon="📡"
+                title="Commissioning files"
+                count={scpFiles.length}
+                collapsed={collapsedSections.has("scp")}
+                onToggle={() => toggleSection("scp")}
+              >
+                {scpFiles.map((f) => (
+                  <li
+                    key={f.name}
+                    className={
+                      "file-item" +
+                      (selectedFile === f.name ? " selected" : "") +
+                      (!f.supported ? " unsupported" : "")
+                    }
+                    onClick={() => f.supported && setSelectedFile(f.name)}
+                    title={f.supported ? `${f.name} (${formatBytes(f.sizeBytes)})` : "Unsupported file type — not a RAML XML file"}
+                  >
+                    <span className="file-main">
+                      <span className="file-name">{f.name}</span>
+                      <FileMeta file={f} />
+                    </span>
+                    <span className="file-size">{formatBytes(f.sizeBytes)}</span>
+                  </li>
+                ))}
+              </FileSection>
+
+              {exampleFiles.length > 0 && (
+                <FileSection
+                  className="file-section-example"
+                  icon="📚"
+                  title="Example files"
+                  count={exampleFiles.length}
+                  collapsed={collapsedSections.has("example")}
+                  onToggle={() => toggleSection("example")}
+                >
+                  {exampleFiles.map((f) => (
                     <li
                       key={f.name}
                       className={
@@ -662,44 +730,20 @@ export default function App() {
                         (!f.supported ? " unsupported" : "")
                       }
                       onClick={() => f.supported && setSelectedFile(f.name)}
-                      title={f.supported ? `${f.name} (${formatBytes(f.sizeBytes)})` : "Unsupported file type — not a RAML XML file"}
+                      title={
+                        f.supported
+                          ? `${f.name} (${formatBytes(f.sizeBytes)}) — bundled sample file`
+                          : "Unsupported file type — not a RAML XML file"
+                      }
                     >
-                      <span className="file-name">{f.name}</span>
+                      <span className="file-main">
+                        <span className="file-name">{f.name}</span>
+                        <FileMeta file={f} />
+                      </span>
                       <span className="file-size">{formatBytes(f.sizeBytes)}</span>
                     </li>
                   ))}
-                </ul>
-              </div>
-
-              {exampleFiles.length > 0 && (
-                <div className="file-section file-section-example">
-                  <div className="file-section-header">
-                    <span className="file-section-icon">📚</span>
-                    <span>Example files</span>
-                    <span className="file-section-count">{exampleFiles.length}</span>
-                  </div>
-                  <ul className="file-list">
-                    {exampleFiles.map((f) => (
-                      <li
-                        key={f.name}
-                        className={
-                          "file-item" +
-                          (selectedFile === f.name ? " selected" : "") +
-                          (!f.supported ? " unsupported" : "")
-                        }
-                        onClick={() => f.supported && setSelectedFile(f.name)}
-                        title={
-                          f.supported
-                            ? `${f.name} (${formatBytes(f.sizeBytes)}) — bundled sample file`
-                            : "Unsupported file type — not a RAML XML file"
-                        }
-                      >
-                        <span className="file-name">{f.name}</span>
-                        <span className="file-size">{formatBytes(f.sizeBytes)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                </FileSection>
               )}
             </aside>
 

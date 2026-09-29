@@ -78,6 +78,7 @@ app = FastAPI(title="Nokia RAN Commissioning XML Explorer")
 # filesystem reorganization.
 _SITE_STORE = sm.SiteManagementStore(SITE_MGMT_DIR / "metadata.json")
 _FAMILY_CACHE: dict[str, tuple[float, str]] = {}
+_CONTENT_INFO_CACHE: dict[str, tuple[float, dict]] = {}
 _SOURCE_DIRS = {"upload": UPLOAD_DIR, "scp": SCP_DIR, "example": EXAMPLE_DIR}
 
 
@@ -102,6 +103,19 @@ def _file_family(path: Path, filename: str) -> str:
     family = sm.detect_family(path.read_bytes())
     _FAMILY_CACHE[filename] = (stat.st_mtime, family)
     return family
+
+
+def _file_content_info(path: Path, cache_key: str) -> dict:
+    """Per-file facts read from the XML itself for the file list: BTS
+    software release plus serving-cell EARFCNs/NR-ARFCNs."""
+    stat = path.stat()
+    cached = _CONTENT_INFO_CACHE.get(cache_key)
+    if cached and cached[0] == stat.st_mtime:
+        return cached[1]
+    raw = path.read_bytes()
+    info = {"swVersion": sm.detect_sw_version(raw), **sm.detect_cell_frequencies(raw)}
+    _CONTENT_INFO_CACHE[cache_key] = (stat.st_mtime, info)
+    return info
 
 app.add_middleware(
     CORSMiddleware,
@@ -346,12 +360,15 @@ def list_files():
             if not p.is_file() or p.name.startswith("."):
                 continue
             stat = p.stat()
+            supported = p.suffix.lower() == ".xml"
             out.append({
                 "name": p.name,
                 "sizeBytes": stat.st_size,
                 "mtime": stat.st_mtime,
-                "supported": p.suffix.lower() == ".xml",
+                "supported": supported,
                 "source": source,
+                **(_file_content_info(p, f"{source}:{p.name}") if supported
+                   else {"swVersion": None, "earfcns": [], "nrarfcns": []}),
             })
     return out
 

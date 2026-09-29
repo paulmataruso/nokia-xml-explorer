@@ -15,6 +15,7 @@ files. Folders get a short random id since folder names aren't unique.
 from __future__ import annotations
 
 import json
+import re
 import time
 import uuid
 from pathlib import Path
@@ -22,6 +23,14 @@ from typing import Optional
 
 _SRAN_MARKER = b"com.nokia.srbts:"
 _LEGACY_MARKERS = (b"NOKLTE:", b"com.nokia.mrbts:")
+
+_MO_TAG_RE = re.compile(rb"<(?:\w+:)?managedObject\b[^>]*>")
+_CLASS_ATTR_RE = re.compile(rb'\bclass="([^"]*)"')
+_VERSION_ATTR_RE = re.compile(rb'\bversion="([^"]*)"')
+# LTE BTS software families: FL/TL (macro FDD/TDD), FLF/TLF (Flexi Zone),
+# FLC/TLC (Flexi Zone Controller), etc. -- any F/T + L + optional letter.
+_LTE_SW_RE = re.compile(r"^[FT]L[A-Z]?\d")
+_ANY_RELEASE_RE = re.compile(r"^[A-Za-z]+\d")
 
 
 def detect_family(raw: bytes) -> str:
@@ -39,6 +48,75 @@ def detect_family(raw: bytes) -> str:
     if has_legacy:
         return "legacy"
     return "unknown"
+
+
+def detect_sw_version(raw: bytes) -> Optional[str]:
+    """The BTS software release a file was exported from, e.g. "SBTS20C"
+    from version="SBTS20C_2006_001" -- the part of a managedObject's
+    `version` attribute before the first underscore. Per-object versions
+    differ within one file (MNL/EQM/TNL/xL are sub-component releases), so
+    the file-level release is picked in priority order: an SBTS version
+    (SRAN), then the LNBTS object's version (legacy FL/TL/FLF/TLF...), then
+    any LTE-family version, then an SRAN xL version, then any release-like
+    version (e.g. "RNC18" in a 3G dump). None if nothing fits."""
+    lnbts = lte = xl = other = None
+    for m in _MO_TAG_RE.finditer(raw):
+        v = _VERSION_ATTR_RE.search(m.group(0))
+        if not v:
+            continue
+        token = v.group(1).decode("utf-8", errors="replace").split("_", 1)[0]
+        if token.startswith("SBTS"):
+            return token
+        c = _CLASS_ATTR_RE.search(m.group(0))
+        if lnbts is None and c and c.group(1).rsplit(b":", 1)[-1] == b"LNBTS":
+            lnbts = token
+        if lte is None and _LTE_SW_RE.match(token):
+            lte = token
+        if xl is None and token.startswith("xL"):
+            xl = token
+        if other is None and _ANY_RELEASE_RE.match(token):
+            other = token
+    return lnbts or lte or xl or other
+
+
+# Serving-cell carrier frequencies only: (short class, param) pairs for the
+# file's own cells. Neighbor/measurement objects (LNRELX, LNADJX, LNADJL,
+# LNHOX...) also carry ARFCNs, but those describe other sites.
+_EARFCN_PARAMS = {b"LNCEL_FDD": b"earfcnDL", b"LNCEL_TDD": b"earfcn"}
+_NRARFCN_PARAMS = {b"NRCELL": b"nrarfcn", b"NRCELL_FDD": b"nrarfcnDl"}
+_MO_END = re.compile(rb"</(?:\w+:)?managedObject>")
+
+
+def _param_value_re(name: bytes) -> re.Pattern:
+    return re.compile(rb'<(?:\w+:)?p\s+name="' + re.escape(name) + rb'"\s*>\s*(\d+)\s*<')
+
+
+_PARAM_RES = {n: _param_value_re(n) for n in {*_EARFCN_PARAMS.values(), *_NRARFCN_PARAMS.values()}}
+
+
+def detect_cell_frequencies(raw: bytes) -> dict[str, list[str]]:
+    """Distinct LTE EARFCNs (DL) and NR-ARFCNs (DL) configured on the file's
+    own cells, numerically sorted -- {"earfcns": [...], "nrarfcns": [...]}.
+    Byte-level like detect_family: each managedObject's body is the span
+    from its start tag to the next closing tag (managedObjects never nest)."""
+    earfcns: set[int] = set()
+    nrarfcns: set[int] = set()
+    for m in _MO_TAG_RE.finditer(raw):
+        c = _CLASS_ATTR_RE.search(m.group(0))
+        if not c:
+            continue
+        cls = c.group(1).rsplit(b":", 1)[-1]
+        name = _EARFCN_PARAMS.get(cls) or _NRARFCN_PARAMS.get(cls)
+        if name is None:
+            continue
+        end = _MO_END.search(raw, m.end())
+        body = raw[m.end():end.start() if end else len(raw)]
+        target = earfcns if cls in _EARFCN_PARAMS else nrarfcns
+        target.update(int(v) for v in _PARAM_RES[name].findall(body))
+    return {
+        "earfcns": [str(v) for v in sorted(earfcns)],
+        "nrarfcns": [str(v) for v in sorted(nrarfcns)],
+    }
 
 
 def content_snippet(raw: bytes, query: str, context: int = 60) -> Optional[str]:

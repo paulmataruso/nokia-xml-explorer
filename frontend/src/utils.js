@@ -74,3 +74,35 @@ export function parseThreeGppRefs(raw) {
   }
   return out;
 }
+
+const DATE_RE = /(20\d{2})(\d{2})(\d{2})(?:-(\d{2})(\d{2}))?(?!\d)/g;
+const BAND_RE = /(Band|[Bbn])(\d{1,3})(?![0-9A-Za-z])/g;
+
+/**
+ * Best-effort metadata from a Nokia export's file name, e.g.
+ * "Configuration_scf_MRBTS-1_DHI_NR_n78_20260414-0827.xml" ->
+ * { date: "2026-04-14 08:27", bands: ["n78"] }. BTS Site Manager / WebEM
+ * name exports <Type>_<site>_<YYYYMMDD[-HHMM]>; anything that doesn't fit
+ * is left null/empty.
+ * When a name carries several dates (e.g. "..._modified_20260510-1947"),
+ * the last one is used, since it's the most recent save.
+ */
+export function parseFileName(name) {
+  const base = name.replace(/\.xml.*$/i, "");
+
+  let date = null;
+  for (const m of base.matchAll(DATE_RE)) {
+    const [, y, mo, d, hh, mm] = m;
+    if (+mo < 1 || +mo > 12 || +d < 1 || +d > 31) continue;
+    if (hh !== undefined && (+hh > 23 || +mm > 59)) continue;
+    date = `${y}-${mo}-${d}` + (hh !== undefined ? ` ${hh}:${mm}` : "");
+  }
+
+  const bands = [];
+  for (const [, prefix, num] of base.matchAll(BAND_RE)) {
+    const band = (prefix === "n" ? "n" : "B") + String(+num);
+    if (!bands.includes(band)) bands.push(band);
+  }
+
+  return { date, bands };
+}
