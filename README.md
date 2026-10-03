@@ -26,7 +26,7 @@ file, which is normal (see `ref_bts_parameters_lte18.xlsx` vs.
 Runs entirely locally in a single Docker container. Your commissioning
 files never leave your machine.
 
-**Status:** early, functional, actively developed. `v0.02`.
+**Status:** early, functional, actively developed. `v0.07`.
 
 ![Browsing a commissioning file side-by-side with its raw XML, with a full parameter explanation on the right](screenshots/main-page.png)
 
@@ -42,7 +42,16 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
 
 ## What it does
 
-- Lists every `.xml` file placed in `scp/` (your commissioning files).
+- Lists every `.xml` file placed in `scp/` (your commissioning files),
+  alongside your uploads and the bundled examples, as three collapsible
+  color-coded sidebar sections (collapsed state is remembered per
+  browser).
+- Each file in the sidebar is tagged at a glance with its **BTS software
+  release** (e.g. `SBTS20C`, `FLF23R1`, `TL18SP`) and its own cells'
+  **EARFCN / NR-ARFCN** values (read from the file's contents), plus
+  **band** and **export date** (parsed from the file name). The
+  **Filter** button in the top bar narrows the list to one or more
+  software releases, grouped by family.
 - Parses the flat RAML `managedObject` list into a real parent/child tree,
   reconstructed from each object's `distName` path (equipment → cabinet →
   baseband/radio modules → LTE/NR cells → features), instead of the raw
@@ -62,8 +71,16 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   (with match count and prev/next navigation) for searching the literal XML
   text.
 - The file sidebar and the explanation panel can each be collapsed to a thin
-  strip to reclaim screen space, and the sidebar's width is adjustable by
-  dragging its edge.
+  strip to reclaim screen space, and both are resizable by dragging their
+  edge.
+- **Highlight Official** (toolbar toggle, on by default) tints every row
+  whose explanation comes verbatim from Nokia's own parameter dictionary,
+  in both panes, so you can tell documented settings from researched or
+  heuristic ones without opening each one.
+- **3GPP spec links**: the explanation panel shows whether a class or
+  parameter is 3GPP-standardized, with direct links to the relevant
+  specs, and says plainly when something is Nokia-proprietary or only
+  inherits a class-level judgment rather than guessing a citation.
 - **Upload your own XML files** via the drag-and-drop card at the top of the
   sidebar (or click it to browse). Uploaded files are validated as RAML XML
   before being accepted, listed separately under "Your uploads," and can be
@@ -72,7 +89,8 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   place. `scp/` originals stay read-only forever — editing one first makes
   an editable copy in "Your uploads" via a one-click banner, so the source
   file is never touched. Every edit is validated (re-parsed) before being
-  written to disk.
+  written to disk. Parameters with a known, closed set of legal values
+  (booleans and enums) edit through a dropdown instead of free text.
 - **History**: every edit automatically snapshots the file's prior state, so
   you can open the History panel on any uploaded/edited file and restore an
   earlier version if something goes wrong. Restoring itself is undoable —
@@ -320,9 +338,9 @@ Requires Docker and Docker Compose.
 docker compose up --build
 ```
 
-Then open **http://localhost:8080**. A handful of sample commissioning
-files (`example/`) are included and shown out of the box, so there's
-something to explore even before you add your own.
+Then open **http://localhost:8080**. 72 sample commissioning files
+(`example/`) are included and shown out of the box, so there's plenty to
+explore even before you add your own.
 
 The `scp/` directory is mounted **read-only** into the container — the
 tool never modifies your commissioning files. Drop new `.xml` files into
@@ -359,6 +377,7 @@ anything longer-lived.
 ## Project layout
 
 ```
+CLAUDE.md               Short repo guide for Claude Code (commands, architecture invariants, data rules)
 example/                Bundled sample commissioning files, baked into the image (INCLUDE_EXAMPLES=false to hide)
 scp/                    Your Nokia commissioning/configuration XML files (read-only mount)
 uploads/                Files uploaded through the UI, and editable copies of scp/ files (writable mount)
@@ -377,6 +396,8 @@ scripts/extract_official_reference.py Parses ref/ref_bts_parameters_lte18.xlsx i
 scripts/extract_sbts18a_reference.py  Parses ref/SRAN18AISSUE03HTML/.../SBTS_Parameters_18A.xls into ref/extracted/sbts18a_*.json
 scripts/merge_official_reference.py   Upgrades backend/app/data/*.json with both official dictionaries (run AFTER build_knowledge.py)
 scripts/build_class_catalog.py        Builds backend/app/data/class_catalog.json (per-class parent + parameter catalog) for the generator
+scripts/build_3gpp_class_refs.py      Adds each class's 3GPP standardization status + spec links (threeGpp field)
+scripts/build_3gpp_param_refs.py      Same for parameters (reads build_3gpp_class_refs.py's output)
 Dockerfile, docker-compose.yml Single-container build (Vite build → FastAPI serves API + static frontend)
 ```
 
@@ -399,6 +420,8 @@ python3 scripts/extract_inventory.py           # refresh research/input/final_*.
 python3 scripts/build_knowledge.py             # rebuild backend/app/data/*.json
 python3 scripts/merge_official_reference.py    # re-apply the official LTE18 + SBTS18A overlay
 python3 scripts/build_class_catalog.py         # rebuild the generator's parameter catalog
+python3 scripts/build_3gpp_class_refs.py       # re-add 3GPP references (a regen drops them)
+python3 scripts/build_3gpp_param_refs.py       # must follow build_3gpp_class_refs.py
 docker compose up --build
 ```
 
@@ -407,18 +430,20 @@ they're offline tooling, not a runtime dependency of the app itself.
 
 ## Known limitations
 
-- The one `.zip` "Snapshot" file in `scp/` (a full BTS diagnostic bundle —
-  certs, logs, alarms, PM counters) is out of scope for v1 and is greyed
-  out in the file list; this tool targets the RAML commissioning/config
-  XML format specifically.
+- Non-`.xml` files dropped into `scp/` (e.g. a `.zip` BTS diagnostic
+  "Snapshot" bundle) are listed but greyed out; this tool targets the RAML
+  commissioning/config XML format specifically.
 - A handful of files in the wild had stray text (apparently pasted from a
   PDF viewer) before/after the actual XML document; the parser strips this
   automatically, but any other more deeply corrupted files will show a
   parse-error message rather than a tree.
 - **Editing rewrites the whole file** with clean, consistent indentation —
   it preserves every tag, attribute, and value exactly, but does not
-  reproduce the original file's incidental whitespace byte-for-byte. Only
-  parameter *values* are editable (not object/attribute structure).
+  reproduce the original file's incidental whitespace byte-for-byte.
+  Scalar parameters and whole objects can be added, edited, deleted and
+  renamed; `<list>`/`<item>` tables are read-only.
+- No authentication: run it locally or behind your own auth layer, not on
+  the open internet.
 - Two files prefixed `WWW_` were added from a web search for publicly
   available Nokia sample files (see git-free provenance: they came from
   `github.com/ruboarm/Nokia-XML-Dump-Parser` and `github.com/SBramhesh/Motu`,
