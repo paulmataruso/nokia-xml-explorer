@@ -8,6 +8,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -203,16 +204,30 @@ def _unique_upload_name(filename: str) -> str:
     return candidate
 
 
-def _save_snapshot(filename: str, content: bytes) -> None:
+def _save_snapshot(filename: str, content: bytes, label: str | None = None) -> str:
     """Called right before overwriting an uploaded file (from an edit or a
-    restore) so there's always a checkpoint to go back to."""
+    restore) so there's always a checkpoint to go back to. `label` names the
+    change that's about to be made ("Changed pMax on NRCELL-0 to '430'"), so
+    History can say what restoring this snapshot undoes; it's kept in a
+    small {id}.json sidecar next to the {id}.xml. Returns the snapshot id,
+    which the mutating endpoints hand back so the UI can offer an exact
+    "Undo" for the change it just made."""
     d = SNAPSHOT_DIR / filename
     d.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%f")[:-3] + "Z"
     (d / f"{ts}.xml").write_bytes(content)
+    if label:
+        (d / f"{ts}.json").write_text(json.dumps({"label": label}))
     snaps = sorted(d.glob("*.xml"))
     for old in snaps[:-MAX_SNAPSHOTS_PER_FILE]:
         old.unlink(missing_ok=True)
+        old.with_suffix(".json").unlink(missing_ok=True)
+    return ts
+
+
+def _short(dist_name: str) -> str:
+    """Last distName segment ("NRCELL-0") -- what snapshot labels name."""
+    return dist_name.rsplit("/", 1)[-1]
 
 
 def _invalidate_caches(filename: str) -> None:
@@ -227,7 +242,29 @@ def _param_meta(short_class: str | None, name: str | None) -> dict | None:
     return _CLASS_CATALOG.get(short_class, {}).get("params", {}).get(name)
 
 
-def _is_required_missing(meta: dict | None, has_value: bool) -> bool:
+def _is_instance_id_param(short_class: str | None, name: str | None) -> bool:
+    """True for a class's own instance-id parameter (mrbtsId on MRBTS,
+    bbModId on BBMOD, nrcellId on NRCELL...). The dictionaries list these as
+    Mandatory, but the instance id is already carried by the object's
+    distName ("NRCELL-1"); no real file in the corpus writes them as <p>
+    (every one is observed: false in the catalog), so they're never really
+    missing."""
+    return bool(short_class and name and name.lower() == short_class.lower() + "id")
+
+
+def _is_mandatory(meta: dict | None, short_class: str | None = None, name: str | None = None) -> bool:
+    """Required on Creation == Mandatory, minus the class's own instance-id
+    parameter (see _is_instance_id_param). That one is never written by the
+    generator, never flagged missing, and can be deleted if an older build
+    of this tool left an empty placeholder for it in a file."""
+    if _is_instance_id_param(short_class, name):
+        return False
+    return bool(meta and meta.get("requiredOnCreation") == "Mandatory")
+
+
+def _is_required_missing(
+    meta: dict | None, has_value: bool, short_class: str | None = None, name: str | None = None
+) -> bool:
     """True for ANY Mandatory parameter (per the official docs) that
     currently has no value -- not just ones with no documented default.
     Deliberately doesn't key off the catalog's static `trulyRequired` flag:
@@ -236,8 +273,9 @@ def _is_required_missing(meta: dict | None, has_value: bool) -> bool:
     build_class_catalog.py) also ends up written blank by add_object, and
     still needs to be surfaced and filled in even though the docs say it
     "has a default." What matters here is only whether it actually has a
-    value right now."""
-    return bool(meta and meta.get("requiredOnCreation") == "Mandatory" and not has_value)
+    value right now. Instance-id params are the one exception -- see
+    _is_instance_id_param."""
+    return _is_mandatory(meta, short_class, name) and not has_value
 
 
 def _annotate_required_logical(node: dict) -> None:
@@ -252,9 +290,11 @@ def _annotate_required_logical(node: dict) -> None:
     frontend doesn't need to re-derive the class catalog itself."""
     if node.get("kind") == "param":
         meta = _param_meta(node.get("class"), node.get("label"))
-        node["mandatory"] = bool(meta and meta.get("requiredOnCreation") == "Mandatory")
-        node["trulyRequired"] = bool(meta and meta.get("trulyRequired"))
-        node["requiredMissing"] = _is_required_missing(meta, bool(node.get("value")))
+        node["mandatory"] = _is_mandatory(meta, node.get("class"), node.get("label"))
+        node["trulyRequired"] = bool(node["mandatory"] and meta.get("trulyRequired"))
+        node["requiredMissing"] = _is_required_missing(
+            meta, bool(node.get("value")), node.get("class"), node.get("label")
+        )
         node["knownValues"] = (meta or {}).get("knownValues") or None
     for child in node.get("children", None) or []:
         _annotate_required_logical(child)
@@ -269,9 +309,11 @@ def _annotate_required_raw(node: dict, current_class: str | None = None) -> None
         current_class = _short_class(node.get("attrs", {}).get("class"))
     elif tag == "p":
         meta = _param_meta(current_class, node.get("attrs", {}).get("name"))
-        node["mandatory"] = bool(meta and meta.get("requiredOnCreation") == "Mandatory")
-        node["trulyRequired"] = bool(meta and meta.get("trulyRequired"))
-        node["requiredMissing"] = _is_required_missing(meta, bool(node.get("text")))
+        node["mandatory"] = _is_mandatory(meta, current_class, node.get("attrs", {}).get("name"))
+        node["trulyRequired"] = bool(node["mandatory"] and meta.get("trulyRequired"))
+        node["requiredMissing"] = _is_required_missing(
+            meta, bool(node.get("text")), current_class, node.get("attrs", {}).get("name")
+        )
         node["knownValues"] = (meta or {}).get("knownValues") or None
     for child in node.get("children", None) or []:
         _annotate_required_raw(child, current_class)
@@ -613,7 +655,10 @@ def catalog_class_detail(class_name: str):
     entry = _CLASS_CATALOG.get(class_name)
     if not entry:
         raise HTTPException(status_code=404, detail="Unknown class (not in either official dictionary)")
-    return entry
+    # Minus the class's own instance-id parameter: the id lives in the
+    # distName, and Add Object has its own Instance ID field for it.
+    params = {k: v for k, v in entry.get("params", {}).items() if not _is_instance_id_param(class_name, k)}
+    return {**entry, "params": params}
 
 
 def _resolve_full_class(current_bytes: bytes, short_class: str) -> tuple[str, bool, str | None]:
@@ -669,7 +714,7 @@ def _create_one_object(
     auto_filled_defaults: list[str] = []
     auto_added_blank: list[str] = []
     for name, meta in _CLASS_CATALOG.get(short_class, {}).get("params", {}).items():
-        if name in final_params or meta.get("requiredOnCreation") != "Mandatory":
+        if name in final_params or not _is_mandatory(meta, short_class, name):
             continue
         resolved = meta.get("resolvedDefault")
         if resolved is not None:
@@ -755,10 +800,17 @@ def add_object(filename: str, payload: AddObjectRequest):
     except XmlParseError as e:
         raise HTTPException(status_code=500, detail=f"This would have produced invalid XML: {e}")
 
-    _save_snapshot(filename, current)
+    created = [c for c in cascaded if not c.get("error")]
+    snapshot = _save_snapshot(
+        filename,
+        current,
+        f"Added {_short(summary['distName'])}"
+        + (f" and {len(created)} required child object{'s' if len(created) != 1 else ''}" if created else ""),
+    )
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
     return {
+        "snapshot": snapshot,
         "distName": summary["distName"],
         "class": summary["class"],
         "classVerified": summary["classVerified"],
@@ -791,10 +843,12 @@ def set_object_param(filename: str, payload: SetObjectParamRequest):
     except XmlParseError as e:
         raise HTTPException(status_code=500, detail=f"This would have produced invalid XML: {e}")
 
-    _save_snapshot(filename, current)
+    snapshot = _save_snapshot(
+        filename, current, f"Set {payload.paramName} on {_short(payload.distName)} to {payload.value!r}"
+    )
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
-    return {"ok": True}
+    return {"ok": True, "snapshot": snapshot}
 
 
 @app.delete("/api/files/{filename}/objects/param")
@@ -805,7 +859,8 @@ def delete_object_param(filename: str, payload: DeleteParamRequest):
     default, or a blank placeholder that's red-flagged until you fill it
     in -- see /missing-required); letting it be deleted outright would undo
     that guarantee, so the only way to change a Mandatory value is to edit
-    it, never remove it."""
+    it, never remove it. A class's own instance-id parameter doesn't count
+    (see _is_mandatory), so old empty placeholders for it can be removed."""
     path, source = _resolve_path(filename)
     if source != "upload":
         raise HTTPException(
@@ -836,7 +891,7 @@ def delete_object_param(filename: str, payload: DeleteParamRequest):
         raise HTTPException(status_code=404, detail=f"No managedObject with distName={payload.distName!r}")
 
     meta = _param_meta(mo.get("class"), payload.paramName)
-    if meta and meta.get("requiredOnCreation") == "Mandatory":
+    if _is_mandatory(meta, mo.get("class"), payload.paramName):
         raise HTTPException(
             status_code=400,
             detail=f"{payload.paramName!r} is Mandatory for {mo.get('class')} and can't be deleted -- edit its value instead.",
@@ -852,10 +907,12 @@ def delete_object_param(filename: str, payload: DeleteParamRequest):
     except XmlParseError as e:
         raise HTTPException(status_code=500, detail=f"This would have produced invalid XML: {e}")
 
-    _save_snapshot(filename, current)
+    snapshot = _save_snapshot(
+        filename, current, f"Deleted parameter {payload.paramName} on {_short(payload.distName)}"
+    )
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
-    return {"ok": True}
+    return {"ok": True, "snapshot": snapshot}
 
 
 @app.delete("/api/files/{filename}/objects")
@@ -886,10 +943,16 @@ def delete_object(filename: str, payload: DeleteObjectRequest):
     except XmlParseError as e:
         raise HTTPException(status_code=500, detail=f"This would have produced invalid XML: {e}")
 
-    _save_snapshot(filename, current)
+    nested = len(deleted) - 1
+    snapshot = _save_snapshot(
+        filename,
+        current,
+        f"Deleted {_short(payload.distName)}"
+        + (f" and {nested} nested object{'s' if nested != 1 else ''}" if nested > 0 else ""),
+    )
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
-    return {"ok": True, "deleted": deleted}
+    return {"ok": True, "deleted": deleted, "snapshot": snapshot}
 
 
 @app.put("/api/files/{filename}/objects/rename")
@@ -916,10 +979,12 @@ def rename_object(filename: str, payload: RenameObjectRequest):
     except XmlParseError as e:
         raise HTTPException(status_code=500, detail=f"This would have produced invalid XML: {e}")
 
-    _save_snapshot(filename, current)
+    snapshot = _save_snapshot(
+        filename, current, f"Renamed {_short(payload.distName)} to {_short(new_dist_name)}"
+    )
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
-    return {"distName": new_dist_name}
+    return {"distName": new_dist_name, "snapshot": snapshot}
 
 
 @app.put("/api/files/{filename}/param")
@@ -944,10 +1009,17 @@ def update_param(filename: str, payload: UpdateParamRequest):
     except XmlParseError as e:
         raise HTTPException(status_code=500, detail=f"Edit would have produced invalid XML: {e}")
 
-    _save_snapshot(filename, current)
+    # nodeId is "{owner distName}::p::{name}" (see parser.py's id scheme).
+    owner, _, name = payload.nodeId.rpartition("::p::")
+    label = (
+        f"Changed {name} on {_short(owner.split('::', 1)[0])} to {payload.value!r}"
+        if owner
+        else f"Changed {payload.nodeId} to {payload.value!r}"
+    )
+    snapshot = _save_snapshot(filename, current, label)
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
-    return {"ok": True}
+    return {"ok": True, "snapshot": snapshot}
 
 
 @app.get("/api/files/{filename}/snapshots")
@@ -957,7 +1029,14 @@ def list_snapshots(filename: str):
         return []
     out = []
     for p in sorted(d.glob("*.xml"), reverse=True):
-        out.append({"id": p.stem, "sizeBytes": p.stat().st_size})
+        label = None
+        sidecar = p.with_suffix(".json")
+        if sidecar.is_file():
+            try:
+                label = json.loads(sidecar.read_text()).get("label")
+            except (OSError, ValueError):
+                label = None
+        out.append({"id": p.stem, "sizeBytes": p.stat().st_size, "label": label})
     return out
 
 
@@ -973,10 +1052,20 @@ def restore_snapshot(filename: str, snapshot_id: str):
         raise HTTPException(status_code=404, detail="Snapshot not found")
 
     current = path.read_bytes()
-    _save_snapshot(filename, current)  # so restoring is itself undoable
+    # So restoring is itself undoable.
+    snapshot = _save_snapshot(filename, current, f"Restored the version saved {_snapshot_time(snapshot_id)}")
     path.write_bytes(snap_path.read_bytes())
     _invalidate_caches(filename)
-    return {"restored": snapshot_id}
+    return {"restored": snapshot_id, "snapshot": snapshot}
+
+
+def _snapshot_time(snapshot_id: str) -> str:
+    """'20260907T041316.366Z' -> '2026-09-07 04:13 UTC' for snapshot labels."""
+    try:
+        dt = datetime.strptime(snapshot_id, "%Y%m%dT%H%M%S.%fZ")
+    except ValueError:
+        return snapshot_id
+    return dt.strftime("%Y-%m-%d %H:%M UTC")
 
 
 @app.get("/api/files/{filename}/tree")
@@ -1024,6 +1113,15 @@ def get_raw_tree(filename: str):
     return raw_tree
 
 
+@app.get("/api/files/{filename}/download")
+def download_file(filename: str):
+    """The file's current bytes as an attachment, from whichever source it
+    resolves to -- how an edited upload gets back out to BTS Site Manager /
+    NetAct without digging through the host's uploads/ folder."""
+    path, _source = _resolve_path(filename)
+    return FileResponse(path, media_type="application/xml", filename=filename)
+
+
 @app.get("/api/files/{filename}/missing-required")
 def missing_required(filename: str):
     """Every Mandatory-with-no-default ('trulyRequired') parameter across the
@@ -1047,7 +1145,7 @@ def missing_required(filename: str):
             present = {c["label"]: c for c in node.get("children", []) if c.get("kind") == "param"}
             for name, meta in catalog_params.items():
                 existing = present.get(name)
-                if not _is_required_missing(meta, bool(existing and existing.get("value"))):
+                if not _is_required_missing(meta, bool(existing and existing.get("value")), short_class, name):
                     continue
                 out.append({
                     "distName": node["id"],

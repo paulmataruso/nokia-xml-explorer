@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Icon } from "./Icon.jsx";
 
 export const UNKNOWN_VERSION = "__unknown__";
 
@@ -23,7 +24,7 @@ function familyRank(family) {
 }
 
 /**
- * Top-bar "Filter" button + dropdown listing every BTS software release
+ * Sidebar "Release" button + dropdown, next to the text filter, listing every BTS software release
  * found across the file list (the `swVersion` the backend extracts from
  * each file's managedObject `version` attributes, e.g. "SBTS20C"), grouped
  * by family. Checked releases are the only ones shown in the sidebar; with
@@ -96,11 +97,15 @@ export function VersionFilter({ files, selected, onChange }) {
   return (
     <div className="version-filter" ref={ref}>
       <button
-        className={"site-mgmt-link" + (active ? " version-filter-active" : "")}
+        className="btn btn-toggle version-filter-trigger"
+        aria-pressed={active}
+        aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
         title="Show only files from specific BTS software releases"
       >
-        ⏷ Filter{active ? ` (${selected.size})` : ""}
+        <Icon name="filter" />
+        Release
+        {active && <span className="count-pill">{selected.size}</span>}
       </button>
       {open && (
         <div className="version-filter-menu">

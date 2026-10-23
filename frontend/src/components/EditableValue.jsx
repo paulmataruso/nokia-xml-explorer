@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { Icon } from "./Icon.jsx";
 
 /**
  * Click-to-edit inline value, shared by the logical tree and the raw XML
@@ -112,10 +113,11 @@ export function EditableValue({ value, onSave, placeholder, knownValues }) {
             onFocus={(e) => e.target.select()}
           />
         )}
-        {saving && <span className="edit-status">saving…</span>}
+        {saving && <span className="edit-status">Saving…</span>}
         {error && (
-          <span className="edit-error" title={error}>
-            ⚠ save failed
+          <span className="edit-error" role="alert">
+            <Icon name="alert" size={12} />
+            Not saved: {error}
           </span>
         )}
       </span>

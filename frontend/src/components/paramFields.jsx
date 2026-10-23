@@ -1,4 +1,5 @@
 import React from "react";
+import { Icon } from "./Icon.jsx";
 
 /**
  * Shared parameter-form building blocks used by both AddObjectModal (create
@@ -38,9 +39,8 @@ export function FieldLabel({ name, observed, trulyRequired }) {
       )}
       {name}
       {observed === false && (
-        <span className="official-only-badge" title="Valid per Nokia's official dictionary, but not seen in any of your sample files">
-          {" "}
-          ⚑
+        <span className="official-only-badge" aria-label="Official-only: never seen in your sample files" title="Valid per Nokia's official dictionary, but not seen in any of your sample files">
+          <Icon name="flag" size={12} />
         </span>
       )}
     </span>

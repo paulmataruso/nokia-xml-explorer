@@ -48,8 +48,27 @@ export function collectExpandableIds(nodeOrNodes) {
   return ids;
 }
 
+export function formatBytes(n) {
+  if (n == null) return "";
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / 1024 / 1024).toFixed(2)} MB`;
+}
+
 export function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+// The TIA-598 fiber colour code, minus the four hues that already carry
+// state in this UI (red = required gap/error, black = the ground itself,
+// yellow = focus/action, aqua = Official) -- see --fc-* in styles.css.
+// Depth 0 (the MRBTS root) is blue, its children orange, and so on.
+const FIBER_CODE_HUES = 8;
+
+/** CSS colour for a tree depth's guide / Trace address segment. */
+export function depthHue(depth, dim = false) {
+  const n = (depth % FIBER_CODE_HUES) + 1;
+  return dim ? `var(--fc-${n}-dim)` : `var(--fc-${n})`;
 }
 
 /**

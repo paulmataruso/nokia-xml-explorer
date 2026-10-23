@@ -22,6 +22,26 @@ export function findPathInForest(roots, targetId) {
   return null;
 }
 
+/** Like findPathInForest, but returns the node objects themselves (root
+ * first) -- what the file header's Trace address renders, one segment per
+ * ancestor. Null if targetId isn't in the tree. */
+export function findNodePathInForest(roots, targetId) {
+  function walk(node, path) {
+    const next = [...path, node];
+    if (node.id === targetId) return next;
+    for (const child of node.children || []) {
+      const found = walk(child, next);
+      if (found) return found;
+    }
+    return null;
+  }
+  for (const root of roots || []) {
+    const found = walk(root, []);
+    if (found) return found;
+  }
+  return null;
+}
+
 /** The actual node object (not just its id) matching targetId, or null.
  * Used to re-point ExplainPanel's selectedNode at the fresh copy after a
  * refetch (e.g. after adding/editing a parameter) -- selectedNode is a
@@ -50,6 +70,9 @@ function rawNodeMatches(node, q) {
   for (const [k, v] of Object.entries(node.attrs || {})) {
     if (k.toLowerCase().includes(q)) return true;
     if (v != null && String(v).toLowerCase().includes(q)) return true;
+    // Also match the attribute as written, so a query pasted from the
+    // raw view itself (name="pMax") finds it.
+    if (`${k}="${v}"`.toLowerCase().includes(q)) return true;
   }
   return false;
 }

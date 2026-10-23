@@ -1,0 +1,1044 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T05:39:37Z",
+  "title": "Design System: Nokia AirScale / Flexi Zone XML Explorer",
+  "extensions": {
+    "colorMeta": {
+      "bg-page": {
+        "role": "neutral",
+        "displayName": "Page",
+        "canonical": "#13142a",
+        "cssVar": "--bg-page",
+        "tonalRamp": [
+          "#05050a",
+          "#090914",
+          "#0d0e1c",
+          "#111226",
+          "#2c2d41",
+          "#5f606e",
+          "#91929c",
+          "#c4c4ca"
+        ]
+      },
+      "bg-0": {
+        "role": "neutral",
+        "displayName": "Workspace",
+        "canonical": "#1b1d36",
+        "cssVar": "--bg-0",
+        "tonalRamp": [
+          "#07070e",
+          "#0d0d19",
+          "#121425",
+          "#181a30",
+          "#33354c",
+          "#646677",
+          "#9596a2",
+          "#c6c6cd"
+        ]
+      },
+      "bg-1": {
+        "role": "neutral",
+        "displayName": "Chrome",
+        "canonical": "#202342",
+        "cssVar": "--bg-1",
+        "tonalRamp": [
+          "#080910",
+          "#0f101f",
+          "#16182d",
+          "#1d1f3b",
+          "#383b56",
+          "#686a7f",
+          "#9799a7",
+          "#c7c8d0"
+        ]
+      },
+      "bg-2": {
+        "role": "neutral",
+        "displayName": "Raised Sheath",
+        "canonical": "#2a2e55",
+        "cssVar": "--bg-2",
+        "tonalRamp": [
+          "#0a0c15",
+          "#141527",
+          "#1c1f3a",
+          "#26294c",
+          "#414467",
+          "#6e718c",
+          "#9c9eb0",
+          "#cacbd4"
+        ]
+      },
+      "bg-3": {
+        "role": "neutral",
+        "displayName": "Raised Sheath Hover",
+        "canonical": "#353a68",
+        "cssVar": "--bg-3",
+        "tonalRamp": [
+          "#0d0e1a",
+          "#191b30",
+          "#242747",
+          "#2f345d",
+          "#4b4f78",
+          "#767999",
+          "#a1a4b9",
+          "#ccced9"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#2e335c",
+        "cssVar": "--line",
+        "tonalRamp": [
+          "#0c0d17",
+          "#15182b",
+          "#1f233e",
+          "#292e52",
+          "#44496d",
+          "#717590",
+          "#9ea0b3",
+          "#cbccd6"
+        ]
+      },
+      "line-2": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#464d85",
+        "cssVar": "--line-2",
+        "tonalRamp": [
+          "#121321",
+          "#20243e",
+          "#30345a",
+          "#3e4577",
+          "#5a6092",
+          "#8186ac",
+          "#a9acc6",
+          "#d1d2e0"
+        ]
+      },
+      "line-input": {
+        "role": "neutral",
+        "displayName": "Field Edge",
+        "canonical": "#7880bd",
+        "cssVar": "--line-input",
+        "tonalRamp": [
+          "#1e202f",
+          "#383b58",
+          "#515780",
+          "#6b72a9",
+          "#868ec4",
+          "#a3a9d2",
+          "#c0c4e0",
+          "#dddfee"
+        ]
+      },
+      "veil": {
+        "role": "neutral",
+        "displayName": "Hover Veil",
+        "canonical": "color-mix(in srgb, #e8ebff 6%, transparent)",
+        "cssVar": "--veil",
+        "tonalRamp": []
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Modal Scrim",
+        "canonical": "rgb(0 0 0 / 0.55)",
+        "cssVar": "--scrim",
+        "tonalRamp": []
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#e8ebff",
+        "cssVar": "--ink",
+        "tonalRamp": [
+          "#3a3b40",
+          "#6c6d76",
+          "#9d9fad",
+          "#cfd2e4",
+          "#eaedff",
+          "#eff1ff",
+          "#f4f6ff",
+          "#f9faff"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink, Second Strength",
+        "canonical": "#c8d0f5",
+        "cssVar": "--ink-2",
+        "tonalRamp": [
+          "#32343d",
+          "#5d6172",
+          "#888da6",
+          "#b3badb",
+          "#ced5f6",
+          "#dadff8",
+          "#e5e9fa",
+          "#f1f3fc"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink, Third Strength",
+        "canonical": "#aeb6e2",
+        "cssVar": "--ink-3",
+        "tonalRamp": [
+          "#2c2e38",
+          "#515469",
+          "#767c99",
+          "#9ba2ca",
+          "#b7bee5",
+          "#c8cdeb",
+          "#d9ddf2",
+          "#ebedf8"
+        ]
+      },
+      "ink-4": {
+        "role": "neutral",
+        "displayName": "Faint Ink (non-text marks)",
+        "canonical": "#6c75a8",
+        "cssVar": "--ink-4",
+        "tonalRamp": [
+          "#1b1d2a",
+          "#32364e",
+          "#494f72",
+          "#606896",
+          "#7c84b1",
+          "#9ba1c4",
+          "#bbbfd7",
+          "#dadce9"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal (focus, selection, action)",
+        "canonical": "#ffc777",
+        "cssVar": "--signal",
+        "tonalRamp": [
+          "#40321e",
+          "#765c37",
+          "#ad8751",
+          "#e4b26a",
+          "#ffcd86",
+          "#ffd9a3",
+          "#ffe5c0",
+          "#fff1dd"
+        ]
+      },
+      "signal-hover": {
+        "role": "primary",
+        "displayName": "Signal, Hover",
+        "canonical": "color-mix(in srgb, #ffc777 82%, white)",
+        "cssVar": "--signal-hover",
+        "tonalRamp": []
+      },
+      "signal-ink": {
+        "role": "primary",
+        "displayName": "Signal-Fill Ink",
+        "canonical": "#1e1a10",
+        "cssVar": "--signal-ink",
+        "tonalRamp": [
+          "#080604",
+          "#0e0c07",
+          "#14120b",
+          "#1b170e",
+          "#36332a",
+          "#66645d",
+          "#979590",
+          "#c7c6c3"
+        ]
+      },
+      "signal-soft": {
+        "role": "primary",
+        "displayName": "Soft Signal (selection tint)",
+        "canonical": "color-mix(in srgb, #ffc777 15%, transparent)",
+        "cssVar": "--signal-soft",
+        "tonalRamp": []
+      },
+      "signal-line": {
+        "role": "primary",
+        "displayName": "Signal Ring",
+        "canonical": "color-mix(in srgb, #ffc777 60%, transparent)",
+        "cssVar": "--signal-line",
+        "tonalRamp": []
+      },
+      "highlight": {
+        "role": "primary",
+        "displayName": "Search Match",
+        "canonical": "#ffc777",
+        "cssVar": "--highlight",
+        "tonalRamp": [
+          "#40321e",
+          "#765c37",
+          "#ad8751",
+          "#e4b26a",
+          "#ffcd86",
+          "#ffd9a3",
+          "#ffe5c0",
+          "#fff1dd"
+        ]
+      },
+      "mark": {
+        "role": "primary",
+        "displayName": "Search Match Fill",
+        "canonical": "color-mix(in srgb, #ffc777 90%, transparent)",
+        "cssVar": "--mark",
+        "tonalRamp": []
+      },
+      "mark-ink": {
+        "role": "primary",
+        "displayName": "Search Match Ink",
+        "canonical": "#15130a",
+        "cssVar": "--mark-ink",
+        "tonalRamp": [
+          "#050502",
+          "#0a0905",
+          "#0e0d07",
+          "#131109",
+          "#2e2c24",
+          "#605f59",
+          "#92918d",
+          "#c4c4c2"
+        ]
+      },
+      "official": {
+        "role": "secondary",
+        "displayName": "Official",
+        "canonical": "#7dcfff",
+        "cssVar": "--official",
+        "tonalRamp": [
+          "#1f3440",
+          "#3a6076",
+          "#558cad",
+          "#70b9e4",
+          "#8bd4ff",
+          "#a7deff",
+          "#c3e9ff",
+          "#def3ff"
+        ]
+      },
+      "official-soft": {
+        "role": "secondary",
+        "displayName": "Official Tint",
+        "canonical": "color-mix(in srgb, #7dcfff 12%, transparent)",
+        "cssVar": "--official-soft",
+        "tonalRamp": []
+      },
+      "official-line": {
+        "role": "secondary",
+        "displayName": "Official Line",
+        "canonical": "color-mix(in srgb, #7dcfff 60%, transparent)",
+        "cssVar": "--official-line",
+        "tonalRamp": []
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Gap Red",
+        "canonical": "#ff757f",
+        "cssVar": "--danger",
+        "tonalRamp": [
+          "#401d20",
+          "#76363b",
+          "#ad4f56",
+          "#e46871",
+          "#ff848d",
+          "#ffa1a8",
+          "#ffbfc4",
+          "#ffdcdf"
+        ]
+      },
+      "danger-hover": {
+        "role": "tertiary",
+        "displayName": "Gap Red, Hover",
+        "canonical": "color-mix(in srgb, #ff757f 85%, white)",
+        "cssVar": "--danger-hover",
+        "tonalRamp": []
+      },
+      "danger-ink": {
+        "role": "tertiary",
+        "displayName": "Red-Fill Ink",
+        "canonical": "#2a0a10",
+        "cssVar": "--danger-ink",
+        "tonalRamp": [
+          "#0a0204",
+          "#140507",
+          "#1c070b",
+          "#26090e",
+          "#41242a",
+          "#6e595d",
+          "#9c8d90",
+          "#cac2c3"
+        ]
+      },
+      "danger-soft": {
+        "role": "tertiary",
+        "displayName": "Gap Tint",
+        "canonical": "color-mix(in srgb, #ff757f 15%, transparent)",
+        "cssVar": "--danger-soft",
+        "tonalRamp": []
+      },
+      "danger-line": {
+        "role": "tertiary",
+        "displayName": "Gap Line",
+        "canonical": "color-mix(in srgb, #ff757f 55%, transparent)",
+        "cssVar": "--danger-line",
+        "tonalRamp": []
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Clear Green",
+        "canonical": "#c3e88d",
+        "cssVar": "--ok",
+        "tonalRamp": [
+          "#313a23",
+          "#5b6c41",
+          "#849d60",
+          "#aecf7e",
+          "#c9ea99",
+          "#d6efb2",
+          "#e3f4ca",
+          "#f0f9e2"
+        ]
+      },
+      "value": {
+        "role": "data",
+        "displayName": "Value",
+        "canonical": "#c3e88d",
+        "cssVar": "--value",
+        "tonalRamp": [
+          "#313a23",
+          "#5b6c41",
+          "#849d60",
+          "#aecf7e",
+          "#c9ea99",
+          "#d6efb2",
+          "#e3f4ca",
+          "#f0f9e2"
+        ]
+      },
+      "syn-punct": {
+        "role": "data",
+        "displayName": "Syntax: Punctuation",
+        "canonical": "#8990c8",
+        "cssVar": "--syn-punct",
+        "tonalRamp": [
+          "#222432",
+          "#40435d",
+          "#5d6288",
+          "#7a81b3",
+          "#969cce",
+          "#afb4da",
+          "#c8cbe5",
+          "#e2e3f1"
+        ]
+      },
+      "syn-tag": {
+        "role": "data",
+        "displayName": "Syntax: Tag Name",
+        "canonical": "#ff757f",
+        "cssVar": "--syn-tag",
+        "tonalRamp": [
+          "#401d20",
+          "#76363b",
+          "#ad4f56",
+          "#e46871",
+          "#ff848d",
+          "#ffa1a8",
+          "#ffbfc4",
+          "#ffdcdf"
+        ]
+      },
+      "syn-attr": {
+        "role": "data",
+        "displayName": "Syntax: Attribute Name",
+        "canonical": "#c099ff",
+        "cssVar": "--syn-attr",
+        "tonalRamp": [
+          "#302640",
+          "#594776",
+          "#8268ad",
+          "#ab89e4",
+          "#c7a4ff",
+          "#d4baff",
+          "#e2d0ff",
+          "#efe6ff"
+        ]
+      },
+      "syn-val": {
+        "role": "data",
+        "displayName": "Syntax: Attribute Value",
+        "canonical": "#4fd6be",
+        "cssVar": "--syn-val",
+        "tonalRamp": [
+          "#143630",
+          "#256358",
+          "#369181",
+          "#47bfaa",
+          "#62dac5",
+          "#88e3d3",
+          "#adece1",
+          "#d3f5ef"
+        ]
+      },
+      "syn-text": {
+        "role": "data",
+        "displayName": "Syntax: Text Content",
+        "canonical": "#c3e88d",
+        "cssVar": "--syn-text",
+        "tonalRamp": [
+          "#313a23",
+          "#5b6c41",
+          "#849d60",
+          "#aecf7e",
+          "#c9ea99",
+          "#d6efb2",
+          "#e3f4ca",
+          "#f0f9e2"
+        ]
+      },
+      "fc-1": {
+        "role": "depth",
+        "displayName": "Fiber Blue",
+        "canonical": "#82aaff",
+        "cssVar": "--fc-1",
+        "tonalRamp": [
+          "#202a40",
+          "#3c4f76",
+          "#5873ad",
+          "#7498e4",
+          "#8fb3ff",
+          "#aac5ff",
+          "#c5d8ff",
+          "#e0eaff"
+        ]
+      },
+      "fc-2": {
+        "role": "depth",
+        "displayName": "Fiber Orange",
+        "canonical": "#ff966c",
+        "cssVar": "--fc-2",
+        "tonalRamp": [
+          "#40261b",
+          "#764632",
+          "#ad6649",
+          "#e48660",
+          "#ffa17c",
+          "#ffb89b",
+          "#ffcebb",
+          "#ffe5da"
+        ]
+      },
+      "fc-3": {
+        "role": "depth",
+        "displayName": "Fiber Green",
+        "canonical": "#c3e88d",
+        "cssVar": "--fc-3",
+        "tonalRamp": [
+          "#313a23",
+          "#5b6c41",
+          "#849d60",
+          "#aecf7e",
+          "#c9ea99",
+          "#d6efb2",
+          "#e3f4ca",
+          "#f0f9e2"
+        ]
+      },
+      "fc-4": {
+        "role": "depth",
+        "displayName": "Fiber Brown",
+        "canonical": "#d9a87f",
+        "cssVar": "--fc-4",
+        "tonalRamp": [
+          "#362a20",
+          "#654e3b",
+          "#937256",
+          "#c29671",
+          "#ddb18d",
+          "#e5c4a8",
+          "#edd7c4",
+          "#f6e9df"
+        ]
+      },
+      "fc-5": {
+        "role": "depth",
+        "displayName": "Fiber Slate",
+        "canonical": "#a9b8e8",
+        "cssVar": "--fc-5",
+        "tonalRamp": [
+          "#2a2e3a",
+          "#4e556c",
+          "#737d9d",
+          "#97a4cf",
+          "#b2c0ea",
+          "#c5cfef",
+          "#d7def4",
+          "#eaedf9"
+        ]
+      },
+      "fc-6": {
+        "role": "depth",
+        "displayName": "Fiber White",
+        "canonical": "#f0f3ff",
+        "cssVar": "--fc-6",
+        "tonalRamp": [
+          "#3c3d40",
+          "#6f7176",
+          "#a3a5ad",
+          "#d6d9e4",
+          "#f2f4ff",
+          "#f5f7ff",
+          "#f8f9ff",
+          "#fbfcff"
+        ]
+      },
+      "fc-7": {
+        "role": "depth",
+        "displayName": "Fiber Violet",
+        "canonical": "#c099ff",
+        "cssVar": "--fc-7",
+        "tonalRamp": [
+          "#302640",
+          "#594776",
+          "#8268ad",
+          "#ab89e4",
+          "#c7a4ff",
+          "#d4baff",
+          "#e2d0ff",
+          "#efe6ff"
+        ]
+      },
+      "fc-8": {
+        "role": "depth",
+        "displayName": "Fiber Rose",
+        "canonical": "#ff79c6",
+        "cssVar": "--fc-8",
+        "tonalRamp": [
+          "#401e32",
+          "#76385c",
+          "#ad5286",
+          "#e46cb1",
+          "#ff87cc",
+          "#ffa4d8",
+          "#ffc1e5",
+          "#ffdef1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Title",
+        "purpose": "File name, explanation subject, dialog titles, empty-workspace heading. The only role that steps up in size."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose: explanation text, dialog copy, empty states, toasts. 1.55 line height for prose, 1.4 in chrome."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Controls, pane titles, section headers, metadata, counts, badges, tags. 600 for titles, headers and filled-button labels."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Everything from the file: tree labels, values, raw XML, distNames, the Trace address. Managed objects at 600 in full ink."
+      },
+      "chip": {
+        "displayName": "Chip",
+        "purpose": "Sidebar per-file metadata chips only (release, band, ARFCN), one step down so they stay on one line. Not a general role."
+      }
+    },
+    "shadows": [
+      {
+        "name": "pop",
+        "value": "0 12px 32px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3)",
+        "purpose": "Context menu, release filter, History popover, toasts: things that float and dismiss."
+      },
+      {
+        "name": "modal",
+        "value": "0 24px 64px rgb(0 0 0 / 0.5), 0 2px 8px rgb(0 0 0 / 0.3)",
+        "purpose": "Dialogs only, over the Modal Scrim."
+      },
+      {
+        "name": "selection-ring",
+        "value": "inset 0 0 0 1px var(--signal-line)",
+        "purpose": "Selected tree row, raw row, file and folder; composes over row tints without shifting layout."
+      },
+      {
+        "name": "hover-veil",
+        "value": "inset 0 0 0 999px var(--veil)",
+        "purpose": "Row hover in tree and raw panes; overlays official/red/signal tints instead of replacing them."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 2px solid var(--signal); outline-offset: 2px",
+        "purpose": "Keyboard focus everywhere (offset -2px on rows and list items). Text fields mark focus with a yellow border instead."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-route",
+        "value": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "purpose": "The one easing curve: Trace draw-in and toast entry."
+      },
+      {
+        "name": "trace-in",
+        "value": "200ms ease-route, transform scaleY(0 to 1) from the top, +35ms delay per depth",
+        "purpose": "The lit Trace route pours from root to the selected row, level by level. Trace's one authored motion."
+      },
+      {
+        "name": "toast-in",
+        "value": "180ms ease-route, opacity 0 to 1 and translateY(6px to 0)",
+        "purpose": "A toast rises into place."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media (prefers-reduced-motion: reduce): animation none; scroll sync jumps",
+        "purpose": "Both animations switch off; pane scroll sync jumps instead of gliding."
+      },
+      {
+        "name": "state-changes",
+        "value": "instant",
+        "purpose": "Hover, selection and toggles change without transitions."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "file-header-compact",
+        "value": "@container (max-width: 880px)",
+        "purpose": "File header hides button labels and the unverified count."
+      },
+      {
+        "name": "toolbar-compact",
+        "value": "@container (max-width: 860px)",
+        "purpose": "Tree toolbar hides expand/collapse labels; icons keep accessible names."
+      },
+      {
+        "name": "file-header-min",
+        "value": "@container (max-width: 640px)",
+        "purpose": "File header hides object/parameter counts and the read-only note."
+      },
+      {
+        "name": "raw-toolbar-wrap",
+        "value": "@container (max-width: 560px)",
+        "purpose": "Raw XML toolbar wraps instead of pushing controls off-screen."
+      },
+      {
+        "name": "narrow",
+        "value": "@media (max-width: 900px)",
+        "purpose": "One scrolling column: files, workspace (88vh), explanation; value column capped at 46vw."
+      },
+      {
+        "name": "roomy",
+        "value": "window.innerWidth >= 1600px",
+        "purpose": "Default side-pane widths 280px / 380px instead of 248px / 320px."
+      }
+    ],
+    "themes": {
+      "night": {
+        "label": "Night (default)",
+        "selector": ":root[data-theme=\"night\"]",
+        "base": {
+          "bg-page": "#13142a",
+          "bg-0": "#1b1d36",
+          "bg-1": "#202342",
+          "bg-2": "#2a2e55",
+          "bg-3": "#353a68",
+          "line": "#2e335c",
+          "line-2": "#464d85",
+          "line-input": "#7880bd",
+          "ink": "#e8ebff",
+          "ink-2": "#c8d0f5",
+          "ink-3": "#aeb6e2",
+          "ink-4": "#6c75a8",
+          "signal": "#ffc777",
+          "signal-ink": "#1e1a10",
+          "highlight": "#ffc777",
+          "official": "#7dcfff",
+          "danger": "#ff757f",
+          "danger-ink": "#2a0a10",
+          "ok": "#c3e88d",
+          "value": "#c3e88d",
+          "syn-punct": "#8990c8",
+          "syn-tag": "#ff757f",
+          "syn-attr": "#c099ff",
+          "syn-val": "#4fd6be",
+          "syn-text": "#c3e88d",
+          "fc-1": "#82aaff",
+          "fc-2": "#ff966c",
+          "fc-3": "#c3e88d",
+          "fc-4": "#d9a87f",
+          "fc-5": "#a9b8e8",
+          "fc-6": "#f0f3ff",
+          "fc-7": "#c099ff",
+          "fc-8": "#ff79c6"
+        }
+      },
+      "slate": {
+        "label": "Slate",
+        "selector": ":root[data-theme=\"slate\"]",
+        "base": {
+          "bg-page": "#191d23",
+          "bg-0": "#22272e",
+          "bg-1": "#2a3039",
+          "bg-2": "#343b46",
+          "bg-3": "#3f4754",
+          "line": "#3b424e",
+          "line-2": "#4f5867",
+          "line-input": "#7c8696",
+          "ink": "#f2f5f8",
+          "ink-2": "#cfd7e0",
+          "ink-3": "#b0bac7",
+          "ink-4": "#76818f",
+          "signal": "#ffd43b",
+          "signal-ink": "#1f1a00",
+          "highlight": "#ffd43b",
+          "official": "#3bc9ff",
+          "danger": "#ff8a8a",
+          "danger-ink": "#2a0505",
+          "ok": "#51e08a",
+          "value": "#a6f0a0",
+          "syn-punct": "#8f9aa8",
+          "syn-tag": "#62b4ff",
+          "syn-attr": "#9cdcfe",
+          "syn-val": "#f5a97f",
+          "syn-text": "#a6f0a0",
+          "fc-1": "#4dabf7",
+          "fc-2": "#ff922b",
+          "fc-3": "#69db7c",
+          "fc-4": "#e0a96d",
+          "fc-5": "#a9b8cc",
+          "fc-6": "#f8f9fa",
+          "fc-7": "#b197fc",
+          "fc-8": "#faa2c1"
+        }
+      },
+      "github": {
+        "label": "GitHub",
+        "selector": ":root[data-theme=\"github\"]",
+        "base": {
+          "bg-page": "#010409",
+          "bg-0": "#0d1117",
+          "bg-1": "#161b22",
+          "bg-2": "#21262d",
+          "bg-3": "#2d333b",
+          "line": "#30363d",
+          "line-2": "#484f58",
+          "line-input": "#6e7681",
+          "ink": "#f0f6fc",
+          "ink-2": "#d1d9e0",
+          "ink-3": "#9ea7b3",
+          "ink-4": "#6e7681",
+          "signal": "#58a6ff",
+          "signal-ink": "#04111f",
+          "highlight": "#f2cc60",
+          "official": "#bc8cff",
+          "danger": "#ff7b72",
+          "danger-ink": "#1f0503",
+          "ok": "#3fb950",
+          "value": "#7ee787",
+          "syn-punct": "#8b949e",
+          "syn-tag": "#ff7b72",
+          "syn-attr": "#79c0ff",
+          "syn-val": "#a5d6ff",
+          "syn-text": "#7ee787",
+          "fc-1": "#79c0ff",
+          "fc-2": "#ffa657",
+          "fc-3": "#7ee787",
+          "fc-4": "#d29922",
+          "fc-5": "#8b949e",
+          "fc-6": "#f0f6fc",
+          "fc-7": "#d2a8ff",
+          "fc-8": "#ff9bce"
+        }
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid Single-Mode Yellow for the one action that moves the job forward (Edit a copy, Save, Create).",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"5.5\" y=\"5.5\" width=\"8\" height=\"8\" rx=\"1.25\"/><path d=\"M10.5 5.5V3.75c0-.69-.56-1.25-1.25-1.25h-5.5c-.69 0-1.25.56-1.25 1.25v5.5c0 .69.56 1.25 1.25 1.25H5.5\"/></svg>Edit a copy</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:6px;height:var(--control-h);padding:0 var(--s-3);border:1px solid var(--line);border-radius:var(--r-2);font-family:var(--font-ui);font-size:var(--fs-label);letter-spacing:var(--tracking-label);line-height:1;white-space:nowrap;cursor:pointer;background:var(--bg-2);color:var(--ink-2)}.ds-btn-primary:focus-visible{outline:2px solid var(--signal);outline-offset:2px}.ds-btn-primary{background:var(--signal);border-color:var(--signal);color:var(--signal-ink);font-weight:600}.ds-btn-primary:hover{background:var(--signal-hover);border-color:var(--signal-hover)}"
+    },
+    {
+      "name": "Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Default control: Raised Sheath, hairline border, second-strength ink; brightens on hover.",
+      "html": "<button class=\"ds-btn\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 2.5v8M5 7.5l3 3 3-3M2.75 10.5v1.75c0 .69.56 1.25 1.25 1.25h8c.69 0 1.25-.56 1.25-1.25V10.5\"/></svg>Download</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:6px;height:var(--control-h);padding:0 var(--s-3);border:1px solid var(--line);border-radius:var(--r-2);font-family:var(--font-ui);font-size:var(--fs-label);letter-spacing:var(--tracking-label);line-height:1;white-space:nowrap;cursor:pointer;background:var(--bg-2);color:var(--ink-2)}.ds-btn:focus-visible{outline:2px solid var(--signal);outline-offset:2px}.ds-btn:hover{background:var(--bg-3);border-color:var(--line-2);color:var(--ink)}"
+    },
+    {
+      "name": "Toggle Button (on)",
+      "kind": "button",
+      "refersTo": "button-toggle-on",
+      "description": "A toggle that is on shows a state with soft yellow and a yellow ring, never the solid fill.",
+      "html": "<button class=\"ds-btn-toggle\" aria-pressed=\"true\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"2.5\" y=\"2.5\" width=\"11\" height=\"11\" rx=\"1.25\"/><path d=\"M2.5 8h11\"/></svg>Raw XML</button>",
+      "css": ".ds-btn-toggle{display:inline-flex;align-items:center;gap:6px;height:var(--control-h);padding:0 var(--s-3);border:1px solid var(--line);border-radius:var(--r-2);font-family:var(--font-ui);font-size:var(--fs-label);letter-spacing:var(--tracking-label);line-height:1;white-space:nowrap;cursor:pointer;background:var(--bg-2);color:var(--ink-2)}.ds-btn-toggle:focus-visible{outline:2px solid var(--signal);outline-offset:2px}.ds-btn-toggle:hover{background:var(--bg-3);color:var(--ink)}.ds-btn-toggle[aria-pressed=\"true\"]{background:var(--signal-soft);border-color:var(--signal-line);color:var(--ink)}.ds-btn-toggle[aria-pressed=\"true\"] svg{color:var(--signal)}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Workspace field with a Field Edge border and inset search icon; focus turns the border yellow, no glow.",
+      "html": "<label class=\"ds-search\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"7\" cy=\"7\" r=\"4.25\"/><path d=\"m10.25 10.25 3.25 3.25\"/></svg><input class=\"ds-input\" type=\"search\" placeholder=\"Search names, classes and values\"></label>",
+      "css": ".ds-search{position:relative;display:flex;align-items:center;width:320px}.ds-search svg{position:absolute;left:8px;color:var(--ink-3);pointer-events:none}.ds-input{width:100%;height:var(--control-h);padding:0 var(--s-3) 0 28px;background:var(--bg-0);border:1px solid var(--line-input);border-radius:var(--r-2);color:var(--ink);font-family:var(--font-ui);font-size:var(--fs-label);caret-color:var(--signal)}.ds-input::placeholder{color:var(--ink-3);opacity:1}.ds-input:hover{border-color:var(--ink-3)}.ds-input:focus{outline:none;border-color:var(--signal-line)}"
+    },
+    {
+      "name": "Tree Rows with Trace",
+      "kind": "custom",
+      "refersTo": "tree-row",
+      "description": "The signature: mono rows aligned to a value column, dim depth guides, the selected row's lineage lit as a route that stops at the row, Official and required-missing tints, and the edited-value dot.",
+      "html": "<div class=\"ds-tree\" role=\"tree\" aria-label=\"Object tree\"><div class=\"ds-row ds-mo ds-d0\" role=\"treeitem\" tabindex=\"0\"><span class=\"ds-caret\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 6 8 10.5 12.5 6\"/></svg></span><span class=\"ds-cell\"><span class=\"ds-label\">MRBTS-1</span></span><span class=\"ds-class\">MRBTS</span></div><div class=\"ds-row ds-mo ds-d1\" role=\"treeitem\" tabindex=\"-1\"><i class=\"ds-g ds-g1 ds-lit ds-end\"></i><span class=\"ds-caret\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 6 8 10.5 12.5 6\"/></svg></span><span class=\"ds-cell\"><span class=\"ds-label\">EQM-1</span></span><span class=\"ds-class\">EQM</span></div><div class=\"ds-row ds-mo ds-d2\" role=\"treeitem\" tabindex=\"-1\"><i class=\"ds-g ds-g1\"></i><i class=\"ds-g ds-g2 ds-lit\"></i><span class=\"ds-caret\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\"/></svg></span><span class=\"ds-cell\"><span class=\"ds-label\">CABINET-1</span></span><span class=\"ds-class\">CABINET</span></div><div class=\"ds-row ds-mo ds-d2\" role=\"treeitem\" tabindex=\"-1\"><i class=\"ds-g ds-g1\"></i><i class=\"ds-g ds-g2 ds-lit ds-end\"></i><span class=\"ds-caret\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 6 8 10.5 12.5 6\"/></svg></span><span class=\"ds-cell\"><span class=\"ds-label\">BBMOD-1</span></span><span class=\"ds-class\">BBMOD</span></div><div class=\"ds-row ds-d3 ds-official\" role=\"treeitem\" tabindex=\"-1\"><i class=\"ds-g ds-g1\"></i><i class=\"ds-g ds-g2\"></i><i class=\"ds-g ds-g3 ds-lit\"></i><span class=\"ds-caret\"></span><span class=\"ds-cell\"><span class=\"ds-label\">actEcpriEthPortPooling</span></span><span class=\"ds-val\">false</span></div><div class=\"ds-row ds-d3 ds-official ds-selected ds-edited\" role=\"treeitem\" aria-selected=\"true\" tabindex=\"-1\"><i class=\"ds-g ds-g1\"></i><i class=\"ds-g ds-g2\"></i><i class=\"ds-g ds-g3 ds-lit ds-end\"></i><span class=\"ds-caret\"></span><span class=\"ds-cell\"><span class=\"ds-label\">administrativeState</span></span><span class=\"ds-val\">Unlocked</span></div><div class=\"ds-row ds-d3 ds-missing\" role=\"treeitem\" tabindex=\"-1\"><i class=\"ds-g ds-g1\"></i><i class=\"ds-g ds-g2\"></i><i class=\"ds-g ds-g3\"></i><span class=\"ds-caret\"></span><span class=\"ds-cell\"><span class=\"ds-label\">fddNrCellConfigTradeoff</span></span><span class=\"ds-val ds-empty\">empty</span><span class=\"ds-tag-missing\">Required</span></div><div class=\"ds-row ds-mo ds-d1\" role=\"treeitem\" tabindex=\"-1\"><i class=\"ds-g ds-g1\"></i><span class=\"ds-caret\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\"/></svg></span><span class=\"ds-cell\"><span class=\"ds-label\">RMOD-1</span></span><span class=\"ds-class\">RMOD</span></div></div>",
+      "css": ".ds-tree{width:560px;padding:4px 0;background:var(--bg-0);color:var(--ink-2);font-family:var(--font-mono);font-size:var(--fs-data);font-variant-ligatures:none;font-variant-numeric:tabular-nums}.ds-row{position:relative;display:flex;align-items:center;gap:6px;min-height:22px;padding:0 var(--s-4) 0 8px;white-space:nowrap;cursor:pointer;user-select:none}.ds-row:hover{box-shadow:inset 0 0 0 999px var(--veil)}.ds-row:focus-visible{outline:2px solid var(--signal);outline-offset:-2px}.ds-d1{padding-left:24px}.ds-d2{padding-left:40px}.ds-d3{padding-left:56px}.ds-caret{display:grid;place-items:center;width:12px;height:12px;flex:none;color:var(--ink-3)}.ds-cell{display:inline-flex;align-items:center;flex:none;padding-right:var(--s-4);overflow:hidden}.ds-d0 .ds-cell{width:280px}.ds-d1 .ds-cell{width:264px}.ds-d2 .ds-cell{width:248px}.ds-d3 .ds-cell{width:232px}.ds-label{min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}.ds-mo .ds-label{color:var(--ink);font-weight:600}.ds-class{color:var(--ink-3);font-size:var(--fs-label)}.ds-val{color:var(--ink)}.ds-val.ds-empty{color:var(--ink-3);font-style:italic}.ds-official{background-color:var(--official-soft)}.ds-missing{background-color:var(--danger-soft)}.ds-row.ds-selected{background-color:var(--signal-soft);box-shadow:inset 0 0 0 1px var(--signal-line)}.ds-edited .ds-val::before{content:\"\";display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:var(--signal);vertical-align:1px}.ds-tag-missing{margin-left:8px;padding:0 5px;border:1px solid var(--danger-line);border-radius:var(--r-1);color:var(--danger);font-family:var(--font-ui);font-size:var(--fs-label);font-weight:600;line-height:16px}.ds-g{position:absolute;top:0;bottom:0;width:1px;pointer-events:none}.ds-g1{left:13px;background:var(--fc-1-dim)}.ds-g2{left:29px;background:var(--fc-2-dim)}.ds-g3{left:45px;background:var(--fc-3-dim)}.ds-lit{width:2px;transform-origin:top;animation:ds-trace-in 200ms cubic-bezier(0.2,0.8,0.2,1) both}.ds-g1.ds-lit{background:var(--fc-1)}.ds-g2.ds-lit{background:var(--fc-2);animation-delay:35ms}.ds-g3.ds-lit{background:var(--fc-3);animation-delay:70ms}.ds-end{bottom:auto;height:11px}@keyframes ds-trace-in{from{transform:scaleY(0)}to{transform:scaleY(1)}}@media (prefers-reduced-motion:reduce){.ds-lit{animation:none}}"
+    },
+    {
+      "name": "Trace Address",
+      "kind": "nav",
+      "refersTo": "trace-segment",
+      "description": "The selected row's distName as banded segments in the file header, one depth hue swatch per level; each segment selects that ancestor.",
+      "html": "<nav class=\"ds-trace\" aria-label=\"Address of the selected row\"><ol><li><button class=\"ds-seg ds-h1\">MRBTS-1</button></li><li><span class=\"ds-sep\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\"/></svg></span><button class=\"ds-seg ds-h2\">EQM-1</button></li><li><span class=\"ds-sep\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\"/></svg></span><button class=\"ds-seg ds-h3\">BBMOD-1</button></li><li><span class=\"ds-sep\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 3.5 10.5 8 6 12.5\"/></svg></span><button class=\"ds-seg ds-h4\" aria-current=\"location\">administrativeState</button></li></ol></nav>",
+      "css": ".ds-trace{font-family:var(--font-mono);font-size:var(--fs-label)}.ds-trace ol{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-1);margin:0;padding:0;list-style:none}.ds-trace li{display:flex;align-items:center;gap:var(--s-1)}.ds-sep{display:flex;color:var(--ink-4)}.ds-seg{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 6px;background:none;border:none;border-radius:var(--r-1);color:var(--ink-2);font:inherit;cursor:pointer}.ds-seg::before{content:\"\";width:8px;height:8px;border-radius:2px;background:var(--seg-hue);flex:none}.ds-h1{--seg-hue:var(--fc-1)}.ds-h2{--seg-hue:var(--fc-2)}.ds-h3{--seg-hue:var(--fc-3)}.ds-h4{--seg-hue:var(--fc-4)}.ds-seg:hover{background:var(--bg-2);color:var(--ink)}.ds-seg:focus-visible{outline:2px solid var(--signal);outline-offset:2px}.ds-seg[aria-current]{background:var(--bg-2);color:var(--ink);font-weight:600}"
+    },
+    {
+      "name": "Provenance Badges",
+      "kind": "chip",
+      "refersTo": "badge-official",
+      "description": "Pill badges for explanation provenance: Official in aqua, every other tier in the single ink at decreasing strength, unverified tiers dashed.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-badge-official\">Official Nokia documentation</span><span class=\"ds-badge\">High confidence</span><span class=\"ds-badge ds-badge-mid\">Medium confidence</span><span class=\"ds-badge ds-badge-unverified\">Auto-generated, unverified</span><span class=\"ds-badge ds-badge-quiet\">Nokia-specific, no 3GPP reference</span></div>",
+      "css": ".ds-badges{display:flex;flex-wrap:wrap;gap:8px}.ds-badge{display:inline-block;padding:2px var(--s-3);border:1px solid var(--line-2);border-radius:999px;color:var(--ink);font-family:var(--font-ui);font-size:var(--fs-label);letter-spacing:var(--tracking-label)}.ds-badge-official{color:var(--official);border-color:var(--official-line);background:var(--official-soft)}.ds-badge-mid{color:var(--ink-2)}.ds-badge-unverified{color:var(--ink-2);border-style:dashed}.ds-badge-quiet{color:var(--ink-3)}"
+    },
+    {
+      "name": "Completeness Control",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "File-header control that answers 'is this file done?': red tint, line and count when Mandatory gaps exist; a green check when clear.",
+      "html": "<button class=\"ds-complete ds-has-gaps\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 2.5 14 13H2zM8 6.75v2.75M8 11.25v.01\"/></svg><span class=\"ds-complete-main\">41 gaps</span><span class=\"ds-complete-sub\">12 unverified</span></button><button class=\"ds-complete ds-clear\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"5.75\"/><path d=\"m5.5 8.25 1.75 1.75 3.25-3.5\"/></svg><span class=\"ds-complete-main\">Complete</span></button>",
+      "css": ".ds-complete{display:inline-flex;align-items:center;gap:6px;height:var(--control-h);margin-right:8px;padding:0 var(--s-3);border:1px solid var(--line);border-radius:var(--r-2);background:transparent;color:var(--ink-2);font-family:var(--font-ui);font-size:var(--fs-label);letter-spacing:var(--tracking-label);white-space:nowrap;cursor:pointer}.ds-complete:hover{background:var(--bg-2);color:var(--ink)}.ds-complete:focus-visible{outline:2px solid var(--signal);outline-offset:2px}.ds-has-gaps{border-color:var(--danger-line);background:var(--danger-soft)}.ds-has-gaps:hover{background:var(--danger-soft)}.ds-has-gaps svg,.ds-has-gaps .ds-complete-main{color:var(--danger)}.ds-has-gaps .ds-complete-main{font-weight:600}.ds-complete-sub{color:var(--ink-3)}.ds-complete-sub::before{content:\"\\00b7  \"}.ds-clear svg{color:var(--ok)}"
+    },
+    {
+      "name": "Neutral Note",
+      "kind": "card",
+      "refersTo": "notice-note",
+      "description": "A fact the user should weigh: Raised Sheath and full ink, no hue. Replaces any amber caution style.",
+      "html": "<div class=\"ds-notice\" role=\"note\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"5.75\"/><path d=\"M8 7.25v3.5M8 5.1v.01\"/></svg><span>Documented on another class with the same parameter name. Check that the range, default and unit apply here.</span></div>",
+      "css": ".ds-notice{display:flex;align-items:flex-start;gap:var(--s-3);max-width:360px;padding:var(--s-3) var(--s-4);border-radius:var(--r-3);background:var(--bg-2);color:var(--ink);font-family:var(--font-ui);font-size:var(--fs-label);line-height:1.45}.ds-notice svg{flex:none;margin-top:1px;color:var(--ink-2)}"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Bottom-right confirmation of a change with an Undo action; rises 6px into place over 180ms, appears in place under reduced motion.",
+      "html": "<div class=\"ds-toast\" role=\"status\"><span class=\"ds-toast-icon\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"5.75\"/><path d=\"m5.5 8.25 1.75 1.75 3.25-3.5\"/></svg></span><span class=\"ds-toast-msg\">Saved administrativeState = Unlocked on BBMOD-1.</span><button class=\"ds-toast-action\">Undo</button><button class=\"ds-toast-close\" aria-label=\"Dismiss\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m4 4 8 8M12 4l-8 8\"/></svg></button></div>",
+      "css": ".ds-toast{display:flex;align-items:flex-start;gap:var(--s-3);max-width:380px;padding:var(--s-3) var(--s-2) var(--s-3) var(--s-4);background:var(--bg-2);border:1px solid var(--line-2);border-radius:var(--r-3);box-shadow:var(--shadow-pop);color:var(--ink);font-family:var(--font-ui);font-size:var(--fs-body);line-height:1.45;animation:ds-toast-in 180ms cubic-bezier(0.2,0.8,0.2,1)}.ds-toast-icon{display:flex;margin-top:2px;color:var(--ok)}.ds-toast-msg{flex:1;padding-top:1px}.ds-toast-action{height:24px;margin-top:-2px;padding:0 var(--s-3);background:transparent;border:1px solid transparent;border-radius:var(--r-2);color:var(--ink);font:inherit;font-size:var(--fs-label);font-weight:600;cursor:pointer}.ds-toast-close{display:grid;place-items:center;width:24px;height:24px;margin-top:-2px;padding:0;background:transparent;border:1px solid transparent;border-radius:var(--r-2);color:var(--ink-3);cursor:pointer}.ds-toast-action:hover,.ds-toast-close:hover{background:var(--bg-3);color:var(--ink)}.ds-toast-action:focus-visible,.ds-toast-close:focus-visible{outline:2px solid var(--signal);outline-offset:2px}@keyframes ds-toast-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}@media (prefers-reduced-motion:reduce){.ds-toast{animation:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Fiber Code",
+    "overview": "The explorer takes its visual language from the TIA-598 fiber colour code. A cable has a black jacket, off-white lettering printed along it, and a fixed sequence of hues that tells a splicer which fibre sits where. Here the fibre is a managed object and its position is its distName. Ground and text stay neutral. Colour does three jobs: showing depth (the fiber-code sequence drawn as thin guides), showing state (three hues that each mean one thing) and reading data (values and raw XML syntax in their own bright colours, as in a code editor). Selecting a row lights its lineage as a route of code hues from the root down to that row, and the same route appears as a banded address in the file header. That move, Trace, is the system's signature.\n\nThe density suits an engineer at work. Tree, raw XML and explanation share one optical text size. Rows are 22px tall and spacing steps by 4px. Each pane is its own rounded panel floating on a darker page, with an 8px gutter between panels that doubles as the resize handle. Rank comes from weight (400 or 600) and four ink strengths rather than from size. Values line up at a fixed column like a departures board, so a run of parameters can be scanned top to bottom. Motion is nearly absent: the Trace route draws in once, a toast rises into place, and nothing else animates.\n\nThe palette is one of three dark themes, picked in the app bar and remembered per browser: **Night** (the default, indigo panels with neon-pastel accents), **Slate** (a lifted cool slate with vivid accents) and **GitHub** (close to the original blue-black look, punchier). Every theme fills the same roles, so no hue does two jobs in any of them. The tool is dark only, and it carries no Nokia logo, Nokia brand colour or anything that could read as an official Nokia product.",
+    "keyCharacteristics": [
+      "Three dark themes (Night, Slate, GitHub) on one token vocabulary: a page ground, four panel ground steps and four ink strengths each.",
+      "Fiber-code hues appear only as 1–2px depth guides, 8px address swatches and the wordmark's Trace glyph.",
+      "Three state hues with one meaning each: yellow for focus, selection and action; aqua for Official provenance; red for gaps and errors.",
+      "Trace: the selected row's lineage drawn as a lit route and mirrored as a banded distName address.",
+      "One optical size (13px mono data, 14px condensed UI), ranked by weight and ink.",
+      "Rounded, hairline-edged panels on a darker page; shadows only on things that float.",
+      "Hand-drawn 16px single-stroke SVG icons."
+    ],
+    "rules": [
+      {
+        "name": "The Same Roles Rule",
+        "body": "A theme changes colours, never meanings. Every theme defines the same base tokens, and all tints, rings and dims are derived from them. A new theme is a new block of base colours, nothing else.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Meaning Rule",
+        "body": "Each state hue has exactly one job. The signal is never a warning, the official hue is never a link or a selection, and red is never decoration. There is no amber or caution state: a fact the user should weigh is a neutral note on Raised Sheath in full ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quieter-Than-Focus Rule",
+        "body": "The official hue is a tint and a badge, never a stripe or a fill in the tree. Selection always wins: a selected row shows the soft signal tint and the signal ring, whatever tint it sits on.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Optical Size Rule",
+        "body": "14px UI text and 13px mono data share an x-height, and that pair is the system's single size. Rank within it comes from weight (400 or 600) and ink strength. Only titles step up and only the sidebar chips step down. Add no new sizes.",
+        "section": "typography"
+      },
+      {
+        "name": "The As-Written Rule",
+        "body": "Ligatures and contextual alternates are off everywhere (`font-variant-ligatures: none`), so `>-13` or `!=` never fuse in the mono. Numerals are tabular everywhere (`font-variant-numeric: tabular-nums`), so counts, sizes and ARFCNs line up digit for digit.",
+        "section": "typography"
+      },
+      {
+        "name": "The Syntax Colour Rule",
+        "body": "Raw XML is highlighted like a code editor: punctuation in `syn-punct`, tag names in `syn-tag`, attribute names in `syn-attr`, attribute values in `syn-val` and text content in `syn-text`. Search matches are found on the whole line and split back along token edges, so a query like `name=\"pMax\"` marks across tokens.",
+        "section": "typography"
+      },
+      {
+        "name": "The Departures Board Rule",
+        "body": "Tree values align in one column. Its width is measured per file from the widest label (with its indent and row furniture), clamped to 240–560px, and each row's label cell is that width minus its own indent, never under 8rem. Below 900px the column is capped at 46vw and long labels ellipsize.",
+        "section": "layout"
+      },
+      {
+        "name": "The Shed-Before-Wrap Rule",
+        "body": "The file header and toolbars respond to their own width through container queries, because the side panes resize independently of the window. They shed secondary text first: button labels at 880px (header) and 860px (toolbar), then the counts and the read-only note at 640px. Wrapping is the last resort; the raw toolbar wraps only below 560px. The file name and the Edit and Download actions are never dropped.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Panes Rule",
+        "body": "Panels, rows and controls never cast shadows. Only something that floats above the workspace and can be dismissed gets one, and it uses Pop or Modal, nothing in between.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Ruled Rows Rule",
+        "body": "Collections are rows separated by 1px hairlines, never a card per item. Rounded panels are for the regions of the shell, not for the items inside them. This covers the file list, Site Management's files, the Required Fields table, History and the explanation's key/value pairs. Never put a card inside a modal's own card.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Focus Outranks Rule",
+        "body": "The selected or active row is the strongest state on screen. Soft yellow and the yellow ring override the Official tint, the required-missing tint and the hover veil.",
+        "section": "components"
+      },
+      {
+        "name": "The Change Stays Lit Rule",
+        "body": "A value edited in this session keeps a 6px yellow dot before it, in both the tree and the raw pane, until the file is closed. Nothing changes silently.",
+        "section": "components"
+      },
+      {
+        "name": "The One Fill Rule",
+        "body": "Solid yellow belongs to the single action that moves the job forward. Toggles, selections and hovers use the soft fill, never the solid one.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do add or change a theme only as a block of base colours in styles.css (`:root[data-theme=\"…\"]`); let every tint, ring and dim derive from them.",
+      "Do draw depth only with the fiber-code hues in order, blue at the root: the `-dim` hue for resting guides, the full hue for the lit route and address swatches, and dashes for the second cycle.",
+      "Do mark any new \"selected\" state with `signal-soft` and the 1px `signal-line` ring, and keep the solid yellow fill for the one forward action.",
+      "Do show Official provenance as an aqua row tint or pill badge, and let selection override it.",
+      "Do set file data in the mono and the UI's own words in Barlow Semi Condensed at the one optical size, ranking with 400/600 and ink strength.",
+      "Do align values to the measured value column in any new tree-like list.",
+      "Do separate panes and list items with 1px hairlines and save shadows for things that float.",
+      "Do adapt headers and toolbars with container queries, shedding labels before anything wraps.",
+      "Do draw new icons on the 16px grid with a 1.5px round stroke in `currentColor`.",
+      "Do switch off every animation under `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "Don't let one accent colour do every job; each theme keeps signal, official and danger distinct.",
+      "Don't put red, yellow, aqua or black into the depth sequence, or use a depth hue for anything but a guide line or a Trace swatch.",
+      "Don't introduce an amber or caution hue; a fact to weigh is a neutral note.",
+      "Don't make Official a stripe, a fill, or louder than selection.",
+      "Don't add type sizes beyond the five roles, or turn ligatures back on.",
+      "Don't hard-code a colour in a component; reference a role token so every theme works.",
+      "Don't render lists as cards, and never nest a card inside a modal.",
+      "Don't add a light theme; the tool is dark only.",
+      "Don't use Nokia logos, Nokia brand colours or anything that could read as an official Nokia product.",
+      "Don't use emoji, unicode glyphs or an icon font as icons.",
+      "Don't extend the Trace route below the selected row, or add hover transitions and decorative motion; Trace's draw-in and the toast's entry are the only animations."
+    ]
+  }
+}

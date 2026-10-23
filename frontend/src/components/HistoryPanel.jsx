@@ -17,30 +17,30 @@ export function HistoryPanel({ snapshots, loading, error, onRestore, restoringId
   return (
     <div className="history-panel">
       <div className="history-panel-title">Version history</div>
+      <p className="history-panel-hint">Each entry puts the file back to just before that change.</p>
       {loading && <div className="history-empty">Loading…</div>}
       {error && <div className="history-empty error">{error}</div>}
       {!loading && !error && snapshots.length === 0 && (
-        <div className="history-empty">No edits yet — snapshots appear here once you make a change.</div>
+        <div className="history-empty">No changes yet. Every edit saves a snapshot here first.</div>
       )}
       {!loading && !error && snapshots.length > 0 && (
         <ul className="history-list">
-          {snapshots.map((s, i) => {
+          {snapshots.map((s) => {
             const date = parseSnapshotId(s.id);
             return (
               <li key={s.id} className="history-item">
                 <div className="history-item-info">
-                  <span className="history-item-date">
-                    {date ? date.toLocaleString() : s.id}
-                  </span>
+                  {/* Snapshots saved before labels existed have none. */}
+                  <span className="history-item-label">{s.label || "Earlier edit"}</span>
                   <span className="history-item-meta">
-                    {i === 0 ? "most recent checkpoint" : ""} · {formatBytes(s.sizeBytes)}
+                    {date ? date.toLocaleString() : s.id} · {formatBytes(s.sizeBytes)}
                   </span>
                 </div>
                 <button
                   className="btn"
                   onClick={() => onRestore(s.id)}
                   disabled={restoringId === s.id}
-                  title="Restore the file to this saved state"
+                  title="Put the file back to how it was just before this change"
                 >
                   {restoringId === s.id ? "Restoring…" : "Restore"}
                 </button>

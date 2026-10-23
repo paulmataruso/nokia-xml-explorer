@@ -1,4 +1,5 @@
 import React from "react";
+import { Icon } from "./Icon.jsx";
 
 const FILE_MIME = "application/x-sitemgmt-file";
 const FOLDER_MIME = "application/x-sitemgmt-folder";
@@ -15,6 +16,26 @@ function parseFilePayload(raw) {
   } catch {
     return null;
   }
+}
+
+// Folder rows are keyboard targets too: Enter/Space opens the folder, the
+// menu key (or Shift+F10) opens its context menu. Filing a file without a
+// mouse goes through the file's own menu ("Move to …") in Site Management.
+function rowKeys(onOpen, onMenu) {
+  return {
+    role: "button",
+    tabIndex: 0,
+    onKeyDown: (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onOpen();
+      } else if (onMenu && (e.key === "ContextMenu" || (e.key === "F10" && e.shiftKey))) {
+        e.preventDefault();
+        const r = e.currentTarget.getBoundingClientRect();
+        onMenu({ preventDefault() {}, stopPropagation() {}, clientX: r.left + 40, clientY: r.bottom });
+      }
+    },
+  };
 }
 
 function FolderRow({ folder, depth, childrenByParent, selectedId, onSelect, dragOverId, setDragOverId, onDropFile, onDropFolder, onContextMenu, fileCounts }) {
@@ -50,8 +71,9 @@ function FolderRow({ folder, depth, childrenByParent, selectedId, onSelect, drag
         onDrop={handleDrop}
         onContextMenu={(e) => onContextMenu(e, folder)}
         title={folder.name}
+        {...rowKeys(() => onSelect(folder.id), (e) => onContextMenu(e, folder))}
       >
-        <span className="folder-icon">📁</span>
+        <Icon name="folder" className="folder-icon" />
         <span className="folder-name">{folder.name}</span>
         {count > 0 && <span className="folder-count">{count}</span>}
       </div>
@@ -126,8 +148,9 @@ export function FolderTree({ folders, files, selectedId, onSelect, onDropFile, o
           <div
             className={"folder-row" + (selectedId === "ALL" ? " selected" : "")}
             onClick={() => onSelect("ALL")}
+            {...rowKeys(() => onSelect("ALL"))}
           >
-            <span className="folder-icon">🗂</span>
+            <Icon name="folders" className="folder-icon" />
             <span className="folder-name">All files</span>
             <span className="folder-count">{files.length}</span>
           </div>
@@ -142,8 +165,9 @@ export function FolderTree({ folders, files, selectedId, onSelect, onDropFile, o
             }}
             onDragLeave={() => setDragOverId((cur) => (cur === "UNFILED" ? null : cur))}
             onDrop={handleRootDrop}
+            {...rowKeys(() => onSelect(null))}
           >
-            <span className="folder-icon">📄</span>
+            <Icon name="file" className="folder-icon" />
             <span className="folder-name">Unfiled</span>
             {unfiledCount > 0 && <span className="folder-count">{unfiledCount}</span>}
           </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Modal } from "./Modal.jsx";
 import { getCatalogClassDetail, setObjectParam } from "../api.js";
 import { sortParamNames, fieldForParam } from "./paramFields.jsx";
 
@@ -45,20 +46,13 @@ export function AddParamModal({ filename, distName, className, existingParamName
     setSubmitting(true);
     setError(null);
     setObjectParam(filename, distName, selectedName, value)
-      .then(() => onAdded())
+      .then((res) => onAdded(res, selectedName, value))
       .catch((e) => setError(String(e.message || e)))
       .finally(() => setSubmitting(false));
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>Add parameter to {distName.split("/").pop()}</h3>
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
-        </div>
+    <Modal title={`Add parameter to ${distName.split("/").pop()}`} onClose={onClose}>
 
         <div className="modal-body">
           {loading && <div className="placeholder">Loading parameter catalog…</div>}
@@ -67,7 +61,7 @@ export function AddParamModal({ filename, distName, className, existingParamName
           {!loading && !selectedName && (
             <>
               <input
-                className="search-box"
+                className="input"
                 style={{ margin: "0 0 8px" }}
                 placeholder={`Search ${className} parameters…`}
                 value={search}
@@ -76,9 +70,17 @@ export function AddParamModal({ filename, distName, className, existingParamName
               />
               <ul className="class-pick-list">
                 {filtered.map(([name, meta]) => (
-                  <li key={name} onClick={() => { setSelectedName(name); setValue(""); }}>
-                    <span className="mono">{name}</span>
-                    <span className="class-pick-fullname">{meta.description?.slice(0, 70)}</span>
+                  <li key={name}>
+                    <button
+                      className="pick-option"
+                      onClick={() => {
+                        setSelectedName(name);
+                        setValue("");
+                      }}
+                    >
+                      <span className="mono">{name}</span>
+                      <span className="class-pick-fullname">{meta.description?.slice(0, 70)}</span>
+                    </button>
                   </li>
                 ))}
                 {filtered.length === 0 && (
@@ -109,11 +111,10 @@ export function AddParamModal({ filename, distName, className, existingParamName
           <button className="btn" onClick={onClose}>
             Cancel
           </button>
-          <button className="btn active" onClick={handleSubmit} disabled={!selectedName || submitting}>
+          <button className="btn btn-primary" onClick={handleSubmit} disabled={!selectedName || submitting}>
             {submitting ? "Adding…" : "Add parameter"}
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

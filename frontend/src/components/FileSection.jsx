@@ -1,32 +1,36 @@
 import React from "react";
+import { Icon } from "./Icon.jsx";
 
 /**
  * One titled group in the sidebar file list ("Your uploads", "Commissioning
- * files", "Example files"). Clicking the header collapses/expands it.
+ * files", "Example files"). The header is a real button that collapses or
+ * expands the group; it stays stuck to the top of the list while you
+ * scroll through that group, so you always know which source you're in.
  */
-export function FileSection({ className, listClassName, icon, title, count, collapsed, onToggle, children }) {
+export function FileSection({ id, icon, title, hint, count, collapsed, onToggle, children }) {
+  const listId = `file-section-${id}`;
   return (
-    <div className={`file-section ${className}` + (collapsed ? " collapsed" : "")}>
-      <div
-        className="file-section-header"
-        role="button"
-        tabIndex={0}
-        aria-expanded={!collapsed}
-        title={collapsed ? `Show ${title.toLowerCase()}` : `Hide ${title.toLowerCase()}`}
-        onClick={onToggle}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onToggle();
-          }
-        }}
-      >
-        <span className="file-section-chevron">{collapsed ? "▸" : "▾"}</span>
-        <span className="file-section-icon">{icon}</span>
-        <span>{title}</span>
-        <span className="file-section-count">{count}</span>
-      </div>
-      {!collapsed && <ul className={"file-list" + (listClassName ? ` ${listClassName}` : "")}>{children}</ul>}
-    </div>
+    <section className={"file-section" + (collapsed ? " collapsed" : "")} aria-label={title}>
+      <h2 className="file-section-heading">
+        <button
+          className="file-section-header"
+          aria-expanded={!collapsed}
+          aria-controls={listId}
+          onClick={onToggle}
+          title={collapsed ? `Show ${title.toLowerCase()}` : `Hide ${title.toLowerCase()}`}
+        >
+          <Icon name={collapsed ? "chevron-right" : "chevron-down"} size={12} className="file-section-chevron" />
+          <Icon name={icon} size={14} className="file-section-icon" />
+          <span className="file-section-title">{title}</span>
+          {hint && <span className="file-section-hint">{hint}</span>}
+          <span className="file-section-count">{count}</span>
+        </button>
+      </h2>
+      {!collapsed && (
+        <ul className="file-list" id={listId}>
+          {children}
+        </ul>
+      )}
+    </section>
   );
 }

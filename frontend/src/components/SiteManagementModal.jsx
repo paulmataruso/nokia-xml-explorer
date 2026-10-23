@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Modal } from "./Modal.jsx";
 import {
   getSiteManagementTree,
   createFolder,
@@ -8,6 +9,7 @@ import {
   searchSiteManagement,
 } from "../api.js";
 import { FolderTree, FILE_MIME } from "./FolderTree.jsx";
+import { Icon } from "./Icon.jsx";
 import { ContextMenu } from "./ContextMenu.jsx";
 import { ConfirmDialog } from "./ConfirmDialog.jsx";
 import { PromptDialog } from "./PromptDialog.jsx";
@@ -223,6 +225,11 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
         },
       },
     ];
+    // Filing without drag-and-drop: one "Move to …" item per folder.
+    for (const folder of [...(data?.folders || [])].sort((a, b) => a.name.localeCompare(b.name))) {
+      if (String(folder.id) === String(file.folderId)) continue;
+      items.push({ label: `Move to “${folder.name}”`, onClick: () => handleDropFile(file.name, file.source, folder.id) });
+    }
     if (file.folderId) {
       items.push({ label: "Remove from folder", onClick: () => handleDropFile(file.name, file.source, null) });
     }
@@ -249,18 +256,11 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
 
   return (
     <>
-      <div className="modal-backdrop" onClick={onClose}>
-        <div className="modal sitemgmt-modal" onClick={(e) => e.stopPropagation()}>
-          <div className="modal-header">
-            <h3>Site Management</h3>
-            <button className="close-btn" onClick={onClose}>
-              ×
-            </button>
-          </div>
+      <Modal title="Site Management" className="sitemgmt-modal" onClose={onClose}>
 
           <div className="sitemgmt-toolbar">
             <input
-              className="search-box"
+              className="input"
               style={{ margin: 0, flex: 1 }}
               placeholder="Search file names, tags, site, or inside file contents…"
               value={query}
@@ -298,11 +298,12 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
               <option value="family">Sort: Type</option>
             </select>
             <button
-              className="btn icon-btn"
+              className="icon-btn"
               onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
+              aria-label={sortDir === "asc" ? "Sorted ascending; switch to descending" : "Sorted descending; switch to ascending"}
               title="Toggle sort direction"
             >
-              {sortDir === "asc" ? "↑" : "↓"}
+              <Icon name={sortDir === "asc" ? "arrow-up" : "arrow-down"} />
             </button>
           </div>
 
@@ -317,7 +318,8 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
                   <div className="sitemgmt-sidebar-header">
                     <span>Folders</span>
                     <button className="btn" onClick={() => handleCreateFolder(null)} title="New top-level folder">
-                      + Folder
+                      <Icon name="plus" />
+                      Folder
                     </button>
                   </div>
                   <FolderTree
@@ -360,19 +362,39 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
                             {FAMILY_LABELS[f.family] || f.family}
                           </span>
                           <span className={"source-badge source-" + f.source}>{f.source}</span>
-                          <span className="sitemgmt-file-name" onClick={() => { onOpenFile(f.name); onClose(); }} title="Click to open">
+                          <button
+                            className="sitemgmt-file-name"
+                            onClick={() => {
+                              onOpenFile(f.name);
+                              onClose();
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "ContextMenu" || (e.key === "F10" && e.shiftKey)) {
+                                e.preventDefault();
+                                const r = e.currentTarget.getBoundingClientRect();
+                                handleFileContextMenu(
+                                  { preventDefault() {}, stopPropagation() {}, clientX: r.left, clientY: r.bottom },
+                                  f
+                                );
+                              }
+                            }}
+                            title="Open in the explorer (menu key: move to a folder)"
+                          >
                             {f.name}
-                          </span>
+                          </button>
                           <span className="sitemgmt-file-size">{formatBytes(f.sizeBytes)}</span>
                         </div>
+                        {/* Empty site/tags show as one quiet "Site" / "Tags" add each
+                            instead of a labelled dashed chip pair on every row. */}
                         <div className="sitemgmt-file-meta">
-                          <span className="sitemgmt-meta-label">Site:</span>
                           {editingSiteFor === fileKey(f) ? (
                             <input
                               className="mono"
                               autoFocus
                               list="sitemgmt-site-options"
                               value={siteDraft}
+                              placeholder="Site name"
+                              aria-label={`Site for ${f.name}`}
                               onChange={(e) => setSiteDraft(e.target.value)}
                               onBlur={() => commitSite(f)}
                               onKeyDown={(e) => {
@@ -381,17 +403,27 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
                               }}
                             />
                           ) : (
-                            <span
-                              className="sitemgmt-editable"
+                            <button
+                              className={"sitemgmt-editable" + (f.site ? "" : " is-empty")}
+                              title={f.site ? "Change site" : "Assign this file to a site"}
                               onClick={() => {
                                 setEditingSiteFor(fileKey(f));
                                 setSiteDraft(f.site || "");
                               }}
                             >
-                              {f.site || <span className="value empty">+ add</span>}
-                            </span>
+                              {f.site ? (
+                                <>
+                                  <span className="sitemgmt-meta-label">Site</span>
+                                  <span className="mono">{f.site}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Icon name="plus" size={12} />
+                                  Site
+                                </>
+                              )}
+                            </button>
                           )}
-                          <span className="sitemgmt-meta-label">Tags:</span>
                           {editingTagsFor === fileKey(f) ? (
                             <input
                               className="mono"
@@ -399,6 +431,7 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
                               list="sitemgmt-tag-options"
                               value={tagDraft}
                               placeholder="tag1, tag2"
+                              aria-label={`Tags for ${f.name}, comma separated`}
                               onChange={(e) => setTagDraft(e.target.value)}
                               onBlur={() => commitTags(f)}
                               onKeyDown={(e) => {
@@ -407,23 +440,27 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
                               }}
                             />
                           ) : (
-                            <span
-                              className="sitemgmt-editable sitemgmt-tags"
+                            <button
+                              className={"sitemgmt-editable sitemgmt-tags" + (f.tags && f.tags.length > 0 ? "" : " is-empty")}
+                              title={f.tags && f.tags.length > 0 ? "Change tags" : "Tag this file"}
                               onClick={() => {
                                 setEditingTagsFor(fileKey(f));
                                 setTagDraft((f.tags || []).join(", "));
                               }}
                             >
-                              {f.tags && f.tags.length > 0 ? (
-                                f.tags.map((t) => (
-                                  <span key={t} className="tag-chip">
-                                    {t}
-                                  </span>
-                                ))
-                              ) : (
-                                <span className="value empty">+ add</span>
-                              )}
-                            </span>
+                              {f.tags && f.tags.length > 0
+                                ? f.tags.map((t) => (
+                                    <span key={t} className="tag-chip">
+                                      {t}
+                                    </span>
+                                  ))
+                                : (
+                                    <>
+                                      <Icon name="plus" size={12} />
+                                      Tags
+                                    </>
+                                  )}
+                            </button>
                           )}
                         </div>
                         {f.matchedIn === "content" && f.matchSnippet && (
@@ -449,8 +486,7 @@ export function SiteManagementModal({ onClose, onOpenFile, addToast }) {
               <option key={s} value={s} />
             ))}
           </datalist>
-        </div>
-      </div>
+      </Modal>
 
       {contextMenu && (
         <ContextMenu x={contextMenu.x} y={contextMenu.y} items={contextMenu.items} onClose={() => setContextMenu(null)} />

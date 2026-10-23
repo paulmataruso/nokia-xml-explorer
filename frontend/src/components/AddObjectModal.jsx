@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Icon } from "./Icon.jsx";
+import { Modal } from "./Modal.jsx";
 import { getCatalogClasses, getCatalogClassDetail, addObject } from "../api.js";
 import { sortParamNames, fieldForParam } from "./paramFields.jsx";
 
@@ -98,14 +100,7 @@ export function AddObjectModal({ filename, defaultParentDistName, onClose, onCre
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal add-object-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>Add managed object</h3>
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
-        </div>
+    <Modal title="Add managed object" className="add-object-modal" onClose={onClose}>
 
         <div className="modal-body">
           <label className="field-row">
@@ -128,7 +123,7 @@ export function AddObjectModal({ filename, defaultParentDistName, onClose, onCre
           {!selectedClass && (
             <>
               <input
-                className="search-box"
+                className="input"
                 style={{ margin: "8px 0" }}
                 placeholder="Search managed object class…"
                 value={classSearch}
@@ -136,20 +131,22 @@ export function AddObjectModal({ filename, defaultParentDistName, onClose, onCre
               />
               <ul className="class-pick-list">
                 {filteredClasses.slice(0, 60).map((c) => (
-                  <li key={c.shortName} onClick={() => selectClass(c.shortName)}>
+                  <li key={c.shortName}>
+                    <button className="pick-option" onClick={() => selectClass(c.shortName)}>
                     <span className="mono">
                       {c.shortName}
                       {!c.observedInCorpus && (
                         <span
                           className="official-only-badge"
+                          aria-label="Official-only: never seen in your sample files"
                           title="Valid per Nokia's official dictionary, but this class never appeared in any of your sample files"
                         >
-                          {" "}
-                          ⚑
+                          <Icon name="flag" size={12} />
                         </span>
                       )}
                     </span>
                     <span className="class-pick-fullname">{c.officialFullName || c.description?.slice(0, 60)}</span>
+                    </button>
                   </li>
                 ))}
                 {filteredClasses.length === 0 && (
@@ -200,7 +197,7 @@ export function AddObjectModal({ filename, defaultParentDistName, onClose, onCre
 
                   <div className="param-search-add">
                     <input
-                      className="search-box"
+                      className="input"
                       placeholder="Find another parameter to set…"
                       value={paramSearch}
                       onChange={(e) => setParamSearch(e.target.value)}
@@ -208,16 +205,18 @@ export function AddObjectModal({ filename, defaultParentDistName, onClose, onCre
                     {searchMatches.length > 0 && (
                       <ul className="class-pick-list">
                         {searchMatches.map(([name, meta]) => (
-                          <li
-                            key={name}
-                            onClick={() => {
-                              setValue(name, values[name] ?? "");
-                              setVisibleCount((n) => Math.max(n, sortedParams.findIndex((p) => p[0] === name) + 1));
-                              setParamSearch("");
-                            }}
-                          >
-                            <span className="mono">{name}</span>
-                            <span className="class-pick-fullname">{meta.description?.slice(0, 70)}</span>
+                          <li key={name}>
+                            <button
+                              className="pick-option"
+                              onClick={() => {
+                                setValue(name, values[name] ?? "");
+                                setVisibleCount((n) => Math.max(n, sortedParams.findIndex((p) => p[0] === name) + 1));
+                                setParamSearch("");
+                              }}
+                            >
+                              <span className="mono">{name}</span>
+                              <span className="class-pick-fullname">{meta.description?.slice(0, 70)}</span>
+                            </button>
                           </li>
                         ))}
                       </ul>
@@ -235,11 +234,10 @@ export function AddObjectModal({ filename, defaultParentDistName, onClose, onCre
           <button className="btn" onClick={onClose}>
             Cancel
           </button>
-          <button className="btn active" onClick={handleSubmit} disabled={!selectedClass || submitting}>
+          <button className="btn btn-primary" onClick={handleSubmit} disabled={!selectedClass || submitting}>
             {submitting ? "Creating…" : "Create object"}
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

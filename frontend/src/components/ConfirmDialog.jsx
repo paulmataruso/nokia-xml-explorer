@@ -1,32 +1,33 @@
 import React from "react";
+import { Modal } from "./Modal.jsx";
 
 /**
  * In-app replacement for window.confirm() -- destructive actions (delete)
  * still get an explicit confirmation step, just styled consistently with
- * the rest of the app instead of a browser-chrome popup.
+ * the rest of the app instead of a browser-chrome popup. Focus starts on
+ * Cancel for a destructive action (so Enter never deletes by accident) and
+ * on the confirm button otherwise; Esc cancels.
  */
 export function ConfirmDialog({ title, message, confirmLabel = "Confirm", danger, onConfirm, onCancel }) {
   return (
-    <div className="modal-backdrop" onClick={onCancel}>
-      <div className="modal confirm-dialog" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{title}</h3>
-          <button className="close-btn" onClick={onCancel}>
-            ×
-          </button>
-        </div>
-        <div className="modal-body">
-          <p>{message}</p>
-        </div>
-        <div className="modal-footer">
-          <button className="btn" onClick={onCancel}>
+    <Modal
+      title={title}
+      className="confirm-dialog"
+      onClose={onCancel}
+      footer={
+        <>
+          <button className="btn" onClick={onCancel} autoFocus={danger}>
             Cancel
           </button>
-          <button className={"btn" + (danger ? " btn-danger" : " active")} onClick={onConfirm} autoFocus>
+          <button className={"btn" + (danger ? " btn-danger" : " btn-primary")} onClick={onConfirm} autoFocus={!danger}>
             {confirmLabel}
           </button>
-        </div>
+        </>
+      }
+    >
+      <div className="modal-body">
+        <p>{message}</p>
       </div>
-    </div>
+    </Modal>
   );
 }

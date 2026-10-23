@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from "react";
+import { Icon } from "./Icon.jsx";
 import { explainNode } from "../knowledge.js";
 import { explainParamFallback } from "../api.js";
 import { AddParamModal } from "./AddParamModal.jsx";
 import { parseThreeGppRefs } from "../utils.js";
 
+// Badge tone classes (see .badge-* in styles.css) instead of per-tier
+// hex colours: Official takes the Official aqua, everything else stays in
+// the single ink at decreasing strength, so provenance never competes with
+// the signal colour the user's focus uses.
 const THREEGPP_STATUS_META = {
-  standardized: { label: "3GPP-standardized", color: "#3fb950" },
-  unverified: { label: "Possibly standardized — not individually verified", color: "#58a6ff" },
-  "other-standard": { label: "Standardized (not by 3GPP)", color: "#d29922" },
-  "vendor-specific": { label: "Nokia-specific — no 3GPP reference", color: "#8b949e" },
+  standardized: { label: "3GPP-standardized", tone: "strong" },
+  unverified: { label: "Possibly standardized — not individually verified", tone: "unverified" },
+  "other-standard": { label: "Standardized (not by 3GPP)", tone: "mid" },
+  "vendor-specific": { label: "Nokia-specific — no 3GPP reference", tone: "quiet" },
 };
 
 const CONFIDENCE_META = {
-  official: { label: "Official Nokia documentation", color: "#58a6ff" },
-  high: { label: "High confidence", color: "#3fb950" },
-  medium: { label: "Medium confidence", color: "#d29922" },
-  low: { label: "Low confidence", color: "#e0823d" },
-  heuristic: { label: "Auto-generated — unverified", color: "#8b949e" },
+  official: { label: "Official Nokia documentation", tone: "official" },
+  high: { label: "High confidence", tone: "strong" },
+  medium: { label: "Medium confidence", tone: "mid" },
+  low: { label: "Low confidence", tone: "unverified" },
+  heuristic: { label: "Auto-generated — unverified", tone: "unverified" },
 };
+
+// Kinds whose subtitle doesn't already say what they are ("Parameter on
+// NRCELL" does; a bare class string or "raml / cmData / header" doesn't).
+const KIND_IN_SUBTITLE = new Set(["mo", "mo-placeholder", "fileinfo"]);
 
 export function ExplainPanel({ node, kb, onClose, editable, filename, onParamAdded }) {
   const [info, setInfo] = useState(null);
   const [addParamOpen, setAddParamOpen] = useState(false);
+  const [rangeOpen, setRangeOpen] = useState(false);
 
   useEffect(() => {
     setAddParamOpen(false);
+    setRangeOpen(false);
     if (!node) {
       setInfo(null);
       return;
@@ -63,48 +74,59 @@ export function ExplainPanel({ node, kb, onClose, editable, filename, onParamAdd
   if (!node || !info) {
     return (
       <div className="explain-panel empty">
-        <p>Double-click any item in the tree to see a full explanation here.</p>
+        <p>Click any row in the tree or the raw XML to see what it means, how sure the source is, and where it comes from.</p>
       </div>
     );
   }
 
   const conf = info.confidence ? CONFIDENCE_META[info.confidence] : null;
+  // The knowledge base is keyed by parameter name. When the dictionary
+  // entry it found was written for a different class (NRCELL.pMax showing
+  // LNCEL.pMax's text), say so: the range, default and unit may not apply.
+  const docClass = info.officialMoClass ? info.officialMoClass.split("/").pop() : null;
+  const borrowedDoc = node.kind === "param" && docClass && node.class && docClass !== node.class;
+  const rangeLines = info.range ? info.range.split("\n") : [];
+  const RANGE_PREVIEW = 10;
 
   return (
     <div className="explain-panel">
       <div className="explain-header">
         <div>
-          <div className="explain-kind">{info.kindLabel}</div>
           <h2 className="mono">{info.title}</h2>
-          {info.subtitle && <div className="explain-subtitle mono">{info.subtitle}</div>}
+          <div className="explain-subtitle">
+            {KIND_IN_SUBTITLE.has(node.kind) && info.kindLabel}
+            {KIND_IN_SUBTITLE.has(node.kind) && info.subtitle && " · "}
+            {info.subtitle && <span className="mono">{info.subtitle}</span>}
+          </div>
         </div>
-        <button className="close-btn" onClick={onClose} aria-label="Close">
-          ×
+        <button className="icon-btn" onClick={onClose} aria-label="Clear selection" title="Clear selection">
+          <Icon name="x" />
         </button>
       </div>
 
-      {conf && (
-        <div className="confidence-badge" style={{ borderColor: conf.color, color: conf.color }}>
-          {conf.label}
-        </div>
-      )}
+      {conf && <div className={`badge badge-${conf.tone} explain-badge`}>{conf.label}</div>}
 
       {editable && node.kind === "mo" && (
         <button className="btn add-param-btn" onClick={() => setAddParamOpen(true)}>
-          + Add parameter
+          <Icon name="plus" />
+          Add parameter
         </button>
       )}
 
-      {info.fullName && (
-        <div className="kv-row">
-          <span className="k">Official name</span>
-          <span className="v">{info.fullName}</span>
+      {borrowedDoc && (
+        <div className="notice is-note explain-borrowed" role="note">
+          <Icon name="info" />
+          <span className="notice-text">
+            Documented on <span className="mono">{docClass}.{info.title}</span>, the same parameter name on another
+            class. Check that the range, default and unit apply to <span className="mono">{node.class}</span>.
+          </span>
         </div>
       )}
-      {info.officialFullName && (
+
+      {(info.fullName || info.officialFullName) && (
         <div className="kv-row">
           <span className="k">Official name</span>
-          <span className="v">{info.officialFullName}</span>
+          <span className="v">{info.fullName || info.officialFullName}</span>
         </div>
       )}
       {info.officialHierarchy && info.officialHierarchy.length > 1 && (
@@ -179,7 +201,16 @@ export function ExplainPanel({ node, kb, onClose, editable, filename, onParamAdd
           {info.range && (
             <div className="kv-block">
               <div className="k">Valid range</div>
-              <div className="v-block mono">{info.range}</div>
+              <div className="v-block mono">
+                {rangeOpen || rangeLines.length <= RANGE_PREVIEW
+                  ? info.range
+                  : rangeLines.slice(0, RANGE_PREVIEW).join("\n")}
+              </div>
+              {rangeLines.length > RANGE_PREVIEW && (
+                <button className="link-btn range-toggle" onClick={() => setRangeOpen((o) => !o)}>
+                  {rangeOpen ? "Show fewer" : `Show all ${rangeLines.length} lines`}
+                </button>
+              )}
             </div>
           )}
           {info.relatedFeatures && (
@@ -213,10 +244,7 @@ export function ExplainPanel({ node, kb, onClose, editable, filename, onParamAdd
       {info.threeGpp && (
         <div className="attr-table threegpp-block">
           <div className="attr-table-title">3GPP standardization</div>
-          <div
-            className="threegpp-status-badge"
-            style={{ borderColor: THREEGPP_STATUS_META[info.threeGpp.status]?.color }}
-          >
+          <div className={`badge badge-${THREEGPP_STATUS_META[info.threeGpp.status]?.tone || "quiet"}`}>
             {THREEGPP_STATUS_META[info.threeGpp.status]?.label || info.threeGpp.status}
           </div>
           {info.threeGpp.specs && info.threeGpp.specs.length > 0 && (
@@ -271,9 +299,9 @@ export function ExplainPanel({ node, kb, onClose, editable, filename, onParamAdd
           className={node.class}
           existingParamNames={node.children.filter((c) => c.kind === "param").map((c) => c.label)}
           onClose={() => setAddParamOpen(false)}
-          onAdded={() => {
+          onAdded={(res, paramName, value) => {
             setAddParamOpen(false);
-            onParamAdded && onParamAdded();
+            onParamAdded && onParamAdded(res, node.distName, paramName, value);
           }}
         />
       )}

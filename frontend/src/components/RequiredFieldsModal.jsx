@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Icon } from "./Icon.jsx";
+import { Modal } from "./Modal.jsx";
 import { setObjectParam } from "../api.js";
 import { fieldInputForParam } from "./paramFields.jsx";
 
@@ -8,7 +10,7 @@ function ExplainSidePanel({ row }) {
   if (!row) {
     return (
       <div className="required-fields-explain">
-        <div className="placeholder">Click a row to see its full explanation here.</div>
+        <div className="placeholder">Click a row to see what that parameter is and which values real files use.</div>
       </div>
     );
   }
@@ -50,8 +52,8 @@ function ExplainSidePanel({ row }) {
       )}
       {row.observed === false && (
         <div className="explain-notes">
-          Valid per Nokia's official dictionary, but this parameter was never seen in any of your sample
-          files -- there's no real-file example to ground a suggested value in.
+          Valid per Nokia's official dictionary, but never seen in any of your sample files, so there's no
+          real-file value to suggest.
         </div>
       )}
     </div>
@@ -66,13 +68,30 @@ function ExplainSidePanel({ row }) {
  * _is_required_missing). One table, fill in from wherever, no hunting
  * through the tree for red flags one at a time. Clicking a row shows its
  * full explanation in the side panel, same data ExplainPanel would show.
+ *
+ * Split in two, because they mean different things: "gaps" are parameters
+ * real exports actually set (seen in the sample files), so a blank one is
+ * very likely a real omission; "unverified" ones are documented as
+ * Mandatory but never observed in any real file, so the docs may not
+ * reflect what a working export needs. Rows are grouped by object, under
+ * the object's full distName.
  */
-export function RequiredFieldsModal({ filename, rows, onClose, onSaved }) {
+export function RequiredFieldsModal({ filename, rows, readOnly, onClose, onSaved, onShowInTree }) {
   const [pending, setPending] = useState({});
   const [savingKey, setSavingKey] = useState(null);
   const [error, setError] = useState(null);
   const [selectedKey, setSelectedKey] = useState(null);
+  const gaps = rows.filter((r) => r.observed !== false);
+  const unverified = rows.filter((r) => r.observed === false);
+  const [tab, setTab] = useState(gaps.length > 0 || unverified.length === 0 ? "gaps" : "unverified");
 
+  const shown = tab === "gaps" ? gaps : unverified;
+  const groups = [];
+  for (const row of shown) {
+    const last = groups[groups.length - 1];
+    if (last && last.distName === row.distName) last.rows.push(row);
+    else groups.push({ distName: row.distName, cls: row.class, rows: [row] });
+  }
   const selectedRow = rows.find((r) => rowKey(r) === selectedKey) || null;
 
   const handleSave = (row) => {
@@ -82,86 +101,132 @@ export function RequiredFieldsModal({ filename, rows, onClose, onSaved }) {
     setSavingKey(key);
     setError(null);
     setObjectParam(filename, row.distName, row.paramName, value)
-      .then(() => {
+      .then((res) => {
         setPending((prev) => {
           const next = { ...prev };
           delete next[key];
           return next;
         });
-        onSaved();
+        return onSaved(res, row.distName, row.paramName, value);
       })
-      .catch((e) => setError(String(e.message || e)))
+      .catch((e) => setError(`Couldn't save ${row.paramName}: ${String(e.message || e)}`))
       .finally(() => setSavingKey(null));
   };
 
+  const columns = readOnly ? 3 : 5;
+
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal required-fields-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>Required fields not yet filled in ({rows.length})</h3>
-          <button className="close-btn" onClick={onClose}>
-            ×
+    <Modal title="Required fields without a value" className="required-fields-modal" onClose={onClose}>
+
+        <div className="required-fields-tabs" role="tablist" aria-label="Which required fields">
+          <button
+            role="tab"
+            aria-selected={tab === "gaps"}
+            className="rf-tab"
+            onClick={() => setTab("gaps")}
+            title="Mandatory parameters that real exports set, still blank here"
+          >
+            Gaps <span className="rf-tab-count">{gaps.length}</span>
           </button>
+          <button
+            role="tab"
+            aria-selected={tab === "unverified"}
+            className="rf-tab"
+            onClick={() => setTab("unverified")}
+            title="Documented as Mandatory, but never seen set in any real sample file"
+          >
+            Unverified <span className="rf-tab-count">{unverified.length}</span>
+          </button>
+          <span className="rf-tab-hint">
+            {tab === "gaps"
+              ? "Seen set in real exports, so a blank one is likely a real omission."
+              : "Documented as Mandatory but never seen in a real file. Check before filling in."}
+          </span>
         </div>
 
         <div className="modal-body required-fields-body">
           <div className="required-fields-table-wrap">
-            {error && <div className="placeholder error">{error}</div>}
-            {rows.length === 0 ? (
+            {readOnly && rows.length > 0 && (
+              <div className="notice is-quiet">
+                This file is read-only. Use "Edit a copy" in the file header to fill these in.
+              </div>
+            )}
+            {error && <div className="notice is-error">{error}</div>}
+            {shown.length === 0 ? (
               <div className="placeholder">
-                Every Mandatory parameter in this file currently has a value. Nothing left to fill in.
+                {tab === "gaps"
+                  ? "No gaps: every Mandatory parameter that real exports set has a value here."
+                  : "Nothing unverified is missing."}
               </div>
             ) : (
               <table className="required-fields-table">
                 <thead>
                   <tr>
-                    <th>Object</th>
-                    <th>Class</th>
                     <th>Parameter</th>
-                    <th>Value</th>
-                    <th />
+                    <th>Class</th>
+                    {!readOnly && <th>Value</th>}
+                    {!readOnly && <th aria-label="Save" />}
+                    <th aria-label="Show in tree" />
                   </tr>
                 </thead>
-                <tbody>
-                  {rows.map((row) => {
-                    const key = rowKey(row);
-                    const value = pending[key] ?? "";
-                    const meta = {
-                      dataType: row.dataType,
-                      exampleValues: row.exampleValues,
-                      officialRange: row.officialRange,
-                    };
-                    return (
-                      <tr
-                        key={key}
-                        className={key === selectedKey ? "selected-row" : ""}
-                        onClick={() => setSelectedKey(key)}
-                      >
-                        <td className="mono" title={row.distName}>
-                          {row.distName.split("/").pop()}
-                        </td>
-                        <td className="mono">{row.class}</td>
-                        <td className="mono" title={row.description || ""}>
-                          {row.paramName}
-                        </td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          {fieldInputForParam(meta, value, (v) =>
-                            setPending((prev) => ({ ...prev, [key]: v }))
+                {groups.map((g) => (
+                  <tbody key={g.distName}>
+                    <tr className="rf-group">
+                      <th colSpan={columns} scope="rowgroup" className="mono">
+                        {g.distName}
+                      </th>
+                    </tr>
+                    {g.rows.map((row) => {
+                      const key = rowKey(row);
+                      const value = pending[key] ?? "";
+                      const meta = {
+                        dataType: row.dataType,
+                        exampleValues: row.exampleValues,
+                        officialRange: row.officialRange,
+                      };
+                      return (
+                        <tr
+                          key={key}
+                          className={key === selectedKey ? "selected-row" : ""}
+                          onClick={() => setSelectedKey(key)}
+                        >
+                          <td className="mono" title={row.description || ""}>
+                            {row.paramName}
+                          </td>
+                          <td className="mono rf-class">{row.class}</td>
+                          {!readOnly && (
+                            <td onClick={(e) => e.stopPropagation()}>
+                              {fieldInputForParam(meta, value, (v) =>
+                                setPending((prev) => ({ ...prev, [key]: v }))
+                              )}
+                            </td>
                           )}
-                        </td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <button
-                            className="btn"
-                            disabled={!value || savingKey === key}
-                            onClick={() => handleSave(row)}
-                          >
-                            {savingKey === key ? "Saving…" : "Save"}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
+                          {!readOnly && (
+                            <td onClick={(e) => e.stopPropagation()}>
+                              <button
+                                className="btn"
+                                disabled={!value || savingKey === key}
+                                onClick={() => handleSave(row)}
+                              >
+                                {savingKey === key ? "Saving…" : "Save"}
+                              </button>
+                            </td>
+                          )}
+                          <td onClick={(e) => e.stopPropagation()}>
+                            <button
+                              className="icon-btn"
+                              onClick={() => onShowInTree(row.distName, row.paramName)}
+                              aria-label={`Show ${row.paramName} on ${row.distName.split("/").pop()} in the tree`}
+                              title="Show in tree"
+                            >
+                              <Icon name="external" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                ))}
               </table>
             )}
           </div>
@@ -173,7 +238,6 @@ export function RequiredFieldsModal({ filename, rows, onClose, onSaved }) {
             Close
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

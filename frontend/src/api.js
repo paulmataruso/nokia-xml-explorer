@@ -1,15 +1,28 @@
 const API_BASE = "/api";
 
+/** The server's own explanation of a failed request: FastAPI's `detail`
+ * (a string, or a list of validation errors), falling back to the raw body
+ * and then the HTTP status -- never a bare "422 Unprocessable Entity: {...}". */
+async function errorFrom(res) {
+  const text = await res.text().catch(() => "");
+  let detail = text;
+  try {
+    const parsed = JSON.parse(text).detail;
+    if (Array.isArray(parsed)) detail = parsed.map((d) => d.msg || JSON.stringify(d)).join("; ");
+    else if (parsed) detail = String(parsed);
+  } catch {
+    // not JSON, use raw text
+  }
+  return new Error(detail || `${res.status} ${res.statusText}`);
+}
+
 async function getJSON(path) {
   // no-store: several GET endpoints here (notably /sitemgmt/tree) are
   // re-fetched immediately after a write to show its result -- without
   // this, a browser's default HTTP cache heuristics can serve a stale
   // response for the identical URL instead of hitting the server again.
   const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`${res.status} ${res.statusText}: ${text}`);
-  }
+  if (!res.ok) throw await errorFrom(res);
   return res.json();
 }
 
@@ -23,6 +36,12 @@ export function getFileTree(filename) {
 
 export function getFileRawTree(filename) {
   return getJSON(`/files/${encodeURIComponent(filename)}/raw`);
+}
+
+/** A plain URL (not a fetch) so an <a download> can save the file's
+ * current bytes straight to disk. */
+export function downloadUrl(filename) {
+  return `${API_BASE}/files/${encodeURIComponent(filename)}/download`;
 }
 
 export function getClassesKB() {
@@ -53,19 +72,13 @@ export async function uploadFiles(fileList) {
   const form = new FormData();
   for (const file of fileList) form.append("files", file);
   const res = await fetch(`${API_BASE}/upload`, { method: "POST", body: form });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`${res.status} ${res.statusText}: ${text}`);
-  }
+  if (!res.ok) throw await errorFrom(res);
   return res.json();
 }
 
 export async function deleteFile(filename) {
   const res = await fetch(`${API_BASE}/files/${encodeURIComponent(filename)}`, { method: "DELETE" });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`${res.status} ${res.statusText}: ${text}`);
-  }
+  if (!res.ok) throw await errorFrom(res);
   return res.json();
 }
 
@@ -76,16 +89,7 @@ async function jsonRequest(path, method, body) {
     headers: { "Content-Type": "application/json" },
     body: body != null ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    let detail = text;
-    try {
-      detail = JSON.parse(text).detail || text;
-    } catch {
-      // not JSON, use raw text
-    }
-    throw new Error(detail || `${res.status} ${res.statusText}`);
-  }
+  if (!res.ok) throw await errorFrom(res);
   return res.json();
 }
 

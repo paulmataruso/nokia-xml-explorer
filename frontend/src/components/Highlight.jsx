@@ -24,10 +24,10 @@ export function highlightSegments(text, query) {
 /** Renders `text` with every case-insensitive occurrence of `query` wrapped
  * in <mark>. Passes `text` through unchanged (as a single span) when there's
  * no query. */
-export function Highlight({ text, query, className }) {
+export function Highlight({ text, query, className, title }) {
   const segments = highlightSegments(text, query);
   return (
-    <span className={className}>
+    <span className={className} title={title}>
       {segments.map((s, i) =>
         s.match ? <mark key={i}>{s.text}</mark> : <React.Fragment key={i}>{s.text}</React.Fragment>
       )}

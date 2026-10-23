@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   listFiles,
   getFileTree,
@@ -16,33 +16,36 @@ import {
   deleteObject,
   deleteObjectParam,
   renameObject,
+  downloadUrl,
 } from "./api.js";
 import { TreeView } from "./components/TreeView.jsx";
 import { ExplainPanel } from "./components/ExplainPanel.jsx";
 import { RawXmlView } from "./components/RawXmlView.jsx";
 import { Resizer } from "./components/Resizer.jsx";
-import { UploadCard } from "./components/UploadCard.jsx";
-import { HistoryPanel } from "./components/HistoryPanel.jsx";
 import { AddObjectModal } from "./components/AddObjectModal.jsx";
 import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
 import { ToastStack } from "./components/Toast.jsx";
 import { SiteManagementModal } from "./components/SiteManagementModal.jsx";
-import { VersionFilter, versionKey } from "./components/VersionFilter.jsx";
-import { FileMeta } from "./components/FileMeta.jsx";
-import { FileSection } from "./components/FileSection.jsx";
+import { versionKey } from "./components/VersionFilter.jsx";
+import { FileSidebar } from "./components/FileSidebar.jsx";
+import { FileHeader } from "./components/FileHeader.jsx";
+import { Icon } from "./components/Icon.jsx";
+import { ThemeSwitcher, THEMES } from "./components/ThemeSwitcher.jsx";
+import { Wordmark } from "./components/Wordmark.jsx";
 import { ConfirmDialog } from "./components/ConfirmDialog.jsx";
 import { PromptDialog } from "./components/PromptDialog.jsx";
 import { filterTree, collectExpandableIds, clamp } from "./utils.js";
-import { findPath, findPathInForest, findNodeInForest, collectRawMatches } from "./rawTreeUtils.js";
+import {
+  findPath,
+  findPathInForest,
+  findNodeInForest,
+  findNodePathInForest,
+  collectRawMatches,
+} from "./rawTreeUtils.js";
+import { usePersistentState } from "./usePersistentState.js";
 
 const COLLAPSED_SECTIONS_KEY = "nokiaXmlExplorer.collapsedFileSections";
-
-function formatBytes(n) {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-  return `${(n / 1024 / 1024).toFixed(2)} MB`;
-}
 
 // Raw-XML-only wrapper elements (the <raml> root and <header> container) have
 // no single corresponding node in the logical (distName) tree -- clicking
@@ -52,10 +55,27 @@ const RAW_TO_LOGICAL_ALIAS = {
   "fileinfo-header": "fileinfo",
 };
 
-const DEFAULT_SIDEBAR_WIDTH = 280;
-const DEFAULT_EXPLAIN_WIDTH = 400;
-const DEFAULT_SPLIT_WIDTH = 480;
-const DEFAULT_SPLIT_HEIGHT = 320;
+// Side panes start narrower on laptop-class windows so the workspace keeps
+// room for the tree's value column; once dragged, the user's width wins.
+const ROOMY_WINDOW = typeof window === "undefined" || window.innerWidth >= 1600;
+const DEFAULT_SIDEBAR_WIDTH = ROOMY_WINDOW ? 280 : 248;
+const DEFAULT_EXPLAIN_WIDTH = ROOMY_WINDOW ? 380 : 320;
+// Share of the split given to the reconstructed tree (the primary pane);
+// raw XML gets the rest. Stored as a fraction so it holds across window sizes.
+const DEFAULT_SPLIT_FRACTION = 0.55;
+
+/**
+ * A callback whose identity never changes but always runs the latest
+ * version of `fn`. The tree and raw rows are memoized (they skip
+ * re-rendering unless something on their own lineage changed); handing
+ * them freshly-created handlers on every App render would defeat that, and
+ * handing them stale ones would act on old state.
+ */
+function useStableCallback(fn) {
+  const ref = useRef(fn);
+  ref.current = fn;
+  return useCallback((...args) => ref.current(...args), []);
+}
 
 export default function App() {
   const [files, setFiles] = useState([]);
@@ -95,23 +115,36 @@ export default function App() {
       }
       return next;
     });
-  const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [explainWidth, setExplainWidth] = useState(DEFAULT_EXPLAIN_WIDTH);
-  const [explainCollapsed, setExplainCollapsed] = useState(false);
-  const [highlightOfficial, setHighlightOfficial] = useState(true);
 
-  // --- Raw XML side-by-side view ---
-  const [showRawView, setShowRawView] = useState(true);
+  // --- Workspace layout: remembered per browser (usePersistentState), so
+  // the panes come back the way they were left. ---
+  const [sidebarWidth, setSidebarWidth] = usePersistentState("sidebarWidth", DEFAULT_SIDEBAR_WIDTH);
+  const [sidebarCollapsed, setSidebarCollapsed] = usePersistentState("sidebarCollapsed", false);
+  const [explainWidth, setExplainWidth] = usePersistentState("explainWidth", DEFAULT_EXPLAIN_WIDTH);
+  const [explainCollapsed, setExplainCollapsed] = usePersistentState("explainCollapsed", false);
+  const [highlightOfficial, setHighlightOfficial] = usePersistentState("highlightOfficial", true);
+  // Colour theme (see styles.css); index.html applies the saved one before
+  // first paint so a reload never flashes the default.
+  const [theme, setTheme] = usePersistentState("theme", "night");
+  useEffect(() => {
+    document.documentElement.dataset.theme = THEMES.some((t) => t.id === theme) ? theme : "night";
+  }, [theme]);
+
+  // --- Raw XML split view ---
+  const [showRawView, setShowRawView] = usePersistentState("showRawView", true);
   const [rawTree, setRawTree] = useState(null);
   const [rawLoading, setRawLoading] = useState(false);
   const [rawError, setRawError] = useState(null);
   const [rawExpanded, setRawExpanded] = useState(() => new Set());
   const [rawQuery, setRawQuery] = useState("");
   const [rawMatchIndex, setRawMatchIndex] = useState(0);
-  const [rawLayout, setRawLayout] = useState("stacked"); // "side" | "stacked" -- "stacked" == horizontal split (top/bottom)
-  const [splitWidth, setSplitWidth] = useState(DEFAULT_SPLIT_WIDTH);
-  const [splitHeight, setSplitHeight] = useState(DEFAULT_SPLIT_HEIGHT);
+  // "stacked" == horizontal split (tree on top, raw below) -- the default;
+  // "side" == vertical split.
+  const [rawLayout, setRawLayout] = usePersistentState("rawLayout", "stacked");
+  const [splitFraction, setSplitFraction] = usePersistentState("splitFraction", {
+    stacked: DEFAULT_SPLIT_FRACTION,
+    side: DEFAULT_SPLIT_FRACTION,
+  });
 
   // --- Shared cross-highlight target: whichever node id was last clicked in
   // EITHER the logical tree or the raw XML tree. Both panes watch this to
@@ -122,8 +155,10 @@ export default function App() {
 
   // --- Editing + version history ---
   const [editMode, setEditMode] = useState(false);
+  // Node ids changed in this session (by inline edit or Required Fields);
+  // their rows stay marked so nothing changes silently. Cleared per file.
+  const [editedIds, setEditedIds] = useState(() => new Set());
   const [duplicating, setDuplicating] = useState(false);
-  const [duplicateError, setDuplicateError] = useState(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [snapshots, setSnapshots] = useState([]);
   const [snapshotsLoading, setSnapshotsLoading] = useState(false);
@@ -131,16 +166,22 @@ export default function App() {
   const [restoringId, setRestoringId] = useState(null);
   const [addObjectOpen, setAddObjectOpen] = useState(false);
   const [generatorWarning, setGeneratorWarning] = useState(null);
-  const [missingRequired, setMissingRequired] = useState([]);
+  const [missingRequired, setMissingRequired] = useState(null);
   const [requiredFieldsOpen, setRequiredFieldsOpen] = useState(false);
-  const [contextMenu, setContextMenu] = useState(null); // { x, y, node }
+  const [contextMenu, setContextMenu] = useState(null); // { x, y, items }
   const [toasts, setToasts] = useState([]);
   const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, confirmLabel, danger, onConfirm }
   const [promptDialog, setPromptDialog] = useState(null); // { title, message, initialValue, placeholder, confirmLabel, onConfirm }
   const [siteManagementOpen, setSiteManagementOpen] = useState(false);
 
+  // The tree's value column ("split-flap board"): wide enough for this
+  // file's longest label at its depth, so values line up on every row; the
+  // rare label longer than the cap is ellipsized (full name on hover, in the
+  // Trace address and in the Explanation).
+  const [labelCol, setLabelCol] = useState(null);
   const treeScrollRef = useRef(null);
   const rawScrollRef = useRef(null);
+  const splitRef = useRef(null);
 
   const refreshFiles = () =>
     listFiles()
@@ -169,8 +210,9 @@ export default function App() {
     setRawFocusMissing(false);
     setHistoryOpen(false);
     setSnapshots([]);
-    setDuplicateError(null);
     setGeneratorWarning(null);
+    setMissingRequired(null);
+    setEditedIds(new Set());
     getFileTree(selectedFile)
       .then((t) => {
         setTree(t);
@@ -179,6 +221,34 @@ export default function App() {
       .catch((e) => setTreeError(String(e.message || e)))
       .finally(() => setLoadingTree(false));
   }, [selectedFile]);
+
+  useEffect(() => {
+    if (!tree) return;
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (cancelled) return;
+      const root = getComputedStyle(document.documentElement);
+      const size = parseFloat(root.fontSize) * 0.8125; // --fs-data
+      const family = root.getPropertyValue("--font-mono");
+      const ctx = document.createElement("canvas").getContext("2d");
+      const fonts = { 400: `400 ${size}px ${family}`, 600: `600 ${size}px ${family}` };
+      let widest = 0;
+      const walk = (nodes, depth) => {
+        for (const n of nodes) {
+          ctx.font = n.kind === "mo" || n.kind === "fileinfo" ? fonts[600] : fonts[400];
+          // + table icon for lists; depth indent; delete button and gap
+          const w = ctx.measureText(n.label || "").width + depth * 16 + (n.kind === "list" ? 18 : 0) + 30;
+          if (w > widest) widest = w;
+          if (n.children) walk(n.children, depth + 1);
+        }
+      };
+      walk(tree.children, 0);
+      setLabelCol(Math.round(Math.min(Math.max(widest + 12, 240), 560)));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [tree]);
 
   // Fetch the raw tree lazily: only once the user actually asks to see it
   // (or when they switch files while it's already open).
@@ -204,12 +274,18 @@ export default function App() {
     if (!focusId) return;
 
     if (tree) {
-      const path = findPathInForest(tree.children, focusId);
-      if (path) {
+      const nodePath = findNodePathInForest(tree.children, focusId);
+      if (nodePath) {
         setLogicalFocusMissing(false);
+        // Open every ancestor -- not the target itself: a click on a tree
+        // row toggles that row, and the pane a selection came FROM is left
+        // to its own toggle (see expandCounterpart). Same Set back when
+        // nothing needs opening: a new Set re-renders every row in the tree.
+        const toOpen = nodePath.slice(0, -1).map((n) => n.id);
         setExpanded((prev) => {
+          if (toOpen.every((id) => prev.has(id))) return prev;
           const next = new Set(prev);
-          path.forEach((id) => next.add(id));
+          toOpen.forEach((id) => next.add(id));
           return next;
         });
         scrollToDataId(treeScrollRef.current, "data-tree-id", focusId);
@@ -222,9 +298,11 @@ export default function App() {
       const rpath = findPath(rawTree.root, focusId);
       if (rpath) {
         setRawFocusMissing(false);
+        const toOpen = rpath.slice(0, -1);
         setRawExpanded((prev) => {
+          if (toOpen.every((id) => prev.has(id))) return prev;
           const next = new Set(prev);
-          rpath.forEach((id) => next.add(id));
+          toOpen.forEach((id) => next.add(id));
           return next;
         });
         scrollToDataId(rawScrollRef.current, "data-raw-id", focusId);
@@ -240,16 +318,58 @@ export default function App() {
     return filterTree(tree.children, query);
   }, [tree, query]);
 
+  // Trace: the lineage of whatever row is focused (from either pane), root
+  // first. Drives the file header's address and the lit guides in the tree.
+  const traceId = focusId || selectedNode?.id || null;
+  const tracePath = useMemo(
+    () => (tree && traceId ? findNodePathInForest(tree.children, traceId) : null),
+    [tree, traceId]
+  );
+
+  // The tree's single keyboard tab stop (roving tabindex): the focused or
+  // selected row while it's actually rendered -- every ancestor open, or a
+  // search is showing everything -- otherwise the first row, so Tab can
+  // always get into the tree.
+  const tabbableId = useMemo(() => {
+    const id = focusId || selectedNode?.id;
+    if (id) {
+      const path = findPathInForest(displayNodes, id);
+      if (path && (query.trim() || path.slice(0, -1).every((a) => expanded.has(a)))) return id;
+    }
+    return displayNodes[0]?.id ?? null;
+  }, [displayNodes, focusId, selectedNode, expanded, query]);
+
+  // The raw pane's tab stop, by the same rule: the focused line while it's
+  // rendered, otherwise the document's first line.
+  const rawTabbableId = useMemo(() => {
+    if (!rawTree) return null;
+    if (focusId) {
+      const path = findPath(rawTree.root, focusId);
+      if (path && path.slice(0, -1).every((a) => rawExpanded.has(a))) return focusId;
+    }
+    return rawTree.root.id;
+  }, [rawTree, focusId, rawExpanded]);
+
   const rawMatches = useMemo(() => {
     if (!rawTree || !rawQuery.trim()) return [];
     return collectRawMatches(rawTree.root, rawQuery);
   }, [rawTree, rawQuery]);
 
+  // Find-in-raw navigation behaves like clicking the match: it moves the
+  // shared focus (scroll + Trace) and explains the matching node, so the
+  // address and the Explanation never describe two different rows.
+  const focusRawMatch = (id) => {
+    const logicalId = RAW_TO_LOGICAL_ALIAS[id] || id;
+    setFocusId(logicalId);
+    const logicalNode = tree ? findNodeInForest(tree.children, logicalId) : null;
+    if (logicalNode) setSelectedNode(logicalNode);
+  };
+
   // Jump to the first match whenever the raw search text changes.
   useEffect(() => {
     if (rawQuery.trim() && rawMatches.length > 0) {
       setRawMatchIndex(0);
-      setFocusId(rawMatches[0]);
+      focusRawMatch(rawMatches[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawQuery, rawTree]);
@@ -258,7 +378,7 @@ export default function App() {
     if (rawMatches.length === 0) return;
     const next = (rawMatchIndex + delta + rawMatches.length) % rawMatches.length;
     setRawMatchIndex(next);
-    setFocusId(rawMatches[next]);
+    focusRawMatch(rawMatches[next]);
   };
 
   const toggle = (id) => {
@@ -299,14 +419,26 @@ export default function App() {
     });
   };
 
-  const addToast = (message, type = "info", ttlMs = 6000) => {
+  const addToast = (message, type = "info", ttlMs = 6000, action = null) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    setToasts((prev) => [...prev, { id, message, type }]);
+    setToasts((prev) => [...prev, { id, message, type, action }]);
     if (ttlMs) setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), ttlMs);
   };
   const dismissToast = (id) => setToasts((prev) => prev.filter((t) => t.id !== id));
 
-  const handleActivate = (node) => setFocusId(node.id);
+  // A selection made in one pane also opens the matching node in the OTHER
+  // pane (click a managedObject in raw XML and its parameters show in the
+  // tree, and vice versa). Only the other pane: expanding the originating
+  // pane's own target here would fight that row's click toggle.
+  const expandCounterpart = (setter, node) => {
+    if (!node?.children?.length) return;
+    setter((prev) => (prev.has(node.id) ? prev : new Set(prev).add(node.id)));
+  };
+
+  const handleActivate = (node) => {
+    setFocusId(node.id);
+    if (showRawView && rawTree) expandCounterpart(setRawExpanded, findNodeInForest([rawTree.root], node.id));
+  };
   // Raw-pane nodes are a different shape (tag/attrs/text) than logical-tree
   // nodes (kind/class/value) that ExplainPanel knows how to render -- both
   // trees share the same id scheme (see parser.py), so a click in the raw
@@ -316,12 +448,20 @@ export default function App() {
     const logicalId = RAW_TO_LOGICAL_ALIAS[node.id] || node.id;
     setFocusId(logicalId);
     const logicalNode = tree ? findNodeInForest(tree.children, logicalId) : null;
-    if (logicalNode) handleSelectExplain(logicalNode);
+    if (logicalNode) {
+      handleSelectExplain(logicalNode);
+      expandCounterpart(setExpanded, logicalNode);
+    }
   };
 
-  const handleSelectExplain = (node) => {
-    setSelectedNode(node);
-    setExplainCollapsed(false);
+  // Selecting a row never re-opens a collapsed Explanation pane: collapsing
+  // it is a deliberate "give me the space", and the pane used to spring
+  // back open on the very next click.
+  const handleSelectExplain = (node) => setSelectedNode(node);
+
+  const handleTraceSelect = (node) => {
+    setFocusId(node.id);
+    handleSelectExplain(node);
   };
 
   const expandAll = () => {
@@ -336,17 +476,60 @@ export default function App() {
   };
   const collapseAllRaw = () => setRawExpanded(new Set());
 
-  const handleDelete = (e, filename) => {
-    e.stopPropagation();
-    deleteFile(filename)
-      .then(() => {
-        refreshFiles();
-        if (selectedFile === filename) {
-          setSelectedFile(null);
-          setTree(null);
-        }
-      })
-      .catch((err) => setFilesError(String(err.message || err)));
+  // Deleting an upload also removes its snapshot history on the server, so
+  // it's the one action here that can't be undone -- always confirm, and
+  // say exactly what goes with it.
+  const handleDeleteFile = (filename) => {
+    listSnapshots(filename)
+      .catch(() => [])
+      .then((snaps) => {
+        const n = snaps.length;
+        setConfirmDialog({
+          title: "Delete file",
+          message:
+            `Delete "${filename}" from Your uploads?` +
+            (n > 0 ? ` Its ${n} saved snapshot${n === 1 ? "" : "s"} will be deleted too.` : "") +
+            " This can't be undone.",
+          confirmLabel: "Delete file",
+          danger: true,
+          onConfirm: () => {
+            setConfirmDialog(null);
+            deleteFile(filename)
+              .then(() => {
+                refreshFiles();
+                if (selectedFile === filename) {
+                  setSelectedFile(null);
+                  setTree(null);
+                }
+                addToast(`Deleted ${filename}.`, "success");
+              })
+              .catch((err) => addToast(String(err.message || err), "error"));
+          },
+        });
+      });
+  };
+
+  const handleFileMenu = (e, file) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect?.();
+    const fromButton = e.type === "click" && rect;
+    setContextMenu({
+      x: fromButton ? rect.right : e.clientX,
+      y: fromButton ? rect.bottom + 4 : e.clientY,
+      items: [
+        { type: "label", label: file.name },
+        {
+          label: "Download",
+          onClick: () => {
+            const a = document.createElement("a");
+            a.href = downloadUrl(file.name);
+            a.download = file.name;
+            a.click();
+          },
+        },
+        { label: "Delete file…", danger: true, onClick: () => handleDeleteFile(file.name) },
+      ],
+    });
   };
 
   const visibleFiles = useMemo(() => {
@@ -370,32 +553,87 @@ export default function App() {
   const canEditNow = editMode && isEditableFile;
 
   // Re-derives whenever `tree` changes -- which every edit/add already
-  // triggers via refetchAfterEdit -- so the red-flag count and the
+  // triggers via refetchAfterEdit -- so the header's completeness and the
   // Required Fields table both stay current without a separate refresh call
-  // at every edit site.
+  // at every edit site. Fetched for read-only files too: "is this export
+  // complete?" is part of understanding a file, not only of editing one.
   useEffect(() => {
-    if (!selectedFile || !isEditableFile) {
-      setMissingRequired([]);
-      return;
-    }
+    if (!selectedFile || !tree) return;
     getMissingRequired(selectedFile)
       .then(setMissingRequired)
       .catch(() => setMissingRequired([]));
-  }, [selectedFile, isEditableFile, tree]);
+  }, [selectedFile, tree]);
+
+  // Gaps = Mandatory and empty, for parameters actually seen set in real
+  // files; unverified = documented as Mandatory but never observed in any
+  // sample file, so the docs may not reflect what a real export needs.
+  const completeness = useMemo(() => {
+    if (missingRequired == null) return { loading: true, gaps: 0, unverified: 0 };
+    const unverified = missingRequired.filter((r) => r.observed === false).length;
+    return { loading: false, gaps: missingRequired.length - unverified, unverified };
+  }, [missingRequired]);
 
   const refetchAfterEdit = () =>
     getFileTree(selectedFile).then((newTree) => {
       setTree(newTree);
       // selectedNode is a frozen object reference from whenever it was
-      // double-clicked -- without re-pointing it at the fresh copy, the
-      // explain panel would keep showing a stale snapshot (e.g. missing a
+      // clicked -- without re-pointing it at the fresh copy, the explain
+      // panel would keep showing a stale snapshot (e.g. missing a
       // parameter that was just added) even though the tree underneath it
       // has already updated.
       setSelectedNode((prev) => (prev ? findNodeInForest(newTree.children, prev.id) || prev : prev));
       return showRawView ? getFileRawTree(selectedFile).then(setRawTree) : Promise.resolve();
     });
 
-  const handleSaveEdit = (nodeId, value) => updateParam(selectedFile, nodeId, value).then(refetchAfterEdit);
+  // Every mutating endpoint snapshots the file first and returns that
+  // snapshot's id, so "Undo" restores exactly the state before this change
+  // (and the restore is itself snapshotted, so Undo can be undone from
+  // History).
+  const undoTo = (snapshotId, what, nodeIds = []) =>
+    restoreSnapshot(selectedFile, snapshotId)
+      .then(() => {
+        setEditedIds((prev) => {
+          const next = new Set(prev);
+          nodeIds.forEach((id) => next.delete(id));
+          return next;
+        });
+        return refetchAfterEdit();
+      })
+      .then(() => addToast(`Undone: ${what}`, "success"))
+      .catch((e) => addToast(`Couldn't undo: ${String(e.message || e)}`, "error", 10000));
+
+  const confirmChange = (res, message, nodeIds = []) =>
+    addToast(
+      message,
+      "success",
+      9000,
+      res?.snapshot ? { label: "Undo", icon: "undo", onClick: () => undoTo(res.snapshot, message, nodeIds) } : null
+    );
+
+  const markEdited = (ids) =>
+    setEditedIds((prev) => {
+      const next = new Set(prev);
+      ids.forEach((id) => next.add(id));
+      return next;
+    });
+
+  const handleSaveEdit = (nodeId, value) =>
+    updateParam(selectedFile, nodeId, value).then((res) => {
+      const [owner, name] = nodeId.split("::p::");
+      markEdited([nodeId]);
+      return refetchAfterEdit().then(() =>
+        confirmChange(res, `Saved ${name} = ${value === "" ? "(empty)" : value} on ${owner.split("/").pop()}.`, [nodeId])
+      );
+    });
+
+  // A parameter set from Required Fields or "+ Add parameter".
+  const handleParamSet = (res, distName, paramName, value) => {
+    const nodeId = `${distName}::p::${paramName}`;
+    markEdited([nodeId]);
+    return refetchAfterEdit().then(() =>
+      confirmChange(res, `Set ${paramName} = ${value === "" ? "(empty)" : value} on ${distName.split("/").pop()}.`, [nodeId])
+    );
+  };
 
   // node comes from either TreeView ("mo"/kind-based) or RawXmlView
   // ("managedObject"/tag-based) -- both share the same id scheme (id ==
@@ -420,8 +658,12 @@ export default function App() {
             const deleted = new Set(res.deleted || [distName]);
             if (selectedNode && deleted.has(selectedNode.distName || selectedNode.id)) setSelectedNode(null);
             if (focusId && deleted.has(focusId)) setFocusId(null);
-            addToast(deleted.size > 1 ? `Deleted ${label} and ${deleted.size - 1} nested object(s).` : `Deleted ${label}.`, "success");
-            return refetchAfterEdit();
+            return refetchAfterEdit().then(() =>
+              confirmChange(
+                res,
+                deleted.size > 1 ? `Deleted ${label} and ${deleted.size - 1} nested object(s).` : `Deleted ${label}.`
+              )
+            );
           })
           .catch((e) => addToast(String(e.message || e), "error"));
       },
@@ -433,7 +675,9 @@ export default function App() {
     const paramName = node.label || node.attrs?.name;
     if (!distName || !paramName) return;
     deleteObjectParam(selectedFile, distName, paramName)
-      .then(() => refetchAfterEdit())
+      .then((res) =>
+        refetchAfterEdit().then(() => confirmChange(res, `Deleted ${paramName} from ${distName.split("/").pop()}.`))
+      )
       .catch((e) => addToast(String(e.message || e), "error"));
   };
 
@@ -456,12 +700,11 @@ export default function App() {
         setPromptDialog(null);
         if (newId === currentId) return;
         renameObject(selectedFile, distName, newId)
-          .then(() => {
+          .then((res) => {
             const isStale = (id) => id === distName || (id || "").startsWith(distName + "/");
             if (selectedNode && (isStale(selectedNode.distName) || isStale(selectedNode.id))) setSelectedNode(null);
             if (focusId && isStale(focusId)) setFocusId(null);
-            addToast(`Renamed to ${shortClass}-${newId}.`, "success");
-            return refetchAfterEdit();
+            return refetchAfterEdit().then(() => confirmChange(res, `Renamed ${label} to ${shortClass}-${newId}.`));
           })
           .catch((e) => addToast(String(e.message || e), "error"));
       },
@@ -479,12 +722,10 @@ export default function App() {
     if (!isObject && !isParam) return;
     e.preventDefault();
     e.stopPropagation();
-    setContextMenu({ x: e.clientX, y: e.clientY, node });
+    setContextMenu({ x: e.clientX, y: e.clientY, items: nodeMenuItems(node) });
   };
 
-  const contextMenuItems = useMemo(() => {
-    if (!contextMenu) return [];
-    const node = contextMenu.node;
+  const nodeMenuItems = (node) => {
     const isObject = node.kind === "mo" || node.tag === "managedObject";
     if (isObject) {
       return [
@@ -515,15 +756,22 @@ export default function App() {
         onClick: () => handleDeleteParam(node),
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextMenu]);
+  };
 
-  const handleCreateEditableCopy = () => {
+  // Read-only sources (scp/, example/) are never edited in place: "Edit a
+  // copy" duplicates the file into Your uploads, opens the copy, and turns
+  // editing on, in one step.
+  const handleEditCopy = () => {
     setDuplicating(true);
-    setDuplicateError(null);
     duplicateToUploads(selectedFile)
-      .then((res) => refreshFiles().then(() => setSelectedFile(res.name)))
-      .catch((e) => setDuplicateError(String(e.message || e)))
+      .then((res) =>
+        refreshFiles().then(() => {
+          setSelectedFile(res.name);
+          setEditMode(true);
+          addToast(`Editing a copy: ${res.name}. The original stays untouched.`, "success");
+        })
+      )
+      .catch((e) => addToast(`Couldn't make an editable copy: ${String(e.message || e)}`, "error", 10000))
       .finally(() => setDuplicating(false));
   };
 
@@ -537,7 +785,7 @@ export default function App() {
         setPromptDialog(null);
         createNewFile(name)
           .then((res) => refreshFiles().then(() => setSelectedFile(res.name)))
-          .catch((e) => setFilesError(String(e.message || e)));
+          .catch((e) => addToast(String(e.message || e), "error"));
       },
     });
   };
@@ -577,7 +825,10 @@ export default function App() {
       );
     }
     setGeneratorWarning(messages.length > 0 ? messages.join(" ") : null);
-    refetchAfterEdit().then(() => setFocusId(result.distName));
+    refetchAfterEdit().then(() => {
+      setFocusId(result.distName);
+      confirmChange(result, `Added ${result.distName.split("/").pop()}.`);
+    });
   };
 
   const toggleHistory = () => {
@@ -596,415 +847,392 @@ export default function App() {
   const handleRestore = (snapshotId) => {
     setRestoringId(snapshotId);
     restoreSnapshot(selectedFile, snapshotId)
-      .then(() => refetchAfterEdit())
+      .then((res) =>
+        refetchAfterEdit().then(() => confirmChange(res, "Restored an earlier version of this file."))
+      )
       .then(() => listSnapshots(selectedFile))
       .then(setSnapshots)
       .catch((e) => setSnapshotsError(String(e.message || e)))
       .finally(() => setRestoringId(null));
   };
 
+  // Stable identities for everything the memoized tree/raw rows receive.
+  const onTreeToggle = useStableCallback(toggle);
+  const onTreeToggleSubtree = useStableCallback(toggleSubtree);
+  const onTreeSelect = useStableCallback(handleSelectExplain);
+  const onTreeActivate = useStableCallback(handleActivate);
+  const onRawToggle = useStableCallback(toggleRaw);
+  const onRawToggleSubtree = useStableCallback(toggleRawSubtree);
+  const onRawActivate = useStableCallback(handleRawActivate);
+  const onSaveEdit = useStableCallback(handleSaveEdit);
+  const onDeleteObject = useStableCallback(handleDeleteObject);
+  const onDeleteParam = useStableCallback(handleDeleteParam);
+  const onRowContextMenu = useStableCallback(handleContextMenu);
+
+  const fraction = splitFraction[rawLayout] ?? DEFAULT_SPLIT_FRACTION;
+  const handleSplitDrag = (d) => {
+    const el = splitRef.current;
+    if (!el) return;
+    const size = rawLayout === "stacked" ? el.clientHeight : el.clientWidth;
+    if (!size) return;
+    setSplitFraction((prev) => ({
+      ...prev,
+      [rawLayout]: clamp((prev[rawLayout] ?? DEFAULT_SPLIT_FRACTION) + d / size, 0.15, 0.85),
+    }));
+  };
+
   return (
     <div className="app">
-      <header className="topbar">
-        <h1>Nokia AirScale / Flexi Zone XML Explorer</h1>
-        <button className="site-mgmt-link" onClick={() => setSiteManagementOpen(true)}>
-          🗂 Site Management
-        </button>
-        <VersionFilter files={files} selected={versionFilter} onChange={setVersionFilter} />
-        {tree && (
-          <div className="stats">
-            {tree.stats.managedObjects.toLocaleString()} objects · {tree.stats.parameters.toLocaleString()} parameters
-          </div>
-        )}
+      <header className="appbar">
+        <Wordmark />
+        <div className="appbar-actions">
+          <ThemeSwitcher value={theme} onChange={setTheme} />
+          <button className="btn btn-quiet" onClick={() => setSiteManagementOpen(true)}>
+            <Icon name="folders" />
+            Site Management
+          </button>
+        </div>
       </header>
 
       <div className="body">
         {sidebarCollapsed ? (
-          <button
-            className="pane-expand-btn"
-            onClick={() => setSidebarCollapsed(false)}
-            title="Show file list"
-          >
-            ▶
+          <button className="pane-rail" onClick={() => setSidebarCollapsed(false)} aria-label="Show file list">
+            <Icon name="panel-left" />
+            <span className="pane-rail-label">Files</span>
           </button>
         ) : (
           <>
-            <aside className="sidebar" style={{ width: sidebarWidth }}>
-              <div className="pane-header">
-                <span>Files</span>
-                <button className="collapse-btn" onClick={() => setSidebarCollapsed(true)} title="Collapse file list">
-                  ◀
-                </button>
-              </div>
-
-              <button className="btn new-file-btn" onClick={handleNewFile} title="Start a brand-new commissioning file">
-                + New file
-              </button>
-
-              <UploadCard onUploaded={refreshFiles} />
-
-              <input
-                className="file-filter"
-                placeholder="Filter files…"
-                value={fileFilter}
-                onChange={(e) => setFileFilter(e.target.value)}
-              />
-              {filesError && <div className="placeholder error">{filesError}</div>}
-
-              {uploadedFiles.length > 0 && (
-                <FileSection
-                  className="file-section-uploads"
-                  listClassName="file-list-uploads"
-                  icon="📤"
-                  title="Your uploads"
-                  count={uploadedFiles.length}
-                  collapsed={collapsedSections.has("upload")}
-                  onToggle={() => toggleSection("upload")}
-                >
-                  {uploadedFiles.map((f) => (
-                    <li
-                      key={f.name}
-                      className={"file-item" + (selectedFile === f.name ? " selected" : "")}
-                      onClick={() => setSelectedFile(f.name)}
-                      title={`${f.name} (${formatBytes(f.sizeBytes)})`}
-                    >
-                      <span className="file-main">
-                        <span className="file-name">{f.name}</span>
-                        <FileMeta file={f} />
-                      </span>
-                      <button
-                        className="delete-btn"
-                        onClick={(e) => handleDelete(e, f.name)}
-                        title="Delete this upload"
-                      >
-                        ×
-                      </button>
-                    </li>
-                  ))}
-                </FileSection>
-              )}
-
-              <FileSection
-                className="file-section-scp"
-                icon="📡"
-                title="Commissioning files"
-                count={scpFiles.length}
-                collapsed={collapsedSections.has("scp")}
-                onToggle={() => toggleSection("scp")}
-              >
-                {scpFiles.map((f) => (
-                  <li
-                    key={f.name}
-                    className={
-                      "file-item" +
-                      (selectedFile === f.name ? " selected" : "") +
-                      (!f.supported ? " unsupported" : "")
-                    }
-                    onClick={() => f.supported && setSelectedFile(f.name)}
-                    title={f.supported ? `${f.name} (${formatBytes(f.sizeBytes)})` : "Unsupported file type — not a RAML XML file"}
-                  >
-                    <span className="file-main">
-                      <span className="file-name">{f.name}</span>
-                      <FileMeta file={f} />
-                    </span>
-                    <span className="file-size">{formatBytes(f.sizeBytes)}</span>
-                  </li>
-                ))}
-              </FileSection>
-
-              {exampleFiles.length > 0 && (
-                <FileSection
-                  className="file-section-example"
-                  icon="📚"
-                  title="Example files"
-                  count={exampleFiles.length}
-                  collapsed={collapsedSections.has("example")}
-                  onToggle={() => toggleSection("example")}
-                >
-                  {exampleFiles.map((f) => (
-                    <li
-                      key={f.name}
-                      className={
-                        "file-item" +
-                        (selectedFile === f.name ? " selected" : "") +
-                        (!f.supported ? " unsupported" : "")
-                      }
-                      onClick={() => f.supported && setSelectedFile(f.name)}
-                      title={
-                        f.supported
-                          ? `${f.name} (${formatBytes(f.sizeBytes)}) — bundled sample file`
-                          : "Unsupported file type — not a RAML XML file"
-                      }
-                    >
-                      <span className="file-main">
-                        <span className="file-name">{f.name}</span>
-                        <FileMeta file={f} />
-                      </span>
-                      <span className="file-size">{formatBytes(f.sizeBytes)}</span>
-                    </li>
-                  ))}
-                </FileSection>
-              )}
-            </aside>
-
+            <FileSidebar
+              width={sidebarWidth}
+              allFiles={files}
+              uploadedFiles={uploadedFiles}
+              scpFiles={scpFiles}
+              exampleFiles={exampleFiles}
+              selectedFile={selectedFile}
+              onSelectFile={setSelectedFile}
+              fileFilter={fileFilter}
+              onFileFilterChange={setFileFilter}
+              versionFilter={versionFilter}
+              onVersionFilterChange={setVersionFilter}
+              collapsedSections={collapsedSections}
+              onToggleSection={toggleSection}
+              onNewFile={handleNewFile}
+              onUploaded={(single) =>
+                refreshFiles().then(() => {
+                  if (single) setSelectedFile(single);
+                })
+              }
+              onFileMenu={handleFileMenu}
+              filesError={filesError}
+              addToast={addToast}
+              onCollapse={() => setSidebarCollapsed(true)}
+            />
             <Resizer
               title="Drag to resize the file list"
-              onDrag={(dx) => setSidebarWidth((w) => clamp(w + dx, 160, 640))}
+              onDrag={(dx) => setSidebarWidth((w) => clamp(w + dx, 200, 640))}
             />
           </>
         )}
 
-        <main className="tree-pane">
+        <main className="workspace">
           {!selectedFile && (
-            <div className="placeholder">
-              <p>Select a commissioning XML file on the left to explore it, or upload your own.</p>
-              <p className="hint">
-                Click a row to expand/collapse it (and sync the raw XML view). Double-click any
-                object, parameter, or table row for a full explanation.
-              </p>
+            <div className="workspace-box">
+              <div className="workspace-empty">
+                <h1>Open a file to explore it</h1>
+                <p>
+                  Pick a commissioning file on the left, or drop your own .xml onto the file list. The file is
+                  rebuilt as its real object tree, with the raw XML kept in sync underneath.
+                </p>
+                <p>
+                  Click any object, parameter or table row to see what it means and where that explanation
+                  comes from.
+                </p>
+              </div>
             </div>
           )}
-          {selectedFile && (
+          {selectedFile && selectedFileInfo && (
             <>
-              <div className="toolbar">
-                <input
-                  className="search-box"
-                  placeholder="Search parameters, classes, or values in this file…"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+              <div className="workspace-head">
+                <FileHeader
+                  file={selectedFileInfo}
+                  stats={tree?.stats}
+                  tracePath={tracePath}
+                  onTraceSelect={handleTraceSelect}
+                  completeness={tree ? completeness : null}
+                  onOpenRequired={() => setRequiredFieldsOpen(true)}
+                  editable={isEditableFile}
+                  editMode={editMode}
+                  onToggleEdit={() => setEditMode((v) => !v)}
+                  onEditCopy={handleEditCopy}
+                  duplicating={duplicating}
+                  downloadHref={downloadUrl(selectedFile)}
+                  history={{
+                    open: historyOpen,
+                    toggle: toggleHistory,
+                    snapshots,
+                    loading: snapshotsLoading,
+                    error: snapshotsError,
+                    onRestore: handleRestore,
+                    restoringId,
+                  }}
                 />
-                <button className="btn" onClick={expandAll} title="Expand every node">
-                  Expand all
-                </button>
-                <button className="btn" onClick={collapseAll} title="Collapse every node">
-                  Collapse all
-                </button>
-                <button
-                  className={"btn toggle-raw-btn" + (showRawView ? " active" : "")}
-                  onClick={() => setShowRawView((v) => !v)}
-                  title="Show the file exactly as written, side by side"
-                >
-                  {showRawView ? "Hide Raw XML" : "Show Raw XML"}
-                </button>
-                <button
-                  className={"btn" + (editMode ? " active" : "")}
-                  onClick={() => setEditMode((v) => !v)}
-                  title="Click values in either pane to edit them"
-                >
-                  {editMode ? "Editing" : "Edit Mode"}
-                </button>
-                {isEditableFile && (
-                  <button className="btn" onClick={() => setAddObjectOpen(true)} title="Add a new managed object">
-                    + Add Object
-                  </button>
-                )}
-                {isEditableFile && (
-                  <button
-                    className={"btn" + (requiredFieldsOpen ? " active" : "")}
-                    onClick={() => setRequiredFieldsOpen(true)}
-                    title="Show every Mandatory parameter that still has no value"
-                  >
-                    Required Fields
-                    {missingRequired.length > 0 && (
-                      <span className="badge-count">{missingRequired.length}</span>
-                    )}
-                  </button>
-                )}
-                {isEditableFile && (
-                  <div className="history-wrap">
-                    <button
-                      className={"btn" + (historyOpen ? " active" : "")}
-                      onClick={toggleHistory}
-                      title="View and restore previous versions"
-                    >
-                      History
+
+                {generatorWarning && (
+                  <div className="notice is-note" role="status">
+                    <Icon name="info" />
+                    <span className="notice-text">{generatorWarning}</span>
+                    <button className="btn btn-quiet" onClick={() => setGeneratorWarning(null)}>
+                      Dismiss
                     </button>
-                    {historyOpen && (
-                      <HistoryPanel
-                        snapshots={snapshots}
-                        loading={snapshotsLoading}
-                        error={snapshotsError}
-                        onRestore={handleRestore}
-                        restoringId={restoringId}
-                      />
-                    )}
                   </div>
                 )}
-                <button
-                  className={"btn official-legend" + (highlightOfficial ? " active" : "")}
-                  onClick={() => setHighlightOfficial((v) => !v)}
-                  title="Toggle blue highlighting for rows sourced verbatim from Nokia's own official parameter dictionary, not researched/heuristic text"
-                >
-                  <span className="official-dot" /> Highlight Official
-                </button>
+
+                <div className="toolbar-wrap">
+                  <div className="toolbar" role="toolbar" aria-label="Tree view">
+                    <label className="input-with-icon toolbar-search">
+                      <Icon name="search" />
+                      <input
+                        className="input"
+                        placeholder="Search names, classes and values"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Escape" && setQuery("")}
+                        aria-label="Search this file's tree"
+                      />
+                      {query && (
+                        <button className="icon-btn input-clear" onClick={() => setQuery("")} aria-label="Clear search">
+                          <Icon name="x" />
+                        </button>
+                      )}
+                    </label>
+                    <button
+                      className="btn"
+                      onClick={expandAll}
+                      aria-label="Expand all"
+                      title="Expand every node"
+                    >
+                      <Icon name="expand-all" />
+                      <span className="btn-label">Expand all</span>
+                    </button>
+                    <button
+                      className="btn"
+                      onClick={collapseAll}
+                      aria-label="Collapse all"
+                      title="Collapse every node"
+                    >
+                      <Icon name="collapse-all" />
+                      <span className="btn-label">Collapse all</span>
+                    </button>
+                    <span className="toolbar-sep" aria-hidden="true" />
+                    <button
+                      className="btn btn-toggle"
+                      aria-pressed={showRawView}
+                      onClick={() => setShowRawView((v) => !v)}
+                      title="Show the file exactly as written, in sync with the tree"
+                    >
+                      <Icon name="layout-stacked" />
+                      Raw XML
+                    </button>
+                    <button
+                      className="btn btn-toggle"
+                      aria-pressed={highlightOfficial}
+                      onClick={() => setHighlightOfficial((v) => !v)}
+                      title="Tint rows whose explanation comes verbatim from Nokia's own parameter dictionary"
+                    >
+                      <span className="official-swatch" aria-hidden="true" />
+                      Official
+                    </button>
+                    {canEditNow && (
+                      <>
+                        <span className="toolbar-sep" aria-hidden="true" />
+                        <button className="btn" onClick={() => setAddObjectOpen(true)} title="Add a new managed object">
+                          <Icon name="plus" />
+                          Add object
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              {editMode && !isEditableFile && (
-                <div className="readonly-banner">
-                  <span>
-                    This is a read-only reference file — edits go to an editable copy instead.
-                  </span>
-                  <button className="btn" onClick={handleCreateEditableCopy} disabled={duplicating}>
-                    {duplicating ? "Copying…" : "Create editable copy"}
-                  </button>
-                  {duplicateError && <span className="edit-error-text">{duplicateError}</span>}
-                </div>
-              )}
-
-              {generatorWarning && (
-                <div className="readonly-banner">
-                  <span>{generatorWarning}</span>
-                  <button className="btn" onClick={() => setGeneratorWarning(null)}>
-                    Dismiss
-                  </button>
-                </div>
-              )}
-
-              {loadingTree && <div className="placeholder">Parsing {selectedFile}…</div>}
+              {loadingTree && <div className="workspace-status">Parsing {selectedFile}…</div>}
               {treeError && (
-                <div className="placeholder error">Failed to parse this file: {treeError}</div>
+                <div className="workspace-status is-error">Couldn't parse this file: {treeError}</div>
               )}
 
               {!loadingTree && !treeError && tree && (
                 <>
                   {kbError && (
-                    <div className="placeholder error">Failed to load knowledge base: {kbError}</div>
+                    <div className="workspace-status is-error">Couldn't load the knowledge base: {kbError}</div>
                   )}
-                  {!kbError && !kb && <div className="placeholder">Loading knowledge base…</div>}
+                  {!kbError && !kb && <div className="workspace-status">Loading knowledge base…</div>}
                   {!kbError && kb && (
-                    <div className={"split-container" + (showRawView && rawLayout === "stacked" ? " stacked" : "")}>
-                      <div
-                        className="split-left"
-                        style={
-                          !showRawView
+                    <div
+                      ref={splitRef}
+                      className={"split-container" + (showRawView && rawLayout === "stacked" ? " stacked" : "")}
+                    >
+                      <section
+                        className="split-pane split-tree"
+                        aria-label="Object tree"
+                        style={{
+                          ...(labelCol ? { "--label-col": `${labelCol}px` } : null),
+                          ...(!showRawView
                             ? { flex: 1 }
                             : rawLayout === "stacked"
-                            ? { height: splitHeight, flex: "0 0 auto" }
-                            : { width: splitWidth, flex: "0 0 auto" }
-                        }
+                            ? { height: `${fraction * 100}%`, flex: "0 0 auto" }
+                            : { width: `${fraction * 100}%`, flex: "0 0 auto" }),
+                        }}
                       >
                         {logicalFocusMissing && (
-                          <div className="raw-missing-note">
-                            Not present in the reconstructed tree — this raw XML element doesn't map
-                            to a browsable node here.
+                          <div className="notice is-quiet">
+                            Not in the reconstructed tree — this raw XML element doesn't map to a browsable node.
                           </div>
                         )}
                         <div className="tree-scroll" ref={treeScrollRef}>
                           {displayNodes.length === 0 ? (
-                            <div className="placeholder">No matches for "{query}".</div>
+                            <div className="workspace-status">
+                              Nothing in this file matches "{query}". Search looks at object names, classes,
+                              parameter names and values.{" "}
+                              <button className="link-btn" onClick={() => setQuery("")}>
+                                Clear search
+                              </button>
+                            </div>
                           ) : (
                             <TreeView
                               nodes={displayNodes}
+                              traceId={traceId}
+                              tabbableId={tabbableId}
+                              editedIds={editedIds}
                               expanded={expanded}
-                              onToggle={toggle}
-                              onToggleSubtree={toggleSubtree}
-                              onSelect={handleSelectExplain}
-                              onActivate={handleActivate}
+                              onToggle={onTreeToggle}
+                              onToggleSubtree={onTreeToggleSubtree}
+                              onSelect={onTreeSelect}
+                              onActivate={onTreeActivate}
                               selectedId={selectedNode?.id}
                               activeId={focusId}
                               forceExpand={query.trim().length > 0}
                               query={query}
                               editable={canEditNow}
-                              onSaveEdit={handleSaveEdit}
-                              onDeleteObject={handleDeleteObject}
-                              onDeleteParam={handleDeleteParam}
-                              onContextMenu={handleContextMenu}
+                              onSaveEdit={onSaveEdit}
+                              onDeleteObject={onDeleteObject}
+                              onDeleteParam={onDeleteParam}
+                              onContextMenu={onRowContextMenu}
                               kb={highlightOfficial ? kb : null}
                             />
                           )}
                         </div>
-                      </div>
+                      </section>
 
                       {showRawView && (
                         <>
                           <Resizer
                             title="Drag to resize"
                             orientation={rawLayout === "stacked" ? "horizontal" : "vertical"}
-                            onDrag={(d) =>
-                              rawLayout === "stacked"
-                                ? setSplitHeight((h) => clamp(h + d, 120, 1200))
-                                : setSplitWidth((w) => clamp(w + d, 260, 1400))
-                            }
+                            onDrag={handleSplitDrag}
                           />
-                          <div className="split-right">
-                            <div className="raw-toolbar">
-                              <span className="raw-title">Raw XML</span>
-                              <div className="layout-toggle">
-                                <button
-                                  className={"btn icon-btn" + (rawLayout === "side" ? " active" : "")}
-                                  onClick={() => setRawLayout("side")}
-                                  title="Side by side (vertical split)"
-                                >
-                                  ⬌
-                                </button>
-                                <button
-                                  className={"btn icon-btn" + (rawLayout === "stacked" ? " active" : "")}
-                                  onClick={() => setRawLayout("stacked")}
-                                  title="Stacked, top/bottom (horizontal split)"
-                                >
-                                  ⬍
-                                </button>
-                              </div>
-                              <input
-                                className="search-box raw-search"
-                                placeholder="Find in raw XML…"
-                                value={rawQuery}
-                                onChange={(e) => setRawQuery(e.target.value)}
-                              />
-                              <span className="match-count">
-                                {rawQuery.trim() ? `${rawMatches.length ? rawMatchIndex + 1 : 0} / ${rawMatches.length}` : ""}
+                          <section className="split-pane split-raw" aria-label="Raw XML">
+                            <div className="raw-toolbar" role="toolbar" aria-label="Raw XML">
+                              <span className="pane-title">Raw XML</span>
+                              <label className="input-with-icon raw-find">
+                                <Icon name="search" />
+                                <input
+                                  className="input"
+                                  placeholder="Find in raw XML"
+                                  value={rawQuery}
+                                  onChange={(e) => setRawQuery(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      gotoRawMatch(e.shiftKey ? -1 : 1);
+                                    } else if (e.key === "Escape") {
+                                      setRawQuery("");
+                                    }
+                                  }}
+                                  aria-label="Find in raw XML (Enter for next match, Shift+Enter for previous)"
+                                />
+                              </label>
+                              <span className="match-count" aria-live="polite">
+                                {rawQuery.trim()
+                                  ? `${rawMatches.length ? rawMatchIndex + 1 : 0} of ${rawMatches.length}`
+                                  : ""}
                               </span>
+                              <span className="btn-pair">
                               <button
-                                className="btn icon-btn"
+                                className="icon-btn"
                                 onClick={() => gotoRawMatch(-1)}
                                 disabled={rawMatches.length === 0}
-                                title="Previous match"
+                                aria-label="Previous match"
+                                title="Previous match (Shift+Enter)"
                               >
-                                ↑
+                                <Icon name="arrow-up" />
                               </button>
                               <button
-                                className="btn icon-btn"
+                                className="icon-btn"
                                 onClick={() => gotoRawMatch(1)}
                                 disabled={rawMatches.length === 0}
-                                title="Next match"
+                                aria-label="Next match"
+                                title="Next match (Enter)"
                               >
-                                ↓
+                                <Icon name="arrow-down" />
                               </button>
-                              <button className="btn icon-btn" onClick={expandAllRaw} title="Expand all">
-                                ⊞
+                              </span>
+                              <span className="toolbar-sep" aria-hidden="true" />
+                              <button className="icon-btn" onClick={expandAllRaw} aria-label="Expand all raw XML" title="Expand all">
+                                <Icon name="expand-all" />
                               </button>
-                              <button className="btn icon-btn" onClick={collapseAllRaw} title="Collapse all">
-                                ⊟
+                              <button className="icon-btn" onClick={collapseAllRaw} aria-label="Collapse all raw XML" title="Collapse all">
+                                <Icon name="collapse-all" />
                               </button>
+                              <span className="toolbar-sep" aria-hidden="true" />
+                              <div className="segmented" role="group" aria-label="Split layout">
+                                <button
+                                  className="icon-btn"
+                                  aria-pressed={rawLayout === "stacked"}
+                                  onClick={() => setRawLayout("stacked")}
+                                  aria-label="Stacked: tree above, raw XML below"
+                                  title="Stacked: tree above, raw XML below"
+                                >
+                                  <Icon name="layout-stacked" />
+                                </button>
+                                <button
+                                  className="icon-btn"
+                                  aria-pressed={rawLayout === "side"}
+                                  onClick={() => setRawLayout("side")}
+                                  aria-label="Side by side"
+                                  title="Side by side"
+                                >
+                                  <Icon name="layout-side" />
+                                </button>
+                              </div>
                             </div>
                             {rawFocusMissing && (
-                              <div className="raw-missing-note">
-                                Not present as its own element in this file — this object is only
-                                implied by another element's distName path.
+                              <div className="notice is-quiet">
+                                Not its own element in this file — this object is only implied by another
+                                element's distName path.
                               </div>
                             )}
-                            {rawLoading && <div className="placeholder">Loading raw XML…</div>}
-                            {rawError && <div className="placeholder error">{rawError}</div>}
+                            {rawLoading && <div className="workspace-status">Loading raw XML…</div>}
+                            {rawError && <div className="workspace-status is-error">{rawError}</div>}
                             {rawTree && !rawLoading && (
                               <div className="tree-scroll raw-scroll" ref={rawScrollRef}>
                                 <RawXmlView
                                   root={rawTree.root}
+                                  editedIds={editedIds}
                                   expanded={rawExpanded}
-                                  onToggle={toggleRaw}
-                                  onToggleSubtree={toggleRawSubtree}
-                                  onActivate={handleRawActivate}
+                                  onToggle={onRawToggle}
+                                  onToggleSubtree={onRawToggleSubtree}
+                                  onActivate={onRawActivate}
                                   focusId={focusId}
+                                  tabbableId={rawTabbableId}
                                   query={rawQuery}
                                   editable={canEditNow}
-                                  onSaveEdit={handleSaveEdit}
-                                  onDeleteObject={handleDeleteObject}
-                                  onDeleteParam={handleDeleteParam}
-                                  onContextMenu={handleContextMenu}
+                                  onSaveEdit={onSaveEdit}
+                                  onContextMenu={onRowContextMenu}
                                   kb={highlightOfficial ? kb : null}
                                 />
                               </div>
                             )}
-                          </div>
+                          </section>
                         </>
                       )}
                     </div>
@@ -1016,12 +1244,9 @@ export default function App() {
         </main>
 
         {explainCollapsed ? (
-          <button
-            className="pane-expand-btn"
-            onClick={() => setExplainCollapsed(false)}
-            title="Show explanation panel"
-          >
-            ◀
+          <button className="pane-rail" onClick={() => setExplainCollapsed(false)} aria-label="Show explanation panel">
+            <Icon name="panel-right" />
+            <span className="pane-rail-label">Explanation</span>
           </button>
         ) : (
           <>
@@ -1029,12 +1254,19 @@ export default function App() {
               title="Drag to resize the explanation panel"
               onDrag={(dx) => setExplainWidth((w) => clamp(w - dx, 280, 800))}
             />
-            <aside className="explain-pane" style={{ width: explainWidth }}>
+            <aside className="explain-pane" style={{ width: explainWidth }} aria-label="Explanation">
               <div className="pane-header">
-                <span>Explanation</span>
-                <button className="collapse-btn" onClick={() => setExplainCollapsed(true)} title="Collapse explanation panel">
-                  ▶
-                </button>
+                <span className="pane-title">Explanation</span>
+                <div className="pane-header-actions">
+                  <button
+                    className="icon-btn"
+                    onClick={() => setExplainCollapsed(true)}
+                    aria-label="Hide explanation panel"
+                    title="Hide explanation panel"
+                  >
+                    <Icon name="panel-right" />
+                  </button>
+                </div>
               </div>
               {kb ? (
                 <ExplainPanel
@@ -1043,7 +1275,7 @@ export default function App() {
                   onClose={() => setSelectedNode(null)}
                   editable={canEditNow}
                   filename={selectedFile}
-                  onParamAdded={refetchAfterEdit}
+                  onParamAdded={handleParamSet}
                 />
               ) : (
                 <div className="explain-panel empty">
@@ -1067,9 +1299,17 @@ export default function App() {
       {requiredFieldsOpen && (
         <RequiredFieldsModal
           filename={selectedFile}
-          rows={missingRequired}
+          rows={missingRequired || []}
+          readOnly={!isEditableFile}
           onClose={() => setRequiredFieldsOpen(false)}
-          onSaved={refetchAfterEdit}
+          onSaved={handleParamSet}
+          onShowInTree={(distName, paramName) => {
+            setRequiredFieldsOpen(false);
+            const paramId = `${distName}::p::${paramName}`;
+            const node = tree ? findNodeInForest(tree.children, paramId) || findNodeInForest(tree.children, distName) : null;
+            setFocusId(node ? node.id : distName);
+            if (node) setSelectedNode(node);
+          }}
         />
       )}
 
@@ -1077,7 +1317,7 @@ export default function App() {
         <ContextMenu
           x={contextMenu.x}
           y={contextMenu.y}
-          items={contextMenuItems}
+          items={contextMenu.items}
           onClose={() => setContextMenu(null)}
         />
       )}
@@ -1118,6 +1358,10 @@ export default function App() {
   );
 }
 
+function prefersReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+}
+
 function cssAttrEscape(id) {
   return String(id).replace(/"/g, '\\"');
 }
@@ -1137,7 +1381,7 @@ function scrollToDataId(container, attr, id, retriesLeft = 8) {
     requestAnimationFrame(() => {
       const el = container.querySelector(`[${attr}="${cssAttrEscape(id)}"]`);
       if (el) {
-        el.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
+        el.scrollIntoView({ block: "center", inline: "nearest", behavior: prefersReducedMotion() ? "auto" : "smooth" });
       } else if (retriesLeft > 0) {
         setTimeout(() => scrollToDataId(container, attr, id, retriesLeft - 1), 40);
       }
