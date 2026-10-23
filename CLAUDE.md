@@ -31,7 +31,7 @@ cd frontend && npm run build                   # -> frontend/dist
 - Exercise the changed endpoints with `curl`.
 - Regression-check that every file in `scp/` and `example/` still parses through `GET /api/files/{name}/tree` and `/raw`.
 
-No one has ever tested the UI interactively in a browser, so frontend-only bugs (layout, React key reconciliation) won't show up in API checks.
+There is no browser test suite either. The UI refactor was checked with throwaway headless-Chromium (Playwright) scripts that aren't kept in the repo. Frontend-only bugs (layout, React key reconciliation, keyboard focus, render performance on the ~23k-row files) won't show up in API checks, so drive the UI in a browser after UI changes.
 
 ## Knowledge-base pipeline (offline, order matters)
 
@@ -81,13 +81,18 @@ Re-serialization normalizes whitespace, and that is accepted. `_serialize()` mus
 - "Mandatory" parameters with a resolvable default are auto-filled with the *real-file* value, not the documented enum code (`resolve_default_for_xml()`).
 - Mandatory parameters with no default are written as empty `<p name="X"/>` placeholders and flagged `requiredMissing`, never omitted. In `add_managed_object`, a `None` value is skipped but `""` is written.
 - Mandatory parameters can't be deleted.
-- `requiredMissing` is computed from `requiredOnCreation == "Mandatory"` plus the value being empty, not from the catalog's `trulyRequired` flag.
+- `requiredMissing` is computed from `_is_mandatory()` plus the value being empty, not from the catalog's `trulyRequired` flag.
+- The one exception to all three rules is a class's own instance-id parameter (`nrcellId` on `NRCELL`, `rModId` on `RMOD`; `_is_instance_id_param`). The dictionaries call it Mandatory, but the id lives in the `distName` and no file in the corpus writes it as a `<p>`. `_is_mandatory()` returns False for it, so the generator doesn't write it, it's never flagged, it can be deleted, and `GET /api/catalog/classes/{name}` leaves it out of the Add Object form. Route every Mandatory check through `_is_mandatory()`.
 - Required child classes come from a corpus heuristic (the child is present under every observed parent instance) and are created recursively.
 - Only scalar `<p>` parameters are supported; `<list>`/`<item>` tables are read-only.
 
 **Site Management** is a pure metadata layer (folders, tags, sites) stored as JSON in `sitemgmt/`. It never moves or renames real files. Metadata is keyed by `(source, filename)`, not bare filename; a collision bug came from that (§10.6).
 
-**Frontend.** All cross-cutting state lives in `App.jsx` and is passed down as props. `src/api.js` wraps every endpoint. Use the in-app toast/confirm/prompt components; never native `alert`/`confirm`/`prompt`. `scrollToDataId` uses a double `requestAnimationFrame` plus a retry loop on purpose; if the scroll sync regresses, look there first.
+**Frontend.** All cross-cutting state lives in `App.jsx` and is passed down as props. `src/api.js` wraps every endpoint. Use the in-app toast/confirm/prompt components and the shared `Modal` shell; never native `alert`/`confirm`/`prompt`. `scrollToDataId` uses a double `requestAnimationFrame` plus a retry loop on purpose; if the scroll sync regresses, look there first.
+- **Render performance is load-bearing.** Tree and raw rows are `memo`ized with prefix-aware comparators (`sameRow` in `TreeView.jsx`, `sameRawRow` in `RawXmlView.jsx`) that rely on the id scheme above, and App passes stable callbacks (`useStableCallback`). A new prop that names one node must go in the comparator's target list. A new callback must be stable. The focus effect must hand back the *same* `expanded` Set when nothing needs opening, because a new Set re-renders every row (seconds on the big files).
+- **Keyboard.** Both panes are WAI-ARIA trees with a roving tab stop (`tabbableId` / `rawTabbableId`, computed in App). Arrow keys move DOM focus, and the shared focus follows it.
+- **Look.** `DESIGN.md` is the design system and `PRODUCT.md` the product brief; read them before UI work. Colours are CSS tokens in the theme blocks at the top of `styles.css` (Night is the default; Slate and GitHub are set via `data-theme` on `<html>`). Soft tints are derived with `color-mix`, so add colours as tokens, never as literals in components. Each pane is a rounded panel on `--bg-page`, and the gutters between panels are the resize handles.
+- **Desktop only.** The owner targets desktop browsers; don't spend effort on phone or tablet layouts.
 
 ## Data handling rules
 

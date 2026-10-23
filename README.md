@@ -28,7 +28,7 @@ files never leave your machine.
 
 **Status:** early, functional, actively developed. `v0.07`.
 
-![Browsing a commissioning file side-by-side with its raw XML, with a full parameter explanation on the right](screenshots/main-page.png)
+![Browsing a commissioning file with its raw XML in sync underneath, the selected parameter's path traced in the header, and a full parameter explanation on the right](screenshots/main-page.png)
 
 Click any object, parameter, or table row for a plain-English explanation
 sourced from Nokia's own parameter dictionaries. The raw XML pane stays in
@@ -44,69 +44,84 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
 
 - Lists every `.xml` file placed in `scp/` (your commissioning files),
   alongside your uploads and the bundled examples, as three collapsible
-  color-coded sidebar sections (collapsed state is remembered per
-  browser).
+  sidebar sections (collapsed state is remembered per browser).
 - Each file in the sidebar is tagged at a glance with its **BTS software
   release** (e.g. `SBTS20C`, `FLF23R1`, `TL18SP`) and its own cells'
   **EARFCN / NR-ARFCN** values (read from the file's contents), plus
   **band** and **export date** (parsed from the file name). The
-  **Filter** button in the top bar narrows the list to one or more
+  **Release** filter at the top of the file list narrows it to one or more
   software releases, grouped by family.
 - Parses the flat RAML `managedObject` list into a real parent/child tree,
   reconstructed from each object's `distName` path (equipment → cabinet →
   baseband/radio modules → LTE/NR cells → features), instead of the raw
   flat XML order.
-- **Click** a row to expand/collapse it. **Double-click** any object,
-  parameter, table (`list`), or table row for a full plain-English
-  explanation in the right-hand panel.
+- **Click** any object, parameter, table (`list`), or table row to expand it
+  and get a full plain-English explanation in the right-hand panel. Values
+  line up in one column, so a run of parameters scans top to bottom.
+- **Trace**: the selected row's path from the root lights up in the tree's
+  colour-coded depth guides, and the same path shows as a clickable address
+  in the file header (`MRBTS-1 › EQM-1 › APEQM-1 › …`), next to the file's
+  object and parameter counts.
 - Full-text search box filters the tree by parameter name, class, or value,
   highlighting matches inline. "Expand all" / "Collapse all" buttons for
   quickly opening up (or flattening) a whole file.
-- **Show Raw XML** splits the view to show the file exactly as written —
-  real tags, attributes, and nesting, drill-down collapsible like a browser's
-  built-in XML viewer — side by side with the reconstructed tree. Choose
-  **side-by-side or stacked (top/bottom)** layout, and drag to resize either
-  way. Clicking a node in **either** tree scrolls to, expands, and highlights
-  the corresponding node in the other. The raw pane has its own find bar
-  (with match count and prev/next navigation) for searching the literal XML
-  text.
+- **Raw XML** (toolbar toggle) shows the file exactly as written — real
+  tags, attributes, and nesting, syntax-coloured and drill-down collapsible
+  like a browser's built-in XML viewer — under the reconstructed tree or
+  side by side with it, and resizable either way. Clicking a node in
+  **either** pane scrolls to, expands, and highlights the corresponding node
+  in the other. The raw pane has its own find bar (with match count and
+  prev/next navigation) for searching the literal XML text.
+- **Keyboard**: both panes work as keyboard trees. Arrow keys move and
+  open/close, Home/End jump to the first/last row, Enter edits a value (or
+  opens a branch), Delete removes the selected row (tree pane), and
+  Shift+F10 or the menu key opens the row's menu. Dialogs close with Esc
+  and keep focus inside them.
 - The file sidebar and the explanation panel can each be collapsed to a thin
-  strip to reclaim screen space, and both are resizable by dragging their
-  edge.
-- **Highlight Official** (toolbar toggle, on by default) tints every row
-  whose explanation comes verbatim from Nokia's own parameter dictionary,
-  in both panes, so you can tell documented settings from researched or
-  heuristic ones without opening each one.
+  rail to reclaim screen space, and both resize by dragging the gap between
+  panels.
+- **Colour themes**: three dark themes — **Night** (the default), **Slate**
+  and **GitHub** — picked in the top bar and remembered per browser.
+- **Official** (toolbar toggle, on by default) tints every row whose
+  explanation comes verbatim from Nokia's own parameter dictionary, in both
+  panes, so you can tell documented settings from researched or heuristic
+  ones without opening each one.
 - **3GPP spec links**: the explanation panel shows whether a class or
   parameter is 3GPP-standardized, with direct links to the relevant
   specs, and says plainly when something is Nokia-proprietary or only
   inherits a class-level judgment rather than guessing a citation.
-- **Upload your own XML files** via the drag-and-drop card at the top of the
-  sidebar (or click it to browse). Uploaded files are validated as RAML XML
-  before being accepted, listed separately under "Your uploads," and can be
-  deleted from there with the × button.
-- **Edit Mode**: click any parameter's value (in either pane) to edit it in
-  place. `scp/` originals stay read-only forever — editing one first makes
-  an editable copy in "Your uploads" via a one-click banner, so the source
-  file is never touched. Every edit is validated (re-parsed) before being
-  written to disk. Parameters with a known, closed set of legal values
+- **Upload your own XML files** with the upload button at the top of the
+  file list, or drop them anywhere on the list. Uploaded files are validated
+  as RAML XML before being accepted and listed separately under "Your
+  uploads". Each file's "⋯" menu (or right-click) offers **Download** and
+  **Delete**; deleting asks first and says how many history snapshots go
+  with the file.
+- **Editing**: turn on **Edit** in the file header, then click any
+  parameter's value (in either pane) to edit it in place. `scp/` and example
+  files stay read-only forever — **Edit a copy** makes an editable copy in
+  "Your uploads" first, so the source file is never touched. Every edit is
+  validated (re-parsed) before being written to disk and confirmed with a
+  "Saved · Undo" notice. Parameters with a known, closed set of legal values
   (booleans and enums) edit through a dropdown instead of free text.
-- **History**: every edit automatically snapshots the file's prior state, so
-  you can open the History panel on any uploaded/edited file and restore an
-  earlier version if something goes wrong. Restoring itself is undoable —
-  it snapshots the current state first.
+- **History**: every edit automatically snapshots the file's prior state,
+  labelled with what changed (e.g. "Set pMax on NRCELL-0 to '420'"). Open
+  **History** in the file header to restore an earlier version if something
+  goes wrong. Restoring itself is undoable — it snapshots the current state
+  first.
+- **Download** any file's current contents from the file header.
 - A file-level "File Info" node explains the `raml`/`cmData`/`header`/`log`
   wrapper elements themselves.
-- **Generate new XML**: "+ New file" in the sidebar creates a blank, valid
-  commissioning file; "+ Add Object" builds a real `<managedObject>` from a
-  form — pick a parent (defaults to whatever's currently focused), pick a
+- **Generate new XML**: the **+** button at the top of the file list creates
+  a blank, valid commissioning file; **Add object** in the toolbar builds a
+  real `<managedObject>` from a form — pick a parent (defaults to whatever's
+  currently focused), pick a
   class (narrowed to classes actually observed under that parent in your
   corpus), fill in parameters with corpus-grounded suggestions, and it's
   appended with an auto-numbered `distName`, the right namespace-qualified
   class string, and a matching `version` borrowed from a sibling in the same
   file. Every generated object is re-parsed before being written, and, like
   any other edit, automatically snapshotted first.
-- **🗂 Site Management** (top of the page): a virtual folder/tag/site
+- **Site Management** (top bar): a virtual folder/tag/site
   catalog over every file the app knows about — uploads, `scp/`, and
   `example/` alike. Folders and tags are pure metadata (see
   `backend/app/sitemgmt.py`); creating, nesting, or deleting a folder, or
@@ -159,7 +174,7 @@ This tool ships a knowledge base built in three layers:
 3. **Generator parameter catalog.** `scripts/build_class_catalog.py` builds
    `backend/app/data/class_catalog.json`, additionally widening each class's
    known parameters with official-only ones never exercised by a sample file
-   (flagged `observed: false`, shown with a ⚑ in the "Add Object" form) —
+   (flagged `observed: false`, shown with a flag icon in the "Add object" form) —
    currently **1,682** such parameters across the corpus's 256 classes.
 
 Every explanation in the UI carries a **confidence badge**:
@@ -192,7 +207,7 @@ tools Nokia field engineers use (one with full VBA macros, reverse-engineered
 in `ref/` analysis). All three follow the same underlying pattern: one sheet
 per MO class, a header row of parameter names, one data row per instance,
 and a handful of leading columns whose values get concatenated into the
-`distName`. This tool's generator (`+ New file`, `+ Add Object`) implements
+`distName`. This tool's generator (New file, Add object) implements
 that same pattern natively, but goes further than the spreadsheets could:
 
 - `scripts/build_class_catalog.py` builds `backend/app/data/class_catalog.json`
@@ -206,7 +221,7 @@ that same pattern natively, but goes further than the spreadsheets could:
 - The catalog is then **widened twice over**:
   - With parameters valid for a class per the official dictionaries but
     never exercised by a sample file (marked `observed: false`, shown with
-    a ⚑) — these fall back to the official range text as a hint, since
+    a flag icon) — these fall back to the official range text as a hint, since
     there's no real-file value to ground a suggestion in yet.
   - With **every class either official dictionary documents** (490 total),
     not just the ~256 your corpus happens to use — so you can generate
@@ -236,7 +251,7 @@ that same pattern natively, but goes further than the spreadsheets could:
   cutoff.
 - **Every other Mandatory parameter is auto-filled with its real default,
   not left out.** For any Mandatory parameter you don't explicitly set,
-  `+ Add Object` writes its official default value into the generated
+  Add object writes its official default value into the generated
   `<managedObject>` automatically, so the object is usable as written rather
   than silently missing fields a strict Nokia loader would reject.
   `scripts/build_class_catalog.py`'s `resolve_default_for_xml()` does the
@@ -255,23 +270,35 @@ that same pattern natively, but goes further than the spreadsheets could:
   instead of being omitted. That way every Mandatory field is visible and
   accounted for right after creation, not something you have to already
   know to go add yourself. Both the logical tree and the Raw XML view
-  red-highlight (⚠ required) any row that's Mandatory per the docs but still
-  has no value — including the rare case (~1.6% of resolvable defaults) where
-  a documented default couldn't be confidently translated into a real-file
-  value, so it also comes through blank and flagged rather than silently
-  wrong. A **"Required Fields"** toolbar button (badge shows the live count)
-  opens a table of every such gap across the *whole file* — object, class,
-  parameter, and an inline input to fill it in on the spot via
-  `PUT /api/files/{filename}/objects/param`, the same upsert endpoint "+ Add
-  Parameter" uses — so you can clear every red flag from one place instead
-  of hunting through the tree row by row. Clicking a row opens a side panel
-  with that parameter's full explanation (description, valid range, unit,
-  values actually seen in your files) — the same information ExplainPanel
-  shows, built from the row data the endpoint already returns, no extra
-  lookup needed.
-- **You're not limited to what you set at creation.** Double-click any
-  managed object (in Edit Mode) for a "+ Add Parameter" button that offers
-  every remaining known parameter for that class — the generator form
+  red-highlight (with a "required" tag) any row that's Mandatory per the docs
+  but still has no value — including the rare case (~1.6% of resolvable
+  defaults) where a documented default couldn't be confidently translated
+  into a real-file value, so it also comes through blank and flagged rather
+  than silently wrong. The completeness control in the file header (e.g.
+  "41 gaps · 59 unverified") opens a **Required Fields** table of every such
+  parameter across the *whole file*, split into **Gaps** (parameters real
+  files do set) and **Unverified** (documented as Mandatory but never seen
+  set in any sample file) — object, class, parameter, and an inline input to
+  fill it in on the spot via `PUT /api/files/{filename}/objects/param`, the
+  same upsert endpoint "Add parameter" uses — so you can clear every red flag
+  from one place instead of hunting through the tree row by row. Clicking a
+  row opens a side panel with that parameter's full explanation
+  (description, valid range, unit, values actually seen in your files) — the
+  same information ExplainPanel shows, built from the row data the endpoint
+  already returns, no extra lookup needed.
+- **An object's own ID parameter is the one exception.** The dictionaries
+  list each class's instance-ID parameter (`nrcellId` on `NRCELL`, `rModId`
+  on `RMOD`, …) as Mandatory, but the ID already lives in the object's
+  `distName` (`RMOD-2`), and none of the real files in the corpus writes it
+  as a `<p>`. So the generator doesn't write it, the Add object form doesn't
+  ask for it (it has its own Instance ID field), it's never flagged as
+  missing, and an empty placeholder for it left by an older version of this
+  tool can be deleted. Every other Mandatory parameter is still always
+  written, filled or flagged.
+- **You're not limited to what you set at creation.** Select any managed
+  object (while editing) for an **Add parameter** button in the explanation
+  panel that offers every remaining known parameter for that class — the
+  generator form
   intentionally doesn't force you to fill in a class's entire parameter set
   up front (some have 500+), so this is how you come back and add more
   later without recreating the object.
@@ -283,7 +310,7 @@ that same pattern natively, but goes further than the spreadsheets could:
   expected, confirmed against the actual corpus, not a bug).
 - Every generated or added parameter is re-parsed before being written to
   disk, and, like any edit, automatically snapshotted first.
-- **"+ Add Object" cascades into required child objects, all the way down.**
+- **Add object cascades into required child objects, all the way down.**
   Neither official dictionary (nor any XSD -- there isn't one in `ref/`)
   records MO-class cardinality: they say whether a *parameter* is Mandatory,
   never whether a *child class* must exist at all under a given parent. The
@@ -303,15 +330,16 @@ that same pattern natively, but goes further than the spreadsheets could:
   (e.g. it won't guess a cell count) — just the minimum one instance needed
   to satisfy each inferred requirement.
 - **Objects and non-Mandatory parameters can be deleted, and objects can be
-  renamed** (Edit Mode) via `DELETE /api/files/{filename}/objects`,
+  renamed** (while editing) via `DELETE /api/files/{filename}/objects`,
   `DELETE /api/files/{filename}/objects/param`, and
-  `PUT /api/files/{filename}/objects/rename`. Two ways to reach these: a
-  small × button near the start of each row (deliberately placed right after
-  the label/tag rather than at the row's end, since a long value or distName
-  can push "the end" of a row past the visible edge of these
-  horizontally-scrolling panes), or **right-click any object or parameter
-  row for a context menu** -- the more reliable option, since it opens at
-  the cursor regardless of row width or scroll position. The context menu
+  `PUT /api/files/{filename}/objects/rename`. Three ways to reach these: a
+  small × button at the end of each tree row's label column (deliberately
+  there rather than at the row's end, since a long value or distName can
+  push "the end" of a row past the visible edge of these
+  horizontally-scrolling panes), the Delete key on a focused tree row, or
+  **right-click any object or parameter row (or press Shift+F10) for a
+  context menu** -- the more reliable option, since it opens at the row
+  regardless of row width or scroll position. The context menu
   also has **Rename**, which changes just an object's trailing instance
   number (e.g. `LNCEL-1` → `LNCEL-0`, same class and parent) and rewrites
   the same prefix on every descendant's `distName`, since RAML distNames are
@@ -378,6 +406,9 @@ anything longer-lived.
 
 ```
 CLAUDE.md               Short repo guide for Claude Code (commands, architecture invariants, data rules)
+PRODUCT.md              Who the tool is for, the jobs it does, and its brand commitments
+DESIGN.md               The UI design system ("Fiber Code"): themes, type, layout, shapes, components
+.impeccable/            Design-tool sidecar (design.json, surface notes) used by the Impeccable plugin
 example/                Bundled sample commissioning files, baked into the image (INCLUDE_EXAMPLES=false to hide)
 scp/                    Your Nokia commissioning/configuration XML files (read-only mount)
 uploads/                Files uploaded through the UI, and editable copies of scp/ files (writable mount)
@@ -388,7 +419,7 @@ ref/pdf/                Flat copy of every PDF found anywhere under ref/ (manual
 ref/extracted/          JSON extracted from ref/ by extract_official_reference.py / extract_sbts18a_reference.py
 backend/app/            FastAPI app: XML→tree parser, knowledge API, heuristic fallback, upload/edit/snapshot/generator handling
 backend/app/data/       Merged knowledge base (classes.json, parameters.json, class_catalog.json)
-frontend/               React + Vite tree-view UI
+frontend/               React + Vite tree-view UI (no UI library; fonts bundled via @fontsource, so it works offline)
 research/               Inputs/outputs of the knowledge-base research pass (not shipped in the image)
 scripts/extract_inventory.py          Re-scans scp/ for every class/parameter name in use
 scripts/build_knowledge.py            Merges research/output/* + heuristics into backend/app/data/*.json
@@ -444,6 +475,11 @@ they're offline tooling, not a runtime dependency of the app itself.
   renamed; `<list>`/`<item>` tables are read-only.
 - No authentication: run it locally or behind your own auth layer, not on
   the open internet.
+- **Desktop only.** The layout is built for a desktop browser window; it
+  isn't designed for phones or tablets.
+- **Very large files are slow to expand fully.** Every visible row is
+  rendered (no virtualization yet), so "Expand all" on a ~1 MB file with
+  ~23,000 rows takes 10+ seconds. Clicking and selecting stay fast.
 - Two files prefixed `WWW_` were added from a web search for publicly
   available Nokia sample files (see git-free provenance: they came from
   `github.com/ruboarm/Nokia-XML-Dump-Parser` and `github.com/SBramhesh/Motu`,
