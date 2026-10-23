@@ -334,6 +334,8 @@ textarea:focus-visible {
 .explain-pane > .explain-panel,
 .modal-body,
 .sitemgmt-files,
+.parambrowser-list,
+.param-detail,
 .folder-tree,
 .version-filter-menu,
 .history-panel,
@@ -2610,7 +2612,8 @@ mark {
 .field-row select,
 .required-fields-table input[type="text"],
 .required-fields-table select,
-.sitemgmt-toolbar select {
+.sitemgmt-toolbar select,
+.parambrowser-toolbar select {
   height: var(--control-h);
   padding: 0 var(--s-3);
   background: var(--bg-0);
@@ -2630,7 +2633,8 @@ mark {
 .field-row select:focus,
 .required-fields-table input[type="text"]:focus,
 .required-fields-table select:focus,
-.sitemgmt-toolbar select:focus {
+.sitemgmt-toolbar select:focus,
+.parambrowser-toolbar select:focus {
   outline: none;
   border-color: var(--signal-line);
 }
@@ -3147,6 +3151,199 @@ mark {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ---------------------------------------------------------------------
+   Parameter Browser
+   --------------------------------------------------------------------- */
+.parambrowser-modal {
+  width: 1280px;
+  height: 86vh;
+  max-height: 86vh;
+}
+
+.parambrowser-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.parambrowser-search {
+  flex: 1;
+  min-width: 240px;
+}
+
+.parambrowser-class {
+  width: 150px;
+  flex: none;
+}
+
+.parambrowser-class.is-invalid,
+.parambrowser-class.is-invalid:focus {
+  border-color: var(--danger);
+}
+
+.parambrowser-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.parambrowser-results {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-3) var(--s-5) 0;
+}
+
+.parambrowser-status {
+  padding: var(--s-1) var(--s-1) var(--s-3);
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.parambrowser-status.is-warning {
+  color: var(--danger);
+}
+
+/* One grid for the header and every row, so the columns line up. */
+.parambrowser-head,
+.parambrowser-row {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) 112px 104px 96px minmax(72px, 128px) 64px 56px;
+  gap: var(--s-3);
+  align-items: baseline;
+  padding: 0 var(--s-3);
+}
+
+.parambrowser-head {
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-2);
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.parambrowser-head .num,
+.parambrowser-row .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.parambrowser-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: var(--s-4);
+}
+
+.parambrowser-list.is-stale {
+  opacity: 0.6;
+}
+
+.parambrowser-row {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-label);
+  cursor: pointer;
+}
+
+.parambrowser-row:hover {
+  background: var(--bg-2);
+}
+
+.parambrowser-row.selected {
+  background: var(--signal-soft);
+  box-shadow: inset 0 0 0 1px var(--signal-line);
+}
+
+.parambrowser-row:focus-visible {
+  outline-offset: -2px;
+}
+
+.parambrowser-row > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-name .mono {
+  color: var(--ink);
+  font-size: var(--fs-data);
+}
+
+.pb-fullname {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink-3);
+}
+
+.pb-muted {
+  color: var(--ink-2);
+}
+
+.pb-required {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.pb-official {
+  color: var(--official);
+}
+
+.parambrowser-more {
+  display: flex;
+  justify-content: center;
+  padding: var(--s-4) 0;
+}
+
+.param-detail {
+  width: 380px;
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--s-4) var(--s-5) var(--s-5);
+  border-left: 1px solid var(--line);
+}
+
+.param-detail .placeholder {
+  padding: var(--s-2) 0;
+  color: var(--ink-3);
+}
+
+.param-detail h3 {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.param-detail-kv {
+  margin-top: var(--s-4);
+}
+
+.param-detail-aside {
+  color: var(--ink-3);
+}
+
+.param-detail-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+}
+
+.param-detail-source {
+  margin-top: var(--s-4);
+  color: var(--ink-3);
+  font-size: var(--fs-label);
 }
 
 /* ---------------------------------------------------------------------

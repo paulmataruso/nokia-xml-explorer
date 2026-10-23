@@ -86,6 +86,10 @@ Re-serialization normalizes whitespace, and that is accepted. `_serialize()` mus
 - Required child classes come from a corpus heuristic (the child is present under every observed parent instance) and are created recursively.
 - Only scalar `<p>` parameters are supported; `<list>`/`<item>` tables are read-only.
 
+**Parameter Browser** (`GET /api/parameters` for search, `/api/parameters/detail` for one row) is read-only.
+- `_param_index()` builds it once at startup: one row per `(kind, class, name)`. Scalars and tables come from `class_catalog.json`. Names in `parameters.json` that the catalog lacks are table fields, whose table and class aren't recorded.
+- `parameters.json` is keyed by name alone, so its official fields describe only the class in its `moClass`. `_doc_entry()` says when they apply to a row; when they don't, the detail panel says they were written for another class.
+
 **Site Management** is a pure metadata layer (folders, tags, sites) stored as JSON in `sitemgmt/`. It never moves or renames real files. Metadata is keyed by `(source, filename)`, not bare filename; a collision bug came from that (§10.6).
 
 **Frontend.** All cross-cutting state lives in `App.jsx` and is passed down as props. `src/api.js` wraps every endpoint. Use the in-app toast/confirm/prompt components and the shared `Modal` shell; never native `alert`/`confirm`/`prompt`. `scrollToDataId` uses a double `requestAnimationFrame` plus a retry loop on purpose; if the scroll sync regresses, look there first.

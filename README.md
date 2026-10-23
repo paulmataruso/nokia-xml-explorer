@@ -121,6 +121,20 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   class string, and a matching `version` borrowed from a sibling in the same
   file. Every generated object is re-parsed before being written, and, like
   any other edit, automatically snapshotted first.
+- **Parameter Browser** (top bar): look up any parameter without opening a
+  file. It lists all ~10,700 entries in the knowledge base, one row per class
+  a parameter lives on (scalar parameters, tables, and the fields inside
+  tables), with its official name, class, type and unit, requirement, default,
+  source and how often your files set it. The search box matches names first,
+  then official names and classes, then descriptions, best match first;
+  "LNCEL pMax" or "LNCEL.pMax" finds that one class's parameter. Filter by
+  class, kind, requirement (Mandatory / Optional / set by the system),
+  source (official docs / researched / auto-generated) and whether your files
+  set it. Pick a row (or arrow down from the search box) to see everything
+  known about it: description, valid range, defaults (including the value
+  Add Object writes), modification rules, required features, 3GPP
+  references, the values your files use, and the other classes with a
+  parameter of the same name. Read-only; it never touches a file.
 - **Site Management** (top bar): a virtual folder/tag/site
   catalog over every file the app knows about — uploads, `scp/`, and
   `example/` alike. Folders and tags are pure metadata (see

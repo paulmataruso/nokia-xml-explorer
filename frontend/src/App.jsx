@@ -27,6 +27,7 @@ import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
 import { ToastStack } from "./components/Toast.jsx";
 import { SiteManagementModal } from "./components/SiteManagementModal.jsx";
+import { ParameterBrowserModal } from "./components/ParameterBrowserModal.jsx";
 import { versionKey } from "./components/VersionFilter.jsx";
 import { FileSidebar } from "./components/FileSidebar.jsx";
 import { FileHeader } from "./components/FileHeader.jsx";
@@ -173,6 +174,7 @@ export default function App() {
   const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, confirmLabel, danger, onConfirm }
   const [promptDialog, setPromptDialog] = useState(null); // { title, message, initialValue, placeholder, confirmLabel, onConfirm }
   const [siteManagementOpen, setSiteManagementOpen] = useState(false);
+  const [paramBrowserOpen, setParamBrowserOpen] = useState(false);
 
   // The tree's value column ("split-flap board"): wide enough for this
   // file's longest label at its depth, so values line up on every row; the
@@ -887,6 +889,10 @@ export default function App() {
         <Wordmark />
         <div className="appbar-actions">
           <ThemeSwitcher value={theme} onChange={setTheme} />
+          <button className="btn btn-quiet" onClick={() => setParamBrowserOpen(true)}>
+            <Icon name="book" />
+            Parameter Browser
+          </button>
           <button className="btn btn-quiet" onClick={() => setSiteManagementOpen(true)}>
             <Icon name="folders" />
             Site Management
@@ -1352,6 +1358,8 @@ export default function App() {
           addToast={addToast}
         />
       )}
+
+      {paramBrowserOpen && <ParameterBrowserModal onClose={() => setParamBrowserOpen(false)} />}
 
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
     </div>

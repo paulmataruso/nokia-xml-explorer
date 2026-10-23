@@ -124,6 +124,26 @@ export function getCatalogClassDetail(className) {
   return getJSON(`/catalog/classes/${encodeURIComponent(className)}`);
 }
 
+export function browseParameters({ q, cls, kind, required, source, seen, offset, limit } = {}) {
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (cls) params.set("cls", cls);
+  if (kind) params.set("kind", kind);
+  if (required) params.set("required", required);
+  if (source) params.set("source", source);
+  if (seen) params.set("seen", seen);
+  if (offset) params.set("offset", String(offset));
+  if (limit) params.set("limit", String(limit));
+  const qs = params.toString();
+  return getJSON(`/parameters${qs ? `?${qs}` : ""}`);
+}
+
+export function getParameterDetail({ name, cls, kind }) {
+  const params = new URLSearchParams({ name, kind });
+  if (cls) params.set("cls", cls);
+  return getJSON(`/parameters/detail?${params.toString()}`);
+}
+
 export function addObject(filename, { parentDistName, className, instanceId, params }) {
   return jsonRequest(`/files/${encodeURIComponent(filename)}/objects`, "POST", {
     parentDistName: parentDistName || null,

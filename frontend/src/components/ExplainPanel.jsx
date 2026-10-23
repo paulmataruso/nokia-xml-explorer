@@ -9,14 +9,14 @@ import { parseThreeGppRefs } from "../utils.js";
 // hex colours: Official takes the Official aqua, everything else stays in
 // the single ink at decreasing strength, so provenance never competes with
 // the signal colour the user's focus uses.
-const THREEGPP_STATUS_META = {
+export const THREEGPP_STATUS_META = {
   standardized: { label: "3GPP-standardized", tone: "strong" },
   unverified: { label: "Possibly standardized — not individually verified", tone: "unverified" },
   "other-standard": { label: "Standardized (not by 3GPP)", tone: "mid" },
   "vendor-specific": { label: "Nokia-specific — no 3GPP reference", tone: "quiet" },
 };
 
-const CONFIDENCE_META = {
+export const CONFIDENCE_META = {
   official: { label: "Official Nokia documentation", tone: "official" },
   high: { label: "High confidence", tone: "strong" },
   medium: { label: "Medium confidence", tone: "mid" },

@@ -661,6 +661,216 @@ def catalog_class_detail(class_name: str):
     return {**entry, "params": params}
 
 
+# ---------------------------------------------------------------------------
+# Parameter Browser: every parameter the knowledge base knows, one row per
+# (class, name), searchable. Built once on first use; the KB never changes
+# while the process runs.
+# ---------------------------------------------------------------------------
+_PARAM_INDEX: list[tuple[dict, str, str]] | None = None
+_PARAM_CLASSES: dict[str, list[tuple[str, str]]] = {}
+_PARAM_KEYS: set[tuple[str, str | None, str]] = set()
+
+_CURATED_TIERS = {"high", "medium", "low"}
+
+
+def _doc_entry(short_class: str | None, name: str) -> tuple[dict, bool]:
+    """parameters.json is keyed by name alone, so its official fields
+    describe the one class in its `moClass`. Returns (entry, own) where
+    `own` says whether that class is this row's class (or no class is
+    known on either side), i.e. whether its range/default/modification can
+    be trusted for this row."""
+    kb = _PARAMS_KB.get(name) or {}
+    doc_class = (kb.get("moClass") or "").rsplit("/", 1)[-1] or None
+    return kb, not doc_class or not short_class or doc_class == short_class
+
+
+def _browse_row(short_class: str | None, name: str, kind: str) -> dict:
+    """The compact row the list shows. kind: "param" (scalar <p>), "list"
+    (a <list> table) or "field" (a <p> inside a table's <item>; the KB
+    doesn't record which table or class, so `class` is None)."""
+    meta = _param_meta(short_class, name) if kind == "param" else None
+    meta = meta or {}
+    kb, own = _doc_entry(short_class, name)
+    required = meta.get("requiredOnCreation") or (kb.get("requiredOnCreation") if own else None)
+    return {
+        "name": name,
+        "class": short_class,
+        "kind": kind,
+        "fullName": meta.get("fullName") or (kb.get("fullName") if own else None),
+        "dataType": meta.get("dataType") or kb.get("dataType"),
+        "unit": meta.get("unit") or kb.get("unit"),
+        "required": required,
+        "mandatory": _is_mandatory({"requiredOnCreation": required}, short_class, name),
+        "instanceId": _is_instance_id_param(short_class, name),
+        "default": meta.get("resolvedDefault") or meta.get("officialDefault") or (kb.get("defaultValue") if own else None),
+        "confidence": meta.get("confidence") or kb.get("confidence"),
+        "observed": meta.get("observed") if meta else None,
+        "occurrences": meta.get("occurrences") if meta else None,
+    }
+
+
+def _param_index() -> list[tuple[dict, str, str, str, str]]:
+    """(row, name, class, key text, full text), lowercased: the key text
+    (name, class, official name) ranks above a match found only in the
+    description."""
+    global _PARAM_INDEX
+    if _PARAM_INDEX is not None:
+        return _PARAM_INDEX
+    rows: list[dict] = []
+    for short, entry in _CLASS_CATALOG.items():
+        for name in entry.get("params") or {}:
+            rows.append(_browse_row(short, name, "param"))
+        for name in entry.get("lists") or []:
+            rows.append(_browse_row(short, name, "list"))
+    known = {r["name"] for r in rows}
+    for name, kb in _PARAMS_KB.items():
+        if name in known:
+            continue
+        doc_class = (kb.get("moClass") or "").rsplit("/", 1)[-1] or None
+        rows.append(_browse_row(doc_class, name, "param" if doc_class else "field"))
+
+    classes: dict[str, list[tuple[str, str]]] = {}
+    index = []
+    for row in rows:
+        if row["class"]:
+            classes.setdefault(row["name"], []).append((row["class"], row["kind"]))
+        key = " ".join(filter(None, (row["name"], row["class"], row["fullName"]))).lower()
+        meta = _param_meta(row["class"], row["name"]) if row["kind"] == "param" else None
+        description = (meta or {}).get("description") or (_PARAMS_KB.get(row["name"]) or {}).get("description") or ""
+        index.append((row, row["name"].lower(), (row["class"] or "").lower(), key, f"{key} {description.lower()}"))
+    index.sort(key=lambda t: (t[1], t[2]))
+    _PARAM_CLASSES.clear()
+    _PARAM_CLASSES.update(classes)
+    _PARAM_KEYS.clear()
+    _PARAM_KEYS.update((r["kind"], r["class"], r["name"]) for r in rows)
+    _PARAM_INDEX = index
+    return index
+
+
+_param_index()  # at startup, so concurrent first requests never build it twice
+
+
+def _match_rank(name: str, cls: str, key: str, text: str, q: str, tokens: list[str]) -> int | None:
+    """0 exact name, 1 name prefix, 2 name substring, 3 every word in the
+    name/class/official name, 4 every word somewhere incl. the description;
+    None = no match. A word that is exactly the row's class is taken as a
+    class qualifier, so "LNCEL pMax" and "LNCEL.pMax" rank LNCEL's pMax as
+    an exact name match."""
+    if cls and len(tokens) > 1 and cls in tokens:
+        q = " ".join(t for t in tokens if t != cls)
+    if name == q:
+        return 0
+    if name.startswith(q):
+        return 1
+    if q in name:
+        return 2
+    if all(t in key for t in tokens):
+        return 3
+    if all(t in text for t in tokens):
+        return 4
+    return None
+
+
+@app.get("/api/parameters")
+def browse_parameters(
+    q: str = "",
+    cls: str | None = None,
+    kind: str | None = None,
+    required: str | None = None,
+    source: str | None = None,
+    seen: str | None = None,
+    offset: int = 0,
+    limit: int = 200,
+):
+    """Searches every parameter row. `q` matches the name first, then the
+    class and official name, then the description ("LNCEL pmax" and
+    "handover" both work); results are best match first, then by name.
+    Filters: cls (short class), kind (param/list/field), required
+    (mandatory/optional/system), source (official/curated/heuristic),
+    seen (yes/no: set in at least one of your files)."""
+    offset = max(offset, 0)
+    limit = min(max(limit, 1), 500)
+    ql = q.strip().lower()
+    tokens = [t for t in ql.replace(".", " ").replace("/", " ").split() if t]
+    cls_l = cls.strip().lower() if cls and cls.strip() else None
+
+    hits = []
+    for row, name_l, row_cls_l, key, text in _param_index():
+        if cls_l and row_cls_l != cls_l:
+            continue
+        if kind and row["kind"] != kind:
+            continue
+        if required == "mandatory" and not row["mandatory"]:
+            continue
+        if required == "optional" and row["required"] != "Optional":
+            continue
+        if required == "system" and row["required"] != "Value set by the system":
+            continue
+        if source == "official" and row["confidence"] != "official":
+            continue
+        if source == "curated" and row["confidence"] not in _CURATED_TIERS:
+            continue
+        if source == "heuristic" and row["confidence"] != "heuristic":
+            continue
+        if seen == "yes" and row["observed"] is not True:
+            continue
+        if seen == "no" and row["observed"] is not False:
+            continue
+        rank = _match_rank(name_l, row_cls_l, key, text, ql, tokens) if ql else 0
+        if rank is not None:
+            hits.append((rank, row))
+    # Python's sort is stable and the index is already in name order.
+    hits.sort(key=lambda h: h[0])
+    return {
+        "total": len(hits),
+        "offset": offset,
+        "rows": [row for _, row in hits[offset : offset + limit]],
+    }
+
+
+@app.get("/api/parameters/detail")
+def parameter_detail(name: str, cls: str | None = None, kind: str = "param"):
+    """Everything known about one parameter row: the class catalog's
+    per-class fields (official name, range, defaults, what your files use)
+    plus the name-keyed knowledge base entry (description, modification,
+    features, 3GPP). `docClass` is the class that entry was written for;
+    when it isn't `cls`, its range/default may not apply here."""
+    _param_index()
+    short = cls or None
+    if (kind, short, name) not in _PARAM_KEYS:
+        raise HTTPException(status_code=404, detail="Unknown parameter")
+    meta = (_param_meta(short, name) if kind == "param" else None) or {}
+    kb, own = _doc_entry(short, name)
+    catalog_cls = _CLASS_CATALOG.get(short or "", {})
+    cls_kb = _CLASSES_KB.get(short or "", {})
+    return {
+        **_browse_row(short, name, kind),
+        "description": meta.get("description") or kb.get("description"),
+        "notes": kb.get("notes"),
+        "officialRange": meta.get("officialRange") or (kb.get("range") if own else None),
+        "officialDefault": meta.get("officialDefault") or (kb.get("defaultValue") if own else None),
+        "resolvedDefault": meta.get("resolvedDefault"),
+        "trulyRequired": bool(meta.get("trulyRequired")),
+        "knownValues": meta.get("knownValues") or [],
+        "exampleValues": meta.get("exampleValues") or [],
+        "modification": kb.get("modification"),
+        "relatedFeatures": kb.get("relatedFeatures"),
+        "threeGppName": kb.get("threeGppName"),
+        "threeGppRef": kb.get("threeGppRef"),
+        "threeGpp": kb.get("threeGpp"),
+        "sourceName": kb.get("source"),
+        "docClass": kb.get("moClass"),
+        "docIsOwn": own,
+        "classFullName": cls_kb.get("officialFullName") or catalog_cls.get("officialFullName"),
+        "parentClass": catalog_cls.get("directParent"),
+        "alsoOn": [
+            {"class": c, "kind": k}
+            for c, k in sorted(set(_PARAM_CLASSES.get(name, [])))
+            if (c, k) != (short, kind)
+        ],
+    }
+
+
 def _resolve_full_class(current_bytes: bytes, short_class: str) -> tuple[str, bool, str | None]:
     """(full_class, classVerified, version). Prefers an existing instance of
     this class already in the file; falls back to the classes.json research
