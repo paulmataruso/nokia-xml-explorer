@@ -14,6 +14,7 @@ from pydantic import BaseModel
 
 from . import sitemgmt as sm
 from . import structural
+from .ca import analyze_ca
 from .heuristics import generate as heuristic_generate
 from .parser import (
     ObjectExistsError,
@@ -149,6 +150,7 @@ _load_kb()
 # in-memory parse cache: filename -> (mtime, tree)
 _TREE_CACHE: dict[str, tuple[float, dict]] = {}
 _RAW_CACHE: dict[str, tuple[float, dict]] = {}
+_CA_CACHE: dict[str, tuple[float, dict]] = {}
 
 
 def _is_safe_filename(filename: str) -> bool:
@@ -233,6 +235,7 @@ def _short(dist_name: str) -> str:
 def _invalidate_caches(filename: str) -> None:
     _TREE_CACHE.pop(filename, None)
     _RAW_CACHE.pop(filename, None)
+    _CA_CACHE.pop(filename, None)
     _FAMILY_CACHE.pop(filename, None)
 
 
@@ -1375,6 +1378,24 @@ def missing_required(filename: str):
         walk(root_node)
 
     return out
+
+
+@app.get("/api/files/{filename}/ca")
+def ca_check(filename: str):
+    """LTE carrier aggregation setup and findings (ca.py): cells, CAREL
+    relations, and every official-rule or corpus-pattern problem found.
+    Read-only; fetched for read-only files too, like missing-required."""
+    path, _source = _resolve_path(filename)
+    stat = path.stat()
+    cached = _CA_CACHE.get(filename)
+    if cached and cached[0] == stat.st_mtime:
+        return cached[1]
+    try:
+        result = analyze_ca(path.read_bytes())
+    except XmlParseError as e:
+        raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
+    _CA_CACHE[filename] = (stat.st_mtime, result)
+    return result
 
 
 @app.get("/api/knowledge/classes")

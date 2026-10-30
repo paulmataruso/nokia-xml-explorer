@@ -37,6 +37,32 @@ function Completeness({ completeness, onOpen }) {
 }
 
 /**
+ * LTE carrier aggregation at a glance: whether downlink/uplink CA is on and
+ * how many problems the CA check found. Red only for errors, and the error
+ * count is part of the main label because a narrow header hides the
+ * sub-label; warnings are counted there. Hidden for files with no LTE eNB.
+ */
+function CaStatus({ summary, onOpen }) {
+  if (!summary || summary.state === "none") return null;
+  const { errors, warnings } = summary;
+  const state = summary.state === "on" ? (summary.ul ? "CA: DL + UL" : "CA: DL") : "CA off";
+  const label = errors > 0 ? `${state} · ${errors} error${errors === 1 ? "" : "s"}` : state;
+  const sub = errors === 0 && warnings > 0 ? `${warnings} warning${warnings === 1 ? "" : "s"}` : null;
+  return (
+    <button
+      className={"fh-complete" + (errors > 0 ? " has-gaps" : "")}
+      onClick={onOpen}
+      title="Carrier aggregation check: cells, CAREL relations, and problems found against Nokia's rules and your own CA files"
+      aria-label={`Carrier aggregation: ${state}, ${errors} errors, ${warnings} warnings. Open the CA check.`}
+    >
+      <Icon name={errors > 0 ? "alert" : "mast"} />
+      <span className="fh-complete-main">{label}</span>
+      {sub && <span className="fh-complete-sub">{sub}</span>}
+    </button>
+  );
+}
+
+/**
  * The Trace address: the selected row's lineage from the root, one segment
  * per ancestor, each banded in its depth's fiber-code hue -- the same hue
  * as that ancestor's guide line in the tree, so the address and the lit
@@ -82,6 +108,8 @@ export function FileHeader({
   onTraceSelect,
   completeness,
   onOpenRequired,
+  caSummary,
+  onOpenCa,
   editable,
   editMode,
   onToggleEdit,
@@ -102,6 +130,7 @@ export function FileHeader({
         </h1>
         <div className="fh-actions">
           <Completeness completeness={completeness} onOpen={onOpenRequired} />
+          <CaStatus summary={caSummary} onOpen={onOpenCa} />
           {editable && (
             <div className="history-wrap">
               <button

@@ -13,6 +13,7 @@ import {
   restoreSnapshot,
   createNewFile,
   getMissingRequired,
+  getCaCheck,
   deleteObject,
   deleteObjectParam,
   renameObject,
@@ -24,6 +25,7 @@ import { RawXmlView } from "./components/RawXmlView.jsx";
 import { Resizer } from "./components/Resizer.jsx";
 import { AddObjectModal } from "./components/AddObjectModal.jsx";
 import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
+import { CaCheckModal } from "./components/CaCheckModal.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
 import { ToastStack } from "./components/Toast.jsx";
 import { SiteManagementModal } from "./components/SiteManagementModal.jsx";
@@ -169,6 +171,8 @@ export default function App() {
   const [generatorWarning, setGeneratorWarning] = useState(null);
   const [missingRequired, setMissingRequired] = useState(null);
   const [requiredFieldsOpen, setRequiredFieldsOpen] = useState(false);
+  const [caCheck, setCaCheck] = useState(null);
+  const [caCheckOpen, setCaCheckOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState(null); // { x, y, items }
   const [toasts, setToasts] = useState([]);
   const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, confirmLabel, danger, onConfirm }
@@ -214,6 +218,7 @@ export default function App() {
     setSnapshots([]);
     setGeneratorWarning(null);
     setMissingRequired(null);
+    setCaCheck(null);
     setEditedIds(new Set());
     getFileTree(selectedFile)
       .then((t) => {
@@ -565,6 +570,30 @@ export default function App() {
       .then(setMissingRequired)
       .catch(() => setMissingRequired([]));
   }, [selectedFile, tree]);
+
+  // The CA check refreshes the same way, so its header status and findings
+  // follow every edit. A late answer for a file that's no longer open is
+  // dropped.
+  useEffect(() => {
+    if (!selectedFile || !tree) return;
+    let cancelled = false;
+    getCaCheck(selectedFile)
+      .then((result) => !cancelled && setCaCheck(result))
+      .catch((e) => !cancelled && setCaCheck({ error: String(e.message || e) }));
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedFile, tree]);
+
+  // A dialog's "show in tree" link: focus the node itself, or its owning
+  // object when the file doesn't set that parameter (ids are
+  // "{distName}::p::{name}", see parser.py).
+  const showNodeInTree = (id) => {
+    const ownerId = id.split("::")[0];
+    const node = tree ? findNodeInForest(tree.children, id) || findNodeInForest(tree.children, ownerId) : null;
+    setFocusId(node ? node.id : ownerId);
+    if (node) setSelectedNode(node);
+  };
 
   // Gaps = Mandatory and empty, for parameters actually seen set in real
   // files; unverified = documented as Mandatory but never observed in any
@@ -966,6 +995,8 @@ export default function App() {
                   onTraceSelect={handleTraceSelect}
                   completeness={tree ? completeness : null}
                   onOpenRequired={() => setRequiredFieldsOpen(true)}
+                  caSummary={tree && caCheck && !caCheck.error ? caCheck.summary : null}
+                  onOpenCa={() => setCaCheckOpen(true)}
                   editable={isEditableFile}
                   editMode={editMode}
                   onToggleEdit={() => setEditMode((v) => !v)}
@@ -1311,10 +1342,18 @@ export default function App() {
           onSaved={handleParamSet}
           onShowInTree={(distName, paramName) => {
             setRequiredFieldsOpen(false);
-            const paramId = `${distName}::p::${paramName}`;
-            const node = tree ? findNodeInForest(tree.children, paramId) || findNodeInForest(tree.children, distName) : null;
-            setFocusId(node ? node.id : distName);
-            if (node) setSelectedNode(node);
+            showNodeInTree(`${distName}::p::${paramName}`);
+          }}
+        />
+      )}
+
+      {caCheckOpen && (
+        <CaCheckModal
+          data={caCheck}
+          onClose={() => setCaCheckOpen(false)}
+          onShowInTree={(id) => {
+            setCaCheckOpen(false);
+            showNodeInTree(id);
           }}
         />
       )}

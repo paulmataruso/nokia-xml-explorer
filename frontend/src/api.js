@@ -157,6 +157,10 @@ export function getMissingRequired(filename) {
   return getJSON(`/files/${encodeURIComponent(filename)}/missing-required`);
 }
 
+export function getCaCheck(filename) {
+  return getJSON(`/files/${encodeURIComponent(filename)}/ca`);
+}
+
 export function setObjectParam(filename, distName, paramName, value) {
   return jsonRequest(`/files/${encodeURIComponent(filename)}/objects/param`, "PUT", {
     distName,

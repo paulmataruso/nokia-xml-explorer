@@ -109,6 +109,17 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   goes wrong. Restoring itself is undoable — it snapshots the current state
   first.
 - **Download** any file's current contents from the file header.
+- **Carrier aggregation check**: for LTE files, a chip in the file header
+  shows whether downlink/uplink CA is on and whether anything is wrong
+  ("CA: DL", "CA off · 1 error"). Click it to see the cells with their role
+  (PCell / SCell), carrier, TDD config, CA pool, modulation and camping,
+  the CAREL relations between them, and every problem found. Each problem
+  says where its rule comes from. "Nokia rule" cites the dictionary's rule
+  number (LTE18 / SBTS18A). "Seen in your files" marks a pattern learned
+  by comparing working CA exports, such as an old carrier left in a CA
+  profile after a frequency change, or a CBRS TDD request that doesn't
+  match the cell. Every problem links to the rows it's about. Read-only;
+  this is the first step of a wizard for adding CA to a file.
 - A file-level "File Info" node explains the `raml`/`cmData`/`header`/`log`
   wrapper elements themselves.
 - **Generate new XML**: the **+** button at the top of the file list creates

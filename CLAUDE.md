@@ -59,6 +59,7 @@ python3 scripts/build_3gpp_param_refs.py        # 6b. reads 6a's output
 - `parser.py` holds pure `(bytes, ...) -> bytes|dict` XML functions with no FastAPI or KB knowledge. It raises `XmlParseError`, `ParamNotFoundError` and `ObjectExistsError`.
 - `main.py` is the orchestration layer: env config, KB loading, file resolution, required-field annotation, the generator, snapshots, mtime-keyed in-memory tree caches (single-process only), and serving `frontend_dist/` as static files.
 - `heuristics.py` builds fallback explanations from parameter/class names. `structural.py` is a glossary for the RAML wrapper elements. `sitemgmt.py` is the Site Management store.
+- `ca.py` is the read-only LTE carrier aggregation check behind `GET /api/files/{f}/ca` (PROJECT_STATE §9.7), and it is pure like `parser.py`. Each finding has a basis: `official` (dictionary rules, with their rule numbers), `files` (patterns learned from the corpus's working CA exports) or `general`. It was calibrated so every working CA file has no errors; `caPoolId` missing is only a warning because those files leave it unset. Re-run the corpus over `/ca` after changing a rule.
 
 **Two parallel trees with identical node ids.** This is load-bearing.
 - `parse_file()` builds the *logical* tree, reconstructed from `distName` paths with synthetic `mo-placeholder` nodes for gaps. It is rendered by `TreeView.jsx`.
