@@ -118,8 +118,64 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   number (LTE18 / SBTS18A). "Seen in your files" marks a pattern learned
   by comparing working CA exports, such as an old carrier left in a CA
   profile after a frequency change, or a CBRS TDD request that doesn't
-  match the cell. Every problem links to the rows it's about. Read-only;
-  this is the first step of a wizard for adding CA to a file.
+  match the cell. Every problem links to the rows it's about.
+- **Carrier aggregation wizard**: from the CA check, **Set up CA…** adds
+  LTE carrier aggregation to a file, or changes an existing setup, in
+  three steps. *Pairs*: pick which cells are PCells and SCells in a grid,
+  or start from a preset (the current setup, every allowed pair, cells on
+  the same radio, licensed PCells with CBRS SCells). Pairs the rules
+  forbid are blocked, with the reason. *Values*: downlink only or
+  downlink + uplink, and a **donor**: one of your own working CA exports,
+  ranked by how well it matches (release, FDD/TDD, bands, CBRS), whose
+  CA objects, profiles and tuning are copied. Donor values are only
+  written where some file of your file's release sets that parameter, so
+  a newer donor can't add parameters an older BTS won't know. *Review*:
+  every change with its reason, whether it's a Nokia rule, a pattern from
+  your files, the donor's value or your choice, and whether it needs a
+  BTS restart. The review also shows the CA check after the change and a
+  checklist of what the file can't show (licences, phone band
+  combinations, SAS grants). Applying is one undoable edit; a read-only
+  file gets an editable copy first. The plan follows Nokia's dictionary
+  rules and your working files, but it isn't proven on air.
+- **Site actions** (**Actions** in the top bar, or Ctrl+K): a searchable
+  list of whole-site operations, each one aware of what else it needs:
+  - *Cells*: add a 5G or LTE cell (a copy of one of the site's cells on a
+    radio, with its own lcrId, name, PCI and PRACH root, channel mapping
+    and cell group), set up DRX, set up carrier aggregation (the wizard
+    above).
+  - *Features*: set up EN-DC, add a QCI or 5QI profile with its bearer
+    and every profile it names, set up VoLTE or VoNR, add a network slice.
+  - *Mobility and neighbours*: add a carrier to measure or redirect to
+    (IRFIM/LNHOIF, NRFIM, NRIRFIM, REDRT, NRREDRT), a neighbour eNB (X2),
+    an EN-DC gNB, a neighbour gNB (Xn).
+  - *Core and transport*: add or change an MME or AMF, add a PLMN (RAN
+    sharing), change a BTS IP address, add a VLAN interface with its own
+    routing table, add a static route, set NTP and DNS servers.
+  - *Hardware*: add a radio (cabled to free baseband ports), remove a
+    radio or baseband card, change a product code, and delete any object
+    with what depends on it (also on the tree's right-click menu, "Delete
+    with dependents…").
+
+  Each action is a short form, then a review of every change with its
+  reason and where it comes from: a Nokia dictionary rule (with its
+  number), a pattern in your files, a template's value, or your choice.
+  Values come from templates: one of the site's own objects, another of
+  your files, or built-in production profiles. They pass the same release
+  filter as the CA wizard, and names, ids and addresses are never copied
+  from another file. The review also has the site check before and after,
+  a checklist of what the file can't show (the core network, licences),
+  and **Manual steps**: the same change written out object by object, to
+  make by hand in the Nokia WebUI if you'd rather, ready to copy. Applying is one undoable edit, refused
+  if it would add a site-check error.
+- **Site check**: the **Links** chip in the file header checks how the
+  file's objects fit together: references that point at nothing,
+  repeated ids, cells without a channel mapping or cell group, QoS
+  mappings and profiles, cables and ports, sync targets, static route
+  gateways. Click it for the list; every finding links to its rows.
+- **Reference map**: the toolbar's **Tree | Map** switch shows which
+  objects point at which, centred on the selected object: what references
+  it above, what it references below, opening a level at a click. A card
+  selects the same object in the tree, and the explanation panel follows.
 - A file-level "File Info" node explains the `raml`/`cmData`/`header`/`log`
   wrapper elements themselves.
 - **Generate new XML**: the **+** button at the top of the file list creates
@@ -443,7 +499,11 @@ ref/                    Source Nokia reference documents (xlsx/xls/HTML docs) --
 ref/pdf/                Flat copy of every PDF found anywhere under ref/ (manuals, install/EPD/quick guides), for easy browsing
 ref/extracted/          JSON extracted from ref/ by extract_official_reference.py / extract_sbts18a_reference.py
 backend/app/            FastAPI app: XML→tree parser, knowledge API, heuristic fallback, upload/edit/snapshot/generator handling
-backend/app/data/       Merged knowledge base (classes.json, parameters.json, class_catalog.json)
+backend/app/actions/    Site actions: the editing engine (doc.py), the site check's link rules (links.py), one module per action
+backend/app/ca_wizard.py The carrier aggregation wizard (ca.py is the CA check)
+backend/app/refmap.py   The reference map's links
+backend/app/data/       Merged knowledge base (classes.json, parameters.json, class_catalog.json) and the hardware catalog (product_codes.json)
+docs/product_codes.md   The hardware catalog with the public source of every code
 frontend/               React + Vite tree-view UI (no UI library; fonts bundled via @fontsource, so it works offline)
 research/               Inputs/outputs of the knowledge-base research pass (not shipped in the image)
 scripts/extract_inventory.py          Re-scans scp/ for every class/parameter name in use
@@ -454,6 +514,10 @@ scripts/merge_official_reference.py   Upgrades backend/app/data/*.json with both
 scripts/build_class_catalog.py        Builds backend/app/data/class_catalog.json (per-class parent + parameter catalog) for the generator
 scripts/build_3gpp_class_refs.py      Adds each class's 3GPP standardization status + spec links (threeGpp field)
 scripts/build_3gpp_param_refs.py      Same for parameters (reads build_3gpp_class_refs.py's output)
+scripts/build_product_codes.py        Builds backend/app/data/product_codes.json and docs/product_codes.md
+scripts/build_qos_templates.py        Builds the QoS action's built-in templates (backend/app/actions/qos_templates.py)
+scripts/*_check.py                    One corpus check per action: every file, then a strip-and-rebuild round trip
+scripts/link_rules_check.py           Runs the site check over the files; refmap_check.mjs drives the Map view
 Dockerfile, docker-compose.yml Single-container build (Vite build → FastAPI serves API + static frontend)
 ```
 
@@ -497,7 +561,13 @@ they're offline tooling, not a runtime dependency of the app itself.
   it preserves every tag, attribute, and value exactly, but does not
   reproduce the original file's incidental whitespace byte-for-byte.
   Scalar parameters and whole objects can be added, edited, deleted and
-  renamed; `<list>`/`<item>` tables are read-only.
+  renamed; `<list>`/`<item>` tables are read-only to hand edits, though
+  the site actions write table rows.
+- **Site actions are planned, not proven on air.** LTE rules come from
+  Nokia's LTE18 and SBTS18A dictionaries; there is no NR dictionary, so 5G
+  rules and templates come from patterns in working files. Review each
+  plan before loading it on a BTS. Adding a VLAN interface on Flexi Zone
+  (FTM) transport isn't supported yet.
 - No authentication: run it locally or behind your own auth layer, not on
   the open internet.
 - **Desktop only.** The layout is built for a desktop browser window; it
