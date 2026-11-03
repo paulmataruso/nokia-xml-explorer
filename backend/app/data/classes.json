@@ -6,7 +6,7 @@
   "fullNames": [
    "NOKLTE:ACBPR"
   ],
-  "occurrences": 36,
+  "occurrences": 46,
   "officialFullName": "Access Class Barring Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -26,55 +26,43 @@
   }
  },
  "ADJI": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"ADJI\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "A WCDMA inter-frequency neighbour of a WCEL: the neighbour's RNC, cell identity, LAC/RAC, PLMN, scrambling code, CPICH power, SIB inclusion and HSPA handover options. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [
    "ADJI"
   ],
   "occurrences": 1,
-  "sampleParams": [
-   "ADJIChangeOrigin",
-   "AdjiCI",
-   "AdjiCPICHTxPwr",
-   "AdjiComLoadMeasDRNCCellNCHO",
-   "AdjiEcNoOffsetNCHO",
-   "AdjiHandlingBlockedCellSLHO",
-   "AdjiLAC",
-   "AdjiMCC",
-   "AdjiMNC",
-   "AdjiNCHOHSPASupport"
-  ],
   "threeGpp": {
-   "note": null,
-   "specs": [],
-   "status": "vendor-specific"
+   "note": "UTRAN neighbour cells reach the UE through SIB11 and measurement control, defined in TS 25.331; the neighbour records are Nokia's RNC OAM objects.",
+   "specs": [
+    {
+     "spec": "TS 25.331",
+     "title": "Universal Terrestrial Radio Access Network (UTRAN); Radio Resource Control (RRC) Protocol Specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/25_series/25.331/"
+    }
+   ],
+   "status": "standardized"
   }
  },
  "ADJS": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"ADJS\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "A WCDMA intra-frequency neighbour of a WCEL: the neighbour's RNC, cell identity, LAC/RAC, PLMN, scrambling code, CPICH power and SIB inclusion. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [
    "ADJS"
   ],
   "occurrences": 1,
-  "sampleParams": [
-   "ADJSChangeOrigin",
-   "AdjsCI",
-   "AdjsCPICHTxPwr",
-   "AdjsDERR",
-   "AdjsEcNoOffset",
-   "AdjsLAC",
-   "AdjsMCC",
-   "AdjsMNC",
-   "AdjsRAC",
-   "AdjsRNCid"
-  ],
   "threeGpp": {
-   "note": null,
-   "specs": [],
-   "status": "vendor-specific"
+   "note": "UTRAN neighbour cells reach the UE through SIB11 and measurement control, defined in TS 25.331; the neighbour records are Nokia's RNC OAM objects.",
+   "specs": [
+    {
+     "spec": "TS 25.331",
+     "title": "Universal Terrestrial Radio Access Network (UTRAN); Radio Resource Control (RRC) Protocol Specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/25_series/25.331/"
+    }
+   ],
+   "status": "standardized"
   }
  },
  "ALARMSUPP": {
@@ -84,7 +72,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:ALARMSUPP"
   ],
-  "occurrences": 27,
+  "occurrences": 79,
   "threeGpp": {
    "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
    "specs": [],
@@ -98,7 +86,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:ALD"
   ],
-  "occurrences": 14,
+  "occurrences": 87,
   "officialFullName": "Antenna line device",
   "officialHierarchy": [
    "MRBTS",
@@ -119,7 +107,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:ALD_R"
   ],
-  "occurrences": 14,
+  "occurrences": 25,
   "officialFullName": "Antenna line device_Runtime",
   "officialHierarchy": [
    "MRBTS",
@@ -141,7 +129,7 @@
    "NOKLTE:AMGR",
    "com.nokia.srbts.mnl:AMGR"
   ],
-  "occurrences": 60,
+  "occurrences": 117,
   "officialFullName": "User account management",
   "officialHierarchy": [
    "MRBTS",
@@ -161,7 +149,7 @@
   "fullNames": [
    "NOKLTE:AMLEPR"
   ],
-  "occurrences": 78,
+  "occurrences": 124,
   "officialFullName": "Active Mode Load Equalization Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -182,7 +170,7 @@
   "fullNames": [
    "NOKLTE:ANR"
   ],
-  "occurrences": 48,
+  "occurrences": 72,
   "officialFullName": "Automatic Neighbor Relationship basic configuration",
   "officialHierarchy": [
    "MRBTS",
@@ -208,7 +196,7 @@
   "fullNames": [
    "NOKLTE:ANRPRL"
   ],
-  "occurrences": 96,
+  "occurrences": 120,
   "officialFullName": "Automatic Neighbor Relationship Profile LTE",
   "officialHierarchy": [
    "MRBTS",
@@ -234,7 +222,7 @@
   "fullNames": [
    "NOKLTE:ANRPRW"
   ],
-  "occurrences": 7,
+  "occurrences": 29,
   "officialFullName": "Automatic Neighbor Relationship Profile WCDMA",
   "officialHierarchy": [
    "MRBTS",
@@ -260,7 +248,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:ANTL"
   ],
-  "occurrences": 302,
+  "occurrences": 650,
   "officialFullName": "Antenna line",
   "officialHierarchy": [
    "MRBTS",
@@ -282,7 +270,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:ANTL_R"
   ],
-  "occurrences": 90,
+  "occurrences": 224,
   "officialFullName": "Runtime Antenna Line",
   "officialHierarchy": [
    "MRBTS",
@@ -304,7 +292,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:APEQM"
   ],
-  "occurrences": 69,
+  "occurrences": 125,
   "officialFullName": "Access Point Equipment",
   "officialHierarchy": [
    "MRBTS",
@@ -324,7 +312,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:APEQM_R"
   ],
-  "occurrences": 18,
+  "occurrences": 44,
   "officialFullName": "Access Point Equipment_Runtime",
   "officialHierarchy": [
    "MRBTS",
@@ -344,7 +332,7 @@
   "fullNames": [
    "NOKLTE:APUCCH_FDD"
   ],
-  "occurrences": 34,
+  "occurrences": 124,
   "officialFullName": "Automatic PUCCH Allocation Configuration for FDD Cell",
   "officialHierarchy": [
    "MRBTS",
@@ -372,7 +360,7 @@
   "fullNames": [
    "NOKLTE:APUCCH_TDD"
   ],
-  "occurrences": 50,
+  "occurrences": 60,
   "officialFullName": "Automatic PUCCH Allocation Configuration for TDD Cell",
   "officialHierarchy": [
    "MRBTS",
@@ -400,7 +388,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:BBADM"
   ],
-  "occurrences": 7,
+  "occurrences": 31,
   "officialFullName": "Baseband Administration",
   "officialHierarchy": [
    "MRBTS",
@@ -421,7 +409,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:BBMOD"
   ],
-  "occurrences": 46,
+  "occurrences": 138,
   "officialFullName": "Baseband Module",
   "officialHierarchy": [
    "MRBTS",
@@ -443,7 +431,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:BBMOD_R"
   ],
-  "occurrences": 11,
+  "occurrences": 45,
   "officialFullName": "Runtime Baseband Module",
   "officialHierarchy": [
    "MRBTS",
@@ -465,7 +453,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:BBPOOL"
   ],
-  "occurrences": 10,
+  "occurrences": 43,
   "officialFullName": "Baseband Pool",
   "officialHierarchy": [
    "MRBTS",
@@ -487,7 +475,7 @@
   "fullNames": [
    "NOKLTE:BBPOOLALLOC"
   ],
-  "occurrences": 37,
+  "occurrences": 116,
   "officialFullName": "Baseband Pool Allocation",
   "officialHierarchy": [
    "MRBTS",
@@ -508,7 +496,7 @@
   "fullNames": [
    "NOKLTE:BFDGRP"
   ],
-  "occurrences": 208,
+  "occurrences": 216,
   "officialFullName": "BFD group",
   "officialHierarchy": [
    "MRBTS",
@@ -530,7 +518,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:BRGPRT"
   ],
-  "occurrences": 35,
+  "occurrences": 104,
   "officialFullName": "Physical L2 bridge port",
   "officialHierarchy": [
    "MRBTS",
@@ -553,7 +541,7 @@
   "fullNames": [
    "NOKLTE:BTOOTH"
   ],
-  "occurrences": 20,
+  "occurrences": 21,
   "officialFullName": "Bluetooth Manager",
   "officialHierarchy": [
    "MRBTS",
@@ -574,7 +562,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:BWP_PROFILE"
   ],
-  "occurrences": 58,
+  "occurrences": 304,
   "threeGpp": {
    "note": "Bandwidth Parts are defined via the RRC BWP-Downlink/BWP-Uplink information elements.",
    "specs": [
@@ -594,7 +582,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:CABINET"
   ],
-  "occurrences": 69,
+  "occurrences": 125,
   "officialFullName": "Cabinet",
   "officialHierarchy": [
    "MRBTS",
@@ -615,7 +603,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:CABINET_R"
   ],
-  "occurrences": 18,
+  "occurrences": 44,
   "officialFullName": "Runtime Cabinet",
   "officialHierarchy": [
    "MRBTS",
@@ -636,7 +624,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:CABLINK"
   ],
-  "occurrences": 96,
+  "occurrences": 602,
   "officialFullName": "Cable Link",
   "officialHierarchy": [
    "MRBTS",
@@ -657,7 +645,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:CABLINK_R"
   ],
-  "occurrences": 29,
+  "occurrences": 119,
   "officialFullName": "Runtime Cable Link",
   "officialHierarchy": [
    "MRBTS",
@@ -678,7 +666,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CACERT_R"
   ],
-  "occurrences": 20,
+  "occurrences": 120,
   "officialFullName": "Runtime CA Certificate",
   "officialHierarchy": [
    "MRBTS",
@@ -700,7 +688,7 @@
   "fullNames": [
    "NOKLTE:CADPR"
   ],
-  "occurrences": 12,
+  "occurrences": 27,
   "officialFullName": "Carrier Aggregation Default Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -720,7 +708,7 @@
   "fullNames": [
    "NOKLTE:CADPRCBRS"
   ],
-  "occurrences": 5,
+  "occurrences": 9,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -754,7 +742,7 @@
   "fullNames": [
    "NOKLTE:CAGENB"
   ],
-  "occurrences": 17,
+  "occurrences": 37,
   "officialFullName": "Carrier Aggregation Generic eNB configuration",
   "officialHierarchy": [
    "MRBTS",
@@ -780,7 +768,7 @@
   "fullNames": [
    "NOKLTE:CAIMLBP"
   ],
-  "occurrences": 1,
+  "occurrences": 44,
   "officialFullName": "Carrier Aggregation Idle Mode LB Configuration For PCells",
   "officialHierarchy": [
    "MRBTS",
@@ -801,7 +789,7 @@
   "fullNames": [
    "NOKLTE:CAIMLBS"
   ],
-  "occurrences": 1,
+  "occurrences": 2,
   "officialFullName": "Carrier Aggregation Idle Mode LB Configuration For SCells",
   "officialHierarchy": [
    "MRBTS",
@@ -823,7 +811,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CAPCFG"
   ],
-  "occurrences": 7,
+  "occurrences": 31,
   "officialFullName": "Capacity configuration",
   "officialHierarchy": [
    "MRBTS",
@@ -844,7 +832,7 @@
   "fullNames": [
    "NOKLTE:CAPR"
   ],
-  "occurrences": 15,
+  "occurrences": 62,
   "officialFullName": "Carrier Aggregation Default Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -871,7 +859,7 @@
   "fullNames": [
    "NOKLTE:CAREL"
   ],
-  "occurrences": 67,
+  "occurrences": 130,
   "officialFullName": "Carrier Aggregation Relation",
   "officialHierarchy": [
    "MRBTS",
@@ -911,6 +899,28 @@
    "status": "vendor-specific"
   }
  },
+ "CBRSCACERT_R": {
+  "category": "Security",
+  "confidence": "high",
+  "description": "Runtime view of a CBRS certificate-authority certificate installed for SAS communication (under CERTHENT): issuer, subject, serial number, validity, key usage, fingerprint and CRL distribution point. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:CBRSCACERT_R"
+  ],
+  "occurrences": 21,
+  "officialFullName": "Runtime CBRS Certificate Authority Certificate",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "CERTHENT",
+   "CBRSCACERT_R"
+  ],
+  "threeGpp": {
+   "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
+   "specs": [],
+   "status": "other-standard"
+  }
+ },
  "CBRSCERTH": {
   "category": "Security",
   "confidence": "medium",
@@ -918,7 +928,7 @@
   "fullNames": [
    "NOKLTE:CBRSCERTH"
   ],
-  "occurrences": 18,
+  "occurrences": 19,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -932,7 +942,7 @@
   "fullNames": [
    "NOKLTE:CBRSPR"
   ],
-  "occurrences": 7,
+  "occurrences": 16,
   "officialFullName": "Citizens Broadband Radio Service Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -952,7 +962,7 @@
   "fullNames": [
    "NOKLTE:CBSD"
   ],
-  "occurrences": 15,
+  "occurrences": 25,
   "officialFullName": "Citizens Broadband radio Service Device",
   "officialHierarchy": [
    "MRBTS",
@@ -972,7 +982,7 @@
   "fullNames": [
    "NOKLTE:CBSDCEL"
   ],
-  "occurrences": 30,
+  "occurrences": 40,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -1007,7 +1017,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CELLMAPPING"
   ],
-  "occurrences": 70,
+  "occurrences": 126,
   "officialFullName": "Cell Mapping",
   "officialHierarchy": [
    "MRBTS",
@@ -1029,7 +1039,7 @@
    "NOKLTE:CERTH",
    "com.nokia.srbts.mnl:CERTH"
   ],
-  "occurrences": 60,
+  "occurrences": 116,
   "officialFullName": "Certificate management",
   "officialHierarchy": [
    "MRBTS",
@@ -1049,7 +1059,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CERTHENT"
   ],
-  "occurrences": 35,
+  "occurrences": 91,
   "officialFullName": "Certificate Management",
   "officialHierarchy": [
    "MRBTS",
@@ -1070,7 +1080,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CHANNEL"
   ],
-  "occurrences": 639,
+  "occurrences": 4487,
   "officialFullName": "Channel",
   "officialHierarchy": [
    "MRBTS",
@@ -1094,7 +1104,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CHANNELGROUP"
   ],
-  "occurrences": 107,
+  "occurrences": 741,
   "officialFullName": "Channel Group",
   "officialHierarchy": [
    "MRBTS",
@@ -1117,7 +1127,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CLOCK"
   ],
-  "occurrences": 90,
+  "occurrences": 189,
   "officialFullName": "Clock",
   "officialHierarchy": [
    "MRBTS",
@@ -1162,7 +1172,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CLOCK_R"
   ],
-  "occurrences": 19,
+  "occurrences": 60,
   "officialFullName": "Runtime Clock",
   "officialHierarchy": [
    "MRBTS",
@@ -1185,7 +1195,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CLOCK_TDD"
   ],
-  "occurrences": 10,
+  "occurrences": 19,
   "officialFullName": "Clock TDD",
   "officialHierarchy": [
    "MRBTS",
@@ -1202,24 +1212,15 @@
   }
  },
  "CMASPRIO": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"CMASPRIO\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "Priorities for Commercial Mobile Alert System (CMAS) warning messages under LNBTS: a default priority and a per-message-identifier priority table (cmasMsgIdPriorityList), used when several warnings are broadcast in SIB12 at once. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [
    "NOKLTE:CMASPRIO"
   ],
   "occurrences": 1,
-  "sampleParams": [
-   "cmasDefaultPrio",
-   "cmasDefaultSsf",
-   "cmasMsgIdPriorityList",
-   "cmasPrio",
-   "cmasSsf",
-   "msgIdFirst",
-   "msgIdLast"
-  ],
   "threeGpp": {
-   "note": null,
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
    "status": "vendor-specific"
   }
@@ -1231,7 +1232,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMD"
   ],
-  "occurrences": 55,
+  "occurrences": 84,
   "officialFullName": "Command",
   "officialHierarchy": [
    "MRBTS",
@@ -1251,7 +1252,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMP"
   ],
-  "occurrences": 34,
+  "occurrences": 89,
   "officialFullName": "Certificate management protocol",
   "officialHierarchy": [
    "MRBTS",
@@ -1272,7 +1273,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPECDSA"
   ],
-  "occurrences": 29,
+  "occurrences": 84,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -1286,7 +1287,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPECDSA_R"
   ],
-  "occurrences": 3,
+  "occurrences": 28,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -1300,7 +1301,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPFH"
   ],
-  "occurrences": 27,
+  "occurrences": 79,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -1314,7 +1315,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMPFHEXT"
   ],
-  "occurrences": 27,
+  "occurrences": 79,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -1328,7 +1329,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CMP_R"
   ],
-  "occurrences": 5,
+  "occurrences": 30,
   "officialFullName": "Runtime Certificate Management Protocol",
   "officialHierarchy": [
    "MRBTS",
@@ -1343,6 +1344,34 @@
    "status": "vendor-specific"
   }
  },
+ "CONNECTOR_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Runtime view of one optical connector (RF port) on a baseband module (BBMOD_R). Its radioProtocolType shows the protocol the BTS detected on that port: CPRI, OBSAI, or unset when nothing is connected. Read-only. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:CONNECTOR_R"
+  ],
+  "occurrences": 9,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "COPYSWTOPASSIVEREQ": {
+  "category": "Site-Common",
+  "confidence": "medium",
+  "description": "A one-shot command object under MNL/CMD asking the BTS to copy the active software to the passive (fallback) partition (copyToPassive). Inferred from the corpus; no official Nokia description is available.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:COPYSWTOPASSIVEREQ"
+  ],
+  "occurrences": 3,
+  "threeGpp": {
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "CRLH": {
   "category": "Security",
   "confidence": "high",
@@ -1350,7 +1379,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CRLH"
   ],
-  "occurrences": 34,
+  "occurrences": 89,
   "officialFullName": "Certificate revocation list handler",
   "officialHierarchy": [
    "MRBTS",
@@ -1371,7 +1400,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:CRLH_R"
   ],
-  "occurrences": 3,
+  "occurrences": 28,
   "officialFullName": "Runtime Certificate Revocation List Handler",
   "officialHierarchy": [
    "MRBTS",
@@ -1393,7 +1422,7 @@
   "fullNames": [
    "NOKLTE:CTRLTS"
   ],
-  "occurrences": 6,
+  "occurrences": 17,
   "officialFullName": "Trace Control",
   "officialHierarchy": [
    "MRBTS",
@@ -1409,11 +1438,11 @@
  "CUPLANEFHNW": {
   "category": "Transport-Networking",
   "confidence": "low",
-  "description": "CUPLANEFHNW appears to be a grouping/container object for Control-plane/User-plane fronthaul network settings (fronthaul network configuration between baseband/DU and radio/RU functions), based on its name and its placement in the mnl management namespace. No sample parameters were captured, so its exact configurable fields are unknown, but it likely aggregates fronthaul (eCPRI/RoE) network-related sub-configuration.",
+  "description": "Container for the control- and user-plane fronthaul network, the eCPRI link carrying C-plane and U-plane traffic between baseband and radios. It sits under MNLENT next to MPLANENW (the management plane) and is present, empty, in every SBTS25R2 and later file, so all its values are defaults. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
   "fullNames": [
    "com.nokia.srbts.mnl:CUPLANEFHNW"
   ],
-  "occurrences": 29,
+  "occurrences": 84,
   "threeGpp": {
    "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
    "specs": [],
@@ -1427,7 +1456,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:DNS"
   ],
-  "occurrences": 9,
+  "occurrences": 26,
   "officialFullName": "DNS access",
   "officialHierarchy": [
    "MRBTS",
@@ -1448,7 +1477,7 @@
   "fullNames": [
    "NOKLTE:DRX"
   ],
-  "occurrences": 85,
+  "occurrences": 184,
   "officialFullName": "Discontinuous Reception (RX)",
   "officialHierarchy": [
    "MRBTS",
@@ -1469,7 +1498,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:DSCP2PCPMAP"
   ],
-  "occurrences": 21,
+  "occurrences": 76,
   "officialFullName": "DSCP2PCPMAP",
   "officialHierarchy": [
    "MRBTS",
@@ -1492,7 +1521,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:DSCP2QMAP"
   ],
-  "occurrences": 22,
+  "occurrences": 77,
   "officialFullName": "DSCP to Queue Mapping",
   "officialHierarchy": [
    "MRBTS",
@@ -1515,7 +1544,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:DSCPTOQMAP"
   ],
-  "occurrences": 12,
+  "occurrences": 63,
   "officialFullName": "DSCP to Queue Mapping",
   "officialHierarchy": [
    "MRBTS",
@@ -1531,6 +1560,28 @@
    "status": "vendor-specific"
   }
  },
+ "EAC_IN": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "One external alarm input (dry contact) on a system module or radio module: whether it is used, its port, polarity, alarm severity, description text, and start and cancel delays. Production SMODs define eight of these. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:EAC_IN"
+  ],
+  "occurrences": 224,
+  "officialFullName": "External Alarm Control Input",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "RMOD",
+   "EAC_IN"
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "EAC_R": {
   "category": "Equipment",
   "confidence": "medium",
@@ -1538,7 +1589,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:EAC_R"
   ],
-  "occurrences": 202,
+  "occurrences": 753,
   "officialFullName": "Runtime External Alarm Control",
   "officialHierarchy": [
    "MRBTS",
@@ -1560,7 +1611,21 @@
   "fullNames": [
    "com.nokia.srbts.mnl:ECPRIMASTER"
   ],
-  "occurrences": 2,
+  "occurrences": 30,
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
+ },
+ "ECPRIMASTERSTATUS_R": {
+  "category": "Synchronization",
+  "confidence": "medium",
+  "description": "Runtime status of the eCPRI fronthaul timing master under SYNC/CLOCK, in IEEE 1588 terms: clock identity, class, accuracy and variance, time source, UTC offset and leap flags, steps removed and SSM value. Inferred from the corpus; no official Nokia description is available.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:ECPRIMASTERSTATUS_R"
+  ],
+  "occurrences": 1,
   "threeGpp": {
    "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
    "specs": [],
@@ -1568,25 +1633,13 @@
   }
  },
  "ENDCDMEASCONF": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"ENDCDMEASCONF\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "EN-DC measurement configuration under NRDCDPR, one per NR carrier: the B1 event used to find an NR cell for adding an EN-DC leg (NR RSRP/RSRQ thresholds, hysteresis, time to trigger, beam reporting), the NR carrier and bands it applies to (carrierFreqNrCell, freqBandIndicatorNrL), and the thresholds and timers for dropping the NR leg. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [
    "NOKLTE:ENDCDMEASCONF"
   ],
-  "occurrences": 1,
-  "sampleParams": [
-   "b1NrBeamReportQuantity",
-   "b1NrBeamThreshRsrp",
-   "b1NrMaxNumBeams",
-   "b1NrReportAmount",
-   "b1NrReportInterval",
-   "b1ThresholdNrRsrp",
-   "b1TimeToTriggerRsrp",
-   "b1TimeToTriggerRsrq",
-   "b1TriggerQuantity",
-   "carrierFreqNrCell"
-  ],
+  "occurrences": 12,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -1600,7 +1653,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:EQM"
   ],
-  "occurrences": 69,
+  "occurrences": 125,
   "officialFullName": "Equipment",
   "officialHierarchy": [
    "MRBTS",
@@ -1619,7 +1672,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:EQM_R"
   ],
-  "occurrences": 18,
+  "occurrences": 44,
   "officialFullName": "Equipment_Runtime",
   "officialHierarchy": [
    "MRBTS",
@@ -1638,7 +1691,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:ETHAPP"
   ],
-  "occurrences": 18,
+  "occurrences": 42,
   "officialFullName": "Ethernet applications",
   "officialHierarchy": [
    "MRBTS",
@@ -1659,7 +1712,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:ETHIF"
   ],
-  "occurrences": 58,
+  "occurrences": 484,
   "officialFullName": "Plain ethernet network interface",
   "officialHierarchy": [
    "MRBTS",
@@ -1681,7 +1734,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:ETHIF_R"
   ],
-  "occurrences": 7,
+  "occurrences": 42,
   "officialFullName": "Read only Ethernet Interface",
   "officialHierarchy": [
    "MRBTS",
@@ -1705,7 +1758,7 @@
    "NOKLTE:ETHLK",
    "com.nokia.srbts.tnl:ETHLK"
   ],
-  "occurrences": 125,
+  "occurrences": 526,
   "officialFullName": "Ethernet link",
   "officialHierarchy": [
    "MRBTS",
@@ -1727,7 +1780,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:ETHLK_R"
   ],
-  "occurrences": 6,
+  "occurrences": 45,
   "officialFullName": "Read only Ethernet Link",
   "officialHierarchy": [
    "MRBTS",
@@ -1750,7 +1803,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:ETHSVC"
   ],
-  "occurrences": 43,
+  "occurrences": 150,
   "officialFullName": "Ethernet services",
   "officialHierarchy": [
    "MRBTS",
@@ -1766,15 +1819,28 @@
  },
  "EXCCU": {
   "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"EXCCU\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "confidence": "low",
+  "description": "An empty object directly under PLMN in one RNC-side export. Its purpose isn't documented, and the corpus gives no parameters to infer it from. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [
    "EXCCU"
   ],
   "occurrences": 1,
-  "sampleParams": [],
   "threeGpp": {
    "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "EXTALMBOX_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Runtime record of an external alarm box connected to the system module, for example the FSEB External Alarm Box (471424A.306). It reports product code, product name, serial number, connection mode (UART) and the SMOD_R it hangs off (sModRefDN). Read-only. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:EXTALMBOX_R"
+  ],
+  "occurrences": 1,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
    "status": "vendor-specific"
   }
@@ -1786,7 +1852,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:FAN_R"
   ],
-  "occurrences": 19,
+  "occurrences": 100,
   "officialFullName": "Runtime Fan",
   "officialHierarchy": [
    "MRBTS",
@@ -1808,7 +1874,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:FEATCADM"
   ],
-  "occurrences": 70,
+  "occurrences": 126,
   "officialFullName": "Feature Common Administration",
   "officialHierarchy": [
    "MRBTS",
@@ -1829,7 +1895,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:FEATLADM"
   ],
-  "occurrences": 16,
+  "occurrences": 56,
   "officialFullName": "Feature LTE Administration",
   "officialHierarchy": [
    "MRBTS",
@@ -1851,7 +1917,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:FIREWALL"
   ],
-  "occurrences": 11,
+  "occurrences": 51,
   "officialFullName": "Firewall",
   "officialHierarchy": [
    "MRBTS",
@@ -1873,7 +1939,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:FMCADM"
   ],
-  "occurrences": 70,
+  "occurrences": 126,
   "officialFullName": "Fault Management Common Administration",
   "officialHierarchy": [
    "MRBTS",
@@ -1894,7 +1960,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:FSTSCH"
   ],
-  "occurrences": 4,
+  "occurrences": 59,
   "officialFullName": "First level scheduler",
   "officialHierarchy": [
    "MRBTS",
@@ -1917,7 +1983,7 @@
   "fullNames": [
    "NOKLTE:FTM"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "Flexi transport module",
   "officialHierarchy": [
    "MRBTS",
@@ -1930,6 +1996,61 @@
    "status": "vendor-specific"
   }
  },
+ "GFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "GERAN frequency idle-mode parameters on an LTE cell, the GSM counterpart of UFFIM (WCDMA) and NRFIM (NR). It sets the GERAN reselection timer (tResGer, with speed-dependent scaling factors in tResGerSF) and holds one GNFL child per GSM frequency group. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:GFIM"
+  ],
+  "occurrences": 79,
+  "officialFullName": "GERAN frequency Idle Mode parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "GFIM"
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
+ "GNFL": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "One GERAN neighbour frequency group under GFIM: the GSM ARFCNs (gerArfcnVal list) and band indicator, the group's reselection priority, high and low thresholds, qRxLevMinGer, pMaxGer and the NCC permitted bitmap (nccperm). This is what the LTE cell broadcasts in SIB7. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:GNFL"
+  ],
+  "occurrences": 79,
+  "officialFullName": "GERAN Neighbour Frequency List parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "GFIM",
+   "GNFL"
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
  "GNSSE": {
   "category": "Synchronization",
   "confidence": "high",
@@ -1937,7 +2058,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:GNSSE"
   ],
-  "occurrences": 33,
+  "occurrences": 87,
   "officialFullName": "External global navigation satellite system",
   "officialHierarchy": [
    "MRBTS",
@@ -1960,7 +2081,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:GNSSE_R"
   ],
-  "occurrences": 8,
+  "occurrences": 32,
   "officialFullName": "Runtime External Global Navigation Satellite System",
   "officialHierarchy": [
    "MRBTS",
@@ -1983,7 +2104,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:GNSSI"
   ],
-  "occurrences": 32,
+  "occurrences": 33,
   "officialFullName": "Internal Global Navigation Satellite System",
   "officialHierarchy": [
    "MRBTS",
@@ -2006,7 +2127,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:GNSSI_R"
   ],
-  "occurrences": 10,
+  "occurrences": 11,
   "officialFullName": "Runtime Internal Global Navigation Satellite System",
   "officialHierarchy": [
    "MRBTS",
@@ -2022,6 +2143,26 @@
    "status": "vendor-specific"
   }
  },
+ "GTPU": {
+  "category": "Core-Network-Interface",
+  "confidence": "high",
+  "description": "GTP-U (user-plane tunnelling) settings for the eNB: echo-request path supervision (gtpuPathSupint, gtpuN3Reqs, gtpuT3Resp), the S-GW addresses it supervises (sgwIpAddressList), maximum UDP datagram size, the transport network it uses (transportNwId) and an optional trusted-firewall S-GW list. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:GTPU"
+  ],
+  "occurrences": 11,
+  "officialFullName": "GPRS Tunnel Protocol User Plane parameters",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "GTPU"
+  ],
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "HW": {
   "category": "Equipment",
   "confidence": "high",
@@ -2029,7 +2170,7 @@
   "fullNames": [
    "com.nokia.eqm.hw:HW"
   ],
-  "occurrences": 5,
+  "occurrences": 29,
   "threeGpp": {
    "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
@@ -2043,7 +2184,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:HWTOP"
   ],
-  "occurrences": 37,
+  "occurrences": 93,
   "officialFullName": "Hardware Topology",
   "officialHierarchy": [
    "MRBTS",
@@ -2063,7 +2204,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:HWTOP_R"
   ],
-  "occurrences": 8,
+  "occurrences": 34,
   "officialFullName": "Runtime Hardware Topology",
   "officialHierarchy": [
    "MRBTS",
@@ -2110,7 +2251,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IBRGPRT"
   ],
-  "occurrences": 32,
+  "occurrences": 87,
   "officialFullName": "Internal bridge port",
   "officialHierarchy": [
    "MRBTS",
@@ -2133,7 +2274,7 @@
   "fullNames": [
    "NOKLTE:IDNS"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "DNS Access",
   "officialHierarchy": [
    "MRBTS",
@@ -2155,7 +2296,7 @@
   "fullNames": [
    "NOKLTE:IEIF"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "Plain Ethernet network interface",
   "officialHierarchy": [
    "MRBTS",
@@ -2198,7 +2339,7 @@
   "fullNames": [
    "NOKLTE:IFGPR"
   ],
-  "occurrences": 93,
+  "occurrences": 96,
   "officialFullName": "Inter Frequency Group Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -2234,6 +2375,20 @@
    "status": "vendor-specific"
   }
  },
+ "IMLBNR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "NR part of carrier-aggregation idle-mode load balancing, under a CAIMLBP PCell entry. Its nrcellConfigL table lists NR bands (for example band 41) and whether a B1 NR measurement is required for each (b1NrRequired), so idle-mode steering of CA PCells can take 5G coverage into account. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "NOKLTE:IMLBNR"
+  ],
+  "occurrences": 52,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "INTP": {
   "category": "Synchronization",
   "confidence": "high",
@@ -2241,7 +2396,7 @@
   "fullNames": [
    "NOKLTE:INTP"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "NTP Server Configuration",
   "officialHierarchy": [
    "MRBTS",
@@ -2263,7 +2418,7 @@
   "fullNames": [
    "com.nokia.eqm.hw:INVUNIT"
   ],
-  "occurrences": 84,
+  "occurrences": 298,
   "threeGpp": {
    "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
@@ -2277,7 +2432,7 @@
   "fullNames": [
    "com.nokia.srbts.hwinv:INVUNIT_R"
   ],
-  "occurrences": 16,
+  "occurrences": 17,
   "officialFullName": "INVUNIT_R",
   "officialHierarchy": [
    "MRBTS",
@@ -2299,7 +2454,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPADDRESSV4"
   ],
-  "occurrences": 36,
+  "occurrences": 131,
   "officialFullName": "IPv4 Address",
   "officialHierarchy": [
    "MRBTS",
@@ -2322,7 +2477,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPADDRESSV4_R"
   ],
-  "occurrences": 7,
+  "occurrences": 35,
   "officialFullName": "Read only IPv4 address",
   "officialHierarchy": [
    "MRBTS",
@@ -2340,9 +2495,9 @@
   }
  },
  "IPADDRESSV6": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"IPADDRESSV6\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "An IPv6 address on an IP interface (IPIF/IPADDRESSV6): local address and prefix length, and how it is assigned. The IPv6 counterpart of IPADDRESSV4. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
   "fullNames": [
    "com.nokia.srbts.tnl:IPADDRESSV6"
   ],
@@ -2356,13 +2511,8 @@
    "IPIF",
    "IPADDRESSV6"
   ],
-  "sampleParams": [
-   "ipAddressAllocationMethod",
-   "localIpAddr",
-   "localIpPrefixLength"
-  ],
   "threeGpp": {
-   "note": null,
+   "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
    "specs": [],
    "status": "vendor-specific"
   }
@@ -2374,7 +2524,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPAPP"
   ],
-  "occurrences": 23,
+  "occurrences": 79,
   "officialFullName": "IP application",
   "officialHierarchy": [
    "MRBTS",
@@ -2395,7 +2545,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPIF"
   ],
-  "occurrences": 40,
+  "occurrences": 135,
   "officialFullName": "IP interface",
   "officialHierarchy": [
    "MRBTS",
@@ -2417,7 +2567,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPIF_R"
   ],
-  "occurrences": 7,
+  "occurrences": 35,
   "officialFullName": "Read only IP Interface",
   "officialHierarchy": [
    "MRBTS",
@@ -2441,7 +2591,7 @@
    "NOKLTE:IPNO",
    "com.nokia.srbts.tnl:IPNO"
   ],
-  "occurrences": 71,
+  "occurrences": 179,
   "officialFullName": "IP services",
   "officialHierarchy": [
    "MRBTS",
@@ -2485,7 +2635,7 @@
    "NOKLTE:IPRT",
    "com.nokia.srbts.tnl:IPRT"
   ],
-  "occurrences": 61,
+  "occurrences": 161,
   "officialFullName": "IP routing table",
   "officialHierarchy": [
    "MRBTS",
@@ -2508,7 +2658,7 @@
    "NOKLTE:IPRTV6",
    "com.nokia.srbts.tnl:IPRTV6"
   ],
-  "occurrences": 59,
+  "occurrences": 116,
   "officialFullName": "IPv6 routing table",
   "officialHierarchy": [
    "MRBTS",
@@ -2530,7 +2680,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPRTV6_R"
   ],
-  "occurrences": 5,
+  "occurrences": 30,
   "officialFullName": "Read only IPv6 Routing Table",
   "officialHierarchy": [
    "MRBTS",
@@ -2553,7 +2703,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPRT_R"
   ],
-  "occurrences": 5,
+  "occurrences": 32,
   "officialFullName": "Read only IP Routing Table",
   "officialHierarchy": [
    "MRBTS",
@@ -2577,7 +2727,7 @@
    "NOKLTE:IPSECC",
    "com.nokia.srbts.tnl:IPSECC"
   ],
-  "occurrences": 49,
+  "occurrences": 106,
   "officialFullName": "IP security object",
   "officialHierarchy": [
    "MRBTS",
@@ -2610,7 +2760,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:IPSECC_R"
   ],
-  "occurrences": 5,
+  "occurrences": 30,
   "officialFullName": "Read only IP Security",
   "officialHierarchy": [
    "MRBTS",
@@ -2644,7 +2794,7 @@
   "fullNames": [
    "NOKLTE:IRFIM"
   ],
-  "occurrences": 433,
+  "occurrences": 501,
   "officialFullName": "Inter frequency Idle Mode parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -2671,7 +2821,7 @@
   "fullNames": [
    "NOKLTE:ISHPR"
   ],
-  "occurrences": 4,
+  "occurrences": 14,
   "officialFullName": "Downlink Interference Shaping Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -2691,7 +2841,7 @@
   "fullNames": [
    "NOKLTE:IVIF"
   ],
-  "occurrences": 24,
+  "occurrences": 25,
   "officialFullName": "VLAN interface",
   "officialHierarchy": [
    "MRBTS",
@@ -2715,7 +2865,7 @@
    "NOKLTE:L2SWI",
    "com.nokia.srbts.tnl:L2SWI"
   ],
-  "occurrences": 58,
+  "occurrences": 114,
   "officialFullName": "L2 bridge",
   "officialHierarchy": [
    "MRBTS",
@@ -2758,7 +2908,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:LANE"
   ],
-  "occurrences": 4,
+  "occurrences": 381,
   "threeGpp": {
    "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
@@ -2772,7 +2922,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:LANE_R"
   ],
-  "occurrences": 15,
+  "occurrences": 196,
   "threeGpp": {
    "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
@@ -2786,7 +2936,7 @@
   "fullNames": [
    "NOKLTE:LBPUCCHRDPR"
   ],
-  "occurrences": 48,
+  "occurrences": 72,
   "officialFullName": "Load Based PUCCH Region Default PRofile",
   "officialHierarchy": [
    "MRBTS",
@@ -2806,7 +2956,7 @@
   "fullNames": [
    "NOKLTE:LBPUCCHRPR"
   ],
-  "occurrences": 3,
+  "occurrences": 4,
   "officialFullName": "Load Based PUCCH Region PRofile",
   "officialHierarchy": [
    "MRBTS",
@@ -2826,7 +2976,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:LCELL"
   ],
-  "occurrences": 85,
+  "occurrences": 184,
   "officialFullName": "LTE local cell parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -2848,7 +2998,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:LCELNR"
   ],
-  "occurrences": 22,
+  "occurrences": 167,
   "threeGpp": {
    "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
@@ -2862,7 +3012,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:LLOCK"
   ],
-  "occurrences": 10,
+  "occurrences": 11,
   "threeGpp": {
    "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
@@ -2876,7 +3026,7 @@
   "fullNames": [
    "NOKLTE:LNADJ"
   ],
-  "occurrences": 2,
+  "occurrences": 82,
   "officialFullName": "Neighbouring LTE BTS",
   "officialHierarchy": [
    "MRBTS",
@@ -2900,6 +3050,32 @@
    "status": "standardized"
   }
  },
+ "LNADJG": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "A neighbouring GSM (GERAN) cell known to the eNB, under LNBTS: its ARFCN and band, BSIC (network and base-station colour codes), cell identity (gTargetCi, gTargetLac, gTargetRac), PLMN, DTM support and the RIM status for system-information exchange. LNRELG relations under each LNCEL point to these. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:LNADJG"
+  ],
+  "occurrences": 518,
+  "officialFullName": "Neighbouring GERAN BTS Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNADJG"
+  ],
+  "threeGpp": {
+   "note": "Inter-RAT (GERAN/UTRAN) neighbours reach the UE through TS 36.331's measurement objects and SIB6/SIB7; the neighbour records themselves are Nokia's own OAM objects.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
  "LNADJGNB": {
   "category": "Mobility-Neighbor-Relations",
   "confidence": "high",
@@ -2907,7 +3083,7 @@
   "fullNames": [
    "NOKLTE:LNADJGNB"
   ],
-  "occurrences": 7,
+  "occurrences": 13,
   "officialFullName": "Neighbouring gNB",
   "officialHierarchy": [
    "MRBTS",
@@ -2938,7 +3114,7 @@
   "fullNames": [
    "NOKLTE:LNADJL"
   ],
-  "occurrences": 24,
+  "occurrences": 891,
   "officialFullName": "Neighbouring LTE BTS Cell",
   "officialHierarchy": [
    "MRBTS",
@@ -2990,7 +3166,7 @@
   "fullNames": [
    "NOKLTE:LNBTS"
   ],
-  "occurrences": 54,
+  "occurrences": 79,
   "officialFullName": "LTE Basestation RNW parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -3015,7 +3191,7 @@
   "fullNames": [
    "NOKLTE:LNBTS_FDD"
   ],
-  "occurrences": 15,
+  "occurrences": 34,
   "officialFullName": "All Common FDD-Cell Configuration Parameter",
   "officialHierarchy": [
    "MRBTS",
@@ -3041,7 +3217,7 @@
   "fullNames": [
    "NOKLTE:LNBTS_TDD"
   ],
-  "occurrences": 34,
+  "occurrences": 55,
   "officialFullName": "All Common TFDD-Cell Configuration Parameter",
   "officialHierarchy": [
    "MRBTS",
@@ -3067,7 +3243,7 @@
   "fullNames": [
    "NOKLTE:LNCEL"
   ],
-  "occurrences": 91,
+  "occurrences": 191,
   "officialFullName": "LTE BTS CELL RNW parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -3098,7 +3274,7 @@
   "fullNames": [
    "NOKLTE:LNCEL_FDD"
   ],
-  "occurrences": 34,
+  "occurrences": 124,
   "officialFullName": "FDD Specific Cell Parameter",
   "officialHierarchy": [
    "MRBTS",
@@ -3130,7 +3306,7 @@
   "fullNames": [
    "NOKLTE:LNCEL_TDD"
   ],
-  "occurrences": 57,
+  "occurrences": 67,
   "officialFullName": "TDD Specific Cell Parameter",
   "officialHierarchy": [
    "MRBTS",
@@ -3181,6 +3357,33 @@
    "status": "standardized"
   }
  },
+ "LNHOG": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Handover parameters from an LTE cell to GSM: the B2 event thresholds (RSRP or RSRQ of the serving cell, RSSI of the GERAN cell, with separate QCI1/VoLTE values for SRVCC), hysteresis, time to trigger, report interval, and the GERAN ARFCN list and band indicator to measure. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:LNHOG"
+  ],
+  "occurrences": 79,
+  "officialFullName": "Handover parameters to Neigbouring GERAN BTS Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNHOG"
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
  "LNHOIF": {
   "category": "Mobility-Neighbor-Relations",
   "confidence": "high",
@@ -3188,13 +3391,40 @@
   "fullNames": [
    "NOKLTE:LNHOIF"
   ],
-  "occurrences": 407,
+  "occurrences": 500,
   "officialFullName": "Handover parameters to Neigbouring Interfrequency LTE Cell",
   "officialHierarchy": [
    "MRBTS",
    "LNBTS",
    "LNCEL",
    "LNHOIF"
+  ],
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
+ "LNHOW": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Handover parameters from an LTE cell to WCDMA: B2 thresholds (serving RSRP/RSRQ, UTRA RSCP/Ec/N0, with QCI1 variants for SRVCC), B1 thresholds for CS fallback to UTRA, hysteresis and time to trigger. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:LNHOW"
+  ],
+  "occurrences": 79,
+  "officialFullName": "Handover parameters to Neigbouring WCDMA BTS Cell",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNHOW"
   ],
   "threeGpp": {
    "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
@@ -3236,7 +3466,7 @@
   "fullNames": [
    "NOKLTE:LNMME"
   ],
-  "occurrences": 100,
+  "occurrences": 181,
   "officialFullName": "LTE Mobility Management Entity",
   "officialHierarchy": [
    "MRBTS",
@@ -3262,7 +3492,7 @@
   "fullNames": [
    "NOKLTE:LNREL"
   ],
-  "occurrences": 229,
+  "occurrences": 1093,
   "officialFullName": "LTE Neighbor Relation",
   "officialHierarchy": [
    "MRBTS",
@@ -3287,6 +3517,33 @@
    "status": "standardized"
   }
  },
+ "LNRELG": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "A neighbour relation from one LTE cell to a GSM cell, identified by PLMN, LAC and cell identity (ci), matching an LNADJG. Per-relation switches allow SRVCC, eNACC and redirection with system information, and nrControl governs whether ANR may remove it. Large ANR-grown sites carry thousands of these. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:LNRELG"
+  ],
+  "occurrences": 1912,
+  "officialFullName": "LTE Neighbor Relation to GERAN",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "LNCEL",
+   "LNRELG"
+  ],
+  "threeGpp": {
+   "note": "Inter-RAT (GERAN/UTRAN) neighbours reach the UE through TS 36.331's measurement objects and SIB6/SIB7; the neighbour records themselves are Nokia's own OAM objects.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
  "LNRELGNBCELL": {
   "category": "Mobility-Neighbor-Relations",
   "confidence": "high",
@@ -3294,7 +3551,7 @@
   "fullNames": [
    "NOKLTE:LNRELGNBCELL"
   ],
-  "occurrences": 5,
+  "occurrences": 28,
   "officialFullName": "LTE Neighbor Relation to gNB Cell",
   "officialHierarchy": [
    "MRBTS",
@@ -3369,7 +3626,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:LOGLINK"
   ],
-  "occurrences": 14,
+  "occurrences": 53,
   "officialFullName": "Logical Link",
   "officialHierarchy": [
    "MRBTS",
@@ -3390,7 +3647,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:LOGLINK_R"
   ],
-  "occurrences": 14,
+  "occurrences": 25,
   "officialFullName": "Runtime Logical Link",
   "officialHierarchy": [
    "MRBTS",
@@ -3412,7 +3669,7 @@
    "NOKLTE:LTAC",
    "com.nokia.srbts.mnl:LTAC"
   ],
-  "occurrences": 60,
+  "occurrences": 116,
   "officialFullName": "LTE Transport Admission Control",
   "officialHierarchy": [
    "MRBTS",
@@ -3440,7 +3697,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:LTEENB"
   ],
-  "occurrences": 1,
+  "occurrences": 2,
   "threeGpp": {
    "note": "LTE-NR (EN-DC) neighbor relations are governed by the multi-connectivity spec (TS 37.340), with ANR concepts from TS 32.511 also applying.",
    "specs": [
@@ -3458,6 +3715,27 @@
    "status": "standardized"
   }
  },
+ "LTRACE": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "A logged cell-trace session (logged MDT) under CTRLTS: which cells (eutranCellList) and PLMNs or tracking areas it covers, logging interval and duration, MDT configuration and anonymisation, and the trace collection entity (loggedTCEId) the logs go to. The immediate-trace counterpart is MTRACE. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:LTRACE"
+  ],
+  "occurrences": 50,
+  "officialFullName": "Logged Cell Trace Session",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "CTRLTS",
+   "LTRACE"
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "LUAC": {
   "category": "Security",
   "confidence": "high",
@@ -3466,7 +3744,7 @@
    "NOKLTE:LUAC",
    "com.nokia.srbts.mnl:LUAC"
   ],
-  "occurrences": 60,
+  "occurrences": 117,
   "officialFullName": "Local user account",
   "officialHierarchy": [
    "MRBTS",
@@ -3487,7 +3765,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:LUAC_R"
   ],
-  "occurrences": 3,
+  "occurrences": 28,
   "officialFullName": "Runtime Local User Account",
   "officialHierarchy": [
    "MRBTS",
@@ -3551,7 +3829,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:MNL"
   ],
-  "occurrences": 71,
+  "occurrences": 128,
   "officialFullName": "Management Layer",
   "officialHierarchy": [
    "MRBTS",
@@ -3570,7 +3848,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:MNLENT"
   ],
-  "occurrences": 71,
+  "occurrences": 128,
   "officialFullName": "Management Layer Entity",
   "officialHierarchy": [
    "MRBTS",
@@ -3590,7 +3868,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:MNL_R"
   ],
-  "occurrences": 17,
+  "occurrences": 43,
   "officialFullName": "Runtime Management Layer",
   "officialHierarchy": [
    "MRBTS",
@@ -3610,7 +3888,7 @@
   "fullNames": [
    "NOKLTE:MODPR"
   ],
-  "occurrences": 6,
+  "occurrences": 17,
   "officialFullName": "Mobility Default Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -3716,7 +3994,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:MPLANENW"
   ],
-  "occurrences": 60,
+  "occurrences": 117,
   "officialFullName": "Management Plane Network",
   "officialHierarchy": [
    "MRBTS",
@@ -3737,7 +4015,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:MPLANENW_R"
   ],
-  "occurrences": 5,
+  "occurrences": 30,
   "officialFullName": "Runtime Management Plane Network",
   "officialHierarchy": [
    "MRBTS",
@@ -3759,7 +4037,7 @@
   "fullNames": [
    "NOKLTE:MPUCCH_FDD"
   ],
-  "occurrences": 23,
+  "occurrences": 33,
   "officialFullName": "Manual PUCCH Allocation Configuration for FDD Cell",
   "officialHierarchy": [
    "MRBTS",
@@ -3787,7 +4065,7 @@
   "fullNames": [
    "NOKLTE:MPUCCH_TDD"
   ],
-  "occurrences": 50,
+  "occurrences": 60,
   "officialFullName": "Manual PUCCH Allocation Configuration for TDD Cell",
   "officialHierarchy": [
    "MRBTS",
@@ -3816,7 +4094,7 @@
    "com.nokia.mrbts:MRBTS",
    "com.nokia.srbts:MRBTS"
   ],
-  "occurrences": 77,
+  "occurrences": 136,
   "officialFullName": "Multiradio BTS Site",
   "officialHierarchy": [
    "MRBTS"
@@ -3840,7 +4118,7 @@
   "fullNames": [
    "com.nokia.srbts:MRBTSDESC"
   ],
-  "occurrences": 18,
+  "occurrences": 60,
   "officialFullName": "MRBTS Descriptive",
   "officialHierarchy": [
    "MRBTS",
@@ -3859,7 +4137,7 @@
   "fullNames": [
    "NOKLTE:MTRACE"
   ],
-  "occurrences": 3,
+  "occurrences": 14,
   "officialFullName": "Cell Trace Session",
   "officialHierarchy": [
    "MRBTS",
@@ -3900,7 +4178,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:NECERT_R"
   ],
-  "occurrences": 5,
+  "occurrences": 30,
   "officialFullName": "NE Certificate",
   "officialHierarchy": [
    "MRBTS",
@@ -3916,9 +4194,9 @@
   }
  },
  "NOTE": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"NOTE\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Site-Common",
+  "confidence": "high",
+  "description": "A free-text note under MNL/NOTES that annotates another object (describedObjDN) or one of its attributes (attribName, attribValue). Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
   "fullNames": [
    "com.nokia.srbts.mnl:NOTE"
   ],
@@ -3930,13 +4208,8 @@
    "NOTES",
    "NOTE"
   ],
-  "sampleParams": [
-   "attribName",
-   "attribValue",
-   "attribute"
-  ],
   "threeGpp": {
-   "note": null,
+   "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
    "specs": [],
    "status": "vendor-specific"
   }
@@ -3948,7 +4221,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:NOTES"
   ],
-  "occurrences": 3,
+  "occurrences": 31,
   "officialFullName": "Notes",
   "officialHierarchy": [
    "MRBTS",
@@ -3961,6 +4234,48 @@
    "status": "vendor-specific"
   }
  },
+ "NRANR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Basic Automatic Neighbour Relation (ANR) settings for the gNB, the NR counterpart of LTE ANR. It switches automatic removal of NR and E-UTRA neighbours (actAutoNrNbRemoval, actAutoEutraNbRemoval) and sets recheck attempts and interval and the consecutive handover-failure and Xn-resolve-failure thresholds that remove a neighbour. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRANR"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "NRANRPR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "ANR profile for NR neighbour cells: the RSRP threshold a detected NR cell must exceed (anrThresRsrpNbCell), the cell deployment mode it applies to (SA+NSA), removal rechecks and idle time, and the maximum number of ANR-created NR relations (256 in production). Counterpart of LTE ANRPRL. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRANRPR"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "NRANRPRE": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "ANR profile for E-UTRA (LTE) neighbour cells seen from the gNB: the RSRP threshold for LTE neighbours, removal rechecks and idle time, the maximum number of NR-to-LTE relations per cell and the inter-RAT data forwarding method. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRANRPRE"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRBEAMMAP": {
   "category": "NR-Radio-Cell",
   "confidence": "medium",
@@ -3968,7 +4283,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRBEAMMAP"
   ],
-  "occurrences": 1,
+  "occurrences": 33,
   "threeGpp": {
    "note": "Beam management procedures themselves are standardized (TS 38.213/38.214), but this specific logical-beam-ID-to-physical-antenna-pattern mapping table is Nokia's own implementation detail, not a 3GPP-defined structure.",
    "specs": [],
@@ -3982,7 +4297,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRBTS"
   ],
-  "occurrences": 22,
+  "occurrences": 64,
   "threeGpp": {
    "note": "Aggregates the 5G NRM's GNBCUCPFunction/GNBDUFunction concepts under one site-level object.",
    "specs": [
@@ -4002,7 +4317,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCBRSPR"
   ],
-  "occurrences": 1,
+  "occurrences": 6,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -4016,7 +4331,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCBSD"
   ],
-  "occurrences": 1,
+  "occurrences": 6,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -4030,7 +4345,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCBSDCELL"
   ],
-  "occurrences": 1,
+  "occurrences": 3,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -4044,7 +4359,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCELL"
   ],
-  "occurrences": 22,
+  "occurrences": 167,
   "threeGpp": {
    "note": "The class corresponds to the 5G NRM's NRCellDU/NRCellCU IOCs (TS 28.541); most of its RRC-facing parameters are themselves specified in TS 38.331.",
    "specs": [
@@ -4069,7 +4384,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCELLGRP"
   ],
-  "occurrences": 22,
+  "occurrences": 167,
   "threeGpp": {
    "note": "A cell-grouping construct within the 5G NRM's cell hierarchy.",
    "specs": [
@@ -4107,6 +4422,20 @@
    "status": "standardized"
   }
  },
+ "NRCTRLTS": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Trace control container for the gNB, the NR counterpart of LTE CTRLTS. It holds NRMTRACECU and has no parameters of its own in the corpus. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRCTRLTS"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRCUUP": {
   "category": "NR-Radio-Cell",
   "confidence": "high",
@@ -4114,7 +4443,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRCUUP"
   ],
-  "occurrences": 22,
+  "occurrences": 64,
   "threeGpp": {
    "note": "Corresponds to the 5G NRM's GNBCUUPFunction IOC.",
    "specs": [
@@ -4134,7 +4463,7 @@
   "fullNames": [
    "NOKLTE:NRDCDPR"
   ],
-  "occurrences": 7,
+  "occurrences": 21,
   "officialFullName": "New Radio Dual Connectivity Default Profile",
   "officialHierarchy": [
    "MRBTS",
@@ -4147,6 +4476,20 @@
    "status": "vendor-specific"
   }
  },
+ "NRDLMUMIMO": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Per-cell downlink multi-user MIMO settings for massive-MIMO NR cells: pairing correlation, CQI and spectral-efficiency thresholds, the maximum layers per MU resource block group (16 in production), rank adaptation and beam tapering. Every production NRCELL has one. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDLMUMIMO"
+  ],
+  "occurrences": 130,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRDRB": {
   "category": "NR-Radio-Cell",
   "confidence": "medium",
@@ -4154,7 +4497,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB"
   ],
-  "occurrences": 33,
+  "occurrences": 441,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -4168,7 +4511,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_5QI"
   ],
-  "occurrences": 47,
+  "occurrences": 324,
   "threeGpp": {
    "note": "The 5QI (5G QoS Identifier) standardized characteristics table is defined in this spec, \u00a75.7.4.",
    "specs": [
@@ -4188,7 +4531,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_MAC"
   ],
-  "occurrences": 32,
+  "occurrences": 331,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -4202,11 +4545,31 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_PDCP"
   ],
-  "occurrences": 33,
+  "occurrences": 177,
   "threeGpp": {
    "note": null,
    "specs": [],
    "status": "vendor-specific"
+  }
+ },
+ "NRDRB_QCI": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "Maps LTE QCI values (qciValueList) to an NR data radio bearer profile (nrDrbDN) for EN-DC bearers. It is the NSA counterpart of NRDRB_5QI; production gNBs have one per QCI 5 to 9. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRDRB_QCI"
+  ],
+  "occurrences": 135,
+  "threeGpp": {
+   "note": "The QCI standardized characteristics table is defined in this spec, \u00a76.1.7; this object is Nokia's per-QCI NR bearer configuration for EN-DC.",
+   "specs": [
+    {
+     "spec": "TS 23.203",
+     "title": "Policy and charging control architecture",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/23_series/23.203/"
+    }
+   ],
+   "status": "standardized"
   }
  },
  "NRDRB_RLC_AM": {
@@ -4216,7 +4579,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_RLC_AM"
   ],
-  "occurrences": 22,
+  "occurrences": 118,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -4230,7 +4593,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRB_RLC_UM"
   ],
-  "occurrences": 10,
+  "occurrences": 51,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -4244,7 +4607,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDRX"
   ],
-  "occurrences": 89,
+  "occurrences": 272,
   "threeGpp": {
    "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
@@ -4258,7 +4621,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRDU"
   ],
-  "occurrences": 22,
+  "occurrences": 64,
   "threeGpp": {
    "note": "Corresponds to the 5G NRM's GNBDUFunction IOC.",
    "specs": [
@@ -4271,6 +4634,40 @@
    "status": "standardized"
   }
  },
+ "NRFIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "NR frequency idle-mode parameters on an LTE cell, the NR counterpart of GFIM and UFFIM. Its nrCarFrqL table lists the NR carriers LTE phones may reselect to (SSB ARFCN, reselection priority and sub-priority, high and low thresholds, qRxLevMin, pMaxNr, SSB measurement timing) and tResNr sets the reselection timer. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "NOKLTE:NRFIM"
+  ],
+  "occurrences": 79,
+  "threeGpp": {
+   "note": "Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 36.331",
+     "title": "Evolved Universal Terrestrial Radio Access (E-UTRA); Radio Resource Control (RRC); Protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/36_series/36.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
+ "NRHOIR": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Inter-RAT handover settings from NR to one LTE carrier (earfcnValue): B2 handover thresholds (with VoNR variants), B1 redirect measurements, report interval and amount, and measurement bandwidth. NRCELL lists the ones it uses in nrhoirDNList. The name most likely means NR handover inter-RAT. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRHOIR"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRIAFIM": {
   "category": "Mobility-Neighbor-Relations",
   "confidence": "high",
@@ -4278,7 +4675,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRIAFIM"
   ],
-  "occurrences": 13,
+  "occurrences": 54,
   "threeGpp": {
    "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
    "specs": [
@@ -4298,7 +4695,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRIRFIM"
   ],
-  "occurrences": 1,
+  "occurrences": 28,
   "threeGpp": {
    "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
    "specs": [
@@ -4309,6 +4706,20 @@
     }
    ],
    "status": "standardized"
+  }
+ },
+ "NRLIM": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "An LTE carrier for idle-mode reselection from NR, under NRSYSINFO_PROFILE next to NRIAFIM (intra-frequency) and NRIRFIM (inter-frequency): carrier EARFCN, reselection priority and sub-priority, threshXHigh and threshXLow, qRxLevMin, qQualMin and pMaxEutra, broadcast in NR system information. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRLIM"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
   }
  },
  "NRMEASDPR": {
@@ -4318,7 +4729,7 @@
   "fullNames": [
    "NOKLTE:NRMEASDPR"
   ],
-  "occurrences": 17,
+  "occurrences": 32,
   "threeGpp": {
    "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
    "specs": [
@@ -4331,6 +4742,34 @@
    "status": "standardized"
   }
  },
+ "NRMOPR_SA": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "medium",
+  "description": "Default mobility profile for standalone cells, referenced by NRCELL.nrDefMoPrSaDN: which A1 and A2 measurements are enabled, whether A2 triggers a redirect, and the voice and emergency fallback modes. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRMOPR_SA"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "NRMTRACECU": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Cell trace job on the gNB-CU, the NR counterpart of LTE MTRACE: which interfaces are traced (NGAP, Xn, X2, F1, E1, NR RRC), the scope, the maximum traced UEs, the trace reference (PLMN and trace id) and which TCE receives the data (nrTceIdentifier). Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRMTRACECU"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRPLMN": {
   "category": "NR-Radio-Cell",
   "confidence": "high",
@@ -4338,7 +4777,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPLMN"
   ],
-  "occurrences": 39,
+  "occurrences": 81,
   "threeGpp": {
    "note": "Broadcast PLMN identity is carried in SIB1's PLMN-IdentityInfoList, a 3GPP-defined RRC structure.",
    "specs": [
@@ -4351,6 +4790,34 @@
    "status": "standardized"
   }
  },
+ "NRPLMNSET_NSA": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Per-cell PLMN set for non-standalone (EN-DC) operation: the NRPLMN objects the cell serves in NSA (nrPlmnDNList), the EPS tracking area code it reports (configuredEpsTac), and whether it is reserved for operator use. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPLMNSET_NSA"
+  ],
+  "occurrences": 130,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "NRPLMNSET_SA": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Per-cell PLMN set for standalone operation: the NRPLMN objects broadcast for the cell (nrPlmnDNList), their tracking area (trackingAreaDN, pointing at TRACKINGAREA), the RAN area code and the cell-reserved flags. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPLMNSET_SA"
+  ],
+  "occurrences": 132,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRPLMN_SUPPORT": {
   "category": "Core-Network-Interface",
   "confidence": "high",
@@ -4358,7 +4825,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPLMN_SUPPORT"
   ],
-  "occurrences": 4,
+  "occurrences": 21,
   "threeGpp": {
    "note": "Per-PLMN NG-RAN support/broadcast is signalled via NGAP and SIB1.",
    "specs": [
@@ -4378,7 +4845,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPMCCP"
   ],
-  "occurrences": 20,
+  "occurrences": 62,
   "threeGpp": {
    "note": "3GPP defines a standardized catalog of NR/5GC performance measurements in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected.",
    "specs": [
@@ -4389,6 +4856,20 @@
     }
    ],
    "status": "standardized"
+  }
+ },
+ "NRPMQAP": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Performance-measurement QoS profile for NR: which 5QI and QCI ranges get their own counters (cfg5qiRange, cfgQciRange), for SA, NSA or both (cfgProfType), and which counter groups are on. The NR counterpart of PMQAP. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRPMQAP"
+  ],
+  "occurrences": 405,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
   }
  },
  "NRPMRNL": {
@@ -4398,7 +4879,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRPMRNL"
   ],
-  "occurrences": 22,
+  "occurrences": 64,
   "threeGpp": {
    "note": "3GPP defines a standardized catalog of NR/5GC performance measurements in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected.",
    "specs": [
@@ -4411,6 +4892,54 @@
    "status": "standardized"
   }
  },
+ "NRREDRT": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Redirection target for an NR cell, the NR counterpart of LTE REDRT: on RRC release the UE is redirected to the given RAT (E-UTRA) and frequency (redirFreqEutra), with a normal and a bad-uplink priority. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRREDRT"
+  ],
+  "occurrences": 130,
+  "threeGpp": {
+   "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
+   "specs": [
+    {
+     "spec": "TS 38.331",
+     "title": "NR; Radio Resource Control (RRC) protocol specification",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.331/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
+ "NRRESOURCEGROUP": {
+  "category": "QoS",
+  "confidence": "medium",
+  "description": "One resource group for RAN slicing: what it covers (nrResourceList, pointing at SNSSAI objects) and its minimum and maximum quotas in admission control (racParams) and in the scheduler (schedulerParams). Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRRESOURCEGROUP"
+  ],
+  "occurrences": 162,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "NRRESOURCEGROUP_PROFILE": {
+  "category": "QoS",
+  "confidence": "medium",
+  "description": "Container of NRRESOURCEGROUP objects, referenced by each NRCELL for downlink and uplink (nrResourceGroupProfileDN, nrResourceGroupProfileUlDN). It sets the default resource group per PLMN for SA and NSA traffic (defaultRgSaList, defaultRgNsaList). Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRRESOURCEGROUP_PROFILE"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRRFSP_PROFILE": {
   "category": "Mobility-Neighbor-Relations",
   "confidence": "high",
@@ -4418,7 +4947,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRRFSP_PROFILE"
   ],
-  "occurrences": 20,
+  "occurrences": 62,
   "threeGpp": {
    "note": "RFSP Index and Subscriber Profile ID (SPID) are standardized Information Elements carried over S1AP (also referenced from the core network side in TS 23.401's Annex on RAT/Frequency Selection Priority).",
    "specs": [
@@ -4431,6 +4960,20 @@
    "status": "standardized"
   }
  },
+ "NRRIM_PROFILE": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Remote interference management (RIM) for a TDD NR cell: detecting interference from distant base stations, such as atmospheric ducting, with RIM reference signals (set IDs, sequences, patterns, detection windows), and mitigating it by downlink and special-slot muting, PDCCH muting and power reduction. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRRIM_PROFILE"
+  ],
+  "occurrences": 130,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRSASUSERGROUP": {
   "category": "Other",
   "confidence": "medium",
@@ -4438,7 +4981,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSASUSERGROUP"
   ],
-  "occurrences": 1,
+  "occurrences": 3,
   "threeGpp": {
    "note": "Standardized by the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules, not 3GPP. Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).",
    "specs": [],
@@ -4452,7 +4995,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSCTP"
   ],
-  "occurrences": 22,
+  "occurrences": 64,
   "threeGpp": {
    "note": "SCTP is itself an IETF protocol (RFC 4960), but 3GPP specifies its use as the NG-interface signalling transport in this spec.",
    "specs": [
@@ -4472,7 +5015,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSPID_PROFILE"
   ],
-  "occurrences": 20,
+  "occurrences": 62,
   "threeGpp": {
    "note": "RFSP Index and Subscriber Profile ID (SPID) are standardized Information Elements carried over S1AP (also referenced from the core network side in TS 23.401's Annex on RAT/Frequency Selection Priority).",
    "specs": [
@@ -4492,7 +5035,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRSYSINFO_PROFILE"
   ],
-  "occurrences": 13,
+  "occurrences": 55,
   "threeGpp": {
    "note": "NR System Information Blocks and their content are 3GPP-defined broadcast structures.",
    "specs": [
@@ -4505,6 +5048,34 @@
    "status": "standardized"
   }
  },
+ "NRULCLPC_PROFILE": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Uplink closed-loop power control profile, referenced by NRCELL.nrUlClpcProfileDN: target SINR, SINR averaging, update intervals and TPC penalty timers for PUSCH (clpcPusch) and PUCCH (clpcPucch). Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRULCLPC_PROFILE"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "NRULMUMIMO": {
+  "category": "NR-Radio-Cell",
+  "confidence": "high",
+  "description": "Per-cell uplink multi-user MIMO settings: group pairing, correlation and SINR thresholds, the maximum MU layers (4 in production), PRB thresholds, the link adaptation method and beam tapering. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:NRULMUMIMO"
+  ],
+  "occurrences": 130,
+  "threeGpp": {
+   "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "NRX2LINK_TRUST": {
   "category": "Security",
   "confidence": "high",
@@ -4512,7 +5083,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:NRX2LINK_TRUST"
   ],
-  "occurrences": 2,
+  "occurrences": 6920,
   "threeGpp": {
    "note": "3GPP requires inter-node interfaces to be secured (see the Network Domain Security annex); this specific trusted-peer list mechanism is Nokia's own implementation.",
    "specs": [
@@ -4532,7 +5103,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:NTP"
   ],
-  "occurrences": 31,
+  "occurrences": 86,
   "officialFullName": "Network Time Protocol",
   "officialHierarchy": [
    "MRBTS",
@@ -4577,7 +5148,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:NTP_R"
   ],
-  "occurrences": 5,
+  "occurrences": 29,
   "officialFullName": "Runtime Network Time Protocol",
   "officialHierarchy": [
    "MRBTS",
@@ -4594,6 +5165,48 @@
    "status": "other-standard"
   }
  },
+ "PASSDEV": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "A passive RF device (filter, combiner, diplexer and similar) under APEQM, with its inventory data and the extra gain or attenuation it adds in transmit and receive, so the BTS can compensate the RF path budget. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:PASSDEV"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Passive Device",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "PASSDEV"
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "PASSDEV_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Runtime counterpart of PASSDEV. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:PASSDEV_R"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Runtime Passive Device",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "PASSDEV_R"
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "PCP2QMAP": {
   "category": "QoS",
   "confidence": "high",
@@ -4601,7 +5214,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:PCP2QMAP"
   ],
-  "occurrences": 7,
+  "occurrences": 8,
   "officialFullName": "PCP to queue mapping",
   "officialHierarchy": [
    "MRBTS",
@@ -4624,7 +5237,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:PDCCH"
   ],
-  "occurrences": 20,
+  "occurrences": 266,
   "threeGpp": {
    "note": "Configures the RRC PDCCH-Config / PDCCH-ConfigCommon information elements.",
    "specs": [
@@ -4640,11 +5253,11 @@
  "PDCCH_CONFIG_COMMON": {
   "category": "NR-Radio-Cell",
   "confidence": "high",
-  "description": "PDCCH_CONFIG_COMMON defines the common (cell-wide) PDCCH search-space and CORESET configuration for an NR cell per 3GPP TS 38.331 -- including CORESET ID, DCI format, monitoring symbol/slot offset, periodicity, search-space type (common vs. UE-specific), and the number of PDCCH candidates configured per aggregation level. It complements PDCCH's aggregation-level selection logic with the standardized control-resource-set definition.",
+  "description": "Common PDCCH search spaces for a bandwidth part, under BWP_PROFILE/PDCCH (compare the PDCCH-ConfigCommon IE of 3GPP TS 38.331). Its searchSpaceCommon table sets search space id, CORESET, DCI format, monitoring periodicity, offset and symbols, and the candidates per aggregation level. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
   "fullNames": [
    "com.nokia.srbts.nrbts:PDCCH_CONFIG_COMMON"
   ],
-  "occurrences": 20,
+  "occurrences": 266,
   "threeGpp": {
    "note": "Configures the RRC PDCCH-Config / PDCCH-ConfigCommon information elements.",
    "specs": [
@@ -4660,11 +5273,11 @@
  "PDCCH_CONFIG_DEDICATED": {
   "category": "NR-Radio-Cell",
   "confidence": "high",
-  "description": "Defines the UE-specific (dedicated) PDCCH (Physical Downlink Control Channel) configuration for a 5G NR cell, including the CORESET (Control Resource Set) definition, CCE-to-REG mapping, interleaver and REG bundle sizes, DCI format, monitoring periodicity/offset, and the number of PDCCH candidates configured per aggregation level (AL1/2/4/8/16). This is a standard 3GPP NR physical-layer control-channel configuration object nested under an NR cell/BWP.",
+  "description": "UE-specific PDCCH configuration for a bandwidth part (compare the PDCCH-Config IE of 3GPP TS 38.331): the dedicated CORESETs (start RB, size, duration, CCE-to-REG mapping, interleaver and REG bundle size) and the dedicated search spaces. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
   "fullNames": [
    "com.nokia.srbts.nrbts:PDCCH_CONFIG_DEDICATED"
   ],
-  "occurrences": 10,
+  "occurrences": 214,
   "threeGpp": {
    "note": "Configures the RRC PDCCH-Config / PDCCH-ConfigCommon information elements.",
    "specs": [
@@ -4684,7 +5297,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:PDSCH"
   ],
-  "occurrences": 30,
+  "occurrences": 234,
   "threeGpp": {
    "note": "Configures the RRC PDSCH-Config information element.",
    "specs": [
@@ -4700,11 +5313,78 @@
  "PFOE_R": {
   "category": "Equipment",
   "confidence": "low",
-  "description": "A runtime equipment-status object in the equipment-runtime (eqmr) namespace; no sample parameters were captured in this dataset. Based on its naming pattern (similar to POE) and placement alongside other hardware runtime-mirror classes, it most likely reports Power-over-Ethernet feed/output status for a hardware port, but this is a low-confidence inference.",
+  "description": "Runtime object under a system module (SMOD_R), always empty in the corpus. It appears in actual exports of SBTS sites with ASIK system modules, never in the production files. The name isn't expanded anywhere. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
   "fullNames": [
    "com.nokia.srbts.eqmr:PFOE_R"
   ],
+  "occurrences": 11,
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "PHYANT": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "A physical antenna on a radio module (RMOD/PHYANT). Massive-MIMO radios with an integrated antenna array use one PHYANT instead of per-port ANTL objects, and their CHANNEL objects point to it. The official parameters are location and inventory data (latitude, longitude, altitude, product code, serial number); every instance in the corpus is empty. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.eqm:PHYANT"
+  ],
+  "occurrences": 131,
+  "officialFullName": "Physical antenna",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM",
+   "APEQM",
+   "RMOD",
+   "PHYANT"
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "PHYANTU_R": {
+  "category": "Equipment",
+  "confidence": "medium",
+  "description": "Runtime unit of a physical antenna (PHYANT_R child), giving the TRX position it is connected to. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:PHYANTU_R"
+  ],
+  "occurrences": 2,
+  "officialFullName": "Runtime Physical Antenna",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "PHYANT_R",
+   "PHYANTU_R"
+  ],
+  "threeGpp": {
+   "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "PHYANT_R": {
+  "category": "Equipment",
+  "confidence": "high",
+  "description": "Runtime counterpart of PHYANT, reported by the radio: antenna location and inventory data. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.eqmr:PHYANT_R"
+  ],
   "occurrences": 1,
+  "officialFullName": "Runtime Physical Antenna",
+  "officialHierarchy": [
+   "MRBTS",
+   "EQM_R",
+   "APEQM_R",
+   "RMOD_R",
+   "PHYANT_R"
+  ],
   "threeGpp": {
    "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
@@ -4718,7 +5398,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:PKTFLTR"
   ],
-  "occurrences": 11,
+  "occurrences": 51,
   "officialFullName": "IP Packet Filter",
   "officialHierarchy": [
    "MRBTS",
@@ -4736,11 +5416,10 @@
  },
  "PLMN": {
   "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"PLMN\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "confidence": "medium",
+  "description": "Root object of an RNC-side WCDMA export (PLMN/RNC/WBTS/WCEL), not part of the MRBTS model. It has no parameters of its own. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [],
   "occurrences": 1,
-  "sampleParams": [],
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -4754,7 +5433,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:PMCADM"
   ],
-  "occurrences": 70,
+  "occurrences": 127,
   "officialFullName": "Performance measurement common administration",
   "officialHierarchy": [
    "MRBTS",
@@ -4775,13 +5454,13 @@
   }
  },
  "PMCADM_R": {
-  "category": "Site-Common",
-  "confidence": "low",
-  "description": "A performance-management collection/administration runtime object under the site management-network-layer branch. No sample parameters were captured in this dataset, so its precise scope is inferred generically as controlling or reporting on PM (performance measurement) data-collection administration for the node.",
+  "category": "Feature-Function-Config",
+  "confidence": "medium",
+  "description": "Runtime state of performance-measurement administration (PMCADM). Empty in the corpus; it appears in actual exports. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
   "fullNames": [
    "com.nokia.srbts.mnl:PMCADM_R"
   ],
-  "occurrences": 3,
+  "occurrences": 28,
   "threeGpp": {
    "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
    "specs": [
@@ -4801,7 +5480,7 @@
   "fullNames": [
    "NOKLTE:PMCCP"
   ],
-  "occurrences": 48,
+  "occurrences": 72,
   "officialFullName": "Performance Monitoring Counters Configuration Parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -4828,7 +5507,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:PMMNL"
   ],
-  "occurrences": 12,
+  "occurrences": 52,
   "officialFullName": "Performance Management Administration for Management Layer",
   "officialHierarchy": [
    "MRBTS",
@@ -4855,7 +5534,7 @@
   "fullNames": [
    "NOKLTE:PMPLM"
   ],
-  "occurrences": 35,
+  "occurrences": 59,
   "threeGpp": {
    "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
    "specs": [
@@ -4875,7 +5554,7 @@
   "fullNames": [
    "NOKLTE:PMQAP"
   ],
-  "occurrences": 60,
+  "occurrences": 71,
   "officialFullName": "Performance Monitoring QCI and ARP Profiles identifier",
   "officialHierarchy": [
    "MRBTS",
@@ -4902,7 +5581,7 @@
   "fullNames": [
    "NOKLTE:PMRNL"
   ],
-  "occurrences": 48,
+  "occurrences": 72,
   "officialFullName": "PM counters configuration for radio network layer",
   "officialHierarchy": [
    "MRBTS",
@@ -4928,7 +5607,7 @@
   "fullNames": [
    "NOKLTE:PMRPQH"
   ],
-  "occurrences": 5,
+  "occurrences": 16,
   "officialFullName": "Performance Monitoring RSRP and RSRQ Histogram",
   "officialHierarchy": [
    "MRBTS",
@@ -4956,7 +5635,7 @@
    "NOKLTE:PMTNL",
    "com.nokia.srbts.tnl:PMTNL"
   ],
-  "occurrences": 31,
+  "occurrences": 32,
   "officialFullName": "Performance Management Administration for the Transport Network Layer",
   "officialHierarchy": [
    "MRBTS",
@@ -4983,7 +5662,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:PMTNLINT"
   ],
-  "occurrences": 29,
+  "occurrences": 84,
   "threeGpp": {
    "note": "3GPP defines a standardized catalog of E-UTRAN performance counters in this spec; this object controls which of Nokia's (standardized-and-proprietary) counters get collected, so applies loosely -- see the note before assuming every counter this config touches has a matching 3GPP counter definition.",
    "specs": [
@@ -5003,7 +5682,7 @@
   "fullNames": [
    "NOKLTE:PNASC"
   ],
-  "occurrences": 20,
+  "occurrences": 21,
   "officialFullName": "Port Network Access Security for FZM",
   "officialHierarchy": [
    "MRBTS",
@@ -5045,7 +5724,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:POWERGROUP_R"
   ],
-  "occurrences": 11,
+  "occurrences": 46,
   "officialFullName": "Runtime Powergroup",
   "officialHierarchy": [
    "MRBTS",
@@ -5062,9 +5741,9 @@
   }
  },
  "PREEMPPR": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"PREEMPPR\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "QoS",
+  "confidence": "high",
+  "description": "Pre-emption profile under LNBTS for one PLMN: how the eNB picks bearers to pre-empt when admission control is full, including a preferred candidate list and whether to search all candidates for emergency calls. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
   "fullNames": [
    "NOKLTE:PREEMPPR"
   ],
@@ -5075,16 +5754,28 @@
    "LNBTS",
    "PREEMPPR"
   ],
-  "sampleParams": [
-   "mcc",
-   "mnc",
-   "mncLength",
-   "preferredPreempCandList",
-   "searchAllCandForEmergency",
-   "searchRestPreempCand"
-  ],
   "threeGpp": {
    "note": null,
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "PSGRP": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "A load-based power saving (LBPS) group under LNBTS: the cells in the group (lbpsCellList), the time windows and days when cells may be switched off, load thresholds for switching cells off and back on, the order cells go off in, and EN-DC guard settings so an NR anchor isn't removed while EN-DC UEs depend on it. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:PSGRP"
+  ],
+  "occurrences": 30,
+  "officialFullName": "Power Saving Group",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "PSGRP"
+  ],
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
    "status": "vendor-specific"
   }
@@ -5096,7 +5787,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:PTPMASTER"
   ],
-  "occurrences": 2,
+  "occurrences": 8,
   "threeGpp": {
    "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
    "specs": [],
@@ -5111,7 +5802,7 @@
    "NOKLTE:QOS",
    "com.nokia.srbts.tnl:QOS"
   ],
-  "occurrences": 48,
+  "occurrences": 104,
   "officialFullName": "QoS profile",
   "officialHierarchy": [
    "MRBTS",
@@ -5133,7 +5824,7 @@
   "fullNames": [
    "NOKLTE:REDRT"
   ],
-  "occurrences": 122,
+  "occurrences": 369,
   "officialFullName": "Redirection target parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -5160,7 +5851,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:RETU"
   ],
-  "occurrences": 16,
+  "occurrences": 103,
   "officialFullName": "RET Unit",
   "officialHierarchy": [
    "MRBTS",
@@ -5182,7 +5873,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:RETU_R"
   ],
-  "occurrences": 16,
+  "occurrences": 30,
   "officialFullName": "Runtime RET Unit",
   "officialHierarchy": [
    "MRBTS",
@@ -5249,7 +5940,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:RFTHLD"
   ],
-  "occurrences": 14,
+  "occurrences": 56,
   "officialFullName": "RF Test Threshold",
   "officialHierarchy": [
    "MRBTS",
@@ -5271,7 +5962,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:RIBS"
   ],
-  "occurrences": 24,
+  "occurrences": 25,
   "threeGpp": {
    "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
@@ -5285,7 +5976,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:RIBS_R"
   ],
-  "occurrences": 7,
+  "occurrences": 8,
   "threeGpp": {
    "note": "Site-wide Nokia O&M/administrative configuration, not part of any 3GPP-defined model.",
    "specs": [],
@@ -5299,7 +5990,7 @@
   "fullNames": [
    "NOKLTE:RIM"
   ],
-  "occurrences": 3,
+  "occurrences": 14,
   "officialFullName": "RAN Information Management",
   "officialHierarchy": [
    "MRBTS",
@@ -5325,7 +6016,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:RMOD"
   ],
-  "occurrences": 106,
+  "occurrences": 328,
   "officialFullName": "Radio Module",
   "officialHierarchy": [
    "MRBTS",
@@ -5346,7 +6037,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:RMOD_R"
   ],
-  "occurrences": 34,
+  "occurrences": 69,
   "officialFullName": "Runtime Radio Module",
   "officialHierarchy": [
    "MRBTS",
@@ -5362,15 +6053,20 @@
  },
  "RNC": {
   "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"RNC\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "confidence": "medium",
+  "description": "A WCDMA radio network controller in an RNC-side export (PLMN/RNC), the parent of the WBTS objects it controls. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [],
   "occurrences": 2,
-  "sampleParams": [],
   "threeGpp": {
-   "note": null,
-   "specs": [],
-   "status": "vendor-specific"
+   "note": "Correspond to the UTRAN NRM's RncFunction, NodeBFunction and UtranCellFDD IOCs.",
+   "specs": [
+    {
+     "spec": "TS 28.652",
+     "title": "Telecommunication management; Universal Terrestrial Radio Access Network (UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.652/"
+    }
+   ],
+   "status": "standardized"
   }
  },
  "RSL": {
@@ -5380,7 +6076,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:RSL"
   ],
-  "occurrences": 23,
+  "occurrences": 216,
   "officialFullName": "RSL",
   "officialHierarchy": [
    "MRBTS",
@@ -5402,7 +6098,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:RSL_R"
   ],
-  "occurrences": 14,
+  "occurrences": 31,
   "officialFullName": "Runtime RS485 Port",
   "officialHierarchy": [
    "MRBTS",
@@ -5425,7 +6121,7 @@
    "NOKLTE:RTPOL",
    "com.nokia.srbts.tnl:RTPOL"
   ],
-  "occurrences": 38,
+  "occurrences": 93,
   "officialFullName": "Routing policy",
   "officialHierarchy": [
    "MRBTS",
@@ -5447,7 +6143,7 @@
   "fullNames": [
    "NOKLTE:SASUSERGROUP"
   ],
-  "occurrences": 2,
+  "occurrences": 10,
   "officialFullName": "SAS User Group",
   "officialHierarchy": [
    "MRBTS",
@@ -5467,7 +6163,7 @@
   "fullNames": [
    "NOKLTE:SCTP"
   ],
-  "occurrences": 48,
+  "occurrences": 72,
   "officialFullName": "Stream Control Transmission Protocol parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -5493,7 +6189,7 @@
   "fullNames": [
    "NOKLTE:SDRX"
   ],
-  "occurrences": 85,
+  "occurrences": 184,
   "officialFullName": "Smart Discontinuous Reception (RX)",
   "officialHierarchy": [
    "MRBTS",
@@ -5514,7 +6210,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SECADM"
   ],
-  "occurrences": 71,
+  "occurrences": 128,
   "officialFullName": "Security administration",
   "officialHierarchy": [
    "MRBTS",
@@ -5535,7 +6231,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SECADM_R"
   ],
-  "occurrences": 7,
+  "occurrences": 32,
   "officialFullName": "Runtime Security Administration",
   "officialHierarchy": [
    "MRBTS",
@@ -5557,7 +6253,7 @@
   "fullNames": [
    "NOKLTE:SECPRM"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "Security parameter",
   "officialHierarchy": [
    "MRBTS",
@@ -5578,7 +6274,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:SERVEDAMF"
   ],
-  "occurrences": 20,
+  "occurrences": 116,
   "threeGpp": {
    "note": "AMF configuration/selection information is carried over NGAP.",
    "specs": [
@@ -5598,7 +6294,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:SFP"
   ],
-  "occurrences": 6,
+  "occurrences": 383,
   "threeGpp": {
    "note": "Physical hardware modeling (cabinets, modules, cables, transceivers, etc.) at this granularity is Nokia's own equipment model -- 3GPP's Network Resource Model does not standardize individual hardware unit types.",
    "specs": [],
@@ -5612,7 +6308,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:SFP_R"
   ],
-  "occurrences": 19,
+  "occurrences": 200,
   "officialFullName": "Runtime Small Form-factor Pluggable",
   "officialHierarchy": [
    "MRBTS",
@@ -5634,7 +6330,7 @@
   "fullNames": [
    "NOKLTE:SIB"
   ],
-  "occurrences": 91,
+  "occurrences": 191,
   "officialFullName": "System Information Broadcast",
   "officialHierarchy": [
    "MRBTS",
@@ -5661,7 +6357,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SLCELLDRCONF"
   ],
-  "occurrences": 6,
+  "occurrences": 46,
   "threeGpp": {
    "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
    "specs": [],
@@ -5675,7 +6371,7 @@
   "fullNames": [
    "com.nokia.srbts.eqm:SMOD"
   ],
-  "occurrences": 69,
+  "occurrences": 125,
   "officialFullName": "System Module",
   "officialHierarchy": [
    "MRBTS",
@@ -5697,7 +6393,7 @@
   "fullNames": [
    "com.nokia.srbts.eqmr:SMOD_R"
   ],
-  "occurrences": 18,
+  "occurrences": 44,
   "officialFullName": "Runtime System Module",
   "officialHierarchy": [
    "MRBTS",
@@ -5719,7 +6415,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:SNSSAI"
   ],
-  "occurrences": 13,
+  "occurrences": 192,
   "threeGpp": {
    "note": "S-NSSAI (network slice identity) is defined in the 5G System Architecture spec (also numbered in TS 23.003).",
    "specs": [
@@ -5739,7 +6435,7 @@
   "fullNames": [
    "NOKLTE:STPG"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "Synchronization Protection Group",
   "officialHierarchy": [
    "MRBTS",
@@ -5762,7 +6458,7 @@
    "NOKLTE:SYNC",
    "com.nokia.srbts.mnl:SYNC"
   ],
-  "occurrences": 117,
+  "occurrences": 217,
   "officialFullName": "Synchronization",
   "officialHierarchy": [
    "MRBTS",
@@ -5783,7 +6479,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SYNCE"
   ],
-  "occurrences": 2,
+  "occurrences": 9,
   "officialFullName": "Synchronous Ethernet",
   "officialHierarchy": [
    "MRBTS",
@@ -5799,6 +6495,30 @@
    "status": "other-standard"
   }
  },
+ "SYNCE_R": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Runtime state of Synchronous Ethernet: the SSM quality level received on the link (ssmValue) and the link it applies to (targetDN). Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:SYNCE_R"
+  ],
+  "occurrences": 7,
+  "officialFullName": "Runtime Synchronous Ethernet",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "SYNCE",
+   "SYNCE_R"
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8262/G.8264 Synchronous Ethernet), not 3GPP. Frequency distribution over Ethernet physical layer, unrelated to 3GPP.",
+   "specs": [],
+   "status": "other-standard"
+  }
+ },
  "SYNC_R": {
   "category": "Synchronization",
   "confidence": "high",
@@ -5806,7 +6526,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:SYNC_R"
   ],
-  "occurrences": 3,
+  "occurrences": 27,
   "threeGpp": {
    "note": null,
    "specs": [],
@@ -5821,7 +6541,7 @@
    "NOKLTE:TAC",
    "com.nokia.srbts.mnl:TAC"
   ],
-  "occurrences": 60,
+  "occurrences": 116,
   "officialFullName": "Transport Admission Control",
   "officialHierarchy": [
    "MRBTS",
@@ -5841,6 +6561,34 @@
    "status": "standardized"
   }
  },
+ "TCE": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Trace Collection Entity: where the BTS sends trace and MDT data. It sets the TCE's IP address and port, its identifier (used by MTRACE and NRMTRACECU) and whether TLS is used. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TCE"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
+ "TCEADM": {
+  "category": "Feature-Function-Config",
+  "confidence": "high",
+  "description": "Administration container for Trace Collection Entities (TCE) under MNL. It has no parameters of its own. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TCEADM"
+  ],
+  "occurrences": 27,
+  "threeGpp": {
+   "note": "A Nokia feature-configuration/administration wrapper; some of the underlying radio features it controls are 3GPP-standardized even where this specific object isn't -- check the individual parameters (phase 2 of this work) for those cases.",
+   "specs": [],
+   "status": "vendor-specific"
+  }
+ },
  "TEST": {
   "category": "Equipment",
   "confidence": "low",
@@ -5848,7 +6596,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:TEST"
   ],
-  "occurrences": 15,
+  "occurrences": 57,
   "officialFullName": "Test",
   "officialHierarchy": [
    "MRBTS",
@@ -5863,24 +6611,18 @@
   }
  },
  "TGTTHRESHPR": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"TGTTHRESHPR\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "Target threshold profile under LNBTS: minimum RSRP/RSRQ a handover target must have, offsets of target relative to source, and separate offsets for the VoLTE-quality (3a) case. Referenced from mobility profiles. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
   "fullNames": [
    "NOKLTE:TGTTHRESHPR"
   ],
-  "occurrences": 2,
+  "occurrences": 13,
   "officialFullName": "Target Threshold Profile",
   "officialHierarchy": [
    "MRBTS",
    "LNBTS",
    "TGTTHRESHPR"
-  ],
-  "sampleParams": [
-   "thresholdOffsetRsrpMinTargetToSource",
-   "thresholdOffsetRsrqMinTargetToSource",
-   "thresholdRsrpMinTarget",
-   "thresholdRsrqMinTarget"
   ],
   "threeGpp": {
    "note": null,
@@ -5895,7 +6637,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:TIME"
   ],
-  "occurrences": 90,
+  "occurrences": 188,
   "officialFullName": "Time synchronization",
   "officialHierarchy": [
    "MRBTS",
@@ -5917,7 +6659,7 @@
   "fullNames": [
    "NOKLTE:TMSWPR"
   ],
-  "occurrences": 12,
+  "occurrences": 27,
   "officialFullName": "Transmission Mode SWitch PRofile",
   "officialHierarchy": [
    "MRBTS",
@@ -5937,7 +6679,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:TNL"
   ],
-  "occurrences": 45,
+  "occurrences": 152,
   "officialFullName": "Transport network layer",
   "officialHierarchy": [
    "MRBTS",
@@ -5957,7 +6699,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:TNLSVC"
   ],
-  "occurrences": 35,
+  "occurrences": 91,
   "officialFullName": "Transport Network Layer Service",
   "officialHierarchy": [
    "MRBTS",
@@ -5976,7 +6718,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:TNL_R"
   ],
-  "occurrences": 5,
+  "occurrences": 31,
   "officialFullName": "Read only Transport Network Layer",
   "officialHierarchy": [
    "MRBTS",
@@ -5997,7 +6739,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:TOP"
   ],
-  "occurrences": 23,
+  "occurrences": 80,
   "officialFullName": "TOP synchronization",
   "officialHierarchy": [
    "MRBTS",
@@ -6020,7 +6762,7 @@
   "fullNames": [
    "NOKLTE:TOPB"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "ToP base MO",
   "officialHierarchy": [
    "MRBTS",
@@ -6039,9 +6781,10 @@
   "confidence": "high",
   "description": "TOPF configures Timing-over-Packet (PTP/IEEE 1588) frequency synchronization behavior, including the accepted clock quality, the telecom PTP profile in use, announce-message request mode, sync message logging interval, PTP domain number, and the list of candidate master clocks. It works alongside TOPB and TOP to establish packet-based timing references.",
   "fullNames": [
-   "NOKLTE:TOPF"
+   "NOKLTE:TOPF",
+   "com.nokia.srbts.mnl:TOPF"
   ],
-  "occurrences": 26,
+  "occurrences": 28,
   "officialFullName": "TOP frequency synchronization",
   "officialHierarchy": [
    "MRBTS",
@@ -6058,6 +6801,31 @@
    "status": "other-standard"
   }
  },
+ "TOPF_R": {
+  "category": "Synchronization",
+  "confidence": "high",
+  "description": "Runtime state of Timing-over-Packet frequency synchronisation: lock state, the active PTP master and its received clock class and priorities, and the master list as currently seen. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "com.nokia.srbts.mnl:TOPF_R"
+  ],
+  "occurrences": 1,
+  "officialFullName": "Runtime TOP Frequency Synchronization",
+  "officialHierarchy": [
+   "MRBTS",
+   "MNL",
+   "MNLENT",
+   "SYNC",
+   "CLOCK",
+   "TOP",
+   "TOPF",
+   "TOPF_R"
+  ],
+  "threeGpp": {
+   "note": "Standardized by the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP), not 3GPP. 3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.",
+   "specs": [],
+   "status": "other-standard"
+  }
+ },
  "TOPP": {
   "category": "Synchronization",
   "confidence": "high",
@@ -6066,7 +6834,7 @@
    "NOKLTE:TOPP",
    "com.nokia.srbts.mnl:TOPP"
   ],
-  "occurrences": 48,
+  "occurrences": 96,
   "officialFullName": "TOP phase synchronization",
   "officialHierarchy": [
    "MRBTS",
@@ -6090,7 +6858,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:TOPP_R"
   ],
-  "occurrences": 2,
+  "occurrences": 22,
   "officialFullName": "Runtime TOP Phase Synchronization",
   "officialHierarchy": [
    "MRBTS",
@@ -6115,7 +6883,7 @@
   "fullNames": [
    "com.nokia.srbts.nrbts:TRACKINGAREA"
   ],
-  "occurrences": 22,
+  "occurrences": 64,
   "threeGpp": {
    "note": "NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.",
    "specs": [
@@ -6135,7 +6903,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:TRBLCADM"
   ],
-  "occurrences": 67,
+  "occurrences": 124,
   "officialFullName": "Troubleshooting common administration",
   "officialHierarchy": [
    "MRBTS",
@@ -6156,7 +6924,7 @@
   "fullNames": [
    "com.nokia.srbts.mnl:TRBLCADM_R"
   ],
-  "occurrences": 7,
+  "occurrences": 32,
   "officialFullName": "Runtime Troubleshooting Common Administration",
   "officialHierarchy": [
    "MRBTS",
@@ -6178,7 +6946,7 @@
   "fullNames": [
    "NOKLTE:TRSNW"
   ],
-  "occurrences": 12,
+  "occurrences": 35,
   "officialFullName": "Transport Network",
   "officialHierarchy": [
    "MRBTS",
@@ -6196,9 +6964,10 @@
   "confidence": "high",
   "description": "Implements a TWAMP (Two-Way Active Measurement Protocol, RFC 5357) test session used to actively measure round-trip transport-network performance between the BTS and a TWAMP responder, configured with source/destination IP addresses and port, DSCP marking of test packets, test-message size, and alarm thresholds for packet-loss ratio (plrAlarmThreshold) and round-trip time (rttAlarmThreshold). It is a network-performance-monitoring/QoS-verification object in the transport layer.",
   "fullNames": [
-   "NOKLTE:TWAMP"
+   "NOKLTE:TWAMP",
+   "com.nokia.srbts.tnl:TWAMP"
   ],
-  "occurrences": 1,
+  "occurrences": 29,
   "officialFullName": "TWAMP session",
   "officialHierarchy": [
    "MRBTS",
@@ -6214,9 +6983,9 @@
   }
  },
  "TWAMPREFLECT": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"TWAMPREFLECT\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "category": "Transport-Networking",
+  "confidence": "high",
+  "description": "TWAMP reflector under IPAPP: whether the BTS answers TWAMP test packets, on which local IP address (twampReflectorLocalIpAddressDN), whether UDP echo is also answered, and the session wait timeout. TWAMP is the sender side. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
   "fullNames": [
    "com.nokia.srbts.tnl:TWAMPREFLECT"
   ],
@@ -6229,16 +6998,10 @@
    "IPAPP",
    "TWAMPREFLECT"
   ],
-  "sampleParams": [
-   "refWaitTimeout",
-   "twampReflectorEnabled",
-   "twampReflectorLocalIpAddressDN",
-   "twampReflectorUdpEchoEnabled"
-  ],
   "threeGpp": {
-   "note": null,
+   "note": "Standardized by the IETF (RFC 5357), not 3GPP. The reflector side of the Two-Way Active Measurement Protocol, an IETF specification.",
    "specs": [],
-   "status": "vendor-specific"
+   "status": "other-standard"
   }
  },
  "UFFIM": {
@@ -6248,7 +7011,7 @@
   "fullNames": [
    "NOKLTE:UFFIM"
   ],
-  "occurrences": 21,
+  "occurrences": 100,
   "officialFullName": "Utran FDD frequency Idle Mode parameters",
   "officialHierarchy": [
    "MRBTS",
@@ -6295,7 +7058,7 @@
   "fullNames": [
    "NOKLTE:UNIT"
   ],
-  "occurrences": 26,
+  "occurrences": 27,
   "officialFullName": "Hardware Unit",
   "officialHierarchy": [
    "MRBTS",
@@ -6316,7 +7079,7 @@
   "fullNames": [
    "com.nokia.srbts.tnl:VLANIF"
   ],
-  "occurrences": 45,
+  "occurrences": 462,
   "officialFullName": "VLAN network interface",
   "officialHierarchy": [
    "MRBTS",
@@ -6332,43 +7095,62 @@
    "status": "other-standard"
   }
  },
- "WBTS": {
-  "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"WBTS\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
-  "fullNames": [],
-  "occurrences": 2,
-  "sampleParams": [],
+ "VOLTEQUALPR": {
+  "category": "QoS",
+  "confidence": "high",
+  "description": "VoLTE quality profile under LNBTS: thresholds that classify a VoLTE call as bad or good quality from residual BLER and RTP gap length in uplink and downlink, and the time a condition must hold. Used by VoLTE quality-triggered mobility. Described from the official class name and the corpus; the official dictionaries in ref/ predate this class or give it no description.",
+  "fullNames": [
+   "NOKLTE:VOLTEQUALPR"
+  ],
+  "occurrences": 16,
+  "officialFullName": "VoLTE Quality Profile",
+  "officialHierarchy": [
+   "MRBTS",
+   "LNBTS",
+   "VOLTEQUALPR"
+  ],
   "threeGpp": {
    "note": null,
    "specs": [],
    "status": "vendor-specific"
   }
  },
+ "WBTS": {
+  "category": "Other",
+  "confidence": "medium",
+  "description": "A WCDMA base station as the RNC sees it (PLMN/RNC/WBTS), the parent of its WCEL cells. Inferred from the corpus; no official Nokia description is available.",
+  "fullNames": [],
+  "occurrences": 2,
+  "threeGpp": {
+   "note": "Correspond to the UTRAN NRM's RncFunction, NodeBFunction and UtranCellFDD IOCs.",
+   "specs": [
+    {
+     "spec": "TS 28.652",
+     "title": "Telecommunication management; Universal Terrestrial Radio Access Network (UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.652/"
+    }
+   ],
+   "status": "standardized"
+  }
+ },
  "WCEL": {
   "category": "Other",
-  "confidence": "heuristic",
-  "description": "No curated description is available for managed object class \"WCEL\". It did not appear in the researched sample set. Based on Nokia RAN naming conventions, it is a managed object class in the SBTS/AirScale or Flexi Zone data model; the sample parameters it configures are listed below for context.",
+  "confidence": "medium",
+  "description": "A WCDMA cell in an RNC-side export (RNC/WBTS/WCEL): RNC-held cell parameters such as access class barring, AMR and power targets, URA identities, and its ADJS/ADJI neighbour lists. Inferred from the corpus; no official Nokia description is available.",
   "fullNames": [
    "WCEL"
   ],
   "occurrences": 3,
-  "sampleParams": [
-   "ACBarredList",
-   "AICHTraTime",
-   "AMROverSC",
-   "AMROverTransmission",
-   "AMROverTxNC",
-   "AMROverTxNonHSPA",
-   "AMROverTxTotal",
-   "AMRSF",
-   "AMRTargetSC",
-   "AMRTargetTransmission"
-  ],
   "threeGpp": {
-   "note": null,
-   "specs": [],
-   "status": "vendor-specific"
+   "note": "Correspond to the UTRAN NRM's RncFunction, NodeBFunction and UtranCellFDD IOCs.",
+   "specs": [
+    {
+     "spec": "TS 28.652",
+     "title": "Telecommunication management; Universal Terrestrial Radio Access Network (UTRAN) Network Resource Model (NRM) Integration Reference Point (IRP); Information Service (IS)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/28_series/28.652/"
+    }
+   ],
+   "status": "standardized"
   }
  },
  "WIFICNF": {
@@ -6390,6 +7172,26 @@
    "note": "General IP/Ethernet transport configuration -- governed by IETF/IEEE standards where a standard applies at all, not by 3GPP.",
    "specs": [],
    "status": "vendor-specific"
+  }
+ },
+ "XNLINK": {
+  "category": "Mobility-Neighbor-Relations",
+  "confidence": "high",
+  "description": "One Xn link to a neighbouring gNB: the peer's C-plane IP (cPlaneIpAddr), whether the link was configured by OAM or learned by the gNB (cPlaneIpAddrCtrl: oamControlled or gnbControlled), and the local CU IP. Production gNBs carry about 15, mostly learned. Inferred from the corpus's 25R2/26R2 files; no official Nokia description is available for this release.",
+  "fullNames": [
+   "com.nokia.srbts.nrbts:XNLINK"
+  ],
+  "occurrences": 405,
+  "threeGpp": {
+   "note": "Represents an Xn peer; the XnAP protocol and its IEs are 3GPP-defined.",
+   "specs": [
+    {
+     "spec": "TS 38.423",
+     "title": "NG-RAN; Xn Application Protocol (XnAP)",
+     "url": "https://www.3gpp.org/ftp/Specs/archive/38_series/38.423/"
+    }
+   ],
+   "status": "standardized"
   }
  },
  "XPARAM": {

@@ -349,7 +349,10 @@ def main():
     catalog = {}
 
     # --- Pass 1: classes actually observed in scp/ ---
-    for cls, params in class_params.items():
+    # Includes classes whose instances are always empty (PHYANT in the
+    # mMIMO files): they have no params but are still observed.
+    for cls in sorted(set(class_params) | set(class_child_sets)):
+        params = class_params.get(cls, {})
         parent_counts = class_parent_counter.get(cls, Counter())
         observed_parent_list = [p for p, _ in parent_counts.most_common()]
         # Prefer the officially-documented parent as canonical when we have

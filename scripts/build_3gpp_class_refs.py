@@ -121,6 +121,12 @@ for n in ("LNCEL", "LNCEL_FDD", "LNCEL_TDD"):
     OVERRIDES[n] = standardized("28.658", "36.331", note="The class itself corresponds to the E-UTRAN NRM's EUtranCellFDD/TDD IOC (TS 28.658); most of its individual RRC-facing parameters (SIB content, mobility thresholds, PUCCH/PDCCH config, etc.) are themselves specified in TS 36.331.")
 OVERRIDES["LNHENB"] = standardized("36.331", note="HeNB (Home eNodeB) detection/handling is a 3GPP-defined mobility feature; the OAM parameters for managing it as a neighbor are Nokia's own, but the underlying concept and RRC signalling are standardized.")
 
+# ---- UTRAN (WCDMA) objects, from RNC-side exports ----
+for n in ("RNC", "WBTS", "WCEL"):
+    OVERRIDES[n] = standardized("28.652", note="Correspond to the UTRAN NRM's RncFunction, NodeBFunction and UtranCellFDD IOCs.")
+for n in ("ADJS", "ADJI"):
+    OVERRIDES[n] = standardized("25.331", note="UTRAN neighbour cells reach the UE through SIB11 and measurement control, defined in TS 25.331; the neighbour records are Nokia's RNC OAM objects.")
+
 # ---- NR (5G) NRM-level objects ----
 OVERRIDES["NRBTS"] = standardized("28.541", note="Aggregates the 5G NRM's GNBCUCPFunction/GNBDUFunction concepts under one site-level object.")
 OVERRIDES["NRDU"] = standardized("28.541", note="Corresponds to the 5G NRM's GNBDUFunction IOC.")
@@ -156,12 +162,15 @@ for n in ("LNADJGNB", "LNRELGNBCELL", "LTEENB"):
     OVERRIDES[n] = standardized("37.340", "32.511", note="LTE-NR (EN-DC) neighbor relations are governed by the multi-connectivity spec (TS 37.340), with ANR concepts from TS 32.511 also applying.")
 for n in ("LNADJX", "LNRELX", "LNHOX", "XPARAM"):
     OVERRIDES[n] = other_standard("3GPP2 (a separate standards body for CDMA2000, not part of 3GPP)", "CDMA2000 1xRTT/1xEV-DO air-interface parameters are specified in 3GPP2's own C.S00xx document series, entirely outside 3GPP's remit.")
-for n in ("IAFIM", "IRFIM", "UFFIM", "LNHOIF", "MODPR", "MOIMP", "MOPR", "REDRT", "MORED", "LTAC", "RIM", "TAC"):
+for n in ("IAFIM", "IRFIM", "UFFIM", "GFIM", "GNFL", "NRFIM", "LNHOIF", "LNHOG", "LNHOW", "MODPR", "MOIMP", "MOPR", "REDRT", "MORED", "LTAC", "RIM", "TAC"):
     OVERRIDES[n] = standardized("36.331", note="Idle-mode mobility priorities, handover/redirect targets, and Tracking Area configuration are all broadcast via 3GPP-defined SIB/RRC structures.")
-for n in ("NRIAFIM", "NRIRFIM", "NRMEASDPR", "TRACKINGAREA"):
+for n in ("NRIAFIM", "NRIRFIM", "NRMEASDPR", "NRREDRT", "TRACKINGAREA"):
     OVERRIDES[n] = standardized("38.331", note="NR idle-mode mobility and Tracking Area configuration are broadcast via 3GPP-defined SIB/RRC structures.")
 for n in ("NRRFSP_PROFILE", "NRSPID_PROFILE"):
     OVERRIDES[n] = standardized("36.413", note="RFSP Index and Subscriber Profile ID (SPID) are standardized Information Elements carried over S1AP (also referenced from the core network side in TS 23.401's Annex on RAT/Frequency Selection Priority).")
+for n in ("LNADJG", "LNRELG", "LNADJW", "LNRELW"):
+    OVERRIDES[n] = standardized("36.331", note="Inter-RAT (GERAN/UTRAN) neighbours reach the UE through TS 36.331's measurement objects and SIB6/SIB7; the neighbour records themselves are Nokia's own OAM objects.")
+OVERRIDES["XNLINK"] = standardized("38.423", note="Represents an Xn peer; the XnAP protocol and its IEs are 3GPP-defined.")
 OVERRIDES["ANR"] = standardized("32.511", note="This IS the Automatic Neighbor Relation function the spec is named for.")
 for n in ("ANRPRL", "ANRPRW"):
     OVERRIDES[n] = standardized("32.511")
@@ -178,9 +187,11 @@ OVERRIDES["NRSCTP"] = standardized("38.412", note="SCTP is itself an IETF protoc
 OVERRIDES["SCTP"] = standardized("36.412", note="SCTP is itself an IETF protocol (RFC 4960), but 3GPP specifies its use as the S1-interface signalling transport in this spec.")
 
 # ---- QoS ----
+OVERRIDES["NRDRB_QCI"] = standardized("23.203", note="The QCI standardized characteristics table is defined in this spec, §6.1.7; this object is Nokia's per-QCI NR bearer configuration for EN-DC.")
 OVERRIDES["NRDRB_5QI"] = standardized("23.501", note="The 5QI (5G QoS Identifier) standardized characteristics table is defined in this spec, §5.7.4.")
 for n in ("DSCP2PCPMAP", "DSCP2QMAP", "DSCPTOQMAP", "PCP2QMAP", "QOS", "FSTSCH", "IPAPP"):
     OVERRIDES[n] = vendor_specific("Transport-layer QoS marking (DiffServ/DSCP is IETF RFC 2474; 802.1p/PCP is IEEE 802.1Q) -- 3GPP doesn't standardize a vendor's specific DSCP-to-queue mapping table.")
+OVERRIDES["TWAMPREFLECT"] = other_standard("the IETF (RFC 5357)", "The reflector side of the Two-Way Active Measurement Protocol, an IETF specification.")
 OVERRIDES["TWAMP"] = other_standard("the IETF (RFC 5357)", "Two-Way Active Measurement Protocol is an IETF specification, not a 3GPP one, even though it's commonly used to measure a mobile backhaul's transport performance.")
 
 # ---- Performance measurement (PM) family -- genuinely 3GPP-standardized ----
@@ -197,9 +208,10 @@ for n in ("PNASC",):
     OVERRIDES[n] = other_standard("IEEE (802.1X)", "Port-based network access control is an IEEE Ethernet standard, unrelated to 3GPP.")
 
 # ---- Synchronization: PTP/SyncE/GNSS/NTP are ITU-T/IEEE/IETF, not 3GPP ----
-for n in ("PTPMASTER", "TOP", "TOPB", "TOPF", "TOPP", "TOPP_R", "ECPRIMASTER"):
+for n in ("PTPMASTER", "TOP", "TOPB", "TOPF", "TOPF_R", "TOPP", "TOPP_R", "ECPRIMASTER", "ECPRIMASTERSTATUS_R"):
     OVERRIDES[n] = other_standard("the ITU-T (G.8271/G.8275 Telecom Profiles) and IEEE (1588 PTP)", "3GPP requires certain synchronization ACCURACY budgets for radio operation (e.g. TS 36.133/38.133), but does not itself define the PTP/eCPRI synchronization protocol used to achieve them.")
-OVERRIDES["SYNCE"] = other_standard("the ITU-T (G.8262/G.8264 Synchronous Ethernet)", "Frequency distribution over Ethernet physical layer, unrelated to 3GPP.")
+for n in ("SYNCE", "SYNCE_R"):
+    OVERRIDES[n] = other_standard("the ITU-T (G.8262/G.8264 Synchronous Ethernet)", "Frequency distribution over Ethernet physical layer, unrelated to 3GPP.")
 for n in ("NTP", "NTPS", "NTP_R", "INTP"):
     OVERRIDES[n] = other_standard("the IETF (RFC 5905, NTPv4)", "Coarse time sync, unrelated to 3GPP.")
 
@@ -219,7 +231,7 @@ for n in ("ALD", "ALD_R", "ANTL", "ANTL_R", "RETU", "RETU_R", "CHANNEL", "CHANNE
     OVERRIDES[n] = other_standard("AISG (Antenna Interface Standards Group)", "Remote Electrical Tilt / Tower-Mounted Amplifier control protocol (AISG v2/v3), an industry standard independent of 3GPP.")
 
 # ---- CBRS (US-specific spectrum sharing): WInnForum/FCC, not 3GPP ----
-for n in ("CBSDCEL", "NRCBSDCELL", "CBSD", "NRCBSD", "CBRSPR", "NRCBRSPR", "CBSDCERTH", "CBRSCERTH", "CADPRCBRS", "SASUSERGROUP", "NRSASUSERGROUP"):
+for n in ("CBSDCEL", "NRCBSDCELL", "CBSD", "NRCBSD", "CBRSPR", "NRCBRSPR", "CBSDCERTH", "CBRSCERTH", "CBRSCACERT_R", "CADPRCBRS", "SASUSERGROUP", "NRSASUSERGROUP"):
     OVERRIDES[n] = other_standard("the Wireless Innovation Forum (WInnForum) and US FCC Part 96 rules", "Citizens Broadband Radio Service (band 48, US 3.5 GHz shared spectrum) is a US regulatory/WInnForum framework, not a 3GPP specification (though the radio cell itself, once configured, operates per normal 3GPP band definitions).")
 
 # ---- Timezone: IANA tz database, not a telecom standard at all ----
