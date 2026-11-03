@@ -63,6 +63,30 @@ function CaStatus({ summary, onOpen }) {
 }
 
 /**
+ * The site check at a glance: whether the file's objects point at each
+ * other correctly (backend actions/links.py). Red only for errors; the
+ * error count is in the main label, warnings in the sub-label.
+ */
+function SiteCheckStatus({ summary, onOpen }) {
+  if (!summary) return null;
+  const { errors, warnings } = summary;
+  const label = errors > 0 ? `Links · ${errors} error${errors === 1 ? "" : "s"}` : "Links OK";
+  const sub = warnings > 0 ? `${warnings} warning${warnings === 1 ? "" : "s"}` : null;
+  return (
+    <button
+      className={"fh-complete" + (errors > 0 ? " has-gaps" : "")}
+      onClick={onOpen}
+      title="Site check: references to objects that exist, cells mapped to their LCELs, relations matching their neighbours"
+      aria-label={`Site check: ${errors} errors, ${warnings} warnings. Open the site check.`}
+    >
+      <Icon name={errors > 0 ? "alert" : "link"} />
+      <span className="fh-complete-main">{label}</span>
+      {sub && <span className="fh-complete-sub">{sub}</span>}
+    </button>
+  );
+}
+
+/**
  * The Trace address: the selected row's lineage from the root, one segment
  * per ancestor, each banded in its depth's fiber-code hue -- the same hue
  * as that ancestor's guide line in the tree, so the address and the lit
@@ -110,6 +134,8 @@ export function FileHeader({
   onOpenRequired,
   caSummary,
   onOpenCa,
+  siteSummary,
+  onOpenSiteCheck,
   editable,
   editMode,
   onToggleEdit,
@@ -131,6 +157,7 @@ export function FileHeader({
         <div className="fh-actions">
           <Completeness completeness={completeness} onOpen={onOpenRequired} />
           <CaStatus summary={caSummary} onOpen={onOpenCa} />
+          <SiteCheckStatus summary={siteSummary} onOpen={onOpenSiteCheck} />
           {editable && (
             <div className="history-wrap">
               <button

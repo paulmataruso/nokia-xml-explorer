@@ -14,6 +14,8 @@ import {
   createNewFile,
   getMissingRequired,
   getCaCheck,
+  getSiteCheck,
+  getRefMap,
   deleteObject,
   deleteObjectParam,
   renameObject,
@@ -26,6 +28,11 @@ import { Resizer } from "./components/Resizer.jsx";
 import { AddObjectModal } from "./components/AddObjectModal.jsx";
 import { RequiredFieldsModal } from "./components/RequiredFieldsModal.jsx";
 import { CaCheckModal } from "./components/CaCheckModal.jsx";
+import { CaWizardModal } from "./components/CaWizardModal.jsx";
+import { ActionBar } from "./components/ActionBar.jsx";
+import { ActionModal } from "./components/ActionModal.jsx";
+import { SiteCheckModal } from "./components/SiteCheckModal.jsx";
+import { RefMap } from "./components/RefMap.jsx";
 import { ContextMenu } from "./components/ContextMenu.jsx";
 import { ToastStack } from "./components/Toast.jsx";
 import { SiteManagementModal } from "./components/SiteManagementModal.jsx";
@@ -173,6 +180,20 @@ export default function App() {
   const [requiredFieldsOpen, setRequiredFieldsOpen] = useState(false);
   const [caCheck, setCaCheck] = useState(null);
   const [caCheckOpen, setCaCheckOpen] = useState(false);
+  const [caWizardOpen, setCaWizardOpen] = useState(false);
+  const [siteCheck, setSiteCheck] = useState(null);
+  const [siteCheckOpen, setSiteCheckOpen] = useState(false);
+  // The workspace shows the object tree (with the raw XML) or the reference
+  // map. The map's controls render into mapToolbar, a slot in the toolbar.
+  const [workspaceView, setWorkspaceView] = usePersistentState("workspaceView", "tree");
+  const [refMap, setRefMap] = useState(null);
+  const [mapToolbar, setMapToolbar] = useState(null);
+  const [actionBarOpen, setActionBarOpen] = useState(false);
+  const [actionId, setActionId] = useState(null); // the "form" action open in ActionModal
+  const [actionInitial, setActionInitial] = useState(null); // field values it opens with
+  // A node to focus once the next file's tree has loaded: the CA wizard
+  // opens its copy of a read-only file on the first new relation.
+  const pendingFocusRef = useRef(null);
   const [contextMenu, setContextMenu] = useState(null); // { x, y, items }
   const [toasts, setToasts] = useState([]);
   const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, confirmLabel, danger, onConfirm }
@@ -219,11 +240,19 @@ export default function App() {
     setGeneratorWarning(null);
     setMissingRequired(null);
     setCaCheck(null);
+    setSiteCheck(null);
+    setRefMap(null);
     setEditedIds(new Set());
     getFileTree(selectedFile)
       .then((t) => {
         setTree(t);
         setExpanded(new Set(t.children.slice(0, 2).map((n) => n.id)));
+        const pending = pendingFocusRef.current;
+        if (pending && pending.file === selectedFile) {
+          pendingFocusRef.current = null;
+          setFocusId(pending.id);
+          setSelectedNode(findNodeInForest(t.children, pending.id));
+        }
       })
       .catch((e) => setTreeError(String(e.message || e)))
       .finally(() => setLoadingTree(false));
@@ -317,7 +346,8 @@ export default function App() {
         setRawFocusMissing(true);
       }
     }
-  }, [focusId, tree, rawTree, showRawView]);
+    // workspaceView: coming back from the map scrolls to what it selected.
+  }, [focusId, tree, rawTree, showRawView, workspaceView]);
 
   const displayNodes = useMemo(() => {
     if (!tree) return [];
@@ -471,6 +501,16 @@ export default function App() {
     handleSelectExplain(node);
   };
 
+  // A card or link label on the map: select that object or parameter, as a
+  // tree row would. Missing objects aren't in the tree, so they select nothing.
+  const handleMapSelect = useStableCallback((id) => {
+    const node = tree ? findNodeInForest(tree.children, id) : null;
+    if (!node) return;
+    setFocusId(id);
+    setSelectedNode(node);
+  });
+  const handleMapOpenInTree = useStableCallback(() => setWorkspaceView("tree"));
+
   const expandAll = () => {
     if (!tree) return;
     setExpanded(new Set(collectExpandableIds(tree.children)));
@@ -585,6 +625,43 @@ export default function App() {
     };
   }, [selectedFile, tree]);
 
+  // The site check (links between objects) follows every edit the same way.
+  useEffect(() => {
+    if (!selectedFile || !tree) return;
+    let cancelled = false;
+    getSiteCheck(selectedFile)
+      .then((result) => !cancelled && setSiteCheck(result))
+      .catch((e) => !cancelled && setSiteCheck({ error: String(e.message || e) }));
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedFile, tree]);
+
+  // The reference map is fetched only while the Map view is open, and again
+  // after every edit (the endpoint is cached on the file's mtime).
+  useEffect(() => {
+    if (workspaceView !== "map" || !selectedFile || !tree) return;
+    let cancelled = false;
+    getRefMap(selectedFile)
+      .then((result) => !cancelled && setRefMap({ file: selectedFile, data: result }))
+      .catch((e) => !cancelled && setRefMap({ file: selectedFile, error: String(e.message || e) }));
+    return () => {
+      cancelled = true;
+    };
+  }, [workspaceView, selectedFile, tree]);
+
+  // Ctrl+K (Cmd+K) opens the action bar, or closes it. Ignored while
+  // another dialog is open, so it never stacks on one.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key.toLowerCase() !== "k" || !(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return;
+      e.preventDefault();
+      setActionBarOpen((open) => (open || document.querySelector('[aria-modal="true"]') ? false : true));
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
   // A dialog's "show in tree" link: focus the node itself, or its owning
   // object when the file doesn't set that parameter (ids are
   // "{distName}::p::{name}", see parser.py).
@@ -613,7 +690,7 @@ export default function App() {
       // parameter that was just added) even though the tree underneath it
       // has already updated.
       setSelectedNode((prev) => (prev ? findNodeInForest(newTree.children, prev.id) || prev : prev));
-      return showRawView ? getFileRawTree(selectedFile).then(setRawTree) : Promise.resolve();
+      return (showRawView ? getFileRawTree(selectedFile).then(setRawTree) : Promise.resolve()).then(() => newTree);
     });
 
   // Every mutating endpoint snapshots the file first and returns that
@@ -774,6 +851,14 @@ export default function App() {
         },
         { label: "Rename (change instance ID)…", onClick: () => handleRenameObject(node) },
         { label: "Delete object", danger: true, onClick: () => handleDeleteObject(node) },
+        {
+          label: "Delete with dependents…",
+          danger: true,
+          onClick: () => {
+            setActionInitial({ object: node.id });
+            setActionId("delete");
+          },
+        },
       ];
     }
     const paramName = node.label || node.attrs?.name;
@@ -787,6 +872,69 @@ export default function App() {
         onClick: () => handleDeleteParam(node),
       },
     ];
+  };
+
+  // The CA wizard wrote its plan: show the first new relation. In place,
+  // the changed rows stay lit and the toast offers Undo; on a read-only
+  // file it wrote a copy, which opens instead (the original is untouched,
+  // so there's nothing to undo there).
+  const handleCaApplied = (res) => {
+    setCaWizardOpen(false);
+    const summary = `${res.label}. ${res.changes} change${res.changes === 1 ? "" : "s"}` +
+      (res.after.errors ? `, ${res.after.errors} CA error${res.after.errors === 1 ? "" : "s"} left.` : ".");
+    if (res.copied) {
+      if (res.firstRelation) pendingFocusRef.current = { file: res.file, id: res.firstRelation };
+      refreshFiles().then(() => {
+        setSelectedFile(res.file);
+        setEditMode(true);
+      });
+      addToast(`${summary} Written to a copy, ${res.file}; the original is untouched.`, "success", 9000);
+      return;
+    }
+    markEdited(res.changeIds);
+    refetchAfterEdit().then((newTree) => {
+      if (!res.firstRelation) return;
+      setFocusId(res.firstRelation);
+      setSelectedNode(findNodeInForest(newTree.children, res.firstRelation));
+    });
+    confirmChange(res, summary, res.changeIds);
+  };
+
+  // A site action wrote its plan, as the CA wizard does: show its focus
+  // node, keep the changed rows lit and offer Undo; a copy of a read-only
+  // file opens instead.
+  const handleActionApplied = (res) => {
+    setActionId(null);
+    const errors = res.check?.errors || 0;
+    const summary = `${res.label}. ${res.changes} change${res.changes === 1 ? "" : "s"}` +
+      (errors ? `, ${errors} site check error${errors === 1 ? "" : "s"} left.` : ".");
+    if (res.copied) {
+      if (res.focus) pendingFocusRef.current = { file: res.file, id: res.focus };
+      refreshFiles().then(() => {
+        setSelectedFile(res.file);
+        setEditMode(true);
+      });
+      addToast(`${summary} Written to a copy, ${res.file}; the original is untouched.`, "success", 9000);
+      return;
+    }
+    markEdited(res.changeIds);
+    refetchAfterEdit().then((newTree) => {
+      if (!res.focus) return;
+      setFocusId(res.focus);
+      setSelectedNode(findNodeInForest(newTree.children, res.focus));
+    });
+    confirmChange(res, summary, res.changeIds);
+  };
+
+  // The action bar picked an action: the CA wizard has its own dialog,
+  // the rest are forms.
+  const runAction = (action) => {
+    setActionBarOpen(false);
+    if (action.ui === "ca-wizard") setCaWizardOpen(true);
+    else {
+      setActionInitial(null);
+      setActionId(action.id);
+    }
   };
 
   // Read-only sources (scp/, example/) are never edited in place: "Edit a
@@ -918,6 +1066,16 @@ export default function App() {
         <Wordmark />
         <div className="appbar-actions">
           <ThemeSwitcher value={theme} onChange={setTheme} />
+          <button
+            className="btn btn-quiet"
+            onClick={() => setActionBarOpen(true)}
+            title="Site actions for the open file (Ctrl+K)"
+            aria-keyshortcuts="Control+K Meta+K"
+          >
+            <Icon name="bolt" />
+            Actions
+            <kbd className="appbar-kbd">Ctrl K</kbd>
+          </button>
           <button className="btn btn-quiet" onClick={() => setParamBrowserOpen(true)}>
             <Icon name="book" />
             Parameter Browser
@@ -997,6 +1155,8 @@ export default function App() {
                   onOpenRequired={() => setRequiredFieldsOpen(true)}
                   caSummary={tree && caCheck && !caCheck.error ? caCheck.summary : null}
                   onOpenCa={() => setCaCheckOpen(true)}
+                  siteSummary={tree && siteCheck && !siteCheck.error ? siteCheck.summary : null}
+                  onOpenSiteCheck={() => setSiteCheckOpen(true)}
                   editable={isEditableFile}
                   editMode={editMode}
                   onToggleEdit={() => setEditMode((v) => !v)}
@@ -1025,67 +1185,97 @@ export default function App() {
                 )}
 
                 <div className="toolbar-wrap">
-                  <div className="toolbar" role="toolbar" aria-label="Tree view">
-                    <label className="input-with-icon toolbar-search">
-                      <Icon name="search" />
-                      <input
-                        className="input"
-                        placeholder="Search names, classes and values"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === "Escape" && setQuery("")}
-                        aria-label="Search this file's tree"
-                      />
-                      {query && (
-                        <button className="icon-btn input-clear" onClick={() => setQuery("")} aria-label="Clear search">
-                          <Icon name="x" />
-                        </button>
-                      )}
-                    </label>
-                    <button
-                      className="btn"
-                      onClick={expandAll}
-                      aria-label="Expand all"
-                      title="Expand every node"
-                    >
-                      <Icon name="expand-all" />
-                      <span className="btn-label">Expand all</span>
-                    </button>
-                    <button
-                      className="btn"
-                      onClick={collapseAll}
-                      aria-label="Collapse all"
-                      title="Collapse every node"
-                    >
-                      <Icon name="collapse-all" />
-                      <span className="btn-label">Collapse all</span>
-                    </button>
-                    <span className="toolbar-sep" aria-hidden="true" />
-                    <button
-                      className="btn btn-toggle"
-                      aria-pressed={showRawView}
-                      onClick={() => setShowRawView((v) => !v)}
-                      title="Show the file exactly as written, in sync with the tree"
-                    >
-                      <Icon name="layout-stacked" />
-                      Raw XML
-                    </button>
-                    <button
-                      className="btn btn-toggle"
-                      aria-pressed={highlightOfficial}
-                      onClick={() => setHighlightOfficial((v) => !v)}
-                      title="Tint rows whose explanation comes verbatim from Nokia's own parameter dictionary"
-                    >
-                      <span className="official-swatch" aria-hidden="true" />
-                      Official
-                    </button>
-                    {canEditNow && (
+                  <div
+                    className="toolbar"
+                    role="toolbar"
+                    aria-label={workspaceView === "map" ? "Reference map" : "Tree view"}
+                  >
+                    <div className="segmented view-switch" role="group" aria-label="Workspace view">
+                      <button
+                        className="btn btn-toggle"
+                        aria-pressed={workspaceView === "tree"}
+                        onClick={() => setWorkspaceView("tree")}
+                        title="The file's object tree, with the raw XML"
+                      >
+                        <Icon name="tree" />
+                        Tree
+                      </button>
+                      <button
+                        className="btn btn-toggle"
+                        aria-pressed={workspaceView === "map"}
+                        onClick={() => setWorkspaceView("map")}
+                        title="Which objects point at which, around one object"
+                      >
+                        <Icon name="map" />
+                        Map
+                      </button>
+                    </div>
+                    {workspaceView === "map" ? (
+                      <div className="toolbar-slot" ref={setMapToolbar} />
+                    ) : (
                       <>
-                        <span className="toolbar-sep" aria-hidden="true" />
-                        <button className="btn" onClick={() => setAddObjectOpen(true)} title="Add a new managed object">
-                          <Icon name="plus" />
-                          Add object
+                        <label className="input-with-icon toolbar-search">
+                          <Icon name="search" />
+                          <input
+                            className="input"
+                            placeholder="Search names, classes and values"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={(e) => e.key === "Escape" && setQuery("")}
+                            aria-label="Search this file's tree"
+                          />
+                          {query && (
+                            <button className="icon-btn input-clear" onClick={() => setQuery("")} aria-label="Clear search">
+                              <Icon name="x" />
+                            </button>
+                          )}
+                        </label>
+                        <button
+                          className="btn"
+                          onClick={expandAll}
+                          aria-label="Expand all"
+                          title="Expand every node"
+                        >
+                          <Icon name="expand-all" />
+                          <span className="btn-label">Expand all</span>
                         </button>
+                        <button
+                          className="btn"
+                          onClick={collapseAll}
+                          aria-label="Collapse all"
+                          title="Collapse every node"
+                        >
+                          <Icon name="collapse-all" />
+                          <span className="btn-label">Collapse all</span>
+                        </button>
+                        <span className="toolbar-sep" aria-hidden="true" />
+                        <button
+                          className="btn btn-toggle"
+                          aria-pressed={showRawView}
+                          onClick={() => setShowRawView((v) => !v)}
+                          title="Show the file exactly as written, in sync with the tree"
+                        >
+                          <Icon name="layout-stacked" />
+                          Raw XML
+                        </button>
+                        <button
+                          className="btn btn-toggle"
+                          aria-pressed={highlightOfficial}
+                          onClick={() => setHighlightOfficial((v) => !v)}
+                          title="Tint rows whose explanation comes verbatim from Nokia's own parameter dictionary"
+                        >
+                          <span className="official-swatch" aria-hidden="true" />
+                          Official
+                        </button>
+                        {canEditNow && (
+                          <>
+                            <span className="toolbar-sep" aria-hidden="true" />
+                            <button className="btn" onClick={() => setAddObjectOpen(true)} title="Add a new managed object">
+                              <Icon name="plus" />
+                              Add object
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
@@ -1103,7 +1293,30 @@ export default function App() {
                     <div className="workspace-status is-error">Couldn't load the knowledge base: {kbError}</div>
                   )}
                   {!kbError && !kb && <div className="workspace-status">Loading knowledge base…</div>}
-                  {!kbError && kb && (
+                  {!kbError && kb && workspaceView === "map" && (
+                    <div className="split-container">
+                      {refMap?.file === selectedFile && refMap.data ? (
+                        <RefMap
+                          key={selectedFile}
+                          data={refMap.data}
+                          kb={kb}
+                          focusId={focusId}
+                          onSelect={handleMapSelect}
+                          onOpenInTree={handleMapOpenInTree}
+                          toolbarSlot={mapToolbar}
+                        />
+                      ) : (
+                        <section className="split-pane rm" aria-label="Reference map">
+                          {refMap?.file === selectedFile && refMap.error ? (
+                            <div className="workspace-status is-error">Couldn't map this file's references: {refMap.error}</div>
+                          ) : (
+                            <div className="workspace-status">Mapping references…</div>
+                          )}
+                        </section>
+                      )}
+                    </div>
+                  )}
+                  {!kbError && kb && workspaceView === "tree" && (
                     <div
                       ref={splitRef}
                       className={"split-container" + (showRawView && rawLayout === "stacked" ? " stacked" : "")}
@@ -1354,6 +1567,53 @@ export default function App() {
           onShowInTree={(id) => {
             setCaCheckOpen(false);
             showNodeInTree(id);
+          }}
+          onOpenWizard={() => {
+            setCaCheckOpen(false);
+            setCaWizardOpen(true);
+          }}
+        />
+      )}
+
+      {caWizardOpen && selectedFile && (
+        <CaWizardModal
+          filename={selectedFile}
+          editable={isEditableFile}
+          onClose={() => setCaWizardOpen(false)}
+          onApplied={handleCaApplied}
+          onCopyLeft={(name) => {
+            refreshFiles();
+            addToast(`The copy ${name} was kept in Your uploads.`, "info");
+          }}
+        />
+      )}
+
+      {siteCheckOpen && siteCheck && !siteCheck.error && (
+        <SiteCheckModal
+          data={siteCheck}
+          onClose={() => setSiteCheckOpen(false)}
+          onShowInTree={(id) => {
+            setSiteCheckOpen(false);
+            showNodeInTree(id);
+          }}
+        />
+      )}
+
+      {actionBarOpen && (
+        <ActionBar filename={selectedFile} onRun={runAction} onClose={() => setActionBarOpen(false)} />
+      )}
+
+      {actionId && selectedFile && (
+        <ActionModal
+          filename={selectedFile}
+          actionId={actionId}
+          initial={actionInitial}
+          editable={isEditableFile}
+          onClose={() => setActionId(null)}
+          onApplied={handleActionApplied}
+          onCopyLeft={(name) => {
+            refreshFiles();
+            addToast(`The copy ${name} was kept in Your uploads.`, "info");
           }}
         />
       )}

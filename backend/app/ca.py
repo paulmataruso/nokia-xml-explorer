@@ -38,7 +38,7 @@ _BANDS = (
     (30, 9770, 9869), (38, 37750, 38249), (39, 38250, 38649),
     (40, 38650, 39649), (41, 39650, 41589), (42, 41590, 43589),
     (43, 43590, 45589), (46, 46790, 54539), (48, 55240, 56739),
-    (66, 66436, 67335), (71, 68586, 68935),
+    (66, 66436, 67335), (71, 68586, 68935), (252, 255144, 256143), (255, 260894, 262143),
 )
 
 # Classes that exist only for CA, listed in the panel's setup summary.
@@ -98,19 +98,26 @@ def _load(raw_bytes: bytes) -> list[dict]:
             continue
         params: dict[str, Optional[str]] = {}
         lists: dict[str, list[dict]] = {}
+        simple: dict[str, list[str]] = {}
         for child in el:
             tag = _local(child.tag)
             if tag == "p":
                 params[child.get("name") or ""] = _text(child)
             elif tag == "list":
+                rows = list(child)
+                if rows and all(_local(r.tag) == "p" for r in rows):
+                    # A value list (<list><p>a</p><p>b</p></list>), such as
+                    # NRDU.refNrCellGroup or SYNC.targetDNList.
+                    simple[child.get("name") or ""] = [_text(r) or "" for r in rows]
                 lists[child.get("name") or ""] = [
-                    {p.get("name") or "": _text(p) for p in item if _local(p.tag) == "p"} for item in child
+                    {p.get("name") or "": _text(p) for p in item if _local(p.tag) == "p"} for item in rows
                 ]
         mos.append({
             "dn": el.get("distName") or "",
             "cls": _short_class(el.get("class")),
             "p": params,
             "lists": lists,
+            "simple": simple,
             "version": el.get("version"),
         })
     return mos
@@ -175,6 +182,7 @@ def _analyze_enb(lnbts: dict, kids: dict[str, list[dict]]) -> dict:
     ul_on = ul_value not in (None, "false")
     flex = b.get("actFlexScellSelect") == "true"
     descendants = _descendants(enb_dn, kids)
+    ul_dl_limit = next((m["p"].get("maxDlCaConfigForUlCa") for m in kids[enb_dn] if m["cls"] == "CAGENB"), None)
 
     # Finding targets: (tree node id, label) pairs the panel turns into
     # "show in tree" links.
@@ -360,6 +368,10 @@ def _analyze_enb(lnbts: dict, kids: dict[str, list[dict]]) -> dict:
             f.add("error", "official", f"{name} is too narrow to be a PCell",
                   f"A {cell['bandwidth']} FDD cell can't have CAREL relations.",
                   [cell_t(cell)], ("actDLCAggr", "2.1.11.2"))
+        if cell["sub"] and cell["sub"]["p"].get("actSdlc") == "true":
+            f.add("error", "official", f"{name} is downlink-only and can't be a PCell",
+                  "It's a supplemental downlink cell (actSdlc true), which can only be an SCell.",
+                  [cell_p(cell, "actSdlc", on_sub=True)], ("actSdlc", None))
 
         # PCell and SCell must agree on these.
         for scell in {t["mo"]["dn"]: t for t in targets}.values():
@@ -449,6 +461,35 @@ def _analyze_enb(lnbts: dict, kids: dict[str, list[dict]]) -> dict:
                       f"maxNumCaConfUe is {sub['p'].get('maxNumCaConfUe')}, so n1PucchAn must be at least 144 (it is {n1}).",
                       [pucch_t("n1PucchAn"), cell_p(cell, "maxNumCaConfUe", True)], ("actDLCAggr", "3.1.10"))
 
+        # How many SCells a UE may get at once (maxNumScells notes). The
+        # actUciOnlyGrants rule is a warning: an xL25R2 export that runs CA
+        # has FDD PCells at 6 with it off.
+        max_scells_set = _int(p.get("maxNumScells"))
+        if dl_on and max_scells_set is not None:
+            def max_t() -> tuple[str, str]:
+                return cell_p(cell, "maxNumScells")
+            if tech == "TDD" and max_scells_set > 3:
+                f.add("error", "official", f"{name}'s maxNumScells is above 3",
+                      f"maxNumScells is {max_scells_set}; a TDD PCell allows at most 3.",
+                      [max_t()], ("maxNumScells", "2.1"))
+            if tech == "FDD" and max_scells_set > 2:
+                if sub and sub["p"].get("actUciOnlyGrants") != "true":
+                    f.add("warning", "official", f"{name} needs actUciOnlyGrants for maxNumScells {max_scells_set}",
+                          f"The dictionary says actUciOnlyGrants must be true when maxNumScells is above 2; here it "
+                          f"is {sub['p'].get('actUciOnlyGrants') or 'not set'}. An xL25R2 export that runs CA breaks "
+                          "this rule, so newer releases may not need it.",
+                          [max_t(), cell_p(cell, "actUciOnlyGrants", True)], ("maxNumScells", "1.5"))
+                if p.get("cellType") != "large" and p.get("actEicic") == "true":
+                    f.add("error", "official", f"{name} can't run eICIC with maxNumScells {max_scells_set}",
+                          f"With maxNumScells above 2, actEicic must be false unless cellType is large (it is "
+                          f"{p.get('cellType') or 'not set'}).",
+                          [max_t(), cell_p(cell, "actEicic")], ("maxNumScells", "1.6"))
+            if tech == "FDD" and ul_on and ul_dl_limit == "max_5CC_DL_CA" and max_scells_set < 3:
+                f.add("error", "official", f"{name}'s maxNumScells is too low for uplink CA",
+                      f"Uplink CA is on and CAGENB's maxDlCaConfigForUlCa is max_5CC_DL_CA, so maxNumScells must "
+                      f"be at least 3 (it is {max_scells_set}).",
+                      [max_t()], ("maxNumScells", "1.8"))
+
         # Admission limits for CA UEs on the PCell.
         if dl_on and sub:
             sub_p = sub["p"]
@@ -515,7 +556,10 @@ def _analyze_enb(lnbts: dict, kids: dict[str, list[dict]]) -> dict:
                       f"Its PCell {_label(best['mo']['dn'])} allows {best['mo']['p'].get('actModulationSchemeDl')}. "
                       "Downlink is all an SCell adds, so a lower cap limits what CA gains.",
                       [cell_p(cell, "actModulationSchemeDl"), cell_p(best, "actModulationSchemeDl")])
-            if not cell["carels"] and cell["sib"] and cell["sib"]["p"].get("cellBarred") != "barred":
+            # A supplemental downlink cell (actSdlc) looks barred to phones
+            # whatever its SIB says, so nobody camps on it.
+            sdl = cell["sub"] is not None and cell["sub"]["p"].get("actSdlc") == "true"
+            if not cell["carels"] and not sdl and cell["sib"] and cell["sib"]["p"].get("cellBarred") != "barred":
                 sib = cell["sib"]
                 f.add("info", "files", f"Phones that camp on {name} get no CA",
                       f"{name} is only ever an SCell (it has no CAREL of its own) but isn't barred, so phones can "
@@ -605,13 +649,22 @@ def _descendants(dn: str, kids: dict[str, list[dict]]) -> list[dict]:
     return out
 
 
-def analyze_ca(raw_bytes: bytes) -> dict:
-    """The CA setup and findings for every LNBTS in the file. `summary.state`
-    is "none" (no LTE eNB), "off" or "on" (downlink CA on for some eNB)."""
-    mos = _load(raw_bytes)
+def _kids(mos: list[dict]) -> dict[str, list[dict]]:
     kids: dict[str, list[dict]] = defaultdict(list)
     for mo in mos:
         kids[_parent(mo["dn"])].append(mo)
+    return kids
+
+
+def analyze_ca(raw_bytes: bytes) -> dict:
+    """The CA setup and findings for every LNBTS in the file. `summary.state`
+    is "none" (no LTE eNB), "off" or "on" (downlink CA on for some eNB)."""
+    return analyze_loaded(_load(raw_bytes))
+
+
+def analyze_loaded(mos: list[dict]) -> dict:
+    """analyze_ca() on a file _load() has already read."""
+    kids = _kids(mos)
     enbs = [_analyze_enb(mo, kids) for mo in mos if mo["cls"] == "LNBTS"]
     counts = {"error": 0, "warning": 0, "info": 0}
     for enb in enbs:

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,7 +16,13 @@ from pydantic import BaseModel
 
 from . import sitemgmt as sm
 from . import structural
+from .actions import Context, PlanError
+from .actions.corpus import profile
+from .actions.registry import ACTIONS
+from .actions.registry import catalog as action_catalog
+from .actions.site_check import check_site
 from .ca import analyze_ca
+from .refmap import refmap
 from .heuristics import generate as heuristic_generate
 from .parser import (
     ObjectExistsError,
@@ -133,16 +141,19 @@ app.add_middleware(
 _CLASSES_KB: dict = {}
 _PARAMS_KB: dict = {}
 _CLASS_CATALOG: dict = {}
+_PRODUCTS: dict = {}
 
 
 def _load_kb() -> None:
-    global _CLASSES_KB, _PARAMS_KB, _CLASS_CATALOG
+    global _CLASSES_KB, _PARAMS_KB, _CLASS_CATALOG, _PRODUCTS
     classes_path = DATA_DIR / "classes.json"
     params_path = DATA_DIR / "parameters.json"
     catalog_path = DATA_DIR / "class_catalog.json"
     _CLASSES_KB = json.loads(classes_path.read_text()) if classes_path.exists() else {}
     _PARAMS_KB = json.loads(params_path.read_text()) if params_path.exists() else {}
     _CLASS_CATALOG = json.loads(catalog_path.read_text()) if catalog_path.exists() else {}
+    products_path = DATA_DIR / "product_codes.json"
+    _PRODUCTS = json.loads(products_path.read_text()).get("codes", {}) if products_path.exists() else {}
 
 
 _load_kb()
@@ -151,6 +162,8 @@ _load_kb()
 _TREE_CACHE: dict[str, tuple[float, dict]] = {}
 _RAW_CACHE: dict[str, tuple[float, dict]] = {}
 _CA_CACHE: dict[str, tuple[float, dict]] = {}
+_CHECK_CACHE: dict[str, tuple[float, dict]] = {}
+_REFMAP_CACHE: dict[str, tuple[float, dict]] = {}
 
 
 def _is_safe_filename(filename: str) -> bool:
@@ -236,6 +249,8 @@ def _invalidate_caches(filename: str) -> None:
     _TREE_CACHE.pop(filename, None)
     _RAW_CACHE.pop(filename, None)
     _CA_CACHE.pop(filename, None)
+    _CHECK_CACHE.pop(filename, None)
+    _REFMAP_CACHE.pop(filename, None)
     _FAMILY_CACHE.pop(filename, None)
 
 
@@ -356,6 +371,25 @@ class SetObjectParamRequest(BaseModel):
     distName: str
     paramName: str
     value: str
+
+
+class CaDonorRef(BaseModel):
+    name: str
+    source: str
+
+
+class ActionRequest(BaseModel):
+    # Shapes are checked by the action's plan(), which names every problem.
+    inputs: dict = {}
+
+
+class CaPlanRequest(BaseModel):
+    # Shapes are checked by ca_wizard.plan_ca(), which names every problem.
+    enb: str | None = None
+    relations: list[dict] = []
+    ul: bool = False
+    options: dict[str, bool] = {}
+    donor: CaDonorRef
 
 
 class CreateFolderRequest(BaseModel):
@@ -1396,6 +1430,241 @@ def ca_check(filename: str):
         raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
     _CA_CACHE[filename] = (stat.st_mtime, result)
     return result
+
+
+@app.get("/api/files/{filename}/check")
+def site_check(filename: str):
+    """Every link rule (actions/links.py) run on the file: references to
+    missing objects, cells without their channel mapping or cell group,
+    neighbour relations without a target, and so on. Read-only."""
+    path, _source = _resolve_path(filename)
+    stat = path.stat()
+    cached = _CHECK_CACHE.get(filename)
+    if cached and cached[0] == stat.st_mtime:
+        return cached[1]
+    try:
+        result = check_site(path.read_bytes())
+    except XmlParseError as e:
+        raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
+    _CHECK_CACHE[filename] = (stat.st_mtime, result)
+    return result
+
+
+@app.get("/api/files/{filename}/refmap")
+def reference_map(filename: str):
+    """Which objects point at which (refmap.py), for the Map view: every
+    distName reference, and the links files make by id. Read-only."""
+    path, _source = _resolve_path(filename)
+    stat = path.stat()
+    cached = _REFMAP_CACHE.get(filename)
+    if cached and cached[0] == stat.st_mtime:
+        return cached[1]
+    try:
+        result = refmap(path.read_bytes())
+    except XmlParseError as e:
+        raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
+    _REFMAP_CACHE[filename] = (stat.st_mtime, result)
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Site actions (actions/). Donors and corpus evidence come from every
+# readable file, found at request time; the per-file profiles behind them
+# (and behind the CA wizard's release filter) are cached by mtime.
+# ---------------------------------------------------------------------------
+_PROFILE_CACHE: dict[str, tuple[float, dict]] = {}
+_PROFILE_LOCK = threading.Lock()
+_RELEASE_PARAMS: tuple[tuple, dict] = ((), {})
+
+
+def _corpus() -> list[dict]:
+    """Every readable XML with its actions.corpus.profile(), in lookup order
+    (upload, scp, example). Unreadable files are left out."""
+    with _PROFILE_LOCK:
+        return _corpus_locked()
+
+
+def _corpus_locked() -> list[dict]:
+    out = []
+    for source, directory in _SOURCE_DIRS.items():
+        if source == "example" and not INCLUDE_EXAMPLES or not directory.is_dir():
+            continue
+        for p in sorted(directory.iterdir()):
+            if not p.is_file() or p.suffix.lower() != ".xml":
+                continue
+            key = f"{source}:{p.name}"
+            mtime = p.stat().st_mtime
+            cached = _PROFILE_CACHE.get(key)
+            if not cached or cached[0] != mtime:
+                raw = p.read_bytes()
+                try:
+                    entry = {**profile(raw), "sha1": hashlib.sha1(raw).hexdigest()}
+                except XmlParseError:
+                    entry = None
+                cached = (mtime, entry)
+                _PROFILE_CACHE[key] = cached
+            if cached[1] is not None:
+                out.append({"name": p.name, "source": source, "key": key, "mtime": mtime, **cached[1]})
+    return out
+
+
+def _release_params(corpus: list[dict]) -> dict[str, dict[str, set[str]]]:
+    """{release: {class: parameter names some file of that release sets}}."""
+    global _RELEASE_PARAMS
+    signature = tuple((f["key"], f["mtime"]) for f in corpus)
+    if _RELEASE_PARAMS[0] != signature:
+        index: dict[str, dict[str, set[str]]] = {}
+        for f in corpus:
+            for (release, cls), names in f["params"].items():
+                index.setdefault(release, {}).setdefault(cls, set()).update(names)
+        _RELEASE_PARAMS = (signature, index)
+    return _RELEASE_PARAMS[1]
+
+
+def _read_source_file(name: str, source: str) -> bytes:
+    if not _is_safe_filename(name):
+        raise FileNotFoundError(name)
+    path = (_dir_for_source(source) / name).resolve()
+    if not path.is_file():
+        raise FileNotFoundError(name)
+    return path.read_bytes()
+
+
+def _action_context(filename: str) -> tuple[Path, Context]:
+    path, source = _resolve_path(filename)
+    ctx = Context(
+        path.read_bytes(), filename, source,
+        corpus=_corpus,
+        read=_read_source_file,
+        release_index=lambda: _release_params(_corpus()),
+        kb={"products": _PRODUCTS, "classes": _CLASSES_KB, "catalog": _CLASS_CATALOG},
+    )
+    return path, ctx
+
+
+def _action(action_id: str):
+    action = ACTIONS.get(action_id)
+    if action is None:
+        raise HTTPException(status_code=404, detail=f"No action {action_id!r}")
+    return action
+
+
+def _action_plan(filename: str, action_id: str, inputs: dict) -> tuple[Path, Context, bytes, dict]:
+    action = _action(action_id)
+    path, ctx = _action_context(filename)
+    try:
+        reason = action.available(ctx)
+        if reason:
+            raise PlanError([reason])
+        new_bytes, plan = action.plan(ctx, inputs)
+    except PlanError as e:
+        raise HTTPException(status_code=400, detail={"message": str(e), "problems": e.problems})
+    except XmlParseError as e:
+        raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
+    # When each changed value takes effect, from the official dictionary.
+    for change in plan["changes"]:
+        if change["op"] == "set" and "[" not in change["param"]:
+            kb, own = _doc_entry(change["class"], change["param"])
+            modification = (kb.get("modification") or "").split("\n", 1)[0].strip()
+            change["modification"] = modification if own and modification else None
+    return path, ctx, new_bytes, plan
+
+
+def _action_apply(filename: str, action_id: str, inputs: dict) -> dict:
+    """Writes the plan the preview showed, as one edit with one snapshot.
+    Refused when the change would add an error to the site check."""
+    path, ctx, new_bytes, plan = _action_plan(filename, action_id, inputs)
+    if not ctx.editable:
+        raise HTTPException(
+            status_code=403,
+            detail="This is a read-only reference file. Create an editable copy first.",
+        )
+    broken = [f for f in plan["check"]["new"] if f["severity"] == "error"]
+    if broken:
+        raise HTTPException(status_code=409, detail={
+            "message": "This change would break the file's links.",
+            "problems": [f"{f['title']}. {f['detail']}" for f in broken],
+        })
+    result = {"ok": True, "snapshot": None, "label": plan["label"], "changes": len(plan["changes"]),
+              "focus": plan.get("focus"), "check": plan["check"]["after"]}
+    if not plan["changes"]:
+        return result
+    try:
+        parse_file(new_bytes, filename)
+    except XmlParseError as e:
+        raise HTTPException(status_code=500, detail=f"Edit would have produced invalid XML: {e}")
+    result["snapshot"] = _save_snapshot(filename, ctx.raw, plan["label"])
+    path.write_bytes(new_bytes)
+    _invalidate_caches(filename)
+    return result
+
+
+# Profiling every file takes seconds; start now so the first action opens quickly.
+threading.Thread(target=_corpus, daemon=True).start()
+
+
+@app.get("/api/files/{filename}/actions")
+def list_actions(filename: str):
+    """Every site action, with whether it can run on this file and why not."""
+    _path, ctx = _action_context(filename)
+    return {"actions": action_catalog(ctx), "editable": ctx.editable, "source": ctx.source}
+
+
+@app.get("/api/files/{filename}/actions/{action_id}")
+def action_setup(filename: str, action_id: str):
+    """What the action's first step shows (for "form" actions, its fields)."""
+    action = _action(action_id)
+    _path, ctx = _action_context(filename)
+    try:
+        reason = action.available(ctx)
+        setup = action.setup(ctx) if reason is None else {}
+    except XmlParseError as e:
+        raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
+    return {**setup, "id": action.ID, "title": action.TITLE, "summary": action.SUMMARY, "ui": action.UI,
+            "available": reason is None, "reason": reason, "editable": ctx.editable, "source": ctx.source}
+
+
+@app.post("/api/files/{filename}/actions/{action_id}/preview")
+def action_preview(filename: str, action_id: str, payload: ActionRequest):
+    """The action's plan for these inputs, without writing anything: every
+    change with its reason and when it takes effect, notes, what to confirm,
+    and the site check before and after. Works on read-only files too."""
+    return _action_plan(filename, action_id, payload.inputs)[3]
+
+
+@app.post("/api/files/{filename}/actions/{action_id}/apply")
+def action_apply(filename: str, action_id: str, payload: ActionRequest):
+    return _action_apply(filename, action_id, payload.inputs)
+
+
+# The CA wizard's own endpoints, kept as aliases of the "ca" action.
+
+def _ca_counts(filename: str) -> dict:
+    summary = ca_check(filename)["summary"]
+    return {k: summary[k] for k in ("errors", "warnings", "infos")}
+
+
+@app.get("/api/files/{filename}/ca/wizard")
+def ca_wizard(filename: str):
+    """What the CA wizard's first steps show: per eNB, the cells, which
+    pairs the rules forbid and why, the current relations, presets, and the
+    donor files ranked for it."""
+    return action_setup(filename, "ca")
+
+
+@app.post("/api/files/{filename}/ca/preview")
+def ca_preview(filename: str, payload: CaPlanRequest):
+    """The CA wizard's plan for this request, without writing anything."""
+    return _action_plan(filename, "ca", payload.model_dump())[3]
+
+
+@app.post("/api/files/{filename}/ca/apply")
+def ca_apply(filename: str, payload: CaPlanRequest):
+    """Writes the plan ca_preview() showed, as one edit with one snapshot."""
+    result = _action_apply(filename, "ca", payload.model_dump())
+    # The CA check's counts after the change, as this endpoint always returned.
+    after = _ca_counts(filename)
+    return {**result, "firstRelation": result["focus"], "after": after}
 
 
 @app.get("/api/knowledge/classes")

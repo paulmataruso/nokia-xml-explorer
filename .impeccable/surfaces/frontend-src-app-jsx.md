@@ -22,3 +22,11 @@ FIRST VIEWPORT: Slim app bar (product name, Site Management). Left: file sidebar
 FORM: Fiber Code, position 4 of 7 on the ordered grounded list (3GPP spec, commissioning form, spectrum chart, fiber code, drive-test legend, site drawings, antenna datasheet). Signature move: Trace, selecting a row lights its lineage guides root to row in code hues, mirrored as a colour-banded distName address in the file header. Raises: fixed value column (split-flap board); edited values stay marked (gate board); action hue only where something can be done (consumer app); one size does the work (acetate manual); single ink, spot hue on structure only (event catalog). seed:13c46d76d84de743
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+
+## Extension: Reference map (2026-11-03)
+
+Task: "really hard sometimes to figure out what MOs reference what": see which objects point at one, and what it points at, and walk the links. Confirmed by the owner: a Map view in the workspace (Tree | Map switch on the workspace toolbar; the file header's Trace address and the Explanation pane stay live), a bow-tie layout (what points at the centred object fans out above, what it points at below; every arrow points down), and links = distName references (solid) plus id links (dashed, labelled as implied).
+
+Inherits Fiber Code. Nodes are diagram nodes on a pannable canvas, not list cards: hairline-edged, flat, the class label in mono led by its Trace swatch. Selection is the soft yellow and ring, and lights the route from the centre to it. Missing targets in Gap Red. The one motion is the Trace pour, reused as new connectors draw in; the camera glides when re-centring; both off under reduced motion. Memorable moment: expand a link and the routes pour out of the node while it stays put under the cursor.
+
+Unresolved: whether index links (qciTab profile indexes, DRX profiles) join later.

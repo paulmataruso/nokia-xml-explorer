@@ -15,7 +15,7 @@ const last = (dn) => (dn ? dn.split("/").pop() : "");
 /** Where a finding's rule comes from. Official rules carry the dictionary's
  * own parameter and rule number so they can be looked up; patterns learned
  * from the corpus get the dashed "weaker claim" badge. */
-function BasisBadge({ finding }) {
+export function BasisBadge({ finding }) {
   if (finding.basis === "official") {
     const r = finding.rule;
     return (
@@ -40,27 +40,35 @@ function BasisBadge({ finding }) {
   return null;
 }
 
+/** Without onShowInTree (the wizard's preview, whose rows don't exist yet)
+ * the targets are plain labels. */
 function TargetLinks({ targets, onShowInTree }) {
   if (!targets.length) return null;
   return (
     <div className="ca-targets">
-      {targets.map((t) => (
-        <button key={t.id} className="ca-target" onClick={() => onShowInTree(t.id)} title="Show in tree">
-          <Icon name="external" size={12} />
-          <span className="mono">{t.label}</span>
-        </button>
-      ))}
+      {targets.map((t) =>
+        onShowInTree ? (
+          <button key={t.id} className="ca-target" onClick={() => onShowInTree(t.id)} title="Show in tree">
+            <Icon name="external" size={12} />
+            <span className="mono">{t.label}</span>
+          </button>
+        ) : (
+          <span key={t.id} className="ca-target is-static mono">
+            {t.label}
+          </span>
+        )
+      )}
     </div>
   );
 }
 
-function Findings({ enbs, onShowInTree }) {
+export function Findings({ enbs, onShowInTree, emptyText }) {
   const all = enbs.flatMap((e) => e.findings.map((f) => ({ ...f, enb: e.label })));
   if (all.length === 0) {
     return (
       <div className="placeholder">
-        No problems found. The setup passes every official CA rule this tool checks and matches the patterns seen in
-        your working CA files.
+        {emptyText ||
+          "No problems found. The setup passes every official CA rule this tool checks and matches the patterns seen in your working CA files."}
       </div>
     );
   }
@@ -244,7 +252,7 @@ function EnbSummary({ enb }) {
  * or a pattern learned from the corpus's own CA files -- and links to the
  * rows it's about. Phase 1 of the CA wizard; nothing here edits the file.
  */
-export function CaCheckModal({ data, onClose, onShowInTree }) {
+export function CaCheckModal({ data, onClose, onShowInTree, onOpenWizard }) {
   const enbs = data?.enbs || [];
   const findingCount = enbs.reduce((n, e) => n + e.findings.length, 0);
   const cellCount = enbs.reduce((n, e) => n + e.cells.length, 0);
@@ -296,6 +304,12 @@ export function CaCheckModal({ data, onClose, onShowInTree }) {
             Read-only. "Nokia rule" checks come from the LTE18 / SBTS18A dictionaries; "Seen in your files" checks
             come from comparing your own CA files. Neither proves CA works on air.
           </span>
+          {enbs.some((e) => e.cells.length > 1) && onOpenWizard && (
+            <button className="btn" onClick={onOpenWizard}>
+              <Icon name="pencil" />
+              {enbs.some((e) => e.dl) ? "Change CA setup…" : "Set up CA…"}
+            </button>
+          )}
           <button className="btn" onClick={onClose}>
             Close
           </button>

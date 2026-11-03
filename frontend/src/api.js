@@ -1,19 +1,27 @@
 const API_BASE = "/api";
 
 /** The server's own explanation of a failed request: FastAPI's `detail`
- * (a string, or a list of validation errors), falling back to the raw body
- * and then the HTTP status -- never a bare "422 Unprocessable Entity: {...}". */
+ * (a string, a list of validation errors, or {message, problems} from the
+ * CA wizard, whose problems ride along on the error), falling back to the
+ * raw body and then the HTTP status -- never a bare "422 Unprocessable
+ * Entity: {...}". */
 async function errorFrom(res) {
   const text = await res.text().catch(() => "");
   let detail = text;
+  let problems = null;
   try {
     const parsed = JSON.parse(text).detail;
     if (Array.isArray(parsed)) detail = parsed.map((d) => d.msg || JSON.stringify(d)).join("; ");
-    else if (parsed) detail = String(parsed);
+    else if (parsed && typeof parsed === "object") {
+      detail = parsed.message || JSON.stringify(parsed);
+      problems = parsed.problems || null;
+    } else if (parsed) detail = String(parsed);
   } catch {
     // not JSON, use raw text
   }
-  return new Error(detail || `${res.status} ${res.statusText}`);
+  const err = new Error(detail || `${res.status} ${res.statusText}`);
+  if (problems) err.problems = problems;
+  return err;
 }
 
 async function getJSON(path) {
@@ -159,6 +167,52 @@ export function getMissingRequired(filename) {
 
 export function getCaCheck(filename) {
   return getJSON(`/files/${encodeURIComponent(filename)}/ca`);
+}
+
+/** The CA wizard's setup: cells, forbidden pairs, presets, ranked donors. */
+export function getCaWizard(filename) {
+  return getJSON(`/files/${encodeURIComponent(filename)}/ca/wizard`);
+}
+
+/** request: { enb, relations: [{pcell, scells}], ul, options, donor: {name, source} } */
+export function previewCa(filename, request) {
+  return jsonRequest(`/files/${encodeURIComponent(filename)}/ca/preview`, "POST", request);
+}
+
+export function applyCa(filename, request) {
+  return jsonRequest(`/files/${encodeURIComponent(filename)}/ca/apply`, "POST", request);
+}
+
+/** The site check: every link rule run on the file (backend actions/links.py). */
+export function getSiteCheck(filename) {
+  return getJSON(`/files/${encodeURIComponent(filename)}/check`);
+}
+
+/** Which objects point at which, for the Map view (backend refmap.py). */
+export function getRefMap(filename) {
+  return getJSON(`/files/${encodeURIComponent(filename)}/refmap`);
+}
+
+/** Every site action, with whether it can run on this file and why not. */
+export function listActions(filename) {
+  return getJSON(`/files/${encodeURIComponent(filename)}/actions`);
+}
+
+/** An action's first step: for "form" actions, its fields. */
+export function getActionSetup(filename, actionId) {
+  return getJSON(`/files/${encodeURIComponent(filename)}/actions/${encodeURIComponent(actionId)}`);
+}
+
+export function previewAction(filename, actionId, inputs) {
+  return jsonRequest(`/files/${encodeURIComponent(filename)}/actions/${encodeURIComponent(actionId)}/preview`, "POST", {
+    inputs,
+  });
+}
+
+export function applyAction(filename, actionId, inputs) {
+  return jsonRequest(`/files/${encodeURIComponent(filename)}/actions/${encodeURIComponent(actionId)}/apply`, "POST", {
+    inputs,
+  });
 }
 
 export function setObjectParam(filename, distName, paramName, value) {

@@ -112,6 +112,31 @@ const PATHS = {
   mast: <path d="M8 7v6.5M6 13.5h4M5.4 4.3a3.6 3.6 0 0 0 0 5.4M10.6 4.3a3.6 3.6 0 0 1 0 5.4M8 6.95v.01" />,
   book: <path d="M3 3.75c0-.69.56-1.25 1.25-1.25H13v9.25H4.25c-.69 0-1.25.56-1.25 1.25zM3 13c0 .69.56 1.25 1.25 1.25H13" />,
   dot: <circle cx="8" cy="8" r="2.5" fill="currentColor" stroke="none" />,
+  bolt: <path d="M9 1.75 3.75 9h4.25l-1 5.25L12.25 7H8z" />,
+  link: (
+    <path d="M6.9 9.1a2.6 2.6 0 0 0 3.7 0l2.1-2.1a2.6 2.6 0 0 0-3.7-3.7l-.8.8M9.1 6.9a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.8-.8" />
+  ),
+  // The Tree view: rows stepping in from one guide.
+  tree: <path d="M3.5 3h3M3.5 3v9.5M3.5 7.5h2.5M3.5 12.5h2.5M8.5 3h4M8.5 7.5h4M8.5 12.5h4" />,
+  // The Map view: one object, what points at it above, what it points at below.
+  map: (
+    <>
+      <rect x="5.75" y="6.5" width="4.5" height="3" rx=".75" />
+      <path d="M8 6.5V4.75M8 9.5v1.75M4 11.25h8M4 11.25v1.5M12 11.25v1.5M5.25 2.5h5.5" />
+    </>
+  ),
+  // Centre the map on an object.
+  target: (
+    <>
+      <circle cx="8" cy="8" r="4.75" />
+      <circle cx="8" cy="8" r="1.25" />
+      <path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5" />
+    </>
+  ),
+  fit: <path d="M2.75 5.75v-3h3M10.25 2.75h3v3M13.25 10.25v3h-3M5.75 13.25h-3v-3" />,
+  minus: <path d="M3 8h10" />,
+  "arrow-left": <path d="M13 8H3M7 4 3 8l4 4" />,
+  "arrow-right": <path d="M3 8h10M9 4l4 4-4 4" />,
 };
 
 export function Icon({ name, size = 16, className }) {
