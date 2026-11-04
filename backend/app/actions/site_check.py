@@ -7,6 +7,9 @@ Pure: bytes in, dict out.
 """
 from __future__ import annotations
 
+import re
+from typing import Sequence
+
 from ..ca import _load
 from .links import RULES, Site, run
 
@@ -27,8 +30,28 @@ def check_site(raw: bytes) -> dict:
     return check_loaded(_load(raw))
 
 
-def new_findings(before: dict, after: dict) -> list[dict]:
+def new_findings(before: dict, after: dict, moves: Sequence[tuple[str, str]] = ()) -> list[dict]:
     """Findings in `after` that `before` doesn't have, matched on rule and
-    title, so an action's review can show what it would break."""
-    seen = {(f["ruleId"], f["title"]) for f in before["findings"]}
-    return [f for f in after["findings"] if (f["ruleId"], f["title"]) not in seen]
+    title, so an action's review can show what it would break. `moves` are
+    the plan's renumberings (old, new distName), in order: a finding the
+    file had already comes back under the new numbers, so it is matched on
+    its rule, the objects it names after the moves, and its title with the
+    instance numbers left out."""
+    if not moves:
+        seen = {(f["ruleId"], f["title"]) for f in before["findings"]}
+        return [f for f in after["findings"] if (f["ruleId"], f["title"]) not in seen]
+
+    def moved(node: str) -> str:
+        for old, new in moves:
+            if node == old or node.startswith((old + "/", old + "::")):
+                node = new + node[len(old):]
+        return node
+
+    def key(f: dict, move=lambda n: n) -> tuple:
+        return f["ruleId"], _NUMBER.sub(r"\1-#", f["title"]), frozenset(move(t["id"]) for t in f["targets"])
+
+    seen = {key(f, moved) for f in before["findings"]}
+    return [f for f in after["findings"] if key(f) not in seen]
+
+
+_NUMBER = re.compile(r"\b([A-Z][A-Z0-9_]*)-\d+\b")

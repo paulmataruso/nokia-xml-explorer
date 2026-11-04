@@ -27,17 +27,31 @@ gNBs), the new slice gets one with the quotas of a slice of its SST. The
 minimum scheduler quotas of those gNBs' groups add up to 95 of 100; a new
 group's is cut to what is left.
 
-Refused: an SST or SD out of range, a slice the gNB already has. Noted:
-an AMF whose slice list (SERVEDAMF NRPLMN_SUPPORT, what it reported at NG
-setup) lacks the new slice.
+Replace (the owner, 2026-11-03: the cleaning actions clear out what they
+replace): the slices ticked under "Instead of" make way for the new one.
+The first is rewritten as it, in place (SST, SD, PLMNs; its number stays,
+so what names it keeps naming it); the tracking areas, 5QI mappings and
+resource groups that named the others name it instead (a row that would
+repeat one is removed), and the others are removed. The tracking areas
+ticked announce it and the others stop. A 5QI two mappings would then map
+for it keeps the first mapping that served the kept slice; the other's row
+goes, and the mapping with it if it is left naming no slice. A resource
+group left with only a replaced slice goes where the kept one has its own.
+
+Refused: an SST or SD out of range, a slice the gNB already has (but one
+being replaced), nothing to change. Noted: an AMF whose slice list
+(SERVEDAMF NRPLMN_SUPPORT, what it reported at NG setup) lacks the new
+slice.
 """
 from __future__ import annotations
 
 from typing import Optional
 
 from . import Context, PlanError, finish
-from .doc import Doc, instance, label, why
+from .doc import Doc, instance, label, natural, why
 from .links import Site, _runtime
+from .qos_replace import DEFAULT_BEARER, _namers
+from .tidy import PROFILES
 
 ID = "slice"
 TITLE = "Add a network slice"
@@ -82,6 +96,108 @@ def _rel(gnb: str, dn: Optional[str]) -> Optional[str]:
     return dn
 
 
+def _serving(doc: Doc, gnb: str, dn: str) -> list[str]:
+    return [m for m in doc.of_class("NRDRB_5QI", gnb) if not _runtime(m)
+            and any(_rel(gnb, r.get("snssaiDN")) == dn for r in doc.items(m, "snssaiList"))]
+
+
+def _point(doc: Doc, gnb: str, holder: str, list_name: str, field: str, olds: set, keep: str, w) -> bool:
+    """The rows of a list naming one of `olds`: named `keep` instead, or removed where a row names it already."""
+    rows = doc.items(holder, list_name)
+    has = any(_rel(gnb, r.get(field)) == keep for r in rows)
+    changed = False
+    for i in reversed(range(len(rows))):
+        if _rel(gnb, rows[i].get(field)) in olds:
+            if has:
+                doc.remove_item(holder, list_name, i, w)
+            else:
+                doc.set_item(holder, list_name, i, field, keep, w)
+                has = True
+            changed = True
+    return changed
+
+
+def _replace(site: Site, doc: Doc, gnb: str, replaced: list[str], sst: str, sd: Optional[str], plmns: list[str],
+             tas: list[str], notes: list[str], w) -> str:
+    """The first replaced slice rewritten as the new one; what named the others names it; they go."""
+    keep, others = replaced[0], set(replaced[1:])
+    was = site.by_dn[keep]
+    for name, value in (("administrativeState", "Unlocked"), ("sst", sst), ("sd", sd)):
+        now = was["p"].get(name)
+        if value is None:
+            if now is not None:
+                doc.unset(keep, name, w(f"{_name(sst, sd)} has no SD (was {now})."))
+        elif now != value:
+            doc.set(keep, name, value, w(f"{label(keep)} becomes {_name(sst, sd)}" + (f" (was {now})." if now else ".")
+                                         if name != "administrativeState" else
+                                         "Unlocked, as every slice in the files this was built from is."))
+    if [_rel(gnb, x) for x in was["simple"].get("nrPlmnDNList", [])] != plmns:
+        doc.set_values(keep, "nrPlmnDNList", plmns, w("The PLMNs it is offered in."))
+    moved = w(f"Named a slice this replaces; it names {label(keep)}, the new slice, instead.")
+    for t in doc.of_class("TRACKINGAREA", gnb):
+        if t in tas:
+            _point(doc, gnb, t, "snssaiList", "snssaiDN", others, keep, moved)
+            if not any(_rel(gnb, r.get("snssaiDN")) == keep for r in doc.items(t, "snssaiList")):
+                doc.add_item(t, "snssaiList", [("snssaiDN", keep)], w("The tracking area announces it."))
+        else:
+            for i in reversed(range(len(doc.items(t, "snssaiList")))):
+                if _rel(gnb, doc.items(t, "snssaiList")[i].get("snssaiDN")) in others | {keep}:
+                    doc.remove_item(t, "snssaiList", i, w("The tracking area wasn't ticked: it doesn't announce the "
+                                                          "slice."))
+    for m in doc.of_class("NRDRB_5QI", gnb):
+        _point(doc, gnb, m, "snssaiList", "snssaiDN", others, keep, moved)
+    groups = [x for prof in doc.children(gnb, "NRRESOURCEGROUP_PROFILE") for x in doc.children(prof,
+                                                                                               "NRRESOURCEGROUP")]
+    names = {x: {_rel(gnb, r.get("resourceDN")) for r in doc.items(x, "nrResourceList")} for x in groups}
+    has_own = any(keep in n for n in names.values())
+    for x in groups:
+        if not names[x] & others:
+            continue
+        if names[x] - others - {keep} or not has_own:
+            _point(doc, gnb, x, "nrResourceList", "resourceDN", others, keep, moved)
+            has_own = True
+        else:
+            doc.delete(x, w(f"The resource group of a slice this replaces; {label(keep)} has its own."))
+    for o in sorted(others, key=natural):
+        doc.delete(o, w(f"{label(o)} ({_name(*_key(site.by_dn[o]))}) is replaced by {label(keep)}, the new slice; "
+                        "what named it names that now."))
+    if others:
+        notes.append(f"{label(keep)} becomes {_name(sst, sd)}; what named "
+                     + ", ".join(label(o) for o in sorted(others, key=natural)) + " names it, and "
+                     + ("it is" if len(others) == 1 else "they are") + " removed.")
+    return keep
+
+
+def _one_per_5qi(doc: Doc, gnb: str, dn: str, served: list[str], notes: list[str], w) -> None:
+    """Each 5QI mapped once for the slice: the first mapping that served the kept slice keeps it."""
+    by_value: dict[str, list[str]] = {}
+    for m in sorted(_serving(doc, gnb, dn), key=lambda x: (x not in served, natural(x))):  # served: the kept slice's
+        for v in doc.values(m, "fiveqiValueList"):
+            by_value.setdefault(v, []).append(m)
+    for v, ms in sorted(by_value.items(), key=lambda kv: int(kv[0]) if kv[0].isdigit() else 0):
+        for m in ms[1:]:
+            if not doc.exists(m):
+                continue
+            rows = doc.items(m, "snssaiList")
+            for i in reversed(range(len(rows))):
+                if _rel(gnb, rows[i].get("snssaiDN")) == dn:
+                    doc.remove_item(m, "snssaiList", i, w(f"{label(ms[0])} maps 5QI {v} for the slice already."))
+            if not doc.items(m, "snssaiList"):
+                drb = _rel(gnb, doc.get(m, "nrDrbDN"))
+                parts = [_rel(gnb, doc.get(drb, x)) for x in PROFILES] if drb and doc.exists(drb) else []
+                doc.delete(m, w(f"It mapped 5QI {v} only for a slice this replaces, and {label(ms[0])} maps it for "
+                                "the new one; naming no slice it would serve every slice."))
+                gone = [m]
+                for x in [drb, *parts]:  # its bearer (never NRDRB-1, the default), then its profiles
+                    if not x or not doc.exists(x) or x == drb and instance(x) == DEFAULT_BEARER:
+                        continue
+                    if not _namers(doc, gnb)[x]:
+                        doc.delete(x, w(f"Only {label(m)} used it."))
+                        gone.append(x)
+                notes.append(f"Removed {', '.join(label(x) for x in gone)}: {label(ms[0])} maps 5QI {v} for the "
+                             "slice" + (f", and only {label(m)} used the rest." if len(gone) > 1 else "."))
+
+
 def available(ctx: Context) -> Optional[str]:
     if _gnbs(ctx.site):
         return None
@@ -90,7 +206,7 @@ def available(ctx: Context) -> Optional[str]:
 
 def setup(ctx: Context) -> dict:
     site = ctx.site
-    gnbs, plmns, tas, maps, map_default = [], {}, {}, {}, {}
+    gnbs, plmns, tas, maps, map_default, slices = [], {}, {}, {}, {}, {}
     for g in _gnbs(site):
         have = ", ".join(_name(*_key(s)) for s in _slices(site, g["dn"])) or "no slice yet"
         gnbs.append({"value": g["dn"], "key": g["dn"], "label": f"{label(g['dn'])} · {have}"})
@@ -102,6 +218,11 @@ def setup(ctx: Context) -> dict:
         maps[g["dn"]] = [{"value": m["dn"], "label": f"{label(m['dn'])} · 5QI {', '.join(m['simple'].get('fiveqiValueList', []))}"
                           + f" · for {', '.join(label(_rel(g['dn'], r.get('snssaiDN')) or '') for r in m['lists'].get('snssaiList', []))}"}
                          for m in _mappings(site, g["dn"]) if m["lists"].get("snssaiList")]
+        slices[g["dn"]] = [{"value": x["dn"], "label": f"{label(x['dn'])} · {_name(*_key(x))}",
+                            "details": [f"Served by {', '.join(label(m) for m in _served_by(site, g['dn'], x['dn']))}."
+                                        if _served_by(site, g["dn"], x["dn"]) else "No mapping names it."]}
+                           for x in _slices(site, g["dn"])]
+        map_default[g["dn"]] = []
     return {
         "intro": "Adds an S-NSSAI to a gNB. It is offered in the PLMNs and announced in the tracking areas you tick; "
                  "the core (AMF, SMF) must serve it too.",
@@ -120,7 +241,12 @@ def setup(ctx: Context) -> dict:
             {"id": "mappings", "label": "5QI mappings that serve it", "type": "checks", "dependsOn": "gnb",
              "optionsByKey": maps, "optional": True, "default": [],
              "hint": "Only the mappings that name their slices are listed; the others serve every slice. Leave "
-                     "them all unticked to take those of a slice with the same SST."},
+                     "them all unticked to take those of a slice with the same SST (or, replacing, those of the "
+                     "slices it replaces)."},
+            {"id": "replaces", "label": "Instead of", "type": "checks", "dependsOn": "gnb", "optionsByKey": slices,
+             "defaultByKey": map_default, "optional": True,
+             "hint": "The slices it replaces. The first ticked becomes the new slice in place; what named the others "
+                     "names it instead, and they are removed. None ticked: it is added beside them."},
         ],
     }
 
@@ -148,7 +274,9 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     if p2:
         problems.append(p2 + " TS 38.331 gives the SD 24 bits.")
     mine = _slices(site, g)
-    if sst and any(_key(s) == (sst, sd) for s in mine):
+    replaced = [s["dn"] for s in sorted(mine, key=lambda x: natural(x["dn"])) if s["dn"] in (inputs.get("replaces")
+                                                                                        or [])]
+    if sst and any(_key(s) == (sst, sd) for s in mine if s["dn"] not in replaced):
         problems.append(f"{label(g)} already has {_name(sst, sd)}.")
     plmns = [p for p in (inputs.get("plmns") or []) if site.by_dn.get(p, {}).get("cls") == "NRPLMN"]
     if not plmns and site.child(g, "NRPLMN"):
@@ -158,22 +286,27 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
 
     doc = Doc(ctx.raw)
     w = lambda reason, basis="choice": why("slice", reason, basis)
-    start = max([int(instance(s["dn"])) for s in mine if instance(s["dn"]).isdigit()] + [0]) + 1
-    params = [("administrativeState", "Unlocked"), ("sst", sst)] + ([("sd", sd)] if sd is not None else [])
-    dn = doc.create(g, "SNSSAI", doc.next_free(g, "SNSSAI", start), params,
-                    w=w(f"{_name(sst, sd)}; Unlocked, as every slice in the files this was built from is."))
-    if plmns:
-        doc.set_values(dn, "nrPlmnDNList", plmns, w("The PLMNs it is offered in."))
-    for t in (inputs.get("tas") or []):
-        if site.by_dn.get(t, {}).get("cls") == "TRACKINGAREA":
+    tas = [t for t in (inputs.get("tas") or []) if site.by_dn.get(t, {}).get("cls") == "TRACKINGAREA"]
+    if replaced:
+        dn = _replace(site, doc, g, replaced, sst, sd, plmns, tas, notes, w)
+    else:
+        start = max([int(instance(s["dn"])) for s in mine if instance(s["dn"]).isdigit()] + [0]) + 1
+        params = [("administrativeState", "Unlocked"), ("sst", sst)] + ([("sd", sd)] if sd is not None else [])
+        dn = doc.create(g, "SNSSAI", doc.next_free(g, "SNSSAI", start), params,
+                        w=w(f"{_name(sst, sd)}; Unlocked, as every slice in the files this was built from is."))
+        if plmns:
+            doc.set_values(dn, "nrPlmnDNList", plmns, w("The PLMNs it is offered in."))
+        for t in tas:
             doc.add_item(t, "snssaiList", [("snssaiDN", dn)],
                          w("The tracking area announces it; 64 of 68 in the files this was built from list every "
                            "slice of their gNB."))
 
-    picked = [m for m in (inputs.get("mappings") or []) if site.by_dn.get(m, {}).get("cls") == "NRDRB_5QI"]
+    picked = [m for m in (inputs.get("mappings") or []) if site.by_dn.get(m, {}).get("cls") == "NRDRB_5QI"
+              and not any(_rel(g, r.get("snssaiDN")) == dn for r in doc.items(m, "snssaiList"))]
     twin = None
-    if not picked:
-        twin = next((s for s in mine if s["p"].get("sst") == sst and _served_by(site, g, s["dn"])), None)
+    if not picked and not (replaced and _serving(doc, g, dn)):
+        twin = next((s for s in mine if s["p"].get("sst") == sst and s["dn"] not in replaced
+                     and _served_by(site, g, s["dn"])), None)
         picked = _served_by(site, g, twin["dn"]) if twin else []
     # One 5QI is mapped once per slice.
     seen: dict[str, str] = {}
@@ -186,10 +319,12 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     because = f", as it serves {label(twin['dn'])} (the same SST)" if twin else ""
     for m in picked:
         doc.add_item(m, "snssaiList", [("snssaiDN", dn)], w(f"Serves the new slice{because}."))
+    if replaced:
+        _one_per_5qi(doc, g, dn, _served_by(site, g, replaced[0]), notes, w)
     if twin:
         notes.append(f"It gets the 5QI mappings of {label(twin['dn'])}, which has the same SST: "
                      + ", ".join(label(m) for m in picked) + ".")
-    elif any(m["lists"].get("snssaiList") for m in _mappings(site, g)) and not picked:
+    elif any(m["lists"].get("snssaiList") for m in _mappings(site, g)) and not picked and not _serving(doc, g, dn):
         open_ = [m for m in _mappings(site, g) if not m["lists"].get("snssaiList")]
         notes.append("The gNB's 5QI mappings name the slices they serve and none serves this one"
                      + (f"; only {', '.join(label(m['dn']) for m in open_)}, which name no slice, will." if open_
@@ -201,7 +336,7 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
         for grp in site.child(prof["dn"], "NRRESOURCEGROUP"):
             for r in grp["lists"].get("nrResourceList", []):
                 groups[_rel(g, r.get("resourceDN"))] = grp
-    if mine and all(s["dn"] in groups for s in mine):
+    if not replaced and mine and all(s["dn"] in groups for s in mine):
         like = twin["dn"] if twin else next((s["dn"] for s in mine if s["p"].get("sst") == sst), mine[0]["dn"])
         model = groups[like]
         prof = model["dn"].rsplit("/", 1)[0]
@@ -225,8 +360,9 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
             doc.add_item(gdn, "schedulerParams", sorted(sched.items()), w("Scheduler quotas."))
         notes.append(f"It gets its own resource group, {label(gdn)}, with {label(model['dn'])}'s quotas.")
 
-    if len(mine) + 1 > 8:
-        notes.append(f"{label(g)} now has {len(mine) + 1} slices. A UE asks for at most eight at a time (TS 23.501 "
+    count = len(mine) + 1 - len(replaced)
+    if count > 8:
+        notes.append(f"{label(g)} now has {count} slices. A UE asks for at most eight at a time (TS 23.501 "
                      "§5.15.2.1: at most eight S-NSSAIs in a Requested or Allowed NSSAI).")
     lacking = []
     for amf in site.of("SERVEDAMF", g):
@@ -238,9 +374,14 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     if lacking:
         notes.append("At NG setup the AMF reported the slices it serves, and this one isn't among them: "
                      + "; ".join(lacking) + ". It works once the AMF serves it.")
+    if not doc.changes:
+        raise PlanError([f"{label(dn)} is {_name(sst, sd)} already, offered and announced as picked: nothing to "
+                         "change."])
     return finish(ctx, doc, {
         "label": f"Slice {_name(sst, sd)}",
-        "summary": f"{label(dn)} on {label(g)}: {_name(sst, sd)}",
+        "summary": f"{label(dn)} on {label(g)}: {_name(sst, sd)}"
+                   + (f", replacing {', '.join(f'{label(x)} ({_name(*_key(site.by_dn[x]))})' for x in replaced)}"
+                      if replaced and (len(replaced) > 1 or _key(site.by_dn[replaced[0]]) != (sst, sd)) else ""),
         "notes": notes,
         "confirm": [f"The AMF and SMF serve {_name(sst, sd)}, and the subscribers who use it have it in their "
                     "subscription."],

@@ -33,8 +33,14 @@ bandwidth are the template's, with a note: the files set the bandwidth as
 policy, not from the carrier (one deployment measures its 20 MHz carriers
 over 50 and 75 RBs, another its 10 MHz ones over 100).
 
-A cell already set for the carrier, or whose own carrier it is, is left
-alone and said in the plan; nothing to do at all is refused.
+A cell that has entries for the carrier already has them replaced
+instead of getting another beside them (the owner, 2026-11-03: the
+cleaning actions clear out what they replace): one entry per carrier, the
+others removed (a row, or an object nothing names), and the one kept set
+to the carrier, band and SCS given, each old value in its reason. Its
+priorities and thresholds stay: they are that carrier's own tuning, which
+a template from another carrier would get wrong. A cell whose own carrier
+it is is left alone and said in the plan; nothing to do at all is refused.
 """
 from __future__ import annotations
 
@@ -45,6 +51,7 @@ from typing import Optional
 from . import Context, PlanError, finish
 from .carrier_files import kind_of
 from .doc import Doc, instance, label, release_of, why
+from .qos_replace import _namers
 from .sites import lte_cell, nr_cell
 
 ID = "carrier"
@@ -266,6 +273,7 @@ class _Plan:
         self.skipped: dict[str, list[str]] = {}
         self.copied: dict[str, list[str]] = {}
         self.dropped: set[str] = set()
+        self.replaced: dict[str, list[str]] = {}
         self.focus: Optional[str] = None
 
     def template(self, parent: dict, key: str) -> Optional[dict]:
@@ -340,10 +348,51 @@ class _Plan:
         return {"full_class": f"{info[0].rsplit(':', 1)[0]}:{cls}" if info and ":" in info[0] else None,
                 "version": parent["version"]}
 
+    def replace(self, parent: dict, key: str, carrier: str, what: str, have: list[dict]) -> None:
+        """The parent's entries for the carrier: the first set to the inputs, the others removed."""
+        spec, doc = OBJECTS[key], self.doc
+        first, fixed = have[0], []
+        p_over, row_over = self.overrides(key, {"p": first["p"], "lists": first["lists"]})
+        w = lambda k, old, new: why("carrier", f"{what[0].upper() + what[1:]}: {k} {new}, as given (was {old}).",
+                                    "choice")
+        if "row" in spec:
+            name, field = spec["row"]
+            rows = [(m, i, r) for m in have for i, r in enumerate(m["lists"].get(name, [])) if r.get(field) == carrier]
+            m, i, row = rows[0]
+            for k, v in row_over.items():
+                if row.get(k) != v:
+                    doc.set_item(m["dn"], name, i, k, v, w(k, row.get(k) or "unset", v))
+                    fixed.append(f"{k} {row.get(k) or 'unset'} → {v}")
+            for m2, i2, _ in reversed(rows[1:]):
+                doc.remove_item(m2["dn"], name, i2, why("carrier", f"A second entry for {what}: the first stays.",
+                                                        "choice"))
+                fixed.append(f"a second {name} row removed")
+        for k, v in p_over.items():
+            if first["p"].get(k) != v:
+                doc.set(first["dn"], k, v, w(k, first["p"].get(k) or "unset", v))
+                fixed.append(f"{k} {first['p'].get(k) or 'unset'} → {v}")
+        if "row" not in spec and have[1:]:
+            namers = _namers(doc, parent["dn"].split("/", 1)[0])
+            for m in have[1:]:
+                if namers[m["dn"]]:
+                    self.notes.append(f"{label(m['dn'])} of {label(parent['dn'])} is a second {spec['cls']} for "
+                                      f"{what}, kept since {', '.join(label(x) for x in sorted(namers[m['dn']]))} "
+                                      "names it.")
+                    continue
+                doc.delete(m["dn"], why("carrier", f"A second {spec['cls']} for {what}: {label(first['dn'])} stays.",
+                                        "choice"))
+                fixed.append(f"{label(m['dn'])} removed")
+        if fixed:
+            self.replaced.setdefault(f"{label(parent['dn'])} {label(first['dn'])}", []).extend(fixed)
+            self.focus = self.focus or first["dn"]
+        else:
+            self.skipped.setdefault(f"already {what}", []).append(label(parent["dn"]))
+
     def add(self, parent: dict, key: str, carrier: str, what: str) -> None:
         spec = OBJECTS[key]
-        if any(carrier in _carriers(m, key) for m in _objects(self.site, parent["dn"], key)):
-            self.skipped.setdefault(f"already {what}", []).append(label(parent["dn"]))
+        have = [m for m in _objects(self.site, parent["dn"], key) if carrier in _carriers(m, key)]
+        if have:
+            self.replace(parent, key, carrier, what, have)
             return
         t = self.template(parent, key)
         if not t:
@@ -428,12 +477,16 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
                         or ["Nothing to add."])
     for source, cells in p.copied.items():
         p.notes.append(f"{', '.join(sorted(set(cells)))}: settings copied from {source}.")
-    p.notes.append("Check the reselection priority, thresholds and measurement bandwidth (for redirection, its "
-                   "priority) suit the new carrier: they are the template's.")
+    if p.copied:
+        p.notes.append("Check the reselection priority, thresholds and measurement bandwidth (for redirection, its "
+                       "priority) suit the new carrier: they are the template's.")
+    for where, fixed in p.replaced.items():
+        p.notes.append(f"Replaced {where}'s entry for it: {'; '.join(fixed)}. Its priorities and thresholds stay, "
+                       "the carrier's own.")
     for reason, cells in p.skipped.items():
         p.notes.append(f"Left alone: {', '.join(cells)} ({reason}).")
     if p.dropped:
         p.notes.append(f"Left out, as no file of this release sets them: {', '.join(sorted(p.dropped)[:8])}.")
-    done = len({c for cells in p.copied.values() for c in cells})
+    done = len({c for cells in p.copied.values() for c in cells} | {w.split(" ")[0] for w in p.replaced})
     return finish(ctx, doc, {"label": f"Add {what}", "summary": f"{spec['label']}: {what}, on {done} of {len(targets)}.",
                              "notes": p.notes, "confirm": [], "focus": p.focus})

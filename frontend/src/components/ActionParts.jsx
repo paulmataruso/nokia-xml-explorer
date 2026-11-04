@@ -15,6 +15,7 @@ export const OP_LABELS = {
   delete: "Delete",
   "add-row": "Add row",
   "remove-row": "Remove row",
+  renumber: "Renumber",
 };
 
 export const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -89,6 +90,14 @@ export function ChangeRow({ c, rootId, donorName }) {
           )}
           {c.op === "delete" && c.count > 1 && (
             <span className="cw-delta">and {plural(c.count - 1, "object")} under it</span>
+          )}
+          {c.op === "renumber" && (
+            <span className="cw-delta">
+              <Value v={last(c.old)} />
+              <Icon name="chevron-right" size={12} />
+              <Value v={last(c.new)} />
+              {c.count > 1 && <span>with {plural(c.count - 1, "object")} under it</span>}
+            </span>
           )}
           {restart && <span className="tag cw-restart">{restart}</span>}
           <BasisTag change={c} donorName={donorName} />
@@ -175,11 +184,17 @@ export function ManualSteps({ steps }) {
   return (
     <ol className="ms-steps">
       {steps.map((s) => (
-        <li key={s.dn} className="ms-step">
+        <li key={s.key || s.dn} className="ms-step">
           <div className="ms-head">
             <span className={"tag cw-op is-" + (s.kind === "modify" ? "set" : s.kind)}>{STEP_OPS[s.kind]}</span>
             <span className="mono cw-target">{s.kind === "create" ? s.label : s.dn}</span>
-            {s.kind === "create" && <span className="ms-where">under {s.parent}</span>}
+            {s.kind === "create" && (
+              <span className="ms-where">
+                under {s.parent}
+                {s.copyOf && `, a copy of ${last(s.copyOf)}`}
+                {s.copyOf && s.count > 1 && ` with the ${plural(s.count - 1, "object")} under it`}
+              </span>
+            )}
             {s.kind === "delete" && s.count > 1 && (
               <span className="ms-where">and {plural(s.count - 1, "object")} under it</span>
             )}

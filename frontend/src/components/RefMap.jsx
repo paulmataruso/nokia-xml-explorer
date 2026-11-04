@@ -16,6 +16,7 @@ import {
   label,
   layout,
   outCount,
+  reach,
   search,
 } from "./refMapModel.js";
 
@@ -23,7 +24,9 @@ import {
  * The Map view: which objects point at which, around one centred object.
  * What points at it fans out above, what it points at below, so every
  * arrow runs down from the object holding the value to the object it
- * names. Ports on each card open the next level in that direction;
+ * names. Containment joins in the same way, drawn plain: the object the
+ * centre sits in above it, what it contains below, after the references.
+ * Ports on each card open the next level in that direction;
  * double-click (or Enter) re-centres. Childless siblings that don't fit
  * across the view wrap into tiers (refMapModel's layout). A click selects, like a tree row:
  * the file header's Trace and the Explanation pane follow. A link's label
@@ -39,10 +42,10 @@ const ZOOM_MAX = 1.6;
 const VIA_CHARS = 28; // what a link label holds before it shortens (.rm-via's max-width)
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const ownerOf = (id) => (id ? id.split("::")[0] : null);
-const clsOfItem = (it) => it.cls || label(it.id).replace(/-[^-]*$/, "");
 const depthHue = (dn) => `var(--fc-${((dn.split("/").length - 1) % 8) + 1})`;
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+const pointing = (n) => `${plural(n, "object")} point${n === 1 ? "s" : ""}`; // "1 object points", "2 objects point"
 // The edge counts: side, icon, which way a click moves the map, wording.
 const EDGES = [
   ["left", "arrow-left", 1, 0, "to the left"],
@@ -85,20 +88,25 @@ function viaText(edges) {
   return first + more;
 }
 
+const refEdges = (edges) => edges.filter((e) => e.kind !== "contains");
+
 function edgeKind(item, g) {
   if (item.kind === "more") return "more";
   if (item.kind === "node" || item.kind === "ghost") {
     if (g.byId.get(item.id)?.missing) return "missing";
   }
+  if (item.edges.every((e) => e.kind === "contains")) return "contains";
   return item.edges.some((e) => e.kind === "ref") ? "ref" : "id";
 }
 
-// A fan's shared trunk and buses take the strongest kind among its links:
-// solid when any is a reference, dashed when all are implied or missing.
+// A fan's shared trunk and buses take the strongest kind among the links
+// they carry: solid when any is a reference, dashed when all are implied or
+// missing, plain when all are containment.
 function spineKind(kinds) {
   if (kinds.includes("ref")) return "ref";
-  if (kinds.every((k) => k === "missing")) return "missing";
-  return kinds.some((k) => k === "id" || k === "missing") ? "id" : "more";
+  const links = kinds.filter((k) => k !== "more" && k !== "contains");
+  if (!links.length) return kinds.includes("contains") ? "contains" : "more";
+  return links.every((k) => k === "missing") ? "missing" : "id";
 }
 
 // --- Layers (memoised: panning re-renders only the camera) ---------------
@@ -110,15 +118,21 @@ const Connectors = memo(function Connectors({ items, lay, g, lit, fresh }) {
   for (const fan of lay.fans) {
     const fp = fanPaths(fan, lay.pos);
     const kids = fan.tiers.flat();
-    const kinds = kids.map((k) => edgeKind(items.get(k), g));
+    const tierKinds = fan.tiers.map((tier) => tier.map((k) => edgeKind(items.get(k), g)));
+    const kinds = tierKinds.flat();
     const delay = (items.get(kids[0]).depth - 1) * 35;
     const newFan = fresh.has(fan.key);
-    spines.push(
-      <g key={fan.key} className={`rm-link is-${spineKind(kinds)}` + (newFan ? " is-new" : "")} style={newFan ? { "--d": `${delay}ms` } : null}>
-        <path d={fp.spine} />
-        {fp.arrow && <path className="rm-arrow" d={fp.arrow} />}
+    const spine = (key, kind, d, arrow) => (
+      <g key={key} className={`rm-link is-${kind}` + (newFan ? " is-new" : "")} style={newFan ? { "--d": `${delay}ms` } : null}>
+        <path d={d} />
+        {arrow && <path className="rm-arrow" d={arrow} />}
       </g>
     );
+    // The trunk carries every tier, the gutter the tiers past the first, a
+    // bus its own: references and contents wrapped apart keep their looks.
+    spines.push(spine(fan.key, spineKind(kinds), fp.trunk, fp.arrow));
+    if (fp.gutter) spines.push(spine(`${fan.key}|gutter`, spineKind(tierKinds.slice(1).flat()), fp.gutter));
+    fp.buses.forEach((d, t) => d && spines.push(spine(`${fan.key}|${t}`, spineKind(tierKinds[t]), d)));
     kids.forEach((k, i) => {
       const dp = fp.drops.get(k);
       const newDrop = fresh.has(k);
@@ -153,20 +167,22 @@ const LinkLabels = memo(function LinkLabels({ items, lay, g, act, selectedAt }) 
     const fp = fanPaths(fan, lay.pos);
     for (const key of fan.tiers.flat()) {
       const item = items.get(key);
-      if (!item.edges.length || item.kind === "more") continue;
+      // Containment has no parameter to name: its links go unlabelled.
+      const links = refEdges(item.edges);
+      if (!links.length || item.kind === "more") continue;
       const dp = fp.drops.get(key);
       const kind = edgeKind(item, g);
       const src = item.dir === "down" ? items.get(item.parent).id : item.id;
       const dst = item.dir === "down" ? item.id : items.get(item.parent).id;
       const group = item.kind === "group";
-      const vias = [...new Set(item.edges.map((e) => e.via))];
-      const why = item.edges.find((e) => e.why)?.why;
+      const vias = [...new Set(links.map((e) => e.via))];
+      const why = links.find((e) => e.why)?.why;
       const title = group
         ? `${plural(item.count, "object")} through ${vias.join(", ")}`
         : `${label(src)} → ${label(dst)} through ${vias.join(", ")}` +
           (why ? `\nLinked by id: ${why}` : "") +
           (kind === "missing" ? `\n${MISSING[g.byId.get(dst)?.missing] || "Not in this file"}` : "");
-      const selected = item.edges.some((e) => e.at === selectedAt);
+      const selected = links.some((e) => e.at === selectedAt);
       out.push(
         <button
           key={key}
@@ -185,7 +201,7 @@ const LinkLabels = memo(function LinkLabels({ items, lay, g, act, selectedAt }) 
             act(group ? "open" : "via", key);
           }}
         >
-          {viaText(item.edges)}
+          {viaText(links)}
         </button>
       );
     }
@@ -193,7 +209,7 @@ const LinkLabels = memo(function LinkLabels({ items, lay, g, act, selectedAt }) 
   return out;
 });
 
-const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, outs, selected, tabbable, act, register }) {
+const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, outs, inside, selected, tabbable, act, register }) {
   const centre = item.key === "c";
   const left = x - NODE_W / 2;
   const top = y - NODE_H / 2;
@@ -214,7 +230,11 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
           <span className="rm-node-label">{item.cls}</span>
         </div>
         <div className="rm-node-sub">
-          {item.dir === "down" ? `${parentLabel} points at all ${item.count}` : `All ${item.count} point at ${parentLabel}`}
+          {item.held
+            ? `${parentLabel} contains all ${item.count}`
+            : item.dir === "down"
+              ? `${parentLabel} points at all ${item.count}`
+              : `All ${item.count} point at ${parentLabel}`}
         </div>
         <div className="rm-node-hint is-action">{`Show ${item.count > PAGE ? `the first ${PAGE}` : "them"}`}</div>
       </div>
@@ -275,7 +295,10 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
       aria-label={
         `${name}, ${fullName || node?.cls || ""}` +
         (node?.hint ? `, ${node.hint}` : "") +
-        (missing ? `. ${sub}` : `. ${plural(ins, "object")} point at it; it points at ${plural(outs, "object")}.`) +
+        (missing
+          ? `. ${sub}`
+          : `. ${pointing(ins)} at it; it points at ${plural(outs, "object")}` +
+            (inside ? ` and contains ${plural(inside, "object")}.` : ".")) +
         (ghost ? " Shown elsewhere on the map: Enter goes to it." : centre ? "" : " Enter centres the map on it.")
       }
       onClick={() => act(ghost ? "jump" : "select", item.key)}
@@ -285,7 +308,7 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
         <span className="rm-swatch" aria-hidden="true" />
         <span className="rm-node-label">{name}</span>
         {!missing && !centre && (
-          <span className="rm-counts" aria-hidden="true" title={`${plural(ins, "object")} point at it · it points at ${plural(outs, "object")}`}>
+          <span className="rm-counts" aria-hidden="true" title={`${pointing(ins)} at it · it points at ${plural(outs, "object")}`}>
             {ins} in · {outs} out
           </span>
         )}
@@ -306,6 +329,18 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
   );
 });
 
+// What a port opens, in words: "NRBTS-0 points at 1 object and contains
+// 35 objects", "2 objects point at NRDRX-1; it sits in NRBTS-0".
+function portText(g, id, dir, { links, held }) {
+  const name = label(id);
+  if (dir === "down") {
+    const parts = [links && `points at ${plural(links, "object")}`, held && `contains ${plural(held, "object")}`];
+    return `${name} ${parts.filter(Boolean).join(" and ")}`;
+  }
+  const sits = held ? `sits in ${label(g.container.get(id))}` : "";
+  return links ? `${pointing(links)} at ${name}` + (held ? `; it ${sits}` : "") : `${name} ${sits}`;
+}
+
 const Ports = memo(function Ports({ items, pos, g, expanded, act }) {
   const out = [];
   for (const item of items.values()) {
@@ -313,20 +348,26 @@ const Ports = memo(function Ports({ items, pos, g, expanded, act }) {
     const p = pos.get(item.key);
     if (!p) continue;
     const centre = item.key === "c";
-    const name = label(item.id);
     for (const dir of centre ? ["up", "down"] : [item.dir]) {
-      const n = dir === "down" ? outCount(g, item.id) : inCount(g, item.id);
+      const r = reach(g, item.id, dir);
+      const n = r.total;
       if (!n) continue;
       const y = dir === "down" ? p.y + NODE_H / 2 + PORT_Y : p.y - NODE_H / 2 - PORT_Y;
       if (centre) {
+        const parts =
+          dir === "up"
+            ? [r.links && `${pointing(r.links)} at it`, r.held && `in ${label(g.container.get(item.id))}`]
+            : [r.links && `points at ${plural(r.links, "object")}`, r.held && `contains ${r.held}`];
+        const text = parts.filter(Boolean).join(" · ");
         out.push(
           <span key={`c:${dir}`} className={`rm-port is-static is-${dir}`} style={{ left: p.x, top: y }}>
-            {dir === "up" ? `${plural(n, "object")} point at it` : `It points at ${plural(n, "object")}`}
+            {text[0].toUpperCase() + text.slice(1)}
           </span>
         );
         continue;
       }
       const open = expanded[dir].has(item.id);
+      const what = portText(g, item.id, dir, r);
       out.push(
         <button
           key={`${item.key}:${dir}`}
@@ -335,11 +376,8 @@ const Ports = memo(function Ports({ items, pos, g, expanded, act }) {
           className={`rm-port is-${dir}` + (open ? " is-open" : "")}
           style={{ left: p.x, top: y }}
           aria-expanded={open}
-          aria-label={
-            (open ? "Hide" : "Show") +
-            (dir === "down" ? ` the ${plural(n, "object")} ${name} points at` : ` the ${plural(n, "object")} that point at ${name}`)
-          }
-          title={dir === "down" ? `${name} points at ${plural(n, "object")}` : `${plural(n, "object")} point at ${name}`}
+          aria-label={`${open ? "Hide" : "Show"} the next level: ${what}`}
+          title={what}
           onClick={(e) => {
             e.stopPropagation();
             act("toggle", item.key);
@@ -520,11 +558,12 @@ function Legend({ stats, onClose }) {
         ["ref", "Holds the other object's distName"],
         ["id", "Linked by matching ids (implied: the file names no distName)"],
         ["missing", "Names an object this file doesn't have"],
+        ["contains", "Contains it: the object sits under the other in the tree"],
       ].map(([kind, text]) => (
         <div className="rm-legend-row" key={kind}>
           <svg width="40" height="14" aria-hidden="true" className={`rm-sample is-${kind}`}>
             <path d="M2 7h34" />
-            <path d="M31 3l5 4-5 4" />
+            {kind !== "contains" && <path d="M31 3l5 4-5 4" />}
           </svg>
           <span>{text}</span>
         </div>
@@ -535,7 +574,8 @@ function Legend({ stats, onClose }) {
       </div>
       <p className="rm-legend-note">
         Arrows run from the object holding the value to the object it names: what points at the centre sits above
-        it, what it points at below. The number on a card's edge opens the next level.
+        it, what it points at below. Plain lines are containment: the object it sits in above, what it contains
+        below, after the references. The number on a card's edge opens the next level.
       </p>
       <p className="rm-legend-note">
         Keys: arrows move, Enter centres, Space opens the next level, E explains the link, Escape folds a group,
@@ -826,7 +866,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       if (!it) return;
       const parentKey = it.parent;
       const at = screenOf(parentKey);
-      const members = (next) => (next.get(parentKey)?.children || []).filter((k) => clsOfItem(next.get(k)) === it.cls);
+      const members = (next) => (next.get(parentKey)?.children || []).filter((k) => next.get(k).groupKey === it.groupKey);
       if (at) anchor.current = { key: parentKey, ...at, opened: members };
       setPages((m) => new Map(m).set(it.groupKey, (m.get(it.groupKey) || 0) + 1));
     },
@@ -835,7 +875,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       if (!it?.groupKey) return;
       const parentKey = it.parent;
       const at = screenOf(parentKey);
-      const groupCardKey = `${parentKey}>${it.dir}:group:${clsOfItem(it)}`;
+      const groupCardKey = it.groupCard;
       if (at) anchor.current = { key: parentKey, ...at, opened: () => [groupCardKey], refit: true };
       if (viewportRef.current?.contains(document.activeElement)) refocus.current = groupCardKey;
       setActiveKey(groupCardKey);
@@ -847,7 +887,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     },
     via: (key) => {
       const it = items.get(key);
-      const e = it?.edges[0];
+      const e = it?.edges.find((x) => x.at);
       if (!e) return;
       self.current = ownerOf(e.at);
       setActiveKey(key);
@@ -988,7 +1028,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       else if (it.kind === "group" || (it.kind === "more" && it.left)) act("open", it.key);
       return;
     } else if (e.key === "e" || e.key === "E") {
-      if (it.key !== "c" && it.kind !== "group" && it.edges.length) act("via", it.key);
+      if (it.key !== "c" && it.kind !== "group" && it.edges.some((x) => x.at)) act("via", it.key);
       return;
     } else if (e.key === "Escape") {
       if (it.groupKey && it.kind !== "group") {
@@ -1039,7 +1079,6 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
   const ownerShown = owner && shownIds.has(owner);
   const selectedNode = owner ? g.byId.get(owner) : null;
   const lonely = centre && !centre.children.length;
-  const parentDn = centre?.id.includes("/") ? centre.id.slice(0, centre.id.lastIndexOf("/")) : null;
 
   const toolbar = (
     <>
@@ -1133,6 +1172,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
                   parentLabel={it.parent ? label(items.get(it.parent).id) : null}
                   ins={it.id ? inCount(g, it.id) : 0}
                   outs={it.id ? outCount(g, it.id) : 0}
+                  inside={it.id ? g.kids.get(it.id)?.length || 0 : 0}
                   selected={it.key === selectedKey && !viaKey}
                   tabbable={it.key === activeKey}
                   act={act}
@@ -1144,17 +1184,9 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
             {lonely && (
               <div className="rm-lonely rm-overlay" style={{ left: -180, top: NODE_H / 2 + 28 }}>
                 <p>
-                  <span className="mono">{label(centre.id)}</span> points at nothing and nothing points at it. It is
-                  tied into the file only by where it sits{parentDn ? ", under " : "."}
-                  {parentDn && <span className="mono">{label(parentDn)}</span>}
-                  {parentDn && "."}
+                  <span className="mono">{label(centre.id)}</span> points at nothing, nothing points at it, and
+                  nothing else in this file sits above or under it.
                 </p>
-                {parentDn && g.byId.has(parentDn) && (
-                  <button className="btn" onClick={() => pick(parentDn)}>
-                    <Icon name="target" />
-                    Centre on {label(parentDn)}
-                  </button>
-                )}
               </div>
             )}
           </div>
@@ -1164,8 +1196,9 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
           <div className="rm-landing rm-overlay">
             <h2 className="rm-landing-title">Reference map</h2>
             <p>
-              Centre the map on an object to see what points at it, above, and what it points at, below. Search for
-              one, select it in the tree first, or start from the objects most pointed at in this file.
+              Centre the map on an object to see what points at it and what it sits in, above, and what it points at
+              and contains, below. Search for one, select it in the tree first, or start from the objects most pointed
+              at in this file.
             </p>
             <div className="rm-hubs-head" id="rm-hubs-head">Most pointed at</div>
             {topHubs.length > 0 ? (

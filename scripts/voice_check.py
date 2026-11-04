@@ -8,8 +8,8 @@ warning; the dictionary's rules on what the features need hold where the
 release has the parameters (actConvVoice: harqMaxTrVoLteDl in every cell;
 actTtiBundling: its mandatory settings and actTtibRsc; proactive grants:
 both periods; actQci1eVTT: its configuration row); a gNB maps 5QI 1 and 5
-afterwards, never as NRDRB_5QI-1; the same again on the result is refused
-(nothing to change).
+afterwards, NRDRB_5QI-1 only for 5QI 1, and a production gNB's QoS is left
+as it is; the same again on the result is refused (nothing to change).
 Round trip: every eNB with conversational voice on and every gNB with VoNR
 cells has its voice settings taken out (switches off, values and rows of
 the features each cell runs removed; on an eNB its QCI 1 row too) and is
@@ -33,9 +33,10 @@ from app.actions import Context, PlanError, qos, voice  # noqa: E402
 from app.actions.doc import Doc, label, release_of, why  # noqa: E402
 from app.ca import _load  # noqa: E402
 from app.actions.links import Site  # noqa: E402
-from qos_check import load  # noqa: E402
+from qos_check import load, production  # noqa: E402
 
 W = why("check", "round trip", "choice")
+QOS_CLASSES = {"NRDRB_5QI", "NRDRB", "NRDRB_MAC", "NRDRB_PDCP", "NRDRB_RLC_AM", "NRDRB_RLC_UM"}
 
 LTE_SWITCHES = {"actTtiBundling": "false", "actQci1eVTT": "false", "actQci1BlerTgt": "false",
                 "maxNumVoLteProactUlGrantsPerTti": "0", "voLteProactUlGrantPeriodRegTx": "0",
@@ -104,6 +105,7 @@ def sweep(corpus, raws, index, counts, failures):
         except Exception:
             failures.append(f"{name}: setup crashed\n{traceback.format_exc()}")
             continue
+        prod = production(ctx.mos)
         for t in fields["target"]["options"]:
             side, _, dn = t["value"].partition("|")
             for kind in ("all", "none"):
@@ -128,10 +130,15 @@ def sweep(corpus, raws, index, counts, failures):
                     failures.append(f"{where}: new findings {new_findings(plan)[:3]}")
                 if kind == "all":
                     failures += [f"{where}: {p}" for p in rule_problems(out, index, side, dn)]
+                after = Doc(out)
                 ones = [c["dn"] for c in plan["changes"] if c["op"] == "create" and c["class"] == "NRDRB_5QI"
-                        and c["dn"].endswith("-1")]
+                        and c["dn"].endswith("-1") and after.values(c["dn"], "fiveqiValueList") != ["1"]]
                 if ones:
                     failures.append(f"{where}: made {ones}")
+                if side == voice.NR and dn in prod:
+                    qos_changes = [label(c["dn"]) for c in plan["changes"] if c.get("class") in QOS_CLASSES]
+                    if qos_changes:
+                        failures.append(f"{where}: changed a production gNB's QoS: {qos_changes[:4]}")
                 try:
                     voice.plan(Context(out, name, source, corpus=lambda: corpus, release_index=lambda: index), inputs)
                     failures.append(f"{where}: repeat not refused")

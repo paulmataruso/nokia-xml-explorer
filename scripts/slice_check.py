@@ -6,6 +6,11 @@ slice rules of dependents.py.
 Sweep: on every gNB, a slice of SST 2 with SD 4660 in all its PLMNs and
 tracking areas: no crash; the site check finds no new error or warning;
 the same again on the result is refused.
+Replace: on every gNB, its first slice replaced by itself (its SST, SD,
+PLMNs and tracking areas) must be refused as nothing to change; with two
+slices or more, the first two replaced by SST 2, SD 4660: no crash, no new
+site-check error or warning, the same again refused, the second gone, and
+every 5QI either was served with still served for the new slice.
 Round trip: every slice is deleted through the delete action (its rows in
 tracking areas, 5QI mappings and resource groups go with it) and added
 again with its SST, SD, PLMNs and tracking areas, and the 5QI mappings it
@@ -25,7 +30,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "backend"))
 sys.path.insert(0, os.path.dirname(__file__))
 
 from app.actions import Context, PlanError, delete, slice as slice_action  # noqa: E402
-from app.actions.doc import label  # noqa: E402
+from app.actions.doc import label, natural  # noqa: E402
 from app.actions.links import Site  # noqa: E402
 from app.ca import _load  # noqa: E402
 from cell_check import load  # noqa: E402
@@ -58,6 +63,61 @@ def sweep(name, source, raw, counts, failures):
             failures.append(f"{where}: new findings {new_findings(plan)[:3]}")
         try:
             slice_action.plan(Context(out, name, source), inputs)
+            failures.append(f"{where}: repeat not refused")
+        except PlanError:
+            pass
+
+
+def _values(site, gnb, dn):
+    return {v for m in slice_action._served_by(site, gnb, dn) for v in site.by_dn[m]["simple"].get("fiveqiValueList", [])}
+
+
+def replaced(name, source, raw, counts, failures):
+    ctx = Context(raw, name, source)
+    site = ctx.site
+    for gnb in slice_action._gnbs(site):
+        g = gnb["dn"]
+        mine = sorted(slice_action._slices(site, g), key=lambda x: natural(x["dn"]))
+        if not mine:
+            continue
+        s = mine[0]
+        tas, _, _ = _ties(site, g, s["dn"])
+        same = {"gnb": g, "sst": s["p"].get("sst"), "sd": s["p"].get("sd") or "", "tas": tas, "mappings": [],
+                "plmns": [slice_action._rel(g, p) for p in s["simple"].get("nrPlmnDNList", [])], "replaces": [s["dn"]]}
+        try:
+            _, plan = slice_action.plan(ctx, same)
+            failures.append(f"{name} {label(s['dn'])}: replaced by itself, changes "
+                            f"{[(c['op'], label(c['dn'])) for c in plan['changes'][:4]]}")
+        except PlanError as e:
+            if "nothing to change" not in " ".join(e.problems):
+                failures.append(f"{name} {label(s['dn'])}: replaced by itself, refused {e.problems}")
+            counts["replace by itself refused"] += 1
+        if len(mine) < 2:
+            continue
+        a, b = mine[0]["dn"], mine[1]["dn"]
+        inputs = {"gnb": g, "sst": "2", "sd": "4660", "mappings": [], "replaces": [a, b],
+                  "plmns": [p["dn"] for p in site.child(g, "NRPLMN")],
+                  "tas": [t["dn"] for t in site.child(g, "TRACKINGAREA")]}
+        where = f"{name} {label(a)}+{label(b)}"
+        try:
+            out, plan = slice_action.plan(ctx, inputs)
+        except PlanError as e:
+            failures.append(f"{where}: replace refused: {e.problems}")
+            continue
+        except Exception:
+            failures.append(f"{where}: replace crashed\n{traceback.format_exc()}")
+            continue
+        counts["replace two ok"] += 1
+        if new_findings(plan):
+            failures.append(f"{where}: new findings {new_findings(plan)[:3]}")
+        after = Site(_load(out))
+        if b in after.by_dn:
+            failures.append(f"{where}: {label(b)} is still there")
+        lost = (_values(site, g, a) | _values(site, g, b)) - _values(after, g, a)
+        if lost:
+            failures.append(f"{where}: 5QI {sorted(lost)} no longer served for the slice")
+        try:
+            slice_action.plan(Context(out, name, source), {**inputs, "replaces": [a]})
             failures.append(f"{where}: repeat not refused")
         except PlanError:
             pass
@@ -129,6 +189,7 @@ def main(folders):
     counts, failures = collections.Counter(), []
     for (source, name), raw in raws.items():
         sweep(name, source, raw, counts, failures)
+        replaced(name, source, raw, counts, failures)
         round_trip(name, source, raw, counts, failures)
     print(f"{len(raws)} files")
     for k, n in sorted(counts.items()):

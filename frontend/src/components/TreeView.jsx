@@ -337,7 +337,7 @@ const TreeRow = memo(function TreeRow({
             anchored to the row's far end could be scrolled out of view), and
             inside the column so it never pushes the value sideways. It only
             shows on the hovered/selected row; right-click works anywhere on
-            the row and also offers Rename for objects. */}
+            the row and also offers Renumber for objects. */}
         <span className="tree-label-cell">
           {node.kind === "list" && <Icon name="table" size={12} className="tree-kind-icon" />}
           <Highlight className="tree-label" title={node.label} text={node.label} query={query} />

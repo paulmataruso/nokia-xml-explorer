@@ -24,19 +24,28 @@ LTE (LNCEL, its DRX-0/SDRX-0 profile tables, the eNB's qciTab mapping):
 
 NR (NRBTS's NRDRX profiles, NRCELL, NRDRB); no NR dictionary exists, so
 this follows the 25R2 production files, where every gNB has the same four
-profiles (NoDRX, Default NonGbr, Default VoNR, Default ANR) and C-DRX on:
-  - "on": the four profiles (missing ones created with the production
-    values), actCDrx and actCDrxVoNR, and the cell's and bearers' profile
-    references. References to a missing object, to nothing, or to NoDRX
-    move to the matching default; ones to a custom profile are kept.
+profiles (NoDRX, Default NonGbr, Default VoNR, Default ANR) and C-DRX on,
+and every cell and bearer names one of them:
+  - "on" replaces what the gNB has with that (the owner, 2026-11-03: the
+    cleaning actions clear out what they replace, and the canned value
+    wins): the four profiles with production's values (missing ones
+    created, each old value in its reason); actCDrx and actCDrxVoNR; each
+    picked cell's data, VoNR and ANR references, and every bearer's
+    (Default VoNR for the 5QI 1 bearer, Default NonGbr for the rest), on
+    the matching default, custom profiles included. A profile other than
+    the four that nothing names afterwards is removed (the lab gNBs'
+    custom NonGbr, NRDRX-4, is the usual one).
   - "off": actCDrx and actCDrxVoNR off.
+LTE has no production profile set to replace with (Nokia's production
+runs LTE DRX off), so "on" keeps the cells' own DRX and SDRX tables.
 """
 from __future__ import annotations
 
 from typing import Optional
 
 from . import Context, PlanError, finish
-from .doc import Doc, label, release_of, why
+from .doc import Doc, label, natural, release_of, why
+from .qos_replace import _full, _namers
 
 ID = "drx"
 TITLE = "Set up DRX"
@@ -93,7 +102,9 @@ NR_PRESETS = [
                  "Default VoNR (40 ms), Default ANR (640 ms); missing ones are added.",
                  "actCDrx and actCDrxVoNR on in each cell; data on Default NonGbr, VoNR (5QI 1) on Default VoNR, "
                  "ANR measurements on Default ANR.",
-                 "References to a custom profile are kept."]},
+                 "The bearers and the picked cells' references to other profiles move to the matching default, "
+                 "and the profiles nothing uses then are removed. Values that differ from production's are set to "
+                 "it."]},
     {"value": "off", "label": "C-DRX off",
      "details": ["actCDrx and actCDrxVoNR off in each cell. The profiles stay."]},
 ]
@@ -376,38 +387,49 @@ class _Plan:
                     if doc.get(cell, name) == "true":
                         doc.set(cell, name, "false", why("drx", "Turns C-DRX off.", "choice"))
             return
+        before = {d: self._what(d) for d in doc.children(gnb, "NRDRX")}
         profiles = self.nr_profiles(gnb)
-        nodrx = profiles["NoDRX"]
-        repoint = lambda value: not value or not doc.exists(value) or value == nodrx
-        kept: dict[tuple[str, str], int] = {}
+        repoint = lambda value, prof: _full(gnb, value) != profiles[prof]
         for cell in cells:
             self.set(cell, "actCDrx", "true", why("drx", "Turns C-DRX on for data.", "choice"))
             self.set(cell, "actCDrxVoNR", "true", why("drx", "Turns C-DRX on for VoNR calls.", "choice"))
             for name, prof in (("nonGbrNrDrxDN", "Default NonGbr"), ("voNRNrDrxDN", "Default VoNR")):
                 value = doc.get(cell, name)
-                if repoint(value) and self.known(cell, name):
+                if repoint(value, prof) and self.known(cell, name):
                     doc.set(cell, name, profiles[prof], why(
                         "drx", f"{'Data' if name.startswith('non') else 'VoNR'} uses the {prof} profile, as on the "
-                               "production gNBs" + ("" if not value else f" (was {self._what(value)})") + ".", "files"))
-                elif value != profiles[prof]:
-                    kept[(name, self._what(value))] = kept.get((name, self._what(value)), 0) + 1
+                               "production gNBs" + ("" if not value else f" (was {self._what(_full(gnb, value))})")
+                               + ".", "files"))
             # The release index has scalars only, so a list is known when this
             # cell or another one in the file has it.
             rows = doc.items(cell, "drxProfileNrAnr")
             has_list = rows or any(doc.items(c, "drxProfileNrAnr") for c in doc.of_class("NRCELL", gnb))
-            if has_list and (not rows or any(repoint(r.get("nrDrxDN")) for r in rows)):
+            if has_list and (len(rows) != 1 or rows[0].get("drxControl") != "any"
+                             or repoint(rows[0].get("nrDrxDN"), "Default ANR")):
+                was = "; ".join(f"{r.get('drxControl') or '?'} on {self._what(_full(gnb, r.get('nrDrxDN')))}"
+                                for r in rows if r.get("nrDrxDN"))
                 for i in reversed(range(len(rows))):
                     doc.remove_item(cell, "drxProfileNrAnr", i, why("drx", "Replaced below.", "files"))
                 doc.add_item(cell, "drxProfileNrAnr", [("drxControl", "any"), ("nrDrxDN", profiles["Default ANR"])],
                              why("drx", "ANR measurements use the Default ANR profile (640 ms), as on the production "
-                                        "gNBs.", "files"))
-        for (name, what), n in kept.items():
-            self.notes.append(f"{n} cell{'s keep' if n != 1 else ' keeps'} {name} on {what}, a profile of this file's "
-                              "own; the preset leaves it.")
+                                        "gNBs" + (f" (was {was})" if was else "") + ".", "files"))
         for name in ("actDedicatedAnrDrxProfile", "actSaIntraFreqAnrDrxProf"):
             self.set(gnb, name, "true", why(
                 "drx", "Lets ANR measurements use their own DRX profile; on in every production gNB.", "files"))
         self.nr_bearers(gnb, profiles, repoint)
+        # What the defaults replaced: profiles of the file's own that nothing names now.
+        namers = _namers(doc, gnb)
+        unused = [d for d in doc.children(gnb, "NRDRX") if d not in profiles.values() and not namers[d]]
+        for d in unused:
+            doc.delete(d, why("drx", f"{before.get(d, label(d))}, a profile of this file's own: nothing uses it now "
+                                     "that the cells and bearers use production's profiles.", "choice"))
+        if unused:
+            self.notes.append(f"Removed {', '.join(label(d) for d in sorted(unused, key=natural))}: nothing uses "
+                              + ("it" if len(unused) == 1 else "them") + " now.")
+        left = [d for d in doc.children(gnb, "NRDRX") if d not in profiles.values()]
+        if left:
+            self.notes.append(f"Kept {', '.join(f'{label(d)} ({self._what(d)})' for d in sorted(left, key=natural))}: "
+                              "cells that weren't picked still use them.")
 
     def _what(self, dn: str) -> str:
         if not self.doc.exists(dn):
@@ -415,8 +437,8 @@ class _Plan:
         return self.doc.get(dn, "userLabel") or label(dn)
 
     def nr_profiles(self, gnb: str) -> dict[str, str]:
-        """userLabel -> NRDRX distName for the four defaults, adding the
-        missing ones with the production values."""
+        """userLabel -> NRDRX distName for the four defaults, set to the
+        production values, adding the missing ones."""
         doc = self.doc
         found = {}
         for dn in doc.children(gnb, "NRDRX"):
@@ -426,6 +448,11 @@ class _Plan:
         version = self.ctx.site.by_dn[gnb]["version"]
         for i, (lab, values) in enumerate(NRDRX_DEFAULTS.items()):
             if lab in found:
+                for k, v in values.items():
+                    now = doc.get(found[lab], k)
+                    if now != v:
+                        doc.set(found[lab], k, v, why("drx", f"The {lab} profile of the production gNBs: {k} {v}"
+                                                             + (f" (was {now})." if now else "."), "files"))
                 continue
             taken = {dn.rsplit("-", 1)[-1] for dn in doc.children(gnb, "NRDRX")}
             inst = str(i) if str(i) not in taken else doc.next_free(gnb, "NRDRX", 0).rsplit("-", 1)[-1]
@@ -436,20 +463,23 @@ class _Plan:
 
     def nr_bearers(self, gnb: str, profiles: dict[str, str], repoint) -> None:
         """Each bearer's profile: Default VoNR for the one only 5QI 1
-        (conversational voice) uses, Default NonGbr for the rest."""
+        (conversational voice) uses, Default NonGbr for the rest, as on
+        every production gNB."""
         doc = self.doc
         users: dict[str, set] = {}
-        for q in doc.children(gnb, "NRDRB_5QI"):
-            target = doc.get(q, "nrDrbDN")
+        for q in doc.children(gnb, "NRDRB_5QI") + doc.children(gnb, "NRDRB_QCI"):
+            target = _full(gnb, doc.get(q, "nrDrbDN"))
             if target:
-                users.setdefault(target, set()).add(q.rsplit("-", 1)[-1])
+                values = doc.values(q, "fiveqiValueList") if "/NRDRB_5QI-" in q else ["qci"]
+                users.setdefault(target, set()).update(values)
         for drb in doc.children(gnb, "NRDRB"):
             value = doc.get(drb, "nrDrxDN")
             prof = "Default VoNR" if users.get(drb) == {"1"} else "Default NonGbr"
-            if repoint(value) and self.known(drb, "nrDrxDN"):
+            if repoint(value, prof) and self.known(drb, "nrDrxDN"):
                 doc.set(drb, "nrDrxDN", profiles[prof], why(
                     "drx", f"{'The VoNR bearer (5QI 1)' if prof == 'Default VoNR' else 'A data bearer'} uses "
-                           f"{prof}" + ("" if not value else f" (was {self._what(value)})") + ".", "files"))
+                           f"{prof}, as on the production gNBs"
+                           + ("" if not value else f" (was {self._what(_full(gnb, value))})") + ".", "files"))
 
 
 def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:

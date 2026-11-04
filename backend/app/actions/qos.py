@@ -7,9 +7,10 @@ findings.
 NRDRB, which names its NRDRB_MAC, NRDRB_PDCP, NRDRB_RLC_AM or _UM (by
 rlcMode) and NRDRX. 5G, EN-DC: NRDRB_QCI-n (qciValueList) names an NRDRB the
 same way.
-- n is never 1: the owner's rule, and every file with NRDRB_5QI already
-  has NRDRB_5QI-1. It is the value when that is free (production numbers
-  them so), else the lowest free from 2.
+- n is the value when that is free, as production numbers them (the
+  owner's rule, 2026-11-04: "By 5QI value, as Nokia"); a second mapping of
+  5QI 1-9 takes 20 + 5QI; else the lowest free from 2, since 1 is only for
+  the mapping of 5QI (or QCI) 1.
 - The bearer is a new NRDRB with the template's settings, or one the gNB
   already has (the lab gNBs put every 5QI on one). A new one is NRDRB-(10 +
   5QI) for 5QI 1-9 and NRDRB-QCI for EN-DC QCIs, as production numbers
@@ -50,6 +51,7 @@ from .doc import Doc, instance, label, natural, release_of, why
 from .neighbours import number
 from .qos_files import LTE_PROFILE_FIELDS, bearer, bearer_signature, lte_profiles, summary
 from .qos_templates import TEMPLATES
+from .tidy import REPEAT
 
 ID = "qos"
 TITLE = "Add a QCI or 5QI profile"
@@ -60,7 +62,7 @@ UI = "form"
 KEYWORDS = "QoS QCI 5QI quality of service bearer DRB NRDRB NRDRB_5QI NRDRB_QCI qciTab VoLTE VoNR slice SNSSAI"
 
 SA, NSA, LTE = "5qi", "qci-nr", "lte"
-OWN, PRESET, OTHER = "own", "preset", "other"
+OWN, PRESET, OTHER, REPLACE = "own", "preset", "other", "replace"
 TEMPLATE_RELEASE = "NRBTSCL25R2"  # the built-in templates' release: exempt from the release filter
 
 # 3GPP characteristics: resource type, priority level, packet delay budget,
@@ -256,6 +258,17 @@ def _nr_options(ctx: Context, gnb: dict, side: str, mine: dict, others: list[dic
                        "details": [f"Each with production's template and a bearer of its own, as on all "
                                    f"{TEMPLATES[kind][missing[0]]['of']} production gNBs in the files this was "
                                    "built from."]})
+    if TEMPLATES[kind]:
+        values.append({"value": REPLACE, "key": f"{target}|{REPLACE}", "group": "Several at once",
+                       "label": f"Replace every {NAME[side]} mapping with production's set "
+                                f"({', '.join(TEMPLATES[kind])})",
+                       "details": [f"Removes this gNB's {MAPPING[side][0]} mappings and the bearers and profiles only "
+                                   "they use (NRDRB-1, the default bearer, stays), then writes production's, numbered "
+                                   "as production numbers them: "
+                                   + ("NRDRB_5QI-5 maps 5QI 5 to NRDRB-15, whose MAC is NRDRB_MAC-5."
+                                      if side == SA else "NRDRB_QCI-6 maps QCI 6 to NRDRB-6."),
+                                   "An object already on its production number keeps it and gets the template's "
+                                   "values; the review lists each old value. The slices stay the site's."]})
     values.append({"value": OTHER, "key": f"{target}|{OTHER}", "group": "Other",
                    "label": f"Another {NAME[side]} (type it in)", "details": ["An operator-specific value, say."]})
 
@@ -309,6 +322,16 @@ def _nr_options(ctx: Context, gnb: dict, side: str, mine: dict, others: list[dic
     return values, templates, mapped
 
 
+def _extras(side: str, mapped: dict) -> list[dict]:
+    """The values this gNB maps and production doesn't: a replace removes them unless picked."""
+    kind = "5qi" if side == SA else "qci"
+    return [{"value": v, "label": f"Keep {_value_label(side, int(v))}",
+             "details": [f"Mapped here ({', '.join(label(p['dn']) for p in ps)}); production gNBs map no "
+                         f"{NAME[side]} {v}. Kept with its own bearer settings, numbered by its value."]}
+            for v, ps in sorted(mapped.items(), key=lambda kv: int(kv[0]) if kv[0].isdigit() else 0)
+            if v.isdigit() and v not in TEMPLATES[kind]]
+
+
 def _lte_options(ctx: Context, enb: dict, others: list[dict]):
     rel = release_of(enb["version"])
     tabs = {t["qci"]: t for t in next((e["tabs"] for e in _here(ctx)["enbs"] if e["dn"] == enb["dn"]), [])}
@@ -353,6 +376,7 @@ def setup(ctx: Context) -> dict:
     site, others = ctx.site, _others(ctx)
     mine = {g["dn"]: g["profiles"] for g in _here(ctx)["gnbs"]}
     targets, values, templates, defaults, drbs, slices, slice_default = [], {}, {}, {}, {}, {}, {}
+    keep = {}
     for gnb in _gnbs(ctx):
         for side in _sides(ctx, gnb):
             key = f"{side}|{gnb['dn']}"
@@ -362,8 +386,10 @@ def setup(ctx: Context) -> dict:
                                         if side == SA else
                                         "NRDRB_QCI: which bearer the gNB gives the NR leg of an EN-DC bearer of each "
                                         "QCI."]})
-            v, t, _ = _nr_options(ctx, gnb, side, mine, others)
+            v, t, mapped = _nr_options(ctx, gnb, side, mine, others)
             values[key] = v
+            if _extras(side, mapped):
+                keep[f"{key}|{REPLACE}"] = _extras(side, mapped)
             templates.update(t)
             defaults.update({k: opts[0]["value"] for k, opts in t.items() if opts})
             users: dict[str, list[str]] = {}
@@ -396,6 +422,11 @@ def setup(ctx: Context) -> dict:
         templates.update(t)
         defaults.update({k: opts[0]["value"] for k, opts in t.items() if opts})
     other = {"field": "value", "equals": OTHER}
+
+    def by_value(per_target: dict) -> dict:
+        """A target's options under each of its value options' keys, but a replace's."""
+        return {o["key"]: opts for t, opts in per_target.items() for o in values.get(t, [])
+                if o["value"] != REPLACE}
     return {
         "intro": "Adds a QoS profile with all its settings, from a template: production's, another file's, or one of "
                  "this file's own profiles. On a gNB the bearer's MAC, PDCP, RLC and DRX profiles are reused where the "
@@ -408,12 +439,16 @@ def setup(ctx: Context) -> dict:
              "hint": "1 to 255."},
             {"id": "template", "label": "Settings from", "type": "select", "dependsOn": "value",
              "optionsByKey": templates, "defaultByKey": defaults},
-            {"id": "drb", "label": "Bearer", "type": "select", "dependsOn": "target", "optionsByKey": drbs,
-             "defaultByKey": {k: OWN for k in drbs}},
-            {"id": "slices", "label": "Slices", "type": "checks", "dependsOn": "target", "optionsByKey": slices,
-             "defaultByKey": slice_default, "optional": True,
+            # By value, not target, so a replace (which keeps each mapping's slices and bearer rules) asks neither.
+            {"id": "drb", "label": "Bearer", "type": "select", "dependsOn": "value", "optionsByKey": by_value(drbs),
+             "defaultByKey": {k: OWN for k in by_value(drbs)}},
+            {"id": "slices", "label": "Slices", "type": "checks", "dependsOn": "value",
+             "optionsByKey": by_value(slices), "defaultByKey": by_value(slice_default), "optional": True,
              "hint": "None ticked: the mapping names no slice, as on the lab gNBs. Production names the slices that "
                      "use the 5QI."},
+            {"id": "keep", "label": "Keep", "type": "checks", "dependsOn": "value", "optionsByKey": keep,
+             "defaultByKey": {k: [] for k in keep}, "optional": True,
+             "hint": "Values production doesn't map are removed unless picked here."},
         ],
     }
 
@@ -552,7 +587,8 @@ class _Nr:
 
     def mapping(self, v: int, p: dict, drb: str, slices: list[str], source: str) -> str:
         cls, values = MAPPING[self.side]
-        inst = self.free(cls, [v] if v >= 2 else [], 2)
+        prefer = [v] + ([REPEAT + v] if self.side == SA and 1 <= v <= 9 else [])
+        inst = self.free(cls, prefer, 2)
         if self.side == SA and not p.get("dataForwarding"):
             # A bearer template carries no mapping settings: as the gNB's other
             # mappings, else IRATDataFwd (all but production's 5QI 1).
@@ -562,7 +598,11 @@ class _Nr:
         w = why("qos", f"Maps {NAME[self.side]} {v} to {label(drb)}"
                 + (f", for {', '.join(label(s) for s in slices)}" if slices else "")
                 + (f"; dataForwarding as {source}" if p.get("dataForwarding") else "")
-                + f". Never instance 1: a new {cls} is numbered from 2.", "choice")
+                + (f". Numbered by its value, as production numbers them." if inst == str(v) else
+                   f". {v} is taken, so {inst}: a second mapping of a value is 20 above it, as production "
+                   f"numbers them." if inst == str(REPEAT + v) else
+                   f". Production numbers a mapping by its value, and {v} is taken, so the lowest free from 2 (1 "
+                   f"is for the mapping of {NAME[self.side]} 1)."), "choice")
         params = sorted([*((k, x) for k, x in p.items() if self.known(cls, k)), ("nrDrbDN", drb)])
         dn = self.doc.create(self.dn, cls, inst, params, full_class=self.full_class(cls),
                              version=None if self.doc.of_class(cls) else self.gnb["version"], w=w)
@@ -587,6 +627,8 @@ def _mapped(doc: Doc, gnb: str, side: str) -> dict[str, list[tuple[str, set[str]
 def _plan_nr(ctx: Context, doc: Doc, side: str, gnb: dict, inputs: dict) -> dict:
     kind = "5qi" if side == SA else "qci"
     value = inputs.get("value") or ""
+    if value == REPLACE:
+        return _plan_replace(ctx, doc, side, gnb, inputs)
     nr = _Nr(ctx, doc, gnb, side)
     problems: list[str] = []
     if value == PRESET:
@@ -659,6 +701,31 @@ def _plan_nr(ctx: Context, doc: Doc, side: str, gnb: dict, inputs: dict) -> dict
                    + ([f"The eNB makes QCI {', '.join(values)} EN-DC-eligible (qciTab lteNrDualConnectSupport: the "
                        "EN-DC action, 4G side)."] if side == NSA else []),
         "focus": made[0] if made else None,
+    }
+
+
+def _plan_replace(ctx: Context, doc: Doc, side: str, gnb: dict, inputs: dict) -> dict:
+    from .qos_replace import replace_nr  # it builds on this module
+
+    out = replace_nr(ctx, doc, side, gnb, None, frozenset(inputs.get("keep") or []))
+    if not doc.changes:
+        raise PlanError([f"{label(gnb['dn'])}'s {NAME[side]} mappings are production's already, numbered as "
+                         "production numbers them."])
+    values = sorted(set(out["values"]), key=int)
+    built = TEMPLATES.get("5qi" if side == SA else "qci", {})
+    own = [v for v in values if v not in built]
+    return {
+        "label": f"Production's {NAME[side]} set on {label(gnb['dn'])}",
+        "summary": f"{NAME[side]} {', '.join(v for v in values if v in built)} on gNB {instance(gnb['dn'])} as "
+                   "production" + (f", {', '.join(own)} kept with {'its' if len(own) == 1 else 'their'} own settings"
+                                   if own else "")
+                   + (f", {len(out['removed'])} object{'s' if len(out['removed']) != 1 else ''} removed"
+                      if out["removed"] else ""),
+        "notes": out["notes"],
+        "confirm": [f"The core marks each flow with its {NAME[side]} "
+                    f"({'the SMF and PCF' if side == SA else 'the MME and PCRF'}): the values no longer mapped carry "
+                    "no flows."],
+        "focus": out["written"][0] if out["written"] else None,
     }
 
 

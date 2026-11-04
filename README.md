@@ -144,7 +144,9 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
     and cell group), set up DRX, set up carrier aggregation (the wizard
     above).
   - *Features*: set up EN-DC, add a QCI or 5QI profile with its bearer
-    and every profile it names, set up VoLTE or VoNR, add a network slice.
+    and every profile it names (or replace a gNB's whole set with the one
+    Nokia's production gNBs run), set up VoLTE or VoNR, add a network
+    slice (beside the gNB's slices, or instead of some of them).
   - *Mobility and neighbours*: add a carrier to measure or redirect to
     (IRFIM/LNHOIF, NRFIM, NRIRFIM, REDRT, NRREDRT), a neighbour eNB (X2),
     an EN-DC gNB, a neighbour gNB (Xn).
@@ -152,9 +154,17 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
     sharing), change a BTS IP address, add a VLAN interface with its own
     routing table, add a static route, set NTP and DNS servers.
   - *Hardware*: add a radio (cabled to free baseband ports), remove a
-    radio or baseband card, change a product code, and delete any object
-    with what depends on it (also on the tree's right-click menu, "Delete
-    with dependents…").
+    radio or baseband card, change a product code.
+  - *Edit*: renumber any object, or number every object of its class in
+    order without gaps, with every link to it re-pointed (the values that
+    name it or anything under it, and the cell group and DU lists that hold
+    numbers); tidy the numbering of the whole file in one go, the way
+    Nokia's production files are numbered (the QoS chain by 5QI value:
+    NRDRB_5QI-5 maps 5QI 5 and names NRDRB-15 and NRDRB_MAC-5; gaps closed
+    in the classes production always numbers in order, and numbering
+    schemes such as SNSSAI, BWP_PROFILE and the ports left alone); delete any object with
+    what depends on it. Renumber and delete are also on the tree's
+    right-click menu ("Renumber…", "Delete with dependents…").
 
   Each action is a short form, then a review of every change with its
   reason and where it comes from: a Nokia dictionary rule (with its
@@ -167,6 +177,17 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   and **Manual steps**: the same change written out object by object, to
   make by hand in the Nokia WebUI if you'd rather, ready to copy. Applying is one undoable edit, refused
   if it would add a site-check error.
+
+  The canned features clean up as they go instead of adding beside what
+  is there. Production's QoS set replaces the gNB's mappings and the
+  bearers and profiles only they used, numbered as production numbers
+  them. VoNR rebuilds 5QI 1 and 5 the same way. DRX re-points the cells
+  and bearers at Nokia's four default profiles and removes the leftovers.
+  A carrier a cell already has gets its entry corrected instead of a
+  second one. A slice can take the place of others, with everything that
+  named them. Where the site set a value differently, the canned value
+  wins, and the review lists the old one. A gNB that already matches
+  production comes out unchanged.
 - **Site check**: the **Links** chip in the file header checks how the
   file's objects fit together: references that point at nothing,
   repeated ids, cells without a channel mapping or cell group, QoS
@@ -174,8 +195,9 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   gateways. Click it for the list; every finding links to its rows.
 - **Reference map**: the toolbar's **Tree | Map** switch shows which
   objects point at which, centred on the selected object: what references
-  it above, what it references below, opening a level at a click. A card
-  selects the same object in the tree, and the explanation panel follows.
+  it and the object it sits in above, what it references and contains
+  below, opening a level at a click. A card selects the same object in the
+  tree, and the explanation panel follows.
 - A file-level "File Info" node explains the `raml`/`cmData`/`header`/`log`
   wrapper elements themselves.
 - **Generate new XML**: the **+** button at the top of the file list creates
@@ -410,10 +432,9 @@ that same pattern natively, but goes further than the spreadsheets could:
   guess is never applied silently. This never creates *sibling* instances
   (e.g. it won't guess a cell count) — just the minimum one instance needed
   to satisfy each inferred requirement.
-- **Objects and non-Mandatory parameters can be deleted, and objects can be
-  renamed** (while editing) via `DELETE /api/files/{filename}/objects`,
-  `DELETE /api/files/{filename}/objects/param`, and
-  `PUT /api/files/{filename}/objects/rename`. Three ways to reach these: a
+- **Objects and non-Mandatory parameters can be deleted** (while editing)
+  via `DELETE /api/files/{filename}/objects` and
+  `DELETE /api/files/{filename}/objects/param`. Three ways to reach these: a
   small × button at the end of each tree row's label column (deliberately
   there rather than at the row's end, since a long value or distName can
   push "the end" of a row past the visible edge of these
@@ -421,12 +442,9 @@ that same pattern natively, but goes further than the spreadsheets could:
   **right-click any object or parameter row (or press Shift+F10) for a
   context menu** -- the more reliable option, since it opens at the row
   regardless of row width or scroll position. The context menu
-  also has **Rename**, which changes just an object's trailing instance
-  number (e.g. `LNCEL-1` → `LNCEL-0`, same class and parent) and rewrites
-  the same prefix on every descendant's `distName`, since RAML distNames are
-  literal ancestry paths, not references (`rename_managed_object` in
-  parser.py). Deleting an object cascades to every descendant beneath it the
-  same way. A Mandatory parameter can never be deleted, only edited --
+  also has **Renumber…**, which opens the Renumber action on the object
+  (see Site actions). Deleting an object cascades to every descendant
+  beneath it. A Mandatory parameter can never be deleted, only edited --
   offering delete there would undo the guarantee above that every Mandatory
   field always has a value or is at least visibly flagged; there's no such
   restriction on deleting or renaming whole objects, since (per the point

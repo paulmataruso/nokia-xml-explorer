@@ -292,6 +292,97 @@ class Doc:
                                  "clonedFrom": d})
         return created
 
+    # Writing: renumbering ----------------------------------------------------
+
+    # Simple lists that hold another object's instance number, not its
+    # distName (refmap.py's id links): (holder, list, the class numbered).
+    NUMBER_LISTS = (("NRCELLGRP", "nrCellList", "NRCELL"), ("NRDU", "refNrCellGroup", "NRCELLGRP"))
+
+    def renumber(self, old: str, new: str, w: dict, ref: Optional[dict] = None) -> list[str]:
+        """Gives the object at `old` the distName `new` (same parent and
+        class, another instance number). It and everything under it change
+        distName in place, every value in the file naming any of them moves
+        with them, and so does its number in the number lists. Recorded the
+        way it is done by hand: a "renumber" (steps.py makes it a copy under
+        the new number, then the old one's deletion), then each value
+        re-pointed, recorded with `ref` (else `w`). Returns the new
+        distNames."""
+        if old not in self.mos:
+            raise ValueError(f"{old} doesn't exist")
+        if new in self.mos:
+            raise ValueError(f"{new} already exists")
+        if old.rpartition("/")[0] != new.rpartition("/")[0] or label(old).rsplit("-", 1)[0] != label(new).rsplit("-", 1)[0]:
+            raise ValueError(f"{new} isn't {old} under another number")
+
+        def move(v: Optional[str]) -> Optional[str]:
+            return new + v[len(old):] if v and (v == old or v.startswith(old + "/")) else v
+
+        cls = self.cls(old)
+        # Every element, not self.mos: a distName a file repeats has more than one.
+        elements = [el for el in self.cmdata if _local(el.tag) == "managedObject"]
+        moved = [el for el in elements if move(el.get("distName")) != el.get("distName")]
+        inside = {id(el) for el in moved}
+        for el in moved:
+            el.set("distName", move(el.get("distName")))
+        self.mos = {el.get("distName"): el for el in elements}
+        self.changes.append({**w, "op": "renumber", "dn": new, "id": new, "class": cls, "old": old, "new": new,
+                             "count": len({el.get("distName") for el in moved})})
+        r = ref or w
+
+        def point(el: ET.Element, p: ET.Element, node_id: str, param: str) -> None:
+            before, p.text = _text(p), move(_text(p))
+            if id(el) not in inside:
+                self._record(r, "set", el.get("distName"), node_id, param=param, old=before, new=p.text)
+
+        for el in elements:
+            dn = el.get("distName")
+            for c in el:
+                tag, name = _local(c.tag), c.get("name")
+                if tag == "p" and move(_text(c)) != _text(c):
+                    point(el, c, f"{dn}::p::{name}", name)
+                elif tag == "list":
+                    items = [i for i in c if _local(i.tag) == "item"]
+                    for index, item in enumerate(items):
+                        for p in item:
+                            if _local(p.tag) == "p" and move(_text(p)) != _text(p):
+                                point(el, p, f"{dn}::list::{name}::item::{index}::p::{p.get('name')}",
+                                      f"{name}[{index + 1}].{p.get('name')}")
+                    values = [p for p in c if _local(p.tag) == "p"]
+                    if any(move(_text(p)) != _text(p) for p in values):
+                        before = [_text(p) or "" for p in values]
+                        for p in values:
+                            p.text = move(_text(p))
+                        if id(el) not in inside:
+                            self._record(r, "set", dn, f"{dn}::list::{name}", param=f"{name}[]", old=_joined(before),
+                                         new=_joined([_text(p) or "" for p in values]))
+        for holder, name, numbered in self.NUMBER_LISTS:
+            if cls != numbered:
+                continue
+            for h in self.of_class(holder, under=parent_dn(new)):
+                values = self.values(h, name)
+                if instance(old) in values:
+                    self.set_values(h, name, [instance(new) if v == instance(old) else v for v in values], r)
+        if cls == "LNBTS" or "/" not in old:
+            self._own_enb(instance(old), new, r)
+        return list(dict.fromkeys(el.get("distName") for el in moved))
+
+    def _own_enb(self, number: str, new: str, w: dict) -> None:
+        """An LTE relation to a cell of its own eNB names the eNB by the
+        LNBTS's number or the BTS's (links._own_enb_ids). When `number`, one
+        of those, is no longer either, its relations to own cells name the
+        new number instead."""
+        for lnbts in [new] if self.cls(new) == "LNBTS" else self.of_class("LNBTS", under=new):
+            if number in (instance(lnbts), instance(lnbts.split("/", 1)[0])):
+                continue
+            cells = {self.get(c, "lcrId") for c in self.children(lnbts, "LNCEL")}
+            # As links._adjl: an LNADJL with that eNB and cell is the target, not an own cell.
+            adjl = {(self.get(a, "ecgiAdjEnbId") or self.get(parent_dn(a), "adjEnbId"), self.get(a, "ecgiLcrId"))
+                    for a in self.of_class("LNADJL", under=lnbts)}
+            for rel in self.of_class("LNREL", under=lnbts):
+                key = (self.get(rel, "ecgiAdjEnbId"), self.get(rel, "ecgiLcrId"))
+                if key[0] == number and key[1] in cells and key not in adjl:
+                    self.set(rel, "ecgiAdjEnbId", instance(new), w)
+
     # Writing: lists ----------------------------------------------------------
 
     def _ensure_list(self, dn: str, name: str) -> ET.Element:

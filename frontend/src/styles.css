@@ -4372,6 +4372,16 @@ mark {
   display: none;
 }
 
+/* Containment is structure, not a value: a thinner plain line, no arrow
+   and no label, so the references stand out from what sits under them. */
+.rm-link.is-contains path {
+  stroke-width: 1;
+}
+
+.rm-link.is-contains .rm-arrow {
+  display: none;
+}
+
 /* The route from the centre to the selection, lit like the Trace. */
 .rm-link.is-lit path {
   stroke: var(--signal);
@@ -5033,6 +5043,10 @@ mark {
 
 .rm-sample.is-missing path {
   stroke: var(--danger);
+}
+
+.rm-sample.is-contains path {
+  stroke-width: 1.25;
 }
 
 .rm-legend-ghost {

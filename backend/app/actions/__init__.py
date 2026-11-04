@@ -91,6 +91,6 @@ def finish(ctx: Context, doc: Doc, plan: dict) -> tuple[bytes, dict]:
     plan["check"] = {
         "before": before["summary"],
         "after": after["summary"],
-        "new": new_findings(before, after),
+        "new": new_findings(before, after, [(c["old"], c["new"]) for c in doc.changes if c["op"] == "renumber"]),
     }
     return new_bytes, plan

@@ -725,56 +725,6 @@ def delete_managed_object(raw_bytes: bytes, dist_name: str) -> tuple[bytes, list
     return _serialize(root), deleted_names
 
 
-def rename_managed_object(raw_bytes: bytes, dist_name: str, new_instance_id: str) -> tuple[bytes, str]:
-    """Changes a managedObject's instance ID -- the trailing "-N" of its
-    distName, e.g. "MRBTS-1/LNBTS-1/LNCEL-1" -> "...LNCEL-0" -- keeping the
-    same class and parent. Every descendant's distName gets the same prefix
-    swap applied (RAML distNames are literal ancestry paths, so a child's
-    distName has to be rewritten too, not just the renamed object's own).
-    Returns (new_bytes, new_dist_name). Raises ObjectExistsError if the
-    resulting distName collides with an object that already exists."""
-    cleaned = _strip_leading_junk(raw_bytes)
-    try:
-        root = ET.fromstring(cleaned)
-    except ET.ParseError as e:
-        raise XmlParseError(str(e)) from e
-
-    cmdata = None
-    for el in root.iter():
-        if _local(el.tag) == "cmData":
-            cmdata = el
-            break
-    if cmdata is None:
-        raise ParamNotFoundError("No <cmData> element found in this file")
-
-    mo = _find_managed_object(cmdata, dist_name)
-    if mo is None:
-        raise ParamNotFoundError(f"No managedObject with distName={dist_name!r}")
-
-    parent_prefix, sep, last = dist_name.rpartition("/")
-    short_class = last.rsplit("-", 1)[0] if "-" in last else last
-    new_last = f"{short_class}-{new_instance_id}"
-    new_dist_name = f"{parent_prefix}{sep}{new_last}"
-
-    if new_dist_name == dist_name:
-        return _serialize(root), dist_name
-
-    if _find_managed_object(cmdata, new_dist_name) is not None:
-        raise ObjectExistsError(f"An object with distName={new_dist_name!r} already exists")
-
-    prefix = dist_name + "/"
-    for child in cmdata:
-        if _local(child.tag) != "managedObject":
-            continue
-        dn = child.get("distName") or ""
-        if dn == dist_name:
-            child.set("distName", new_dist_name)
-        elif dn.startswith(prefix):
-            child.set("distName", new_dist_name + "/" + dn[len(prefix):])
-
-    return _serialize(root), new_dist_name
-
-
 def find_existing_class_version(raw_bytes: bytes, short_class: str) -> tuple[Optional[str], Optional[str]]:
     """Scans the file for any existing managedObject of `short_class` and
     returns (full_class, version) to reuse for consistency, or (None, None)

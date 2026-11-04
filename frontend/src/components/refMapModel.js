@@ -4,10 +4,16 @@
  * object, and its layout.
  *
  * The bow-tie has two halves that share the centre. "down" follows what an
- * object points at; "up" follows what points at it. Either way the arrow
- * runs from the object holding the value to the object it names, so on
- * screen every arrow points down. Each object appears once per half: a
+ * object points at and what it contains; "up" follows what points at it and
+ * the object it sits in. Either way the arrow runs from the object holding
+ * the value (or the container) to the object it names (or contains), so on
+ * screen every link points down. Each object appears once per half: a
  * second path to it shows a ghost that jumps to the first.
+ *
+ * Containment is read here from the distNames, not sent by GET /refmap:
+ * an object sits in its nearest ancestor the file has (a gap in the path,
+ * a placeholder in the tree, is skipped). The endpoint's links stay the
+ * references only, as the site check and the delete action read them.
  */
 
 export const NODE_W = 236;
@@ -29,10 +35,23 @@ const instanceNum = (dn) => {
 
 /** Index the endpoint's flat lists: objects by id, and links out and in,
  * grouped by the object at the other end. Missing targets get a node of
- * their own, flagged, so they can be shown and centred on. */
+ * their own, flagged, so they can be shown and centred on. Containment:
+ * `kids` lists what each object contains, `container` the one it sits in. */
 export function indexGraph(data) {
   const byId = new Map();
   for (const n of data.nodes) byId.set(n.id, n);
+  const kids = new Map();
+  const container = new Map();
+  for (const n of data.nodes) {
+    for (let i = n.id.lastIndexOf("/"); i > 0; i = n.id.lastIndexOf("/", i - 1)) {
+      const up = n.id.slice(0, i);
+      if (!byId.has(up)) continue;
+      container.set(n.id, up);
+      if (!kids.has(up)) kids.set(up, []);
+      kids.get(up).push(n.id);
+      break;
+    }
+  }
   const out = new Map();
   const inn = new Map();
   const add = (map, from, to, e) => {
@@ -47,12 +66,39 @@ export function indexGraph(data) {
     add(out, e.s, e.t, e);
     add(inn, e.t, e.s, e);
   }
-  return { byId, out, in: inn, stats: data.stats };
+  return { byId, out, in: inn, kids, container, stats: data.stats };
 }
 
+// References only: what an object points at, and what points at it.
 export const outCount = (g, id) => g.out.get(id)?.size || 0;
 export const inCount = (g, id) => g.in.get(id)?.size || 0;
 export const label = dnLabel;
+
+/** The objects one step away in a half, each with its links: references,
+ * plus a "contains" link to each object it contains (down) or to its
+ * container (up). An object both referenced and contained has both. */
+export function neighbours(g, id, dir) {
+  const links = (dir === "down" ? g.out : g.in).get(id);
+  const held = dir === "down" ? g.kids.get(id) || [] : g.container.has(id) ? [g.container.get(id)] : [];
+  if (!held.length) return links ? [...links.entries()] : [];
+  const all = new Map(links || []);
+  for (const other of held) {
+    const e = dir === "down" ? { s: id, t: other, kind: "contains" } : { s: other, t: id, kind: "contains" };
+    all.set(other, [...(all.get(other) || []), e]);
+  }
+  return [...all.entries()];
+}
+
+/** How much a card's port opens in a half: `links` objects by reference,
+ * `held` by containment, `total` without counting one object twice. */
+export function reach(g, id, dir) {
+  const links = dir === "down" ? outCount(g, id) : inCount(g, id);
+  const map = (dir === "down" ? g.out : g.in).get(id);
+  const held = dir === "down" ? g.kids.get(id) || [] : g.container.has(id) ? [g.container.get(id)] : [];
+  return { links, held: held.length, total: links + held.filter((o) => !map?.has(o)).length };
+}
+
+const onlyContains = (edges) => edges.every((e) => e.kind === "contains");
 
 /** The objects most pointed at: a starting point when nothing is centred. */
 export function hubs(g, n = 8) {
@@ -79,8 +125,11 @@ export function search(g, query, n = 10) {
   return scored.slice(0, n).map((s) => s[2]);
 }
 
+// References first, then what is contained; by class, then instance.
 function sortNeighbours(entries) {
-  return entries.sort(([a], [b]) => {
+  return entries.sort(([a, ea], [b, eb]) => {
+    const ha = onlyContains(ea);
+    if (ha !== onlyContains(eb)) return ha ? 1 : -1;
     const ca = clsOf(a);
     const cb = clsOf(b);
     return ca === cb ? instanceNum(a) - instanceNum(b) || a.localeCompare(b) : ca.localeCompare(cb);
@@ -92,7 +141,8 @@ function sortNeighbours(entries) {
  * expanded nodes, breadth first so the nearest occurrence of an object is
  * the real one. Items are objects, ghosts (a repeat), groups (many siblings
  * of one class, folded) and "more" (the tail of an open group: how many are
- * left, and where it folds back).
+ * left, and where it folds back). Items reached only by containment are
+ * `held`; they come after the references, and group apart from them.
  *
  * expanded: { up: Set<id>, down: Set<id> }; pages: Map<groupKey, pages shown>.
  */
@@ -101,7 +151,6 @@ export function buildView(g, root, expanded, pages) {
   const centre = { key: "c", kind: "node", id: root, dir: "centre", depth: 0, children: [], edges: [] };
   items.set(centre.key, centre);
   for (const dir of ["down", "up"]) {
-    const links = dir === "down" ? g.out : g.in;
     const placed = new Set([root]);
     const queue = [centre];
     while (queue.length) {
@@ -109,20 +158,23 @@ export function buildView(g, root, expanded, pages) {
       if (parent !== centre && !expanded[dir].has(parent.id)) continue;
       const kids = [];
       const byCls = new Map();
-      for (const [other, edges] of sortNeighbours([...(links.get(parent.id)?.entries() || [])])) {
-        const c = clsOf(other);
-        if (!byCls.has(c)) byCls.set(c, []);
-        byCls.get(c).push([other, edges]);
+      for (const [other, edges] of sortNeighbours(neighbours(g, parent.id, dir))) {
+        const held = onlyContains(edges);
+        const c = `${clsOf(other)}${held ? "|in" : ""}`;
+        if (!byCls.has(c)) byCls.set(c, { cls: clsOf(other), held, members: [] });
+        byCls.get(c).members.push([other, edges]);
       }
-      for (const [cls, members] of byCls) {
+      for (const { cls, held, members } of byCls.values()) {
+        const sub = `${cls}${held ? ":in" : ""}`;
+        const tag = held ? { held } : null;
         let shown = members;
-        let groupKey = null;
+        let group = null;
         if (members.length > GROUP_MAX) {
-          groupKey = `${dir}|${parent.id}|${cls}`;
-          const n = pages.get(groupKey) || 0;
+          group = { groupKey: `${dir}|${parent.id}|${cls}${held ? "|in" : ""}`, groupCard: `${parent.key}>${dir}:group:${sub}` };
+          const n = pages.get(group.groupKey) || 0;
           if (!n) {
-            kids.push({ kind: "group", key: `${parent.key}>${dir}:group:${cls}`, cls, count: members.length,
-              groupKey, edges: members.flatMap(([, e]) => e) });
+            kids.push({ kind: "group", key: group.groupCard, cls, count: members.length, ...group, ...tag,
+              edges: members.flatMap(([, e]) => e) });
             continue;
           }
           shown = members.slice(0, n * PAGE);
@@ -130,12 +182,11 @@ export function buildView(g, root, expanded, pages) {
         for (const [other, edges] of shown) {
           const ghost = placed.has(other);
           if (!ghost) placed.add(other);
-          kids.push({ kind: ghost ? "ghost" : "node", key: `${parent.key}>${dir}:${other}`, id: other, edges,
-            ...(groupKey ? { groupKey } : null) });
+          kids.push({ kind: ghost ? "ghost" : "node", key: `${parent.key}>${dir}:${other}`, id: other, edges, ...group, ...tag });
         }
-        if (groupKey) {
-          kids.push({ kind: "more", key: `${parent.key}>${dir}:more:${cls}`, cls, count: members.length,
-            left: members.length - shown.length, groupKey, edges: [] });
+        if (group) {
+          kids.push({ kind: "more", key: `${parent.key}>${dir}:more:${sub}`, cls, count: members.length,
+            left: members.length - shown.length, ...group, ...tag, edges: [] });
         }
       }
       for (const k of kids) {
@@ -161,8 +212,9 @@ const PITCH = NODE_W + GAP_X;
  * port, a bus per tier, a drop per child. A fan's children sit in one row
  * centred under it, each as wide as its own subtree; when there are more of
  * them than `cols` fit across the view, the childless ones wrap into tiers
- * of `cols` (past the first bus the trunk runs down the gutter beside the
- * middle column) and the ones with children of their own form the last
+ * of `cols`, the referenced ones before the held ones, which start a tier
+ * of their own (past the first bus the trunk runs down the gutter beside
+ * the middle column), and the ones with children of their own form the last
  * tier. The up half is the mirror image
  * above the centre. Positions are card centres in world pixels, the centre
  * at (0, 0).
@@ -180,13 +232,16 @@ export function layout(items, cols = Infinity) {
     const kids = kidsOf(key, dir);
     const c = Math.max(2, cols);
     const leaves = kids.filter((k) => !items.get(k).children.length);
+    const held = leaves.filter((k) => items.get(k).held);
     const p = kids.length > c && leaves.length > 1
-      ? { wrap: chunk(leaves, c), row: kids.filter((k) => items.get(k).children.length) }
+      ? { wrap: [...chunk(leaves.filter((k) => !items.get(k).held), c), ...chunk(held, c)],
+          row: kids.filter((k) => items.get(k).children.length) }
       : { wrap: null, row: kids };
     plans.set(`${key}|${dir}`, p);
     return p;
   };
-  const blockWidth = (tiers) => tiers[0].length * PITCH - GAP_X;
+  const across = (tiers) => Math.max(...tiers.map((t) => t.length));
+  const blockWidth = (tiers) => across(tiers) * PITCH - GAP_X;
   const measureKids = (key, dir) => {
     const p = plan(key, dir);
     const rowW = p.row.length ? p.row.reduce((s, k) => s + measure(k), 0) + GAP_X * (p.row.length - 1) : 0;
@@ -207,7 +262,7 @@ export function layout(items, cols = Infinity) {
     if (!p || (!p.row.length && !p.wrap)) return;
     const fan = { key: `${key}|${dir}`, parent: key, dir, tiers: [] };
     if (p.wrap) {
-      const c = p.wrap[0].length;
+      const c = across(p.wrap);
       fan.cols = c;
       const left = P.x - ((c - 1) * PITCH) / 2;
       p.wrap.forEach((tier, t) => {
@@ -252,10 +307,10 @@ function chunk(list, n) {
 
 /**
  * A fan's connectors, as SVG paths that run the arrow's way (downwards).
- * `spine` is the trunk and every tier's bus, drawn once for the fan: the
- * trunk meets the nearest bus at the parent's x, and in a wrapped fan
- * carries on to the farther buses down `gutter`, the gap left of the middle
- * column (the middle gap, for an even count). Each
+ * The fan draws its spine once: the `trunk` meets the nearest bus at the
+ * parent's x, and in a wrapped fan the `gutter` carries on to the farther
+ * buses, down the gap left of the middle column (the middle gap, for an
+ * even count); `buses` has one per tier (null when it has no length). Each
  * child has its own `drop` (and, in the down half, its arrowhead), where its
  * label sits, and the `route` from the parent's port to it, for lighting.
  * Down half: the trunk leaves the parent's lower port and each drop ends on
@@ -280,9 +335,9 @@ export function fanPaths(fan, pos) {
   }
   const near = buses[0].bus;
   const far = buses[buses.length - 1].bus;
-  let spine = `M${tx} ${port}V${near}`;
-  if (far !== near) spine += `M${gx} ${near}V${far}`;
-  for (const b of buses) if (b.x1 > b.x0) spine += `M${b.x0} ${b.bus}H${b.x1}`;
+  const trunk = `M${tx} ${port}V${near}`;
+  const gutter = far !== near ? `M${gx} ${near}V${far}` : null;
+  const busPaths = buses.map((b) => (b.x1 > b.x0 ? `M${b.x0} ${b.bus}H${b.x1}` : null));
   const drops = new Map();
   for (const b of buses) {
     for (const k of b.tier) {
@@ -299,5 +354,5 @@ export function fanPaths(fan, pos) {
       });
     }
   }
-  return { spine, arrow: down ? null : arrowAt(tx, port), drops };
+  return { trunk, gutter, buses: busPaths, arrow: down ? null : arrowAt(tx, port), drops };
 }

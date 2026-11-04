@@ -22,19 +22,25 @@ VoLTE (the LTE18/SBTS18A dictionary's rules):
 
 VoNR (no NR dictionary: the 130 production 25R2 cells with VoNR on, all
 but one alike, and their 27 gNBs):
-- 5QI 1 and 5 mapped with production's templates (the QoS action's
-  planner), for the slices the gNB's own mappings name: production's
-  name all four of the gNB's, the lab gNBs' none.
+- 5QI 1 and 5 rebuilt as production's (qos_replace.replace_nr): their
+  mappings, and the bearers and profiles only those use, replaced by
+  production's templates numbered as production numbers them; a gNB set
+  as production comes out unchanged. A mapping keeps the slices the one
+  it replaces named; a new one names those the gNB's own mappings name
+  (production's all four of the gNB's, the lab gNBs' none).
 - Each SA cell: actVoNR with its reservation, scheduling-request period
   and radio-link timers; picked: Enhanced VoNR, VoNR link adaptation, VoNR
   uplink coverage (incremental coding gain), EPS fallback by redirection;
   ROHC on the gNB. NSA-only cells are left: their voice runs on LTE.
 
-A value the cell already sets is its own tuning and is kept (the notes list
-those that differ from production's); feature switches are set. Every
-parameter goes through the release filter: written only where some file of
-the target's release sets it on that class (all of them in the profile's
-own release).
+Production's values win over the picked cells' own, and the notes list
+each old one (the owner, 2026-11-03: "Use the canned value"); so do the
+eVTT and BLER target rows. Kept where set: what a cell that wasn't picked
+must configure (harqMaxTrVoLteDl), and the QCI 1 aggregation thresholds,
+which aren't production's tuning. The LTE QCI 1 and 5 rows are added only
+when missing: no production template exists for them. Every parameter goes
+through the release filter: written only where some file of the target's
+release sets it on that class (all of them in the profile's own release).
 
 3GPP: the AMF's "IMS voice over PS session supported" indication is TS
 23.501 §5.16.3.2, read from the ETSI text of V17.10.0 when this was built.
@@ -46,6 +52,7 @@ from typing import Optional
 
 from . import Context, PlanError, finish, qos
 from .doc import Doc, instance, label, release_of, why
+from .qos_replace import replace_nr
 
 ID = "voice"
 TITLE = "Set up VoLTE or VoNR"
@@ -192,8 +199,8 @@ def setup(ctx: Context) -> dict:
             slice_default[key] = [s["dn"] for s in own] if _slices_named(ctx, gnb) else []
     return {
         "intro": "Sets up voice on an eNB's or gNB's cells: the QCI or 5QI 1 (voice) and 5 (IMS signalling) bearers "
-                 "where they are missing, and the voice features the production files run. Values a cell already "
-                 "sets are kept.",
+                 "(a gNB's rebuilt as production's), and the voice features the production files run. Production's "
+                 "values replace the cells' own, and the review lists each old one.",
         "fields": [
             {"id": "target", "label": "Where", "type": "select", "options": targets,
              "default": targets[0]["value"] if len(targets) == 1 else None},
@@ -219,6 +226,7 @@ class _Plan:
         self.notes: list[str] = []
         self.todo: list[str] = []
         self.kept: dict[tuple[str, str, str], list[str]] = defaultdict(list)
+        self.replaced: dict[tuple[str, str, str], list[str]] = defaultdict(list)
         self.unknown: dict[str, set[str]] = defaultdict(set)
         self.touched: list[str] = []
 
@@ -244,20 +252,41 @@ class _Plan:
         self.touched.append(dn)
         return True
 
-    def value(self, dn: str, name: str, value: str, reason: str, basis: str = "files", rule=None) -> None:
-        """A value written where the object has none; its own is kept."""
+    def value(self, dn: str, name: str, value: str, reason: str, basis: str = "files", rule=None,
+              keep: bool = False) -> None:
+        """Production's value, over the object's own (the owner, 2026-11-03: the canned value wins, and the
+        review lists the old one). `keep`: written only where the object has none, for what isn't
+        production's tuning (a cell that wasn't picked, a value a rule makes it configure)."""
         now = self.doc.get(dn, name)
-        if now is None:
-            self.put(dn, name, value, reason, basis, rule)
-        elif now != value:
-            self.kept[(name, now, value)].append(label(dn))
+        if now is not None and now != value:
+            if keep:
+                self.kept[(name, now, value)].append(label(dn))
+                return
+            if self.put(dn, name, value, f"{reason} Was {now} here.", basis, rule):
+                self.replaced[(name, now, value)].append(label(dn))
+            return
+        self.put(dn, name, value, reason, basis, rule)
+
+    def row(self, dn: str, name: str, row: list[tuple[str, str]], w) -> None:
+        """A table's one row as production's: added, or each field set to production's."""
+        rows = self.doc.items(dn, name)
+        if not rows:
+            self.doc.add_item(dn, name, row, w)
+            return
+        for k, v in row:
+            if rows[0].get(k) != v:
+                self.replaced[(f"{name} {k}", rows[0].get(k) or "unset", v)].append(label(dn))
+                self.doc.set_item(dn, name, 0, k, v, w)
 
     def finish_notes(self) -> None:
-        if self.kept:
-            parts = [f"{name} {now} on {', '.join(sorted(set(where)))} (production {prod})"
-                     for (name, now, prod), where in sorted(self.kept.items())]
-            self.notes.append("Kept the values the cells set already, their own tuning: " + "; ".join(parts[:8])
-                              + (f"; and {len(parts) - 8} more." if len(parts) > 8 else "."))
+        for what, values in (("Set to production's values, over the site's own", self.replaced),
+                             ("Kept, as the cells weren't picked or it isn't production's tuning", self.kept)):
+            if values:
+                parts = [f"{name} {now} → {prod} on {', '.join(sorted(set(where)))}" if values is self.replaced
+                         else f"{name} {now} on {', '.join(sorted(set(where)))} (production {prod})"
+                         for (name, now, prod), where in sorted(values.items())]
+                self.notes.append(f"{what}: " + "; ".join(parts[:8])
+                                  + (f"; and {len(parts) - 8} more." if len(parts) > 8 else "."))
         for rel, names in sorted(self.unknown.items()):
             self.notes.append(f"Not written, because no {rel} file sets them: {', '.join(sorted(names))}.")
 
@@ -315,12 +344,12 @@ def _plan_lte(ctx: Context, doc: Doc, enb: dict, cells: list[str], features: set
         if tech.startswith("NB-IoT"):
             continue
         p.value(cell, "harqMaxTrVoLteDl", "4", f"Must be configured with conversational voice on; 4 {LTE_FILES}.",
-                "official", ("harqMaxTrVoLteDl", "2.1" if tech == "TDD" else "1.1"))
+                "official", ("harqMaxTrVoLteDl", "2.1" if tech == "TDD" else "1.1"), keep=cell not in cells)
         if ca:
             for name in ("dlCaMinPcellCqiQci1", "ulCaMinPcellSinrQci1"):
                 p.value(cell, name, "0", "The eNB aggregates carriers, so with conversational voice on a PCell must "
                                          "configure it; 0 leaves the QCI 1 threshold off.", "official",
-                        ("actConvVoice", None))
+                        ("actConvVoice", None), keep=True)
     for cell in cells:
         tech = doc.get(cell, "cellTechnology") or "FDD"
         if tech.startswith("NB-IoT"):
@@ -339,9 +368,8 @@ def _plan_lte(ctx: Context, doc: Doc, enb: dict, cells: list[str], features: set
             _evtt(p, cell)
         if "bler" in features and p.known(cell, "actQci1BlerTgt"):
             p.put(cell, "actQci1BlerTgt", "true", f"A BLER target of its own for voice, {LTE_FILES}.")
-            if not doc.items(cell, "qci1BlerTgtConfig"):
-                doc.add_item(cell, "qci1BlerTgtConfig", BLER_ROW, why("voice", f"The QCI 1 BLER target's settings, "
-                                                                               f"{LTE_FILES}.", "files"))
+            p.row(cell, "qci1BlerTgtConfig", BLER_ROW, why("voice", f"The QCI 1 BLER target's settings, {LTE_FILES}.",
+                                                           "files"))
     if skipped:
         p.notes.append("Left out: " + "; ".join(skipped) + ".")
     p.finish_notes()
@@ -433,10 +461,10 @@ def _evtt(p: _Plan, cell: str) -> None:
         return
     w = why("voice", f"Must be configured with extended VoLTE talk time on; {LTE_FILES}.", "official",
             ("actQci1eVTT", "1.1"))
-    if not doc.items(cell, "qci1eVTTConfig"):
-        doc.add_item(cell, "qci1eVTTConfig", EVTT_ROW, w)
     tx = doc.get(cell, "harqMaxTxUl")
-    if doc.get(cell, "actVoipCovBoost") == "true" and tx:
+    boost = doc.get(cell, "actVoipCovBoost") == "true" and tx
+    p.row(cell, "qci1eVTTConfig", [(k, v) for k, v in EVTT_ROW if not (boost and k == "qci1HarqMaxTrUl")], w)
+    if boost:
         for i, row in enumerate(doc.items(cell, "qci1eVTTConfig")):
             if row.get("qci1HarqMaxTrUl") != tx:
                 doc.set_item(cell, "qci1eVTTConfig", i, "qci1HarqMaxTrUl", tx, why(
@@ -455,15 +483,12 @@ def _evtt(p: _Plan, cell: str) -> None:
 def _plan_nr(ctx: Context, doc: Doc, gnb: dict, cells: list[str], features: set[str], slices: list[str]) -> dict:
     p = _Plan(ctx, doc, NR)
     dn = gnb["dn"]
-    made = []
-    for v in ("1", "5"):
-        if v in qos._mapped(doc, dn, qos.SA):
-            continue
-        out = qos._plan_nr(ctx, doc, qos.SA, gnb, {"value": v, "template": f"builtin|5qi|{v}", "drb": qos.OWN,
-                                                   "slices": slices})
-        p.notes += out["notes"]
-        made.append(v)
-        p.touched.append(out["focus"])
+    had, before = qos._mapped(doc, dn, qos.SA), len(doc.changes)
+    out = replace_nr(ctx, doc, qos.SA, gnb, {"1", "5"}, slices=slices)
+    p.notes += out["notes"]
+    made = [v for v in out["values"] if v not in had]
+    rebuilt = len(doc.changes) > before
+    p.touched += out["written"]
     p.value(dn, "tRLFindForDUVoNR", "2000ms", f"The DU's radio link failure timer for VoNR; 2000ms on the 27 "
                                               "production gNBs with VoNR.")
     if "rohc" in features:
@@ -507,7 +532,8 @@ def _plan_nr(ctx: Context, doc: Doc, gnb: dict, cells: list[str], features: set[
     return {
         "label": f"VoNR on {label(dn)}",
         "summary": f"VoNR on gNB {instance(dn)}: {len(cells)} cell{'s' if len(cells) != 1 else ''}"
-                   + (f", 5QI {' and '.join(made)} mapped" if made else ""),
+                   + (f", 5QI {' and '.join(made)} mapped" if made else ", 5QI 1 and 5 as production" if rebuilt
+                      else ""),
         "notes": p.notes, "todo": p.todo,
         "confirm": ["The IMS core serves this gNB's PLMN, and the AMF tells UEs that IMS voice over PS sessions are "
                     "supported (TS 23.501 §5.16.3.2)."]

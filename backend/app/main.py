@@ -38,7 +38,6 @@ from .parser import (
     next_available_instance_id,
     parse_file,
     parse_file_raw,
-    rename_managed_object,
     set_param_value,
     update_param_value,
 )
@@ -360,11 +359,6 @@ class DeleteObjectRequest(BaseModel):
 class DeleteParamRequest(BaseModel):
     distName: str
     paramName: str
-
-
-class RenameObjectRequest(BaseModel):
-    distName: str
-    newInstanceId: str
 
 
 class SetObjectParamRequest(BaseModel):
@@ -1200,38 +1194,6 @@ def delete_object(filename: str, payload: DeleteObjectRequest):
     path.write_bytes(new_bytes)
     _invalidate_caches(filename)
     return {"ok": True, "deleted": deleted, "snapshot": snapshot}
-
-
-@app.put("/api/files/{filename}/objects/rename")
-def rename_object(filename: str, payload: RenameObjectRequest):
-    """Changes a managedObject's instance ID (e.g. LNCEL-1 -> LNCEL-0),
-    cascading the same distName-prefix swap into every descendant -- see
-    rename_managed_object. Same class, same parent; only the trailing
-    instance number changes."""
-    path, source = _resolve_path(filename)
-    if source != "upload":
-        raise HTTPException(
-            status_code=403,
-            detail="This is a read-only reference file. Create an editable copy first.",
-        )
-
-    current = path.read_bytes()
-    try:
-        new_bytes, new_dist_name = rename_managed_object(current, payload.distName, payload.newInstanceId)
-    except (XmlParseError, ParamNotFoundError, ObjectExistsError) as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-    try:
-        parse_file(new_bytes, filename)
-    except XmlParseError as e:
-        raise HTTPException(status_code=500, detail=f"This would have produced invalid XML: {e}")
-
-    snapshot = _save_snapshot(
-        filename, current, f"Renamed {_short(payload.distName)} to {_short(new_dist_name)}"
-    )
-    path.write_bytes(new_bytes)
-    _invalidate_caches(filename)
-    return {"distName": new_dist_name, "snapshot": snapshot}
 
 
 @app.put("/api/files/{filename}/param")

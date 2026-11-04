@@ -227,13 +227,6 @@ export function deleteObject(filename, distName) {
   return jsonRequest(`/files/${encodeURIComponent(filename)}/objects`, "DELETE", { distName });
 }
 
-export function renameObject(filename, distName, newInstanceId) {
-  return jsonRequest(`/files/${encodeURIComponent(filename)}/objects/rename`, "PUT", {
-    distName,
-    newInstanceId,
-  });
-}
-
 export function deleteObjectParam(filename, distName, paramName) {
   return jsonRequest(`/files/${encodeURIComponent(filename)}/objects/param`, "DELETE", { distName, paramName });
 }

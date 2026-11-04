@@ -18,7 +18,6 @@ import {
   getRefMap,
   deleteObject,
   deleteObjectParam,
-  renameObject,
   downloadUrl,
 } from "./api.js";
 import { TreeView } from "./components/TreeView.jsx";
@@ -789,36 +788,6 @@ export default function App() {
       .catch((e) => addToast(String(e.message || e), "error"));
   };
 
-  // Changes just the trailing instance number (e.g. LNCEL-1 -> LNCEL-0),
-  // same class/parent -- see rename_managed_object in parser.py. Every
-  // descendant's distName is rewritten server-side too, so anything the UI
-  // was pointing at by the old path (selectedNode/focusId) is now stale and
-  // gets cleared rather than silently showing the wrong node.
-  const handleRenameObject = (node) => {
-    const distName = node.id;
-    const label = distName.split("/").pop();
-    const shortClass = label.includes("-") ? label.slice(0, label.lastIndexOf("-")) : label;
-    const currentId = label.includes("-") ? label.slice(label.lastIndexOf("-") + 1) : "";
-    setPromptDialog({
-      title: "Rename object",
-      message: `New instance ID for ${label}:`,
-      initialValue: currentId,
-      confirmLabel: "Rename",
-      onConfirm: (newId) => {
-        setPromptDialog(null);
-        if (newId === currentId) return;
-        renameObject(selectedFile, distName, newId)
-          .then((res) => {
-            const isStale = (id) => id === distName || (id || "").startsWith(distName + "/");
-            if (selectedNode && (isStale(selectedNode.distName) || isStale(selectedNode.id))) setSelectedNode(null);
-            if (focusId && isStale(focusId)) setFocusId(null);
-            return refetchAfterEdit().then(() => confirmChange(res, `Renamed ${label} to ${shortClass}-${newId}.`));
-          })
-          .catch((e) => addToast(String(e.message || e), "error"));
-      },
-    });
-  };
-
   // Right-click menu (either pane) -- position-independent alternative to
   // the inline × buttons, which can end up scrolled out of view on a wide
   // row. Only intercepts the browser's default context menu for rows that
@@ -849,7 +818,13 @@ export default function App() {
             setAddObjectOpen(true);
           },
         },
-        { label: "Rename (change instance ID)…", onClick: () => handleRenameObject(node) },
+        {
+          label: "Renumber…",
+          onClick: () => {
+            setActionInitial({ object: node.id });
+            setActionId("renumber");
+          },
+        },
         { label: "Delete object", danger: true, onClick: () => handleDeleteObject(node) },
         {
           label: "Delete with dependents…",
