@@ -8,8 +8,10 @@ import {
   NODE_W,
   PAGE,
   PORT_REACH,
+  SET_ROW,
   buildTree,
   buildView,
+  cardBox,
   cardH,
   classOf,
   hasPort,
@@ -23,6 +25,8 @@ import {
   reach,
   refEdges,
   search,
+  settingLines,
+  settingsH,
   viaText,
 } from "./refMapModel.js";
 
@@ -40,7 +44,8 @@ import {
  * opens everything, groups too. A click selects, like a tree row: the file
  * header's Trace and the Explanation pane follow, and the Settings panel
  * lists the selected object's parameters and lists. A link's label selects
- * the parameter that holds it.
+ * the parameter that holds it. The tab under a card (or S) opens the card
+ * down to list its settings in it, each row explaining its parameter.
  *
  * Pan by dragging the canvas or scrolling, zoom with Ctrl+scroll or the
  * toolbar. The map's controls render into `toolbarSlot` (the workspace
@@ -62,6 +67,7 @@ const OVERVIEW = 0.4; // the whole file opens all in view, or at this zoom from 
 const farFont = (k) => (k < FAR ? `${Math.min(32, Math.round(12.5 / k / 2) * 2)}px` : undefined);
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const ownerOf = (id) => (id ? id.split("::")[0] : null);
+const empty = (v) => v == null || v === "";
 const depthHue = (dn) => `var(--fc-${((dn.split("/").length - 1) % 8) + 1})`;
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 const plural = (n, one, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
@@ -183,10 +189,106 @@ const LinkLabels = memo(function LinkLabels({ items, lay, g, act, selectedAt, vi
   return out;
 });
 
-const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, where, ins, outs, inside, selected, target, tabbable, act, register }) {
+// An open card's settings, a row each (settingLines), in blocks the
+// browser skips drawing while they are off screen (.rm-card-block). A row
+// explains its parameter; the arrow on a value naming an object goes to
+// that object.
+const BLOCK = 40;
+
+function CardRow({ r, selected }) {
+  const cls = "rm-card-row" + (r.kind !== "param" ? ` is-${r.kind}` : "") + (selected ? " is-selected" : "");
+  const style = r.depth ? { "--d": r.depth } : undefined;
+  if (r.kind === "list") {
+    return (
+      <div className={cls} style={style} data-row={r.id} title={`Explain ${r.name}`}>
+        <span className="rm-card-name">{r.name}</span>
+        <span className="rm-card-count">{plural(r.rows, "row")}</span>
+      </div>
+    );
+  }
+  if (r.kind === "item") {
+    return (
+      <div className={cls} style={style} data-row={r.id}>
+        <span className="rm-card-name">{r.name}</span>
+      </div>
+    );
+  }
+  const none = empty(r.value);
+  const shown = none ? (r.missing ? "Required, empty" : "empty") : r.target ? label(r.target) : r.value;
+  return (
+    <div className={cls} style={style} data-row={r.id} title={`${r.name} = ${none ? shown : r.value}`}>
+      <span className="rm-card-name">{r.name}</span>
+      <span className={"rm-card-value" + (none ? " is-empty" : "") + (r.missing && none ? " is-missing" : "")}>{shown}</span>
+      {r.target && (
+        <button
+          type="button"
+          tabIndex={-1}
+          className="rm-card-go"
+          data-go={r.target}
+          aria-label={`Go to ${label(r.target)} on the map`}
+          title={`Go to ${label(r.target)}`}
+        >
+          <Icon name="arrow-right" size={12} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+const CardRows = memo(function CardRows({ rows, count, focusParam, act }) {
+  const blocks = [];
+  for (let at = 0; at < rows.length; at += BLOCK) {
+    const part = rows.slice(at, at + BLOCK);
+    blocks.push(
+      <div key={at} className="rm-card-block" style={{ height: part.length * SET_ROW }}>
+        {part.map((r, i) => (
+          <CardRow key={i} r={r} selected={r.id === focusParam} />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div
+      className="rm-card-body"
+      onClick={(e) => {
+        e.stopPropagation();
+        const go = e.target.closest("[data-go]");
+        const row = e.target.closest("[data-row]");
+        if (go) act("goTo", go.dataset.go);
+        else if (row) act("explain", row.dataset.row);
+      }}
+      onDoubleClick={(e) => e.stopPropagation()}
+    >
+      <div className="rm-card-sum">{plural(count, "setting")}</div>
+      {blocks}
+    </div>
+  );
+});
+
+const Card = memo(function Card({
+  item,
+  x,
+  y,
+  w,
+  node,
+  fullName,
+  parentLabel,
+  where,
+  ins,
+  outs,
+  inside,
+  selected,
+  target,
+  tabbable,
+  count,
+  rows,
+  focusParam,
+  act,
+  register,
+}) {
   const centre = item.key === "c";
-  const left = x - NODE_W / 2;
-  const top = y - cardH(item) / 2;
+  const box = cardBox(item, { x, y, w, g: rows ? settingsH(rows) : 0 });
+  const { left, top } = box;
   if (item.kind === "group") {
     return (
       <div
@@ -279,14 +381,23 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, where
       </div>
     );
   }
-  const cls = "rm-node" + (centre ? " is-centre" : "") + (missing ? " is-missing" : "") + (selected ? " is-selected" : "");
+  const open = !!rows;
+  const cls =
+    "rm-node" + (centre ? " is-centre" : "") + (missing ? " is-missing" : "") + (selected ? " is-selected" : "") + (open ? " is-open" : "");
   const sub = missing ? MISSING[missing] || "Not in this file" : null;
   const hint = node?.hint || fullName || node?.cls;
   return (
     <div
       ref={(el) => register(item.key, el)}
       className={cls}
-      style={{ left, top, "--seg-hue": depthHue(item.id), "--n": name.length }}
+      style={{
+        left,
+        top,
+        width: open ? box.right - box.left : undefined,
+        height: open ? box.bottom - box.top : undefined,
+        "--seg-hue": depthHue(item.id),
+        "--n": name.length,
+      }}
       role="button"
       tabIndex={tabbable ? 0 : -1}
       data-key={item.key}
@@ -297,30 +408,52 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, where
           ? `. ${sub}`
           : `. ${pointing(ins)} at it; it points at ${plural(outs, "object")}` +
             (inside ? ` and contains ${plural(inside, "object")}.` : ".")) +
-        (centre ? "" : " Enter centres the map on it.")
+        (centre ? "" : " Enter centres the map on it.") +
+        (count ? ` S ${open ? "hides" : "lists"} its ${plural(count, "setting")}.` : "")
       }
       onClick={() => act("select", item.key)}
       onDoubleClick={() => !centre && act("centre", item.key)}
     >
-      <div className="rm-node-head">
-        <span className="rm-swatch" aria-hidden="true" />
-        <span className="rm-node-label">{name}</span>
-        {!missing && (
-          <span className="rm-counts" aria-hidden="true" title={`${pointing(ins)} at it · it points at ${plural(outs, "object")}`}>
-            {ins} in · {outs} out
-          </span>
-        )}
+      <div className="rm-node-face">
+        <div className="rm-node-head">
+          <span className="rm-swatch" aria-hidden="true" />
+          <span className="rm-node-label">{name}</span>
+          {!missing && (
+            <span className="rm-counts" aria-hidden="true" title={`${pointing(ins)} at it · it points at ${plural(outs, "object")}`}>
+              {ins} in · {outs} out
+            </span>
+          )}
+        </div>
+        <div className="rm-node-sub">
+          {sub ||
+            ancestors(item.id).map((a, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && <Icon name="chevron-right" size={12} />}
+                <span>{a}</span>
+              </React.Fragment>
+            ))}
+        </div>
+        <div className={"rm-node-hint" + (node?.hint ? " is-value" : "")}>{missing ? item.id : hint}</div>
       </div>
-      <div className="rm-node-sub">
-        {sub ||
-          ancestors(item.id).map((a, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <Icon name="chevron-right" size={12} />}
-              <span>{a}</span>
-            </React.Fragment>
-          ))}
-      </div>
-      <div className={"rm-node-hint" + (node?.hint ? " is-value" : "")}>{missing ? item.id : hint}</div>
+      {count > 0 && (
+        <button
+          type="button"
+          tabIndex={-1}
+          className={"rm-card-toggle" + (open ? " is-open" : "")}
+          aria-expanded={open}
+          aria-label={`${open ? "Hide" : "List"} the ${plural(count, "setting")} of ${name} in its card`}
+          title={open ? "Hide the settings (S)" : `List its ${plural(count, "setting")} in the card (S)`}
+          onClick={(e) => {
+            e.stopPropagation();
+            act("settings", item.key);
+          }}
+          onDoubleClick={(e) => e.stopPropagation()}
+        >
+          <span>{open ? "Hide" : plural(count, "setting")}</span>
+          <Icon name={open ? "chevron-up" : "chevron-down"} size={12} />
+        </button>
+      )}
+      {open && <CardRows rows={rows} count={count} focusParam={focusParam} act={act} />}
     </div>
   );
 });
@@ -348,13 +481,14 @@ const Ports = memo(function Ports({ items, pos, g, whole, expanded, collapsed, a
     const open = whole ? !collapsed.has(item.id) : expanded[dir].has(item.id);
     const what = portText(g, item.id, dir, r);
     const right = dir === "down";
+    const box = cardBox(item, p);
     out.push(
       <button
         key={item.key}
         type="button"
         tabIndex={-1}
         className={`rm-port is-${right ? "right" : "left"}` + (open ? " is-open" : "")}
-        style={{ left: right ? p.x + NODE_W / 2 - 8 : p.x - NODE_W / 2 + 8, top: p.y }}
+        style={{ left: right ? box.right - 8 : box.left + 8, top: p.y }}
         aria-expanded={open}
         aria-label={`${open ? "Hide" : "Show"} the next level: ${what}`}
         title={what}
@@ -378,16 +512,15 @@ const MINI_H = 120;
 const MinimapCards = memo(function MinimapCards({ items, pos, s, ox, oy, selectedKey }) {
   const out = [];
   for (const item of items.values()) {
-    const p = pos.get(item.key);
-    const h = cardH(item);
+    const b = cardBox(item, pos.get(item.key));
     out.push(
       <rect
         key={item.key}
         className={item.parent == null ? "is-centre" : item.key === selectedKey ? "is-selected" : undefined}
-        x={ox + (p.x - NODE_W / 2) * s}
-        y={oy + (p.y - h / 2) * s}
-        width={Math.max(2, NODE_W * s)}
-        height={Math.max(1.5, h * s)}
+        x={ox + b.left * s}
+        y={oy + b.top * s}
+        width={Math.max(2, (b.right - b.left) * s)}
+        height={Math.max(1.5, (b.bottom - b.top) * s)}
         rx="1"
       />
     );
@@ -581,8 +714,6 @@ function Legend({ stats, onClose }) {
 
 // --- Settings: the selected object's own parameters and lists ------------
 
-const empty = (v) => v == null || v === "";
-
 function SettingRow({ id, name, value, missing, selected, depth, g, onPick, onGo }) {
   const target = !empty(value) && g.byId.has(value) && !g.byId.get(value).missing ? value : null;
   return (
@@ -773,6 +904,7 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
   const [collapsed, setCollapsed] = useState(() => new Set());
   const [treePages, setTreePages] = useState(() => new Map());
   const [settings, setSettings] = usePersistentState("mapSettings", false);
+  const [listed, setListed] = useState(() => new Set()); // objects whose cards list their settings
   const [cam, setCam] = useState({ x: 0, y: 0, k: 1 });
   const [glide, setGlide] = useState(false);
   const [size, setSize] = useState({ w: 800, h: 600 });
@@ -803,7 +935,44 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
     () => (whole ? buildTree(g, collapsed, treePages) : buildView(g, root, expanded, pages)),
     [g, whole, root, collapsed, treePages, expanded, pages]
   );
-  const lay = useMemo(() => layout(items, whole ? "top" : "middle"), [items, whole]);
+  // What each object sets (its parameters and lists), for the tab under its
+  // card; and the rows of the cards opened to list them, kept per object
+  // while its node in the tree is the same, so opening one card leaves the
+  // others' rows alone.
+  const counts = useMemo(() => {
+    const m = new Map();
+    for (const [id, mo] of objects) {
+      let n = 0;
+      for (const c of mo.children) if (c.kind === "param" || c.kind === "list") n++;
+      if (n) m.set(id, n);
+    }
+    return m;
+  }, [objects]);
+  const rowCache = useRef(new Map());
+  const bodies = useMemo(() => {
+    const m = new Map();
+    const cache = new Map();
+    for (const id of listed) {
+      const mo = objects.get(id);
+      if (!mo) continue;
+      const was = rowCache.current.get(id);
+      let rows = was && was.mo === mo && was.g === g ? was.rows : null;
+      if (!rows) {
+        rows = settingLines(mo);
+        for (const r of rows) if (r.kind === "param" && !empty(r.value) && g.byId.has(r.value) && !g.byId.get(r.value).missing) r.target = r.value;
+      }
+      cache.set(id, { mo, g, rows });
+      if (rows.length) m.set(id, rows);
+    }
+    rowCache.current = cache;
+    return m;
+  }, [listed, objects, g]);
+  const grow = useMemo(() => {
+    const m = new Map();
+    if (bodies.size) for (const it of items.values()) if (it.kind === "node" && bodies.has(it.id)) m.set(it.key, settingsH(bodies.get(it.id)));
+    return m;
+  }, [items, bodies]);
+  const lay = useMemo(() => layout(items, whole ? "top" : "middle", grow), [items, whole, grow]);
   const layRef = useRef(lay);
   layRef.current = lay;
   const firstKey = items.keys().next().value ?? null;
@@ -980,7 +1149,7 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
   useLayoutEffect(() => {
     if (!anchor.current) return;
     const c = camRef.current;
-    const { key, sx, sy, opened, refit } = anchor.current;
+    const { key, sx, sy, opened, refit, after } = anchor.current;
     anchor.current = null;
     const p = lay.pos.get(key);
     if (!p) return;
@@ -996,9 +1165,13 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
       return;
     }
     setCam({ ...c, x: sx - p.x * c.k, y: sy - p.y * c.k });
+    clearTimeout(revealTimer.current);
+    if (after) {
+      revealTimer.current = setTimeout(after, reducedMotion() ? 0 : 60);
+      return;
+    }
     // Once the links have poured out, ease over to what opened.
     const keys = opened(items);
-    clearTimeout(revealTimer.current);
     if (keys.length) revealTimer.current = setTimeout(() => showOpened(keys, key), reducedMotion() ? 0 : 240);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lay]);
@@ -1075,6 +1248,22 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
     if (Math.abs(dx) > 1 || Math.abs(dy) > 1) glideTo({ ...c, x: c.x + dx, y: c.y + dy });
   };
 
+  // A card that opened down to list its settings: bring as much of the list
+  // into view as fits, keeping the card's head on screen.
+  const showBody = (key) => {
+    const p = layRef.current.pos.get(key);
+    const it = items.get(key);
+    if (!p || !it) return;
+    const c = camRef.current;
+    const { w, h } = sizeRef.current;
+    const b = cardBox(it, p);
+    const [l, r, t, bt] = [c.x + b.left * c.k, c.x + b.right * c.k, c.y + b.top * c.k, c.y + b.bottom * c.k];
+    // Down as far as it fits, its head kept in view; and its whole width.
+    const dy = Math.min(0, Math.max(h - 56 - bt, 24 - t));
+    const dx = r - l <= w - 48 ? (l < 24 ? 24 - l : r > w - 24 ? w - 24 - r : 0) : 24 - l;
+    if (Math.abs(dx) > 1 || dy < -1) glideTo({ ...c, x: c.x + dx, y: c.y + dy });
+  };
+
   const screenOf = (key) => {
     const p = lay.pos.get(key);
     const c = camRef.current;
@@ -1135,6 +1324,7 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
     }
   };
   const collapseAll = () => {
+    setListed(new Set());
     if (whole) {
       const roots = new Set(g.roots);
       setCollapsed(new Set([...g.kids.keys(), ...g.out.keys()].filter((id) => !roots.has(id))));
@@ -1211,6 +1401,23 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
         next.delete(it.groupKey);
         return next;
       });
+    },
+    settings: (key) => {
+      const it = items.get(key);
+      if (it?.kind !== "node" || !counts.has(it.id)) return;
+      const opening = !listed.has(it.id);
+      const at = screenOf(key);
+      if (at) anchor.current = { key, ...at, opened: () => [], after: opening ? () => showBody(key) : null };
+      setListed((s) => {
+        const n = new Set(s);
+        n.has(it.id) ? n.delete(it.id) : n.add(it.id);
+        return n;
+      });
+      setActiveKey(key);
+    },
+    explain: (id) => {
+      self.current = ownerOf(id);
+      onSelect(id);
     },
     via: (key) => {
       const it = items.get(key);
@@ -1316,8 +1523,9 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
   // Arrow keys walk the map as it is drawn: right and left along the links
   // (away from the root on its side, back towards it on the other), up and
   // down the column. Enter centres (opens a group, shows more, goes to a
-  // link card's object), Space opens or closes the next level, E explains
-  // the link's parameter, Escape folds an open group.
+  // link card's object), Space opens or closes the next level, S lists the
+  // card's settings in it, E explains the link's parameter, Escape folds an
+  // open group.
   const onKeyDown = (e) => {
     if (e.target.closest(".rm-overlay")) return;
     const it = items.get(activeKey) || items.get(firstKey);
@@ -1357,6 +1565,9 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
       if (it.kind === "node") act("toggle", it.key);
       else if (it.kind === "group" || (it.kind === "more" && it.left)) act("open", it.key);
       return;
+    } else if (e.key === "s" || e.key === "S") {
+      if (it.kind === "node") act("settings", it.key);
+      return;
     } else if (e.key === "e" || e.key === "E") {
       if (it.parent != null && it.kind !== "group" && it.edges.some((x) => x.at)) act("via", it.key);
       return;
@@ -1395,30 +1606,26 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
     const [x0, y0, x1, y1] = near.split(",").map((n) => Number(n) * TILE);
     const cards = new Set();
     for (const [key, p] of lay.pos) {
-      if (p.x + NODE_W / 2 + PORT_REACH >= x0 && p.x - NODE_W / 2 - PORT_REACH <= x1 && p.y + NODE_H / 2 >= y0 && p.y - NODE_H / 2 <= y1) {
-        cards.add(key);
-      }
+      const b = cardBox(items.get(key), p);
+      if (b.right + PORT_REACH >= x0 && b.left - PORT_REACH <= x1 && b.bottom >= y0 && b.top <= y1) cards.add(key);
     }
     const links = new Set();
     for (const [key, l] of lay.links) if (l.box[2] >= x0 && l.box[0] <= x1 && l.box[3] >= y0 && l.box[1] <= y1) links.add(key);
     return { cards, links };
-  }, [near, lay]);
+  }, [near, lay, items]);
 
   // Cards lying wholly off each side of the view, for the edge counts.
   const offscreen = useMemo(() => {
     const n = { left: 0, right: 0, top: 0, bottom: 0 };
-    const hw = (NODE_W / 2) * cam.k;
-    const hh = (NODE_H / 2) * cam.k;
-    for (const p of lay.pos.values()) {
-      const sx = cam.x + p.x * cam.k;
-      const sy = cam.y + p.y * cam.k;
-      if (sx + hw < 0) n.left++;
-      else if (sx - hw > size.w) n.right++;
-      else if (sy + hh < 0) n.top++;
-      else if (sy - hh > size.h) n.bottom++;
+    for (const [key, p] of lay.pos) {
+      const b = cardBox(items.get(key), p);
+      if (cam.x + b.right * cam.k < 0) n.left++;
+      else if (cam.x + b.left * cam.k > size.w) n.right++;
+      else if (cam.y + b.bottom * cam.k < 0) n.top++;
+      else if (cam.y + b.top * cam.k > size.h) n.bottom++;
     }
     return n;
-  }, [lay, cam, size]);
+  }, [lay, items, cam, size]);
   const panBy = (dx, dy) => {
     const c = camRef.current;
     glideTo({ ...c, x: c.x + dx * size.w * 0.6, y: c.y + dy * size.h * 0.6 });
@@ -1431,12 +1638,14 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
       const p = lay.pos.get(it.key);
       const node = it.id ? g.byId.get(it.id) : null;
       const where = whole && it.kind === "ghost" && g.container.has(it.id) ? label(g.container.get(it.id)) : null;
+      const rows = it.kind === "node" ? bodies.get(it.id) || null : null;
       out.push(
         <Card
           key={it.key}
           item={it}
           x={p.x}
           y={p.y}
+          w={p.w}
           node={node}
           fullName={node ? className(kb, node.cls) : null}
           parentLabel={it.parent != null ? label(items.get(it.parent).id) : null}
@@ -1447,13 +1656,16 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
           selected={it.key === selectedKey && !viaKey}
           target={it.kind === "ghost" && it.id === owner}
           tabbable={it.key === activeKey}
+          count={it.kind === "node" ? counts.get(it.id) || 0 : 0}
+          rows={rows}
+          focusParam={rows && it.id === owner && focusId !== owner ? focusId : null}
           act={act}
           register={register}
         />
       );
     }
     return out;
-  }, [items, lay, vis, g, kb, whole, selectedKey, viaKey, activeKey, owner, act, register]);
+  }, [items, lay, vis, g, kb, whole, selectedKey, viaKey, activeKey, owner, focusId, counts, bodies, act, register]);
 
   const centre = whole ? null : items.get("c");
   const centreNode = centre ? g.byId.get(centre.id) : null;
@@ -1615,7 +1827,7 @@ export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolba
           <span className="rm-status-sep" aria-hidden="true" />
           <span className="rm-status-help">
             {keyboard
-              ? "Arrows move · Enter centres · Space opens · E explains the link · Backspace goes back"
+              ? "Arrows move · Enter centres · Space opens · S lists settings · E explains the link · Backspace goes back"
               : "Click a link's name to explain it · double-click to centre · drag to pan · Ctrl+scroll to zoom"}
           </span>
         </div>

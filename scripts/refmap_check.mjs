@@ -5,7 +5,10 @@
 // - every object as the centre of a bow-tie, two levels opened both ways
 //   and every group opened a page;
 // and for each of those layouts: no crash, every card placed, no two cards
-// of a column overlapping, and no two links crossing. Links between two
+// of a column overlapping, and no two links crossing. Each layout is checked
+// again with every object card open down to list its settings (a made-up
+// number of rows per card, up to 60), which also makes them wider: no card
+// may then reach into the next column, or past where its links start. Links between two
 // columns share one curve (the same x at every step), so two of them cross
 // exactly when their parents and their children come in opposite orders.
 // Then a synthetic 40-member group checks paging and folding, and a small
@@ -16,7 +19,18 @@
 // Run it after changing frontend/src/components/refMapModel.js or
 // backend/app/refmap.py. Needs a running app; it reads GET /api/files and
 // /api/files/{f}/refmap.
-import { indexGraph, buildTree, buildView, layout, openAll, cardH, PAGE, ROW_GAP } from "../frontend/src/components/refMapModel.js";
+import {
+  indexGraph,
+  buildTree,
+  buildView,
+  layout,
+  openAll,
+  cardBox,
+  settingsH,
+  PAGE,
+  PORT_REACH,
+  ROW_GAP,
+} from "../frontend/src/components/refMapModel.js";
 
 const base = process.argv[2] || "http://localhost:8080";
 const listing = await (await fetch(`${base}/api/files`)).json();
@@ -27,15 +41,45 @@ let biggest = { n: 0, at: "" };
 let slowest = { ms: 0, at: "" };
 const failures = [];
 
-function checkLayout(items, align) {
-  const { pos, links } = layout(items, align);
+// Every object card open, with 0-60 rows by a hash of its key.
+function grown(items) {
+  const m = new Map();
+  for (const it of items.values()) {
+    if (it.kind !== "node") continue;
+    let h = 0;
+    for (const ch of it.key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    m.set(it.key, settingsH({ length: h % 61 }));
+  }
+  return m;
+}
+
+function checkLayout(items, align, grow = new Map()) {
+  const { pos, links, bounds } = layout(items, align, grow);
   const cols = new Map();
+  const span = new Map(); // per side and depth: the column's left and right
   for (const it of items.values()) {
     const p = pos.get(it.key);
     if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y)) throw new Error(`${it.key} has no position`);
     if (it.parent != null && !links.has(it.key)) throw new Error(`${it.key} has no link`);
     if (!cols.has(p.x)) cols.set(p.x, []);
-    cols.get(p.x).push([p.y - cardH(it) / 2, p.y + cardH(it) / 2, it.key]);
+    const b = cardBox(it, p);
+    if (b.bottom > bounds.maxY + 0.5 || b.right > bounds.maxX + 0.5 || b.left < bounds.minX - 0.5) throw new Error(`${it.key} runs out of the bounds`);
+    cols.get(p.x).push([b.top, b.bottom, it.key]);
+    const c = (it.dir === "up" ? -1 : 1) * it.depth;
+    const s = span.get(c) || [Infinity, -Infinity];
+    span.set(c, [Math.min(s[0], b.left), Math.max(s[1], b.right)]);
+    if (it.parent != null) {
+      // Its link starts clear of its parent's edge, and ends at its own.
+      const pb = cardBox(items.get(it.parent), pos.get(it.parent));
+      const [x0, , x1] = links.get(it.key).box;
+      const ok = it.dir === "up" ? x0 === b.right && x1 <= pb.left : x0 >= pb.right && x1 === b.left;
+      if (!ok) throw new Error(`${it.key}'s link doesn't run from edge to edge`);
+    }
+  }
+  for (const [c, [left, right]] of span) {
+    const r = span.get(c + 1);
+    const l = span.get(c - 1);
+    if ((c >= 0 && r && right + PORT_REACH > r[0]) || (c <= 0 && l && left - PORT_REACH < l[1])) throw new Error(`column ${c} reaches into the next`);
   }
   for (const [x, cards] of cols) {
     cards.sort((a, b) => a[0] - b[0]);
@@ -89,6 +133,7 @@ function centred(g, root) {
     items = buildView(g, root, expanded, pages);
   }
   checkLayout(items);
+  checkLayout(items, "middle", grown(items));
 }
 
 const timed = (at, fn) => {
@@ -112,12 +157,14 @@ for (const f of files) {
     const items = buildTree(g, new Set(), new Map());
     checkWhole(g, items, false);
     checkLayout(items, "top");
+    checkLayout(items, "top", grown(items));
   });
   timed(`${f.name}: whole file, all open`, () => {
     const items = buildTree(g, new Set(), openAll((_, p) => buildTree(g, new Set(), p)).pages);
     if (items.size > biggest.n) biggest = { n: items.size, at: f.name };
     checkWhole(g, items, true);
     checkLayout(items, "top");
+    checkLayout(items, "top", grown(items));
   });
   for (const root of new Set([...data.nodes.map((n) => n.id), ...data.edges.flatMap((e) => [e.s, e.t])])) {
     centres++;

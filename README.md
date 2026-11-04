@@ -207,7 +207,9 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   reference as a link card under the object that holds it, and no two
   lines crossing. It opens as an overview where each card shows its name;
   zoom in for the details. **Expand all** opens every group, **Settings**
-  shows the selected object's parameters and lists beside the map, and a
+  shows the selected object's parameters and lists beside the map, the tab
+  under a card (or **S**) opens that card down to list every parameter and
+  list it sets, each row explaining its parameter, and a
   double-click centres the map on one object: what references it and what
   it sits in on the left, what it references and contains on the right.
   A card selects the same object in the tree, and the explanation panel

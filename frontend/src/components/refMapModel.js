@@ -33,6 +33,9 @@ export const PORT_REACH = 40; // a port's outer end, out from the card's edge (.
 export const GROUP_MAX = 6; // more siblings of one class than this fold into a group
 export const PAGE = 18; // members shown per page of an open group
 export const VIA_CHARS = 26; // what a link label holds before it shortens (.rm-via's max-width)
+export const SET_ROW = 20; // a row of an open card's settings (.rm-card-row)
+export const OPEN_W = 184; // an open card is this much wider, away from the centre
+export const SET_EDGE = 26; // the settings' border and padding, top and bottom (.rm-card-body)
 const CHAR_W = 7.8; // one --fs-data monospace character
 const LABEL_PAD = 16; // .rm-via's padding and border
 const RUN_MIN = 28; // the straight stretch into a card: room for the arrow
@@ -296,6 +299,51 @@ export function viaText(edges) {
 }
 
 export const cardH = (it) => (it.kind === "ghost" ? GHOST_H : NODE_H);
+
+/**
+ * An object's settings as an open card lists them, one row each: its
+ * parameters, then each list (its name and row count), the list's rows
+ * under it (a plain value, or a row's fields under its own line). `mo` is
+ * the object's node in the file's tree.
+ */
+export function settingLines(mo) {
+  const out = [];
+  const walk = (kids, depth) => {
+    for (const c of kids) {
+      if (c.kind === "param") out.push({ kind: "param", id: c.id, name: c.label, value: c.value, missing: !!c.requiredMissing, depth });
+    }
+    for (const c of kids) {
+      if (c.kind !== "list") continue;
+      out.push({ kind: "list", id: c.id, name: c.label, rows: c.rowCount ?? c.children.length, depth });
+      for (const r of c.children) {
+        if (r.value != null) out.push({ kind: "param", id: r.id, name: r.label, value: r.value, missing: false, depth: depth + 1 });
+        else {
+          out.push({ kind: "item", id: r.id, name: r.label, depth: depth + 1 });
+          walk(r.children || [], depth + 2);
+        }
+      }
+    }
+  };
+  walk(mo?.children || [], 0);
+  return out;
+}
+// How much an open card grows down by, for its rows.
+export const settingsH = (rows) => (rows.length ? rows.length * SET_ROW + SET_EDGE : 0);
+
+// A card's edges, from its place in the layout (pos: x, y, and how far it
+// grows down, g, and wide, w). A card grows away from the centre: one in a
+// bow-tie's up half to the left, any other to the right, so its links and
+// its port on the side they come in from stay where they were.
+export function cardBox(it, p) {
+  const h = cardH(it) / 2;
+  const left = it.dir === "up" && it.parent != null;
+  return {
+    left: p.x - NODE_W / 2 - (left ? p.w : 0),
+    right: p.x + NODE_W / 2 + (left ? 0 : p.w),
+    top: p.y - h,
+    bottom: p.y + h + p.g,
+  };
+}
 const side = (it) => (it.dir === "up" ? -1 : 1);
 // Every card with a next level has a port, but the centre: both its halves are always open.
 export const hasPort = (it) => it.kind === "node" && it.key !== "c";
@@ -318,11 +366,17 @@ const labelled = (it) => it.kind !== "more" && refEdges(it.edges).length > 0;
  * parent's port (wider when the children spread far), then a straight
  * stretch into the card, as long as the column's longest label.
  *
- * Returns { pos: Map<key, {x, y}> (card centres), bounds, links:
+ * A card whose settings are open grows down by `grow` (key -> px), and
+ * OPEN_W wider (cardBox): its links still meet it at its head, it holds
+ * that much more of its column, and its column moves the ones beyond it
+ * out by OPEN_W.
+ *
+ * Returns { pos: Map<key, {x, y, g, w}> (the centre of a card's head as
+ * it is closed, and how far it grows down and wide), bounds, links:
  * Map<key, { d, arrow, labelX, labelY, side, box }> (the link into each
  * item from its parent) }.
  */
-export function layout(items, align = "middle") {
+export function layout(items, align = "middle", grow = new Map()) {
   const roots = [];
   for (const it of items.values()) if (it.parent == null) roots.push(it.key);
   const off = new Map(); // a card's centre, down from its parent's
@@ -356,15 +410,17 @@ export function layout(items, align = "middle") {
   const shape = (key) => {
     const it = items.get(key);
     const h = cardH(it) / 2;
-    if (!it.children.length) return { tops: [-h], bots: [h] };
+    const down = h + (grow.get(key) || 0);
+    if (!it.children.length) return { tops: [-h], bots: [down] };
     const { offs, tops, bots } = pack(it.children, ROW_GAP);
     const y = align === "top" ? 0 : offs[offs.length - 1] / 2;
     it.children.forEach((k, i) => off.set(k, offs[i] - y));
-    return { tops: [-h, ...tops.map((t) => t - y)], bots: [h, ...bots.map((t) => t - y)] };
+    return { tops: [-h, ...tops.map((t) => t - y)], bots: [down, ...bots.map((t) => t - y)] };
   };
   const pos = new Map();
   const place = (key, y) => {
-    pos.set(key, { x: 0, y });
+    const g = grow.get(key) || 0;
+    pos.set(key, { x: 0, y, g, w: g ? OPEN_W : 0 });
     for (const k of items.get(key).children) place(k, y + off.get(k));
   };
   const centre = roots.length === 1 ? items.get(roots[0]) : null;
@@ -384,9 +440,12 @@ export function layout(items, align = "middle") {
   const y0 = pos.get(roots[0])?.y || 0;
   for (const p of pos.values()) p.y -= y0;
 
-  // Columns: per side and depth, the widest label and the farthest spread.
+  // Columns: per side and depth, the widest label and the farthest spread,
+  // and whether a card in it is open (wider).
   const cols = new Map();
   const colOf = (it) => side(it) * it.depth;
+  const wide = new Map();
+  for (const it of items.values()) if (pos.get(it.key).w) wide.set(colOf(it), OPEN_W);
   for (const it of items.values()) {
     if (it.parent == null) continue;
     const c = colOf(it);
@@ -400,7 +459,9 @@ export function layout(items, align = "middle") {
     for (let d = 1; cols.has(s * d); d++) {
       const col = cols.get(s * d);
       col.bend = Math.min(BEND_MAX, Math.max(BEND_MIN, col.spread * 0.2));
-      colX.set(s * d, colX.get(s * (d - 1)) + s * (NODE_W + PORT_REACH + col.bend + col.run));
+      // The centre's column grows to the right only.
+      const before = s < 0 && d === 1 ? 0 : wide.get(s * (d - 1)) || 0;
+      colX.set(s * d, colX.get(s * (d - 1)) + s * (NODE_W + before + PORT_REACH + col.bend + col.run));
     }
   }
   for (const [key, p] of pos) p.x = colX.get(colOf(items.get(key))) ?? 0;
@@ -412,11 +473,12 @@ export function layout(items, align = "middle") {
     const par = items.get(it.parent);
     const P = pos.get(par.key);
     const K = pos.get(it.key);
+    const pb = cardBox(par, P);
     const col = cols.get(colOf(it));
     const reachOut = hasPort(par) ? PORT_REACH : 0;
     let link;
     if (side(it) > 0) {
-      const x0 = P.x + NODE_W / 2 + reachOut;
+      const x0 = pb.right + reachOut;
       const x1 = K.x - NODE_W / 2;
       const xb = x1 - col.run;
       const m = x0 + (xb - x0) / 2;
@@ -429,7 +491,7 @@ export function layout(items, align = "middle") {
     } else {
       const x0 = K.x + NODE_W / 2;
       const xb = x0 + col.run;
-      const x1 = P.x - NODE_W / 2 - reachOut;
+      const x1 = pb.left - reachOut;
       const m = xb + (x1 - xb) / 2;
       link = {
         d: `M${x0} ${K.y}H${xb}C${m} ${K.y} ${m} ${P.y} ${x1} ${P.y}`,
@@ -442,12 +504,12 @@ export function layout(items, align = "middle") {
   }
 
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-  for (const [key, { x, y }] of pos) {
-    const h = cardH(items.get(key)) / 2;
-    minX = Math.min(minX, x - NODE_W / 2 - PORT_REACH);
-    maxX = Math.max(maxX, x + NODE_W / 2 + PORT_REACH);
-    minY = Math.min(minY, y - h);
-    maxY = Math.max(maxY, y + h);
+  for (const [key, p] of pos) {
+    const b = cardBox(items.get(key), p);
+    minX = Math.min(minX, b.left - PORT_REACH);
+    maxX = Math.max(maxX, b.right + PORT_REACH);
+    minY = Math.min(minY, b.top);
+    maxY = Math.max(maxY, b.bottom);
   }
   if (!pos.size) [minX, maxX, minY, maxY] = [0, 0, 0, 0];
   return { pos, bounds: { minX, maxX, minY, maxY }, links };

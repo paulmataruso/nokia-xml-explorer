@@ -4500,6 +4500,165 @@ mark {
   background-color: color-mix(in srgb, var(--signal) 15%, var(--bg-2));
 }
 
+/* An object card's three lines: the height of a closed card (NODE_H less
+   its borders), whichever way the card is open. */
+.rm-node-face {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  height: 68px;
+}
+
+/* Open down to list the object's settings (RefMap's CardRows): the card
+   grows by SET_ROW a row and SET_EDGE (refMapModel.js), and OPEN_W wider. */
+.rm-node.is-open {
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.rm-node.is-open:has(.rm-card-body:hover) {
+  box-shadow: none;
+}
+
+/* The tab hanging from the head's lower edge that lists or hides the
+   settings: mostly below it, clear of the card's third line. */
+.rm-card-toggle {
+  position: absolute;
+  left: 50%;
+  top: 64px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 20px;
+  padding: 0 6px 0 8px;
+  transform: translateX(-50%);
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rm-card-toggle:hover {
+  background: var(--bg-3);
+  color: var(--ink);
+}
+
+.rm-card-toggle.is-open {
+  background: color-mix(in srgb, var(--signal) 15%, var(--bg-2));
+  border-color: var(--signal-line);
+  color: var(--ink);
+}
+
+.rm-card-body {
+  margin: 0 calc(-1 * var(--s-4));
+  padding: 15px 0 10px;
+  border-top: 1px solid var(--line);
+  cursor: default;
+  user-select: text;
+}
+
+/* BLOCK rows, exactly their height: off screen, the browser skips them. */
+.rm-card-block {
+  content-visibility: auto;
+}
+
+.rm-card-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: 20px;
+  padding: 0 var(--s-4) 0 calc(var(--s-4) + var(--d, 0) * var(--s-4));
+  font-family: var(--font-mono);
+  font-size: var(--fs-data);
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rm-card-row:hover {
+  background: var(--veil);
+}
+
+.rm-card-row.is-selected {
+  background: var(--selection);
+}
+
+.rm-card-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  text-overflow: ellipsis;
+}
+
+.rm-card-value {
+  flex: none;
+  max-width: 60%;
+  overflow: hidden;
+  color: var(--value);
+  text-overflow: ellipsis;
+}
+
+.rm-card-value.is-empty {
+  color: var(--ink-4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+}
+
+.rm-card-value.is-missing {
+  color: var(--danger);
+}
+
+.rm-card-row.is-list .rm-card-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.rm-card-row.is-item .rm-card-name,
+.rm-card-count {
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+}
+
+.rm-card-count {
+  flex: none;
+}
+
+.rm-card-go {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: -4px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--r-1);
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.rm-card-go:hover {
+  background: var(--bg-3);
+  color: var(--ink);
+}
+
+/* Zoomed out, an open card says how many settings it lists. */
+.rm-card-sum {
+  display: none;
+}
+
 .rm-node-head {
   display: flex;
   align-items: center;
@@ -4686,8 +4845,17 @@ mark {
 .rm-viewport.is-far .rm-counts,
 .rm-viewport.is-far .rm-tail-actions,
 .rm-viewport.is-far .rm-node .icon,
-.rm-viewport.is-far .rm-via {
+.rm-viewport.is-far .rm-via,
+.rm-viewport.is-far .rm-card-toggle,
+.rm-viewport.is-far .rm-card-row {
   display: none;
+}
+
+.rm-viewport.is-far .rm-card-sum {
+  display: block;
+  padding: 0 var(--s-4);
+  color: var(--ink-3);
+  font-size: min(var(--far-fs), 24px);
 }
 
 .rm-viewport.is-far .rm-node-head {
