@@ -3,13 +3,17 @@
 Corpus check for the voice action (backend/app/actions/voice.py).
 
 Sweep: every eNB and gNB the form offers, on all its cells, once with every
-feature and once with none: no crash; the site check finds no new error or
-warning; the dictionary's rules on what the features need hold where the
-release has the parameters (actConvVoice: harqMaxTrVoLteDl in every cell;
-actTtiBundling: its mandatory settings and actTtibRsc; proactive grants:
-both periods; actQci1eVTT: its configuration row); a gNB maps 5QI 1 and 5
-afterwards, NRDRB_5QI-1 only for 5QI 1, and a production gNB's QoS is left
-as it is; the same again on the result is refused (nothing to change).
+feature and once with none (EPS fallback to the carrier the form offers,
+else one typed in): no crash; the site check finds no new error or
+warning; everything voice needs is there afterwards (an LNBTS_FDD or _TDD
+with conversational voice on; an NRREDRT on every cell with EPS fallback;
+each VoNR cell's DRX profile the 5QI 1 bearer's); the dictionary's rules on
+what the features need hold where the release has the parameters
+(actConvVoice: harqMaxTrVoLteDl in every cell; actTtiBundling: its
+mandatory settings and actTtibRsc; proactive grants: both periods;
+actQci1eVTT: its configuration row); a gNB maps 5QI 1 and 5 afterwards,
+NRDRB_5QI-1 only for 5QI 1, and a production gNB's QoS is left as it is;
+the same again on the result is refused (nothing to change).
 Round trip: every eNB with conversational voice on and every gNB with VoNR
 cells has its voice settings taken out (switches off, values and rows of
 the features each cell runs removed; on an eNB its QCI 1 row too) and is
@@ -22,6 +26,7 @@ Usage: python3 scripts/voice_check.py [folder ...]
 Exit status 1 if anything fails. Run from the repo root; no server needed.
 """
 import collections
+import json
 import os
 import sys
 import traceback
@@ -36,6 +41,9 @@ from app.actions.links import Site  # noqa: E402
 from qos_check import load, production  # noqa: E402
 
 W = why("check", "round trip", "choice")
+CATALOG = os.path.join(os.path.dirname(__file__), "..", "backend", "app", "data", "class_catalog.json")
+KB = {"catalog": json.load(open(CATALOG))} if os.path.exists(CATALOG) else {}
+TYPED_EARFCN = "66786"  # EPS fallback's carrier, typed in where nothing in the file names one
 QOS_CLASSES = {"NRDRB_5QI", "NRDRB", "NRDRB_MAC", "NRDRB_PDCP", "NRDRB_RLC_AM", "NRDRB_RLC_UM"}
 
 LTE_SWITCHES = {"actTtiBundling": "false", "actQci1eVTT": "false", "actQci1BlerTgt": "false",
@@ -72,6 +80,8 @@ def rule_problems(raw, index, side, dn):
         enb = site.by_dn[dn]
         conv = any(s["p"].get("actConvVoice") == "true"
                    for s in site.child(dn, "LNBTS_FDD") + site.child(dn, "LNBTS_TDD"))
+        if not conv:
+            out.append("no LNBTS_FDD or LNBTS_TDD with conversational voice on")
         for c in site.child(dn, "LNCEL"):
             p = c["p"]
             need = []
@@ -89,14 +99,28 @@ def rule_problems(raw, index, side, dn):
                 out.append(f"{label(c['dn'])} has actQci1eVTT on without conversational voice")
         del enb
     else:
-        mapped = qos._mapped(Doc(raw), dn, qos.SA)
+        doc = Doc(raw)
+        mapped = qos._mapped(doc, dn, qos.SA)
         out += [f"5QI {v} isn't mapped" for v in ("1", "5") if v not in mapped]
+        full = lambda v: v if not v or v.startswith("MRBTS-") else f"{dn}/{v}"
+        drb = next((full(doc.get(m, "nrDrbDN")) for m, _ in mapped.get("1", [])), None)
+        drx = full(doc.get(drb, "nrDrxDN")) if drb and doc.exists(drb) else None
+        for c in site.child(dn, "NRCELL"):
+            if c["p"].get("actVoNR") != "true":
+                continue
+            if c["p"].get("voiceFBMode") == "redirection" and not site.child(c["dn"], "NRREDRT"):
+                out.append(f"{label(c['dn'])} has EPS fallback and no NRREDRT")
+            rel = release_of(c["version"])
+            writes = c["p"].get("voNRNrDrxDN") is not None or rel == voice.PROFILE_RELEASE[voice.NR] \
+                or "voNRNrDrxDN" in index.get(rel, {}).get("NRCELL", ())
+            if drx and writes and full(c["p"].get("voNRNrDrxDN")) != drx:
+                out.append(f"{label(c['dn'])}'s VoNR DRX profile isn't the 5QI 1 bearer's ({label(drx)})")
     return out
 
 
 def sweep(corpus, raws, index, counts, failures):
     for (source, name), raw in raws.items():
-        ctx = Context(raw, name, source, corpus=lambda: corpus, release_index=lambda: index)
+        ctx = Context(raw, name, source, corpus=lambda: corpus, release_index=lambda: index, kb=KB)
         if voice.available(ctx):
             counts[("unavailable", "")] += 1
             continue
@@ -114,6 +138,8 @@ def sweep(corpus, raws, index, counts, failures):
                     inputs["features"] = []
                 if t["key"] in fields["slices"]["optionsByKey"]:
                     inputs["slices"] = fields["slices"]["defaultByKey"][t["key"]]
+                if t["key"] in fields["fallbackEarfcn"]["optionsByKey"]:
+                    inputs["fallbackEarfcn"] = fields["fallbackEarfcn"]["defaultByKey"].get(t["key"], TYPED_EARFCN)
                 where = f"{name} {label(dn)} {kind}"
                 try:
                     out, plan = voice.plan(ctx, inputs)
@@ -140,7 +166,8 @@ def sweep(corpus, raws, index, counts, failures):
                     if qos_changes:
                         failures.append(f"{where}: changed a production gNB's QoS: {qos_changes[:4]}")
                 try:
-                    voice.plan(Context(out, name, source, corpus=lambda: corpus, release_index=lambda: index), inputs)
+                    voice.plan(Context(out, name, source, corpus=lambda: corpus, release_index=lambda: index, kb=KB),
+                               inputs)
                     failures.append(f"{where}: repeat not refused")
                 except PlanError:
                     pass
@@ -245,7 +272,7 @@ def _settings(site, dn, cells, side):
 def round_trip(corpus, raws, index, failures, diffs):
     done = collections.Counter()
     for (source, name), raw in raws.items():
-        ctx = Context(raw, name, source, corpus=lambda: corpus, release_index=lambda: index)
+        ctx = Context(raw, name, source, corpus=lambda: corpus, release_index=lambda: index, kb=KB)
         site = ctx.site
         targets = [(voice.LTE, e) for e in voice._enbs(ctx)
                    if any(s["p"].get("actConvVoice") == "true"
@@ -263,7 +290,7 @@ def round_trip(corpus, raws, index, failures, diffs):
                      and all(site.by_dn[c]["p"].get(k) == v for k, v in full.items())
                      and (side == voice.NR or (site.by_dn[c]["p"].get("maxNumVoLteProactUlGrantsPerTti") or "0") != "0")}
             before = _settings(site, dn, cells, side)
-            stripped = Context(doc.raw(), name, source, corpus=lambda: corpus, release_index=lambda: index)
+            stripped = Context(doc.raw(), name, source, corpus=lambda: corpus, release_index=lambda: index, kb=KB)
             inputs = {"target": f"{side}|{dn}", "cells": cells, "features": sorted(features)}
             if side == voice.NR:
                 inputs["slices"] = [s["dn"] for s in site.child(dn, "SNSSAI")] if voice._slices_named(ctx, node) else []

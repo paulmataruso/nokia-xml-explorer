@@ -332,6 +332,20 @@ def _extras(side: str, mapped: dict) -> list[dict]:
             if v.isdigit() and v not in TEMPLATES[kind]]
 
 
+def qci_donor(ctx: Context, enb: dict, q: str, prefer=lambda row: False) -> Optional[str]:
+    """A template for qciTab q: another file's row for that QCI, from an eNB
+    of this one's release first, then one `prefer` takes (by the row)."""
+    rel, best = release_of(enb["version"]), None
+    for f in ctx.corpus():
+        for e in (f.get("qos") or {}).get("enbs", []):
+            for t in e["tabs"]:
+                if t["qci"] == q:
+                    rank = (release_of(e["version"]) != rel, not prefer(t["row"]))
+                    if best is None or rank < best[0]:
+                        best = (rank, f"file|{f['key']}|{e['dn']}|{q}")
+    return best[1] if best else None
+
+
 def _lte_options(ctx: Context, enb: dict, others: list[dict]):
     rel = release_of(enb["version"])
     tabs = {t["qci"]: t for t in next((e["tabs"] for e in _here(ctx)["enbs"] if e["dn"] == enb["dn"]), [])}

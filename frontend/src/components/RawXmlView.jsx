@@ -149,7 +149,7 @@ const RawRow = memo(function RawRow({
     (node.requiredMissing ? " required-missing" : "") +
     (isOfficial ? " official-doc" : "") +
     (editedIds?.has(node.id) ? " edited" : "");
-  const canEditThis = editable && node.tag === "p";
+  const canEditThis = editable && node.tag === "p" && !node.id.includes("::item::"); // list values are read-only
 
   const handleClick = () => {
     if (hasChildren) {

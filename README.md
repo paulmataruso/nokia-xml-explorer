@@ -178,6 +178,15 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   make by hand in the Nokia WebUI if you'd rather, ready to copy. Applying is one undoable edit, refused
   if it would add a site-check error.
 
+  An action adds everything its feature needs: an object the file lacks
+  is created, and one it has is changed to what the feature needs. EN-DC
+  adds the measurement objects, QCI rows, X2 planes and NSA PLMN sets the
+  site is missing; VoLTE adds the eNB's LNBTS_FDD if it has none; VoNR's
+  EPS fallback adds each cell's NRREDRT, to the LTE carrier the cell
+  reselects to (or one you type, when the file doesn't say). A setting a
+  Nokia dictionary rule requires is written even when none of your files
+  of that release show it, and the review says so.
+
   The canned features clean up as they go instead of adding beside what
   is there. Production's QoS set replaces the gNB's mappings and the
   bearers and profiles only they used, numbered as production numbers
@@ -193,11 +202,16 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   repeated ids, cells without a channel mapping or cell group, QoS
   mappings and profiles, cables and ports, sync targets, static route
   gateways. Click it for the list; every finding links to its rows.
-- **Reference map**: the toolbar's **Tree | Map** switch shows which
-  objects point at which, centred on the selected object: what references
-  it and the object it sits in above, what it references and contains
-  below, opening a level at a click. A card selects the same object in the
-  tree, and the explanation panel follows.
+- **Reference map**: the toolbar's **Tree | Map** switch draws the whole
+  file, left to right: the object tree from MRBTS down, with every
+  reference as a link card under the object that holds it, and no two
+  lines crossing. It opens as an overview where each card shows its name;
+  zoom in for the details. **Expand all** opens every group, **Settings**
+  shows the selected object's parameters and lists beside the map, and a
+  double-click centres the map on one object: what references it and what
+  it sits in on the left, what it references and contains on the right.
+  A card selects the same object in the tree, and the explanation panel
+  follows.
 - A file-level "File Info" node explains the `raml`/`cmData`/`header`/`log`
   wrapper elements themselves.
 - **Generate new XML**: the **+** button at the top of the file list creates

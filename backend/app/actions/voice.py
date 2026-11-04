@@ -3,11 +3,19 @@ Set up voice: VoLTE on an eNB's cells or VoNR on a gNB's, with the QoS
 profiles voice needs and the voice features the production files run.
 PROJECT_STATE §9.9 has the plan and the corpus findings.
 
+Everything voice needs is added where the file lacks it, and changed where
+it is there (the owner, 2026-11-04: "if there are not the required MO in
+the SCP YOU MUST ADD THEM, if they are already there then you will change
+them").
+
 VoLTE (the LTE18/SBTS18A dictionary's rules):
 - The eNB: conversational voice on (LNBTS_FDD/_TDD actConvVoice), which
-  needs multiple bearers (actMultBearers); QCI 1 and 5 in its QCI table,
-  added through the QoS action's planner from another file of the release
-  when missing.
+  needs multiple bearers (actMultBearers); an eNB without the LNBTS_FDD
+  or _TDD its cells need gets one (number 0, as every file numbers them)
+  with its Mandatory switches at the knowledge base's real-file defaults,
+  release-filtered. QCI 1 and 5 in its QCI table, added through the QoS
+  action's planner when missing, from another file of the release, else
+  of another release.
 - Each cell, where it doesn't set them already: harqMaxTrVoLteDl (must be
   configured with conversational voice, rule 1.1), n310Qci1 and t310Qci1
   (allowed only with it), and the QCI 1 carrier aggregation thresholds at
@@ -32,6 +40,14 @@ but one alike, and their 27 gNBs):
   and radio-link timers; picked: Enhanced VoNR, VoNR link adaptation, VoNR
   uplink coverage (incremental coding gain), EPS fallback by redirection;
   ROHC on the gNB. NSA-only cells are left: their voice runs on LTE.
+- EPS fallback redirects to the LTE carrier in the cell's NRREDRT: a cell
+  without one gets one through the carrier action's planner, to the
+  EARFCN given, which the form offers from the cell's own LTE reselection
+  carrier (NRLIM): each of the 130 production cells has one NRLIM carrier
+  and one NRREDRT, to it. Without one there, this file's LTE cells'
+  carrier; the form asks when neither is known.
+- A cell's VoNR DRX profile (voNRNrDrxDN) is pointed at the one the 5QI 1
+  bearer uses, as production has both on Default VoNR.
 
 Production's values win over the picked cells' own, and the notes list
 each old one (the owner, 2026-11-03: "Use the canned value"); so do the
@@ -47,12 +63,14 @@ release sets it on that class (all of them in the profile's own release).
 """
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from typing import Optional
 
-from . import Context, PlanError, finish, qos
+from . import Context, PlanError, carrier, finish, qos
 from .doc import Doc, instance, label, release_of, why
 from .qos_replace import replace_nr
+from .sites import lte_cell
 
 ID = "voice"
 TITLE = "Set up VoLTE or VoNR"
@@ -167,9 +185,41 @@ def _slices_named(ctx: Context, gnb: dict) -> bool:
     return any(m["lists"].get("snssaiList") for m in ctx.site.child(gnb["dn"], "NRDRB_5QI"))
 
 
+def _reselect_to(ctx: Context, gnb: str, cell: dict) -> list[str]:
+    """The LTE carriers the cell's UEs reselect to (the NRLIMs of the system
+    information profile it broadcasts), highest priority first."""
+    prof = cell["p"].get("nrSysInfoProfileDN") or ""
+    prof = prof if prof.startswith("MRBTS-") else f"{gnb}/{prof}"
+    lims = ctx.site.child(prof, "NRLIM")
+    rank = lambda m: tuple(-int(m["p"].get(k) or 0) if (m["p"].get(k) or "0").isdigit() else 0
+                           for k in ("cellReselectionPriority", "cellReselectionSubPriority"))
+    return list(dict.fromkeys(m["p"]["carrierFreq"] for m in sorted(lims, key=rank) if m["p"].get("carrierFreq")))
+
+
+def _file_lte(ctx: Context) -> list[str]:
+    """This file's LTE cells' carriers, the most cells' first."""
+    n: dict[str, int] = defaultdict(int)
+    for c in ctx.site.of("LNCEL"):
+        e = lte_cell(ctx.site, c)["earfcn"]
+        if e:
+            n[e] += 1
+    return sorted(n, key=lambda e: -n[e])
+
+
+def _no_redirect(ctx: Context, gnb: dict) -> list[dict]:
+    return [c for c in _sa_cells(ctx, gnb) if not ctx.site.child(c["dn"], "NRREDRT")]
+
+
+def _fallback_carriers(ctx: Context, gnb: dict, cells: list[dict]) -> list[str]:
+    """What EPS fallback can redirect the cells to: their reselection
+    carriers, then this file's LTE carriers."""
+    return list(dict.fromkeys([e for c in cells for e in _reselect_to(ctx, gnb["dn"], c)] + _file_lte(ctx)))
+
+
 def setup(ctx: Context) -> dict:
     site = ctx.site
     targets, cells, features, slices, slice_default = [], {}, {}, {}, {}
+    fallback, fallback_default = {}, {}
     for enb in _enbs(ctx):
         key = f"{LTE}|{enb['dn']}"
         subs = site.child(enb["dn"], "LNBTS_FDD") + site.child(enb["dn"], "LNBTS_TDD")
@@ -190,6 +240,12 @@ def setup(ctx: Context) -> dict:
                         "details": ["5QI 1 and 5 mappings, VoNR and the picked features in the SA cells."]})
         cells[key] = [_cell_option(c, "VoNR on" if c["p"].get("actVoNR") == "true" else "") for c in sa]
         features[key] = NR_FEATURES
+        need = _no_redirect(ctx, gnb)
+        if need:
+            known = _fallback_carriers(ctx, gnb, need)
+            fallback[key] = [{"value": e, "label": f"EARFCN {e}"} for e in known]
+            if known:
+                fallback_default[key] = known[0]
         mapped = qos._mapped(Doc(ctx.raw), gnb["dn"], qos.SA)
         own = site.child(gnb["dn"], "SNSSAI")
         if own and not {"1", "5"} <= set(mapped):
@@ -213,6 +269,11 @@ def setup(ctx: Context) -> dict:
             {"id": "slices", "label": "Slices for 5QI 1 and 5", "type": "checks", "dependsOn": "target",
              "optionsByKey": slices, "defaultByKey": slice_default, "optional": True,
              "hint": "As the gNB's other mappings: production's name every slice, the lab gNBs' none."},
+            {"id": "fallbackEarfcn", "label": "LTE carrier for EPS fallback (EARFCN)", "type": "combo",
+             "dependsOn": "target", "optionsByKey": fallback, "defaultByKey": fallback_default, "optional": True,
+             "showIf": {"field": "target", "in": list(fallback)}, "placeholder": "66786",
+             "hint": "With EPS fallback ticked, each cell without an NRREDRT gets one, redirecting here. Offered "
+                     "first: the LTE carrier the cells reselect to (NRLIM), which production's cells redirect to."},
         ],
     }
 
@@ -228,11 +289,14 @@ class _Plan:
         self.kept: dict[tuple[str, str, str], list[str]] = defaultdict(list)
         self.replaced: dict[tuple[str, str, str], list[str]] = defaultdict(list)
         self.unknown: dict[str, set[str]] = defaultdict(set)
+        self.ruled: dict[str, set[str]] = defaultdict(set)  # written on the dictionary's word alone
         self.touched: list[str] = []
 
-    def known(self, dn: str, name: str) -> bool:
+    def known(self, dn: str, name: str, required: bool = False) -> bool:
         """Whether the object may carry `name`: it does, or some file of its
-        release sets it on that class (any, in the profile's release)."""
+        release sets it on that class (any, in the profile's release). One a
+        dictionary rule requires is known in any release of 18 or later when
+        the dictionaries (LTE18, SBTS18A) have it: the rule is theirs."""
         if self.doc.get(dn, name) is not None or not self.index:
             return True
         m = self.ctx.site.by_dn.get(dn)
@@ -241,12 +305,17 @@ class _Plan:
             return True
         if name in self.index.get(rel, {}).get(m["cls"], set()):
             return True
+        n = re.search(r"\d{2}", rel or "")
+        meta = ((_catalog(self.ctx).get(m["cls"]) or {}).get("params") or {}).get(name) or {}
+        if required and n and int(n.group()) >= 18 and meta.get("confidence") == "official":
+            self.ruled[rel].add(name)
+            return True
         self.unknown[rel or "this release"].add(name)
         return False
 
     def put(self, dn: str, name: str, value: str, reason: str, basis: str = "files", rule=None) -> bool:
         """A setting written as given (a switch, or a value a rule forces)."""
-        if not self.known(dn, name) or self.doc.get(dn, name) == value:
+        if not self.known(dn, name, basis == "official" and rule is not None) or self.doc.get(dn, name) == value:
             return False
         self.doc.set(dn, name, value, why("voice", reason, basis, rule))
         self.touched.append(dn)
@@ -287,8 +356,17 @@ class _Plan:
                          for (name, now, prod), where in sorted(values.items())]
                 self.notes.append(f"{what}: " + "; ".join(parts[:8])
                                   + (f"; and {len(parts) - 8} more." if len(parts) > 8 else "."))
+        for rel, names in sorted(self.ruled.items()):
+            self.notes.append(f"Written as the dictionary's rules require, though no {rel} file loaded sets them: "
+                              f"{', '.join(sorted(names))}.")
         for rel, names in sorted(self.unknown.items()):
             self.notes.append(f"Not written, because no {rel} file sets them: {', '.join(sorted(names))}.")
+
+
+def _catalog(ctx: Context) -> dict:
+    """The knowledge base's classes (class_catalog.json)."""
+    cat = ctx.kb.get("catalog") or {}
+    return cat.get("classes") or cat
 
 
 def _pick(inputs: dict, key: str, options: list[dict]) -> list[str]:
@@ -303,6 +381,38 @@ def _lte_template(ctx: Context, enb: dict, q: str) -> Optional[str]:
     return opts[0]["value"] if opts else None
 
 
+def _add_subs(ctx: Context, p: _Plan, enb: dict) -> list[str]:
+    """The LNBTS_FDD or _TDD (or both) the eNB's cells need, where it has
+    none: number 0, with its Mandatory parameters at the knowledge base's
+    real-file defaults (those some file of the release sets on the class),
+    conversational voice set on it next."""
+    doc, dn = p.doc, enb["dn"]
+    tdd = {lte_cell(ctx.site, c)["tdd"] or (c["p"].get("cellTechnology") or "").startswith("TDD")
+           for c in ctx.site.child(dn, "LNCEL")}
+    info = doc.class_info("LNBTS")
+    rel = release_of(enb["version"])
+    made = []
+    for cls in (["LNBTS_FDD"] if False in tdd or not tdd else []) + (["LNBTS_TDD"] if True in tdd else []):
+        meta = (_catalog(ctx).get(cls) or {}).get("params") or {}
+        known = p.index.get(rel, {}).get(cls) if p.index else None
+        params = []
+        for name, m in meta.items():
+            value = m.get("resolvedDefault") or (m.get("exampleValues") or [None])[0]
+            if m.get("requiredOnCreation") == "Mandatory" and value is not None and name != "actConvVoice" \
+                    and (known is None or name in known):
+                params.append((name, str(value)))
+        made.append(doc.create(dn, cls, "0", params, w=why(
+            "voice", f"Conversational voice is set in the eNB's {cls}, and it has none: added, with its Mandatory "
+                     "settings at their defaults, as the files set them.", "files"),
+            full_class=f"{info[0].rsplit(':', 1)[0]}:{cls}" if info and ":" in info[0] else None,
+            version=enb["version"]))
+        p.touched.append(made[-1])
+    p.notes.append(f"{label(dn)} had no {' or '.join(c.rsplit('/', 1)[1].rsplit('-', 1)[0] for c in made)}: added "
+                   f"as {', '.join(label(c) for c in made)}, with its Mandatory switches at their defaults (off), as "
+                   "the files of its release set them.")
+    return made
+
+
 def _ceil4(n: int) -> int:
     return -(-n // 4) * 4
 
@@ -313,10 +423,10 @@ def _plan_lte(ctx: Context, doc: Doc, enb: dict, cells: list[str], features: set
     for q in ("1", "5"):
         if doc.items(dn, f"qciTab{q}"):
             continue
-        template = _lte_template(ctx, enb, q)
+        template = _lte_template(ctx, enb, q) or qos.qci_donor(ctx, enb, q)
         if not template:
-            raise PlanError([f"The eNB has no QCI {q} in its QCI table, and no other file of its release has one to "
-                             "take its settings from."])
+            raise PlanError([f"The eNB has no QCI {q} in its QCI table, and no file loaded has one to take its "
+                             "settings from: load a file with VoLTE."])
         out = qos._plan_lte(ctx, doc, enb, {"value": q, "template": template})
         p.notes += [n for n in out["notes"] if not n.startswith("VoLTE also uses")]
         p.touched.append(dn)
@@ -325,8 +435,7 @@ def _plan_lte(ctx: Context, doc: Doc, enb: dict, cells: list[str], features: set
                                             "while actMultBearers is.", "official", ("actConvVoice", None))
     subs = doc.children(dn, "LNBTS_FDD") + doc.children(dn, "LNBTS_TDD")
     if not subs:
-        p.todo.append(f"{label(dn)} has no LNBTS_FDD or LNBTS_TDD to turn conversational voice on in "
-                      "(actConvVoice): add it, then set actConvVoice true.")
+        subs = _add_subs(ctx, p, enb)
     turned = [sub for sub in subs if p.put(sub, "actConvVoice", "true", "Conversational voice on: the eNB sets up "
                                                                        "QCI 1 bearers for VoLTE calls.", "choice")]
     if turned:
@@ -446,6 +555,8 @@ def _grants(p: _Plan, cell: str) -> None:
     if doc.get(cell, "maxNumVoLteProactUlGrantsPerTti") in (None, "0"):
         p.put(cell, "maxNumVoLteProactUlGrantsPerTti", "1",
               f"Proactive uplink grants on, for one UE per TTI (the least every bandwidth allows), {LTE_FILES}.")
+    if doc.get(cell, "maxNumVoLteProactUlGrantsPerTti") in (None, "0"):
+        return  # not in this release: nor what it needs
     for name in ("voLteProactUlGrantPeriodRegTx", "voLteProactUlGrantPeriodTtib"):
         if doc.get(cell, name) in (None, "0"):
             p.put(cell, name, "10", f"Must be configured with proactive grants on; every 10 ms {LTE_FILES} (0 turns "
@@ -480,7 +591,35 @@ def _evtt(p: _Plan, cell: str) -> None:
                                      "its long cycle.", "official", ("actQci1eVTT", rule_no)))
 
 
-def _plan_nr(ctx: Context, doc: Doc, gnb: dict, cells: list[str], features: set[str], slices: list[str]) -> dict:
+def _redirect(ctx: Context, p: _Plan, gnb: dict, cells: list[str], earfcn: Optional[str]) -> None:
+    """An NRREDRT on each cell without one, through the carrier action's
+    planner (settings from the gNB's own, else another file's): to the
+    EARFCN given, else the cell's reselection carrier, else this file's LTE
+    carrier."""
+    plans: dict[str, carrier._Plan] = {}
+    for cell in cells:
+        m = ctx.site.by_dn[cell]
+        e = earfcn or next(iter(_fallback_carriers(ctx, gnb, [m])), None)
+        if not e:
+            raise PlanError([f"EPS fallback redirects to an LTE carrier, and {label(cell)} has no NRREDRT, no LTE "
+                             "reselection carrier (NRLIM) and this file no LTE cell to take one from: give the "
+                             "carrier's EARFCN."])
+        cp = plans.setdefault(e, carrier._Plan(ctx, p.doc, "redirect-nr", {"earfcn": e}))
+        cp.add(m, "NRREDRT", e, f"EPS fallback to EARFCN {e}")
+    for e, cp in plans.items():
+        if cp.skipped:
+            raise PlanError([f"No NRREDRT to copy in any file: {', '.join(c)} ({r})." for r, c in cp.skipped.items()])
+        for source, where in cp.copied.items():
+            p.notes.append(f"EPS fallback: {', '.join(sorted(set(where)))} had no NRREDRT; one added to EARFCN {e}, "
+                           f"its other settings copied from {source}.")
+        p.notes += [n.replace("Left out, as", "NRREDRT: left out, as") for n in cp.notes]
+        if cp.dropped:
+            p.notes.append(f"NRREDRT: left out, as no file of this release sets them: {', '.join(sorted(cp.dropped))}.")
+        p.touched += [cp.focus] if cp.focus else []
+
+
+def _plan_nr(ctx: Context, doc: Doc, gnb: dict, cells: list[str], features: set[str], slices: list[str],
+             earfcn: Optional[str] = None) -> dict:
     p = _Plan(ctx, doc, NR)
     dn = gnb["dn"]
     had, before = qos._mapped(doc, dn, qos.SA), len(doc.changes)
@@ -497,7 +636,7 @@ def _plan_nr(ctx: Context, doc: Doc, gnb: dict, cells: list[str], features: set[
     drb = drb if not drb or drb.startswith("MRBTS-") else f"{dn}/{drb}"
     voice_drx = doc.get(drb, "nrDrxDN") if drb and doc.exists(drb) else None
     voice_drx = voice_drx if not voice_drx or voice_drx.startswith("MRBTS-") else f"{dn}/{voice_drx}"
-    drx_off, no_redirect = [], []
+    no_redirect = []
     for cell in cells:
         p.put(cell, "actVoNR", "true", f"VoNR on: voice calls stay on NR, {NR_FILES}.", "choice")
         for name, v in NR_CELL:
@@ -515,19 +654,15 @@ def _plan_nr(ctx: Context, doc: Doc, gnb: dict, cells: list[str], features: set[
             p.put(cell, "voiceFBMode", "redirection", f"EPS fallback by redirection for UEs without VoNR, "
                                                       f"{NR_FILES}.")
             if not doc.children(cell, "NRREDRT"):
-                no_redirect.append(label(cell))
+                no_redirect.append(cell)
         cell_drx = doc.get(cell, "voNRNrDrxDN")
         cell_drx = cell_drx if not cell_drx or cell_drx.startswith("MRBTS-") else f"{dn}/{cell_drx}"
         if voice_drx and cell_drx != voice_drx:
-            drx_off.append(label(cell))
-    if drx_off:
-        p.notes.append(f"The 5QI 1 bearer uses {label(voice_drx)}, and the VoNR DRX profile (voNRNrDrxDN) of "
-                       f"{', '.join(drx_off)} is another; production has both on Default VoNR. Set up DRX (on) "
-                       "lines them up.")
+            p.put(cell, "voNRNrDrxDN", voice_drx, f"VoNR calls use the DRX profile the 5QI 1 bearer uses, "
+                                                  f"{label(voice_drx)}, as production has both on Default VoNR"
+                                                  + (f" (was {label(cell_drx)})." if cell_drx else "."))
     if no_redirect:
-        p.todo.append(f"EPS fallback redirects to the LTE carriers in the cell's NRREDRT, and {', '.join(no_redirect)} "
-                      "has none: add one (Add a carrier to measure or redirect to: an LTE carrier NR cells redirect "
-                      "to).")
+        _redirect(ctx, p, gnb, no_redirect, earfcn)
     p.finish_notes()
     return {
         "label": f"VoNR on {label(dn)}",
@@ -567,7 +702,10 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
             (own if _slices_named(ctx, gnb) else [])
         if not cells:
             raise PlanError(["Pick the cells."])
-        out = _plan_nr(ctx, doc, gnb, cells, features, slices)
+        earfcn = (inputs.get("fallbackEarfcn") or "").strip() or None
+        if earfcn and (not earfcn.isdigit() or int(earfcn) > carrier.EARFCN_MAX):
+            raise PlanError([f"The EPS fallback EARFCN is a number from 0 to {carrier.EARFCN_MAX}."])
+        out = _plan_nr(ctx, doc, gnb, cells, features, slices, earfcn and str(int(earfcn)))
     else:
         raise PlanError(["Pick where voice goes."])
     if not doc.changes:

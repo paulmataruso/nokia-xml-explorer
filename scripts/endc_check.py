@@ -8,9 +8,12 @@ of X2 offered (leave it, automatic setup, a planned link); every gNB gets
 the 5G side. A crash fails; a refusal is counted with its reason. The
 result must parse, add no site-check error and pass the dictionary's EN-DC
 rules (actLteNrDualConnectivity 1.1, 1.2, 1.2.1 and 2.1); every change must
-be in the manual steps; planning it again must change nothing. After the
-5G side every gNB has its X2 planes, unless the plan says to add them by
-hand, and every cell with an SA PLMN set has an NSA one.
+be in the manual steps; planning it again must change nothing. Nothing the
+feature needs may be left out (the owner's rule: add everything it needs):
+after the 4G side qciTab6-9 are EN-DC-eligible, QCI 5 isn't, and the B1
+measurement of the carrier picked is there; after the 5G side the gNB has
+its X2 planes, every cell an NSA PLMN set (or the gNB its own mcc), and
+QCI 6-9 are mapped to NR bearers.
 
 Usage: python3 scripts/endc_check.py [folder ...]
        (default: example/ and scp/, whichever exist)
@@ -80,8 +83,8 @@ def main(folders):
         again = endc.plan(after, inputs)[1]["changes"]
         if again:
             failures.append(f"{where}: not idempotent: {[(x['op'], x['dn'], x.get('param')) for x in again[:4]]}")
-        rules = rules_4g(after.site, inputs["enb"]) if inputs["side"] == "4g" else \
-            rules_5g(after.site, inputs["gnb"], plan["todo"])
+        rules = rules_4g(after.site, inputs["enb"], inputs) if inputs["side"] == "4g" else \
+            rules_5g(after.site, inputs["gnb"])
         failures.extend(f"{where}: {r}" for r in rules)
 
     for (src, name), raw in raws.items():
@@ -132,8 +135,8 @@ def main(folders):
     return 1 if failures else 0
 
 
-def rules_4g(site, dn):
-    """The dictionary's rules on actLteNrDualConnectivity, after the plan."""
+def rules_4g(site, dn, inputs):
+    """The dictionary's rules on actLteNrDualConnectivity, and the template, after the plan."""
     enb = site.by_dn[dn]
     p, lists = enb["p"], enb.get("lists") or {}
     out = []
@@ -154,18 +157,31 @@ def rules_4g(site, dn):
     for fdd in site.child(dn, "LNBTS_FDD"):
         if fdd["p"].get("actProSeComm") == "true":
             out.append("rule 2.1: actProSeComm is on")
+    for q in endc.QCIS:
+        rows = lists.get(f"qciTab{q}") or []
+        if not rows or rows[0].get("lteNrDualConnectSupport") != "EN-DC":
+            out.append(f"qciTab{q} isn't EN-DC-eligible")
+    if (lists.get("qciTab5") or [{}])[0].get("lteNrDualConnectSupport") == "EN-DC":
+        out.append("qciTab5 is still EN-DC-eligible")
+    carrier = inputs.get("ssb") or (inputs["carrier"].split(":")[1] if inputs["carrier"].startswith("nr:") else None)
+    if carrier and carrier not in endc._measured(site, enb):
+        out.append(f"no B1 measurement of NR-ARFCN {carrier}")
     return out
 
 
-def rules_5g(site, dn, todo):
+def rules_5g(site, dn):
     gnb = site.by_dn[dn]
     out = []
     for plane in ("x2Cplane", "x2Uplane"):
-        if not (gnb.get("lists") or {}).get(plane) and not any(t.startswith(f"Add {plane}") for t in todo):
-            out.append(f"{plane} missing, and not left to do by hand")
+        if not (gnb.get("lists") or {}).get(plane):
+            out.append(f"{plane} missing")
+    own = not site.child(dn, "NRPLMN") and gnb["p"].get("mcc")
     for cell in site.child(dn, "NRCELL"):
-        if site.child(cell["dn"], "NRPLMNSET_SA") and not site.child(cell["dn"], "NRPLMNSET_NSA"):
-            out.append(f"{cell['dn']} has an SA PLMN set and no NSA one")
+        if not own and not site.child(cell["dn"], "NRPLMNSET_NSA"):
+            out.append(f"{cell['dn']} has no NSA PLMN set")
+    qcis = {v for m in site.of("NRDRB_QCI", dn) for v in (m.get("simple") or {}).get("qciValueList", [])}
+    if set(map(str, endc.QCIS)) - qcis:
+        out.append(f"QCI {sorted(set(map(str, endc.QCIS)) - qcis)} not mapped")
     return out
 
 

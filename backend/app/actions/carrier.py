@@ -26,7 +26,9 @@ LTE cells list 502110, the SSB of their gNB's GSCN 6276).
 
 Settings come from a template: the cell's own object of the class, else
 another cell's of this file, else one from another file (values only,
-release-filtered). The carrier, band and SCS come from the inputs; the
+release-filtered), else, for NRREDRT, production's own (BUILTIN): every one
+of the 130 production cells with VoNR has NRREDRT-0 set alike but for its
+carrier. The carrier, band and SCS come from the inputs; the
 SCS keeps the template's spelling ("30KHz" on NRFIM, "30 KHz" on NRIRFIM,
 "30kHz" on REDRT). Reselection priorities, thresholds and the measurement
 bandwidth are the template's, with a note: the files set the bandwidth as
@@ -94,6 +96,11 @@ OBJECTS = {
     "NRIRFIM": {"cls": "NRIRFIM", "param": "dlCarrierFreq", "ids": (1, 8)},
     "NRLIM": {"cls": "NRLIM", "param": "carrierFreq", "ids": (1, 8)},
     "NRREDRT": {"cls": "NRREDRT", "param": "redirFreqEutra", "ids": (0, None)},
+}
+# Production's settings where no file loaded has the object, all but the carrier.
+BUILTIN = {
+    "NRREDRT": {"inst": "0", "p": {"redirRat": "eutra", "redirPrio": "4", "redirPrioBadUlRadio": "4"},
+                "from": "production's NRREDRT (alike on all 130 production cells with VoNR)"},
 }
 SCS = ("15 kHz", "30 kHz", "120 kHz")
 EARFCN_MAX, NR_ARFCN_MAX = 262143, 3279165  # TS 36.331 ARFCN-ValueEUTRA-r9, TS 38.331 ARFCN-ValueNR
@@ -287,22 +294,26 @@ class _Plan:
                     "inst": instance(m["dn"]), "from": f"{label(m['dn'])} of {label(m['dn'].rsplit('/', 1)[0])}",
                     "donor": False}
         rel = release_of(parent["version"])
+        cls = OBJECTS[key]["cls"]
+        known = self.index.get(rel, {}).get(cls) if self.index else None
+
+        def keep(name: str) -> bool:
+            ok = known is None or name in known
+            if not ok:
+                self.dropped.add(f"{cls}.{name}")
+            return ok
+
         files = sorted(self.ctx.corpus(), key=lambda f: (f.get("release") != rel, f["name"]))
         for f in files:
             t = (f.get("carriers") or {}).get(key)
             if t and (f["source"], f["name"]) != (self.ctx.source, self.ctx.filename):
-                cls = OBJECTS[key]["cls"]
-                known = self.index.get(rel, {}).get(cls) if self.index else None
-
-                def keep(name: str) -> bool:
-                    ok = known is None or name in known
-                    if not ok:
-                        self.dropped.add(f"{cls}.{name}")
-                    return ok
-
                 return {"p": {k: v for k, v in t["p"].items() if keep(k)},
                         "lists": {k: v for k, v in t["lists"].items() if keep(k)}, "simple": {},
                         "inst": t.get("inst"), "from": "another file", "donor": True, "version": t.get("version")}
+        b = BUILTIN.get(key)
+        if b:
+            return {"p": {k: v for k, v in b["p"].items() if keep(k)}, "lists": {}, "simple": {}, "inst": b["inst"],
+                    "from": b["from"], "donor": False}
         return None
 
     def overrides(self, key: str, t: dict) -> tuple[dict, dict]:

@@ -1,14 +1,23 @@
 /**
  * The Map view's model, kept apart from its rendering: the reference index
- * built from GET /refmap, the bow-tie of what is shown around the centred
- * object, and its layout.
+ * built from GET /refmap, what is shown, and its layout.
  *
- * The bow-tie has two halves that share the centre. "down" follows what an
- * object points at and what it contains; "up" follows what points at it and
- * the object it sits in. Either way the arrow runs from the object holding
- * the value (or the container) to the object it names (or contains), so on
- * screen every link points down. Each object appears once per half: a
- * second path to it shows a ghost that jumps to the first.
+ * Two views. The whole file (the default) is the containment tree: every
+ * object under the one it sits in. An object's references hang off it as
+ * link cards, each naming the object it points at: a copy, since the object
+ * itself sits where the tree puts it. So every link is drawn, and every
+ * line is a branch of one tree, which no other line crosses.
+ *
+ * Centred on one object, the view is a bow-tie whose halves share the
+ * centre. "down" follows what an object points at and what it contains;
+ * "up" follows what points at it and the object it sits in. Each object
+ * appears once per half: a second path to it shows a ghost that goes to the
+ * first. Each half is a tree too, so its lines don't cross either.
+ *
+ * The layout runs left to right: the down half (and the whole file) to the
+ * right of its root, the up half to the left. Every arrow points right,
+ * from the object holding the value (or the container) to the object it
+ * names (or contains).
  *
  * Containment is read here from the distNames, not sent by GET /refmap:
  * an object sits in its nearest ancestor the file has (a gap in the path,
@@ -18,13 +27,18 @@
 
 export const NODE_W = 236;
 export const NODE_H = 70;
-export const GAP_X = 20;
-export const GAP_Y = 84; // between levels: the port, the bus, the label
-export const LEVEL = NODE_H + GAP_Y;
+export const GHOST_H = 50; // a link card or a repeat: two lines
+export const ROW_GAP = 32; // between neighbouring subtrees in a column
+export const PORT_REACH = 40; // a port's outer end, out from the card's edge (.rm-port: 48 wide, 8 over the card)
 export const GROUP_MAX = 6; // more siblings of one class than this fold into a group
 export const PAGE = 18; // members shown per page of an open group
-export const PORT = 16; // the expander sits on the card's edge, mostly outside it
-export const PORT_Y = 6; // its centre's offset outwards from the edge
+export const VIA_CHARS = 26; // what a link label holds before it shortens (.rm-via's max-width)
+const CHAR_W = 7.8; // one --fs-data monospace character
+const LABEL_PAD = 16; // .rm-via's padding and border
+const RUN_MIN = 28; // the straight stretch into a card: room for the arrow
+const RUN_PAD = 40; // around a label on that stretch
+const BEND_MIN = 120; // the curve, from the parent's port to the straight stretch
+const BEND_MAX = 200;
 
 const dnLabel = (dn) => dn.slice(dn.lastIndexOf("/") + 1);
 const clsOf = (dn) => dnLabel(dn).replace(/-[^-]*$/, "");
@@ -32,26 +46,40 @@ const instanceNum = (dn) => {
   const n = Number(dnLabel(dn).slice(dnLabel(dn).lastIndexOf("-") + 1));
   return Number.isFinite(n) ? n : Infinity;
 };
+const byName = (a, b) => {
+  const ca = clsOf(a);
+  const cb = clsOf(b);
+  return ca === cb ? instanceNum(a) - instanceNum(b) || a.localeCompare(b) : ca.localeCompare(cb);
+};
 
 /** Index the endpoint's flat lists: objects by id, and links out and in,
  * grouped by the object at the other end. Missing targets get a node of
  * their own, flagged, so they can be shown and centred on. Containment:
- * `kids` lists what each object contains, `container` the one it sits in. */
+ * `kids` lists what each object contains, `container` the one it sits in,
+ * `roots` the objects that sit in none. */
 export function indexGraph(data) {
   const byId = new Map();
   for (const n of data.nodes) byId.set(n.id, n);
   const kids = new Map();
   const container = new Map();
+  const roots = [];
   for (const n of data.nodes) {
+    let up = null;
     for (let i = n.id.lastIndexOf("/"); i > 0; i = n.id.lastIndexOf("/", i - 1)) {
-      const up = n.id.slice(0, i);
-      if (!byId.has(up)) continue;
-      container.set(n.id, up);
-      if (!kids.has(up)) kids.set(up, []);
-      kids.get(up).push(n.id);
-      break;
+      if (byId.has(n.id.slice(0, i))) {
+        up = n.id.slice(0, i);
+        break;
+      }
     }
+    if (!up) {
+      roots.push(n.id);
+      continue;
+    }
+    container.set(n.id, up);
+    if (!kids.has(up)) kids.set(up, []);
+    kids.get(up).push(n.id);
   }
+  roots.sort(byName);
   const out = new Map();
   const inn = new Map();
   const add = (map, from, to, e) => {
@@ -66,13 +94,15 @@ export function indexGraph(data) {
     add(out, e.s, e.t, e);
     add(inn, e.t, e.s, e);
   }
-  return { byId, out, in: inn, kids, container, stats: data.stats };
+  return { byId, out, in: inn, kids, container, roots, stats: data.stats };
 }
 
 // References only: what an object points at, and what points at it.
 export const outCount = (g, id) => g.out.get(id)?.size || 0;
 export const inCount = (g, id) => g.in.get(id)?.size || 0;
 export const label = dnLabel;
+export const classOf = clsOf;
+export const refEdges = (edges) => edges.filter((e) => e.kind !== "contains");
 
 /** The objects one step away in a half, each with its links: references,
  * plus a "contains" link to each object it contains (down) or to its
@@ -100,15 +130,6 @@ export function reach(g, id, dir) {
 
 const onlyContains = (edges) => edges.every((e) => e.kind === "contains");
 
-/** The objects most pointed at: a starting point when nothing is centred. */
-export function hubs(g, n = 8) {
-  return [...g.in.entries()]
-    .filter(([id]) => !g.byId.get(id)?.missing)
-    .map(([id, m]) => ({ id, count: m.size }))
-    .sort((a, b) => b.count - a.count || a.id.localeCompare(b.id))
-    .slice(0, n);
-}
-
 /** Objects matching a query, best first: label prefix, then class, then
  * anywhere in the distName or hint. */
 export function search(g, query, n = 10) {
@@ -130,25 +151,65 @@ function sortNeighbours(entries) {
   return entries.sort(([a, ea], [b, eb]) => {
     const ha = onlyContains(ea);
     if (ha !== onlyContains(eb)) return ha ? 1 : -1;
-    const ca = clsOf(a);
-    const cb = clsOf(b);
-    return ca === cb ? instanceNum(a) - instanceNum(b) || a.localeCompare(b) : ca.localeCompare(cb);
+    return byName(a, b);
   });
 }
 
+/** One object's next level: its neighbours by class, a class with more
+ * than GROUP_MAX of them folded into a group (or its open pages shown, and
+ * a "more" card after them). `kindOf(other, edges)` says whether a member
+ * is a card ("node") or a copy ("ghost"). */
+function fanOut(parent, entries, dir, pages, kindOf) {
+  const kids = [];
+  const byCls = new Map();
+  for (const [other, edges] of sortNeighbours(entries)) {
+    const held = onlyContains(edges);
+    const c = `${clsOf(other)}${held ? "|in" : ""}`;
+    if (!byCls.has(c)) byCls.set(c, { cls: clsOf(other), held, members: [] });
+    byCls.get(c).members.push([other, edges]);
+  }
+  for (const { cls, held, members } of byCls.values()) {
+    const sub = `${cls}${held ? ":in" : ""}`;
+    const tag = held ? { held } : null;
+    let shown = members;
+    let group = null;
+    if (members.length > GROUP_MAX) {
+      group = { groupKey: `${dir}|${parent.id}|${cls}${held ? "|in" : ""}`, groupCard: `${parent.key}>${dir}:group:${sub}` };
+      const n = pages.get(group.groupKey) || 0;
+      if (!n) {
+        kids.push({ kind: "group", key: group.groupCard, cls, count: members.length, ...group, ...tag,
+          edges: members.flatMap(([, e]) => e) });
+        continue;
+      }
+      shown = members.slice(0, n * PAGE);
+    }
+    for (const [other, edges] of shown) {
+      kids.push({ kind: kindOf(other, edges), key: `${parent.key}>${dir}:${other}`, id: other, edges, ...group, ...tag });
+    }
+    if (group) {
+      kids.push({ kind: "more", key: `${parent.key}>${dir}:more:${sub}`, cls, count: members.length,
+        left: members.length - shown.length, ...group, ...tag, edges: [] });
+    }
+  }
+  for (const k of kids) Object.assign(k, { dir, depth: parent.depth + 1, parent: parent.key, children: [] });
+  return kids;
+}
+
 /**
- * What is shown: the centre, and in each half the objects reached through
- * expanded nodes, breadth first so the nearest occurrence of an object is
- * the real one. Items are objects, ghosts (a repeat), groups (many siblings
- * of one class, folded) and "more" (the tail of an open group: how many are
- * left, and where it folds back). Items reached only by containment are
- * `held`; they come after the references, and group apart from them.
+ * The bow-tie around `root`: the centre, and in each half the objects
+ * reached through expanded nodes, breadth first so the nearest occurrence
+ * of an object is the real one. Items are objects, ghosts (a repeat),
+ * groups (many siblings of one class, folded) and "more" (the tail of an
+ * open group: how many are left, and where it folds back). Items reached
+ * only by containment are `held`; they come after the references, and
+ * group apart from them.
  *
- * expanded: { up: Set<id>, down: Set<id> }; pages: Map<groupKey, pages shown>.
+ * expanded: { up: Set<id>, down: Set<id> }; pages: Map<groupKey, pages shown>
+ * (Infinity shows them all).
  */
 export function buildView(g, root, expanded, pages) {
   const items = new Map();
-  const centre = { key: "c", kind: "node", id: root, dir: "centre", depth: 0, children: [], edges: [] };
+  const centre = { key: "c", kind: "node", id: root, dir: "centre", depth: 0, parent: null, children: [], edges: [] };
   items.set(centre.key, centre);
   for (const dir of ["down", "up"]) {
     const placed = new Set([root]);
@@ -156,203 +217,238 @@ export function buildView(g, root, expanded, pages) {
     while (queue.length) {
       const parent = queue.shift();
       if (parent !== centre && !expanded[dir].has(parent.id)) continue;
-      const kids = [];
-      const byCls = new Map();
-      for (const [other, edges] of sortNeighbours(neighbours(g, parent.id, dir))) {
-        const held = onlyContains(edges);
-        const c = `${clsOf(other)}${held ? "|in" : ""}`;
-        if (!byCls.has(c)) byCls.set(c, { cls: clsOf(other), held, members: [] });
-        byCls.get(c).members.push([other, edges]);
-      }
-      for (const { cls, held, members } of byCls.values()) {
-        const sub = `${cls}${held ? ":in" : ""}`;
-        const tag = held ? { held } : null;
-        let shown = members;
-        let group = null;
-        if (members.length > GROUP_MAX) {
-          group = { groupKey: `${dir}|${parent.id}|${cls}${held ? "|in" : ""}`, groupCard: `${parent.key}>${dir}:group:${sub}` };
-          const n = pages.get(group.groupKey) || 0;
-          if (!n) {
-            kids.push({ kind: "group", key: group.groupCard, cls, count: members.length, ...group, ...tag,
-              edges: members.flatMap(([, e]) => e) });
-            continue;
-          }
-          shown = members.slice(0, n * PAGE);
-        }
-        for (const [other, edges] of shown) {
-          const ghost = placed.has(other);
-          if (!ghost) placed.add(other);
-          kids.push({ kind: ghost ? "ghost" : "node", key: `${parent.key}>${dir}:${other}`, id: other, edges, ...group, ...tag });
-        }
-        if (group) {
-          kids.push({ kind: "more", key: `${parent.key}>${dir}:more:${sub}`, cls, count: members.length,
-            left: members.length - shown.length, ...group, ...tag, edges: [] });
-        }
-      }
+      const kids = fanOut(parent, neighbours(g, parent.id, dir), dir, pages, (other) => {
+        if (placed.has(other)) return "ghost";
+        placed.add(other);
+        return "node";
+      });
       for (const k of kids) {
-        Object.assign(k, { dir, depth: parent.depth + 1, parent: parent.key, children: [] });
         items.set(k.key, k);
         parent.children.push(k.key);
         if (k.kind === "node") queue.push(k);
       }
     }
   }
-  // The centre's children were filled by both halves; split them back out.
-  centre.down = centre.children.filter((k) => items.get(k).dir === "down");
-  centre.up = centre.children.filter((k) => items.get(k).dir === "up");
   return items;
 }
 
-export const TIER = NODE_H + 56; // between the tiers of a wrapped fan: a bus and the labels
-const BUS = 36; // a tier's bus, this far out from its cards' edge
-const PITCH = NODE_W + GAP_X;
-
 /**
- * Tidy tree layout. Every object's children are a "fan": one trunk from its
- * port, a bus per tier, a drop per child. A fan's children sit in one row
- * centred under it, each as wide as its own subtree; when there are more of
- * them than `cols` fit across the view, the childless ones wrap into tiers
- * of `cols`, the referenced ones before the held ones, which start a tier
- * of their own (past the first bus the trunk runs down the gutter beside
- * the middle column), and the ones with children of their own form the last
- * tier. The up half is the mirror image
- * above the centre. Positions are card centres in world pixels, the centre
- * at (0, 0).
- *
- * Returns { pos: Map<key, {x, y}>, bounds, fans: [{ key, parent, dir, tiers:
- * [[key]], cols? }], place: Map<key, { fan, tier }> }.
+ * The whole file: each root (an object that sits in no other), everything
+ * under it, and each object's references as copies ("ghost" items, or the
+ * object's own card when it contains what it names). Every object is open
+ * unless `collapsed` has it; groups fold as in the bow-tie.
  */
-export function layout(items, cols = Infinity) {
-  const centre = items.get("c");
-  const kidsOf = (key, dir) => (key === "c" ? centre[dir] : items.get(key).children);
-  const plans = new Map(); // fan key -> { wrap: [[key]] | null, row: [key] }
-  const width = new Map();
-
-  const plan = (key, dir) => {
-    const kids = kidsOf(key, dir);
-    const c = Math.max(2, cols);
-    const leaves = kids.filter((k) => !items.get(k).children.length);
-    const held = leaves.filter((k) => items.get(k).held);
-    const p = kids.length > c && leaves.length > 1
-      ? { wrap: [...chunk(leaves.filter((k) => !items.get(k).held), c), ...chunk(held, c)],
-          row: kids.filter((k) => items.get(k).children.length) }
-      : { wrap: null, row: kids };
-    plans.set(`${key}|${dir}`, p);
-    return p;
-  };
-  const across = (tiers) => Math.max(...tiers.map((t) => t.length));
-  const blockWidth = (tiers) => across(tiers) * PITCH - GAP_X;
-  const measureKids = (key, dir) => {
-    const p = plan(key, dir);
-    const rowW = p.row.length ? p.row.reduce((s, k) => s + measure(k), 0) + GAP_X * (p.row.length - 1) : 0;
-    return Math.max(p.wrap ? blockWidth(p.wrap) : 0, rowW);
-  };
-  const measure = (key) => {
-    const own = Math.max(NODE_W, measureKids(key, items.get(key).dir));
-    width.set(key, own);
-    return own;
-  };
-
-  const pos = new Map([["c", { x: 0, y: 0 }]]);
-  const fans = [];
-  const place = new Map();
-  const placeKids = (key, dir, sign) => {
-    const P = pos.get(key);
-    const p = plans.get(`${key}|${dir}`);
-    if (!p || (!p.row.length && !p.wrap)) return;
-    const fan = { key: `${key}|${dir}`, parent: key, dir, tiers: [] };
-    if (p.wrap) {
-      const c = across(p.wrap);
-      fan.cols = c;
-      const left = P.x - ((c - 1) * PITCH) / 2;
-      p.wrap.forEach((tier, t) => {
-        tier.forEach((k, i) => pos.set(k, { x: left + i * PITCH, y: P.y + sign * (LEVEL + t * TIER) }));
-        fan.tiers.push(tier);
-      });
+export function buildTree(g, collapsed, pages) {
+  const items = new Map();
+  const queue = [];
+  for (const id of g.roots) {
+    const it = { key: `t:${id}`, kind: "node", id, dir: "down", depth: 0, parent: null, children: [], edges: [] };
+    items.set(it.key, it);
+    queue.push(it);
+  }
+  const kindOf = (other, edges) => (edges.some((e) => e.kind === "contains") ? "node" : "ghost");
+  while (queue.length) {
+    const parent = queue.shift();
+    if (collapsed.has(parent.id)) continue;
+    for (const k of fanOut(parent, neighbours(g, parent.id, "down"), "down", pages, kindOf)) {
+      items.set(k.key, k);
+      parent.children.push(k.key);
+      if (k.kind === "node") queue.push(k);
     }
-    if (p.row.length) {
-      const y = P.y + sign * (LEVEL + fan.tiers.length * TIER);
-      const total = p.row.reduce((s, k) => s + width.get(k), 0) + GAP_X * (p.row.length - 1);
-      let left = P.x - total / 2;
-      for (const k of p.row) {
-        pos.set(k, { x: left + width.get(k) / 2, y });
-        left += width.get(k) + GAP_X;
+  }
+  return items;
+}
+
+/** Every group key and object a view could open: what "Expand all" sets. */
+export function openAll(build) {
+  const pages = new Map();
+  const ids = { up: new Set(), down: new Set() };
+  for (let grew = true; grew; ) {
+    grew = false;
+    for (const it of build(ids, pages).values()) {
+      if (it.kind === "group" && !pages.has(it.groupKey)) {
+        pages.set(it.groupKey, Infinity);
+        grew = true;
+      } else if (it.kind === "node" && it.parent != null && (it.dir === "up" || it.dir === "down") && !ids[it.dir].has(it.id)) {
+        ids[it.dir].add(it.id);
+        grew = true;
       }
-      fan.tiers.push(p.row);
     }
-    fan.tiers.forEach((tier, t) => tier.forEach((k) => place.set(k, { fan, tier: t })));
-    fans.push(fan);
-    for (const k of p.row) placeKids(k, dir, sign);
-  };
-  for (const [half, sign] of [["down", 1], ["up", -1]]) {
-    measureKids("c", half);
-    placeKids("c", half, sign);
   }
-
-  let minX = -NODE_W / 2, maxX = NODE_W / 2, minY = -NODE_H / 2, maxY = NODE_H / 2;
-  for (const { x, y } of pos.values()) {
-    minX = Math.min(minX, x - NODE_W / 2);
-    maxX = Math.max(maxX, x + NODE_W / 2);
-    minY = Math.min(minY, y - NODE_H / 2 - PORT);
-    maxY = Math.max(maxY, y + NODE_H / 2 + PORT);
-  }
-  return { pos, bounds: { minX, maxX, minY, maxY }, fans, place };
+  return { ids, pages };
 }
 
-function chunk(list, n) {
-  const out = [];
-  for (let i = 0; i < list.length; i += n) out.push(list.slice(i, i + n));
-  return out;
+/** A link's label: the parameter holding it, plus how many more hold the
+ * same link. A long path loses its leading segments, never its leaf name,
+ * which is what tells sibling parameters apart; the title has them all. */
+export function viaText(edges) {
+  const vias = [...new Set(edges.map((e) => e.via))];
+  const more = vias.length > 1 ? ` +${vias.length - 1}` : "";
+  const room = VIA_CHARS - more.length;
+  let first = vias[0];
+  if (first.length > room) {
+    const parts = first.split(".");
+    while (parts.length > 1 && parts.join(".").length + 1 > room) parts.shift();
+    first = parts.join(".");
+    first = first.length + 1 > room ? `…${first.slice(-(room - 1))}` : `…${first}`;
+  }
+  return first + more;
 }
+
+export const cardH = (it) => (it.kind === "ghost" ? GHOST_H : NODE_H);
+const side = (it) => (it.dir === "up" ? -1 : 1);
+// Every card with a next level has a port, but the centre: both its halves are always open.
+export const hasPort = (it) => it.kind === "node" && it.key !== "c";
+// A link is labelled with the parameter holding it; containment and a group's tail have none.
+const labelled = (it) => it.kind !== "more" && refEdges(it.edges).length > 0;
 
 /**
- * A fan's connectors, as SVG paths that run the arrow's way (downwards).
- * The fan draws its spine once: the `trunk` meets the nearest bus at the
- * parent's x, and in a wrapped fan the `gutter` carries on to the farther
- * buses, down the gap left of the middle column (the middle gap, for an
- * even count); `buses` has one per tier (null when it has no length). Each
- * child has its own `drop` (and, in the down half, its arrowhead), where its
- * label sits, and the `route` from the parent's port to it, for lighting.
- * Down half: the trunk leaves the parent's lower port and each drop ends on
- * a child's top. Up half: each drop leaves a child's bottom and the trunk
- * ends on the parent's upper port, under one arrowhead.
+ * Left to right. Each object's next level stands in the column beside it,
+ * in order. Subtrees are packed column by column: each sits as high as it
+ * can, ROW_GAP clear of the ones before it in every column they share, so a
+ * short one tucks in under a deep one. Every column keeps the tree's order,
+ * so no link crosses another (see the links below). In a bow-tie a parent
+ * sits level with the middle of its children, its centre with its down half
+ * on the right and its up half on the left. The whole file (align "top")
+ * reads like an outline: a parent level with its first child, so the file
+ * starts at the top left with its first branch running straight across;
+ * its roots stack down column 0.
+ *
+ * A column's width leaves room for its links: the curve out of the
+ * parent's port (wider when the children spread far), then a straight
+ * stretch into the card, as long as the column's longest label.
+ *
+ * Returns { pos: Map<key, {x, y}> (card centres), bounds, links:
+ * Map<key, { d, arrow, labelX, labelY, side, box }> (the link into each
+ * item from its parent) }.
  */
-export function fanPaths(fan, pos) {
-  const P = pos.get(fan.parent);
-  const down = fan.dir === "down";
-  const tx = P.x;
-  const port = down ? P.y + NODE_H / 2 + PORT : P.y - NODE_H / 2 - PORT;
-  const arrowAt = (x, y) => `M${x - 4} ${y - 5}L${x} ${y}L${x + 4} ${y - 5}`;
-  const buses = fan.tiers.map((tier) => {
-    const edge = pos.get(tier[0]).y + (down ? -NODE_H / 2 : NODE_H / 2);
-    const xs = tier.map((k) => pos.get(k).x);
-    return { tier, edge, bus: down ? edge - BUS : edge + BUS, x0: Math.min(tx, ...xs), x1: Math.max(tx, ...xs) };
-  });
-  const gx = fan.cols ? tx - (fan.cols % 2 ? PITCH / 2 : 0) : tx;
-  for (const b of buses) {
-    b.x0 = Math.min(b.x0, gx);
-    b.x1 = Math.max(b.x1, gx);
-  }
-  const near = buses[0].bus;
-  const far = buses[buses.length - 1].bus;
-  const trunk = `M${tx} ${port}V${near}`;
-  const gutter = far !== near ? `M${gx} ${near}V${far}` : null;
-  const busPaths = buses.map((b) => (b.x1 > b.x0 ? `M${b.x0} ${b.bus}H${b.x1}` : null));
-  const drops = new Map();
-  for (const b of buses) {
-    for (const k of b.tier) {
-      const x = pos.get(k).x;
-      drops.set(k, {
-        d: down ? `M${x} ${b.bus}V${b.edge}` : `M${x} ${b.edge}V${b.bus}`,
-        arrow: down ? arrowAt(x, b.edge) : null,
-        labelX: x,
-        labelY: down ? b.edge - 17 : b.edge + 17,
-        route:
-          b.bus === near
-            ? down ? `M${tx} ${port}V${near}H${x}V${b.edge}` : `M${x} ${b.edge}V${near}H${tx}V${port}`
-            : down ? `M${tx} ${port}V${near}H${gx}V${b.bus}H${x}V${b.edge}` : `M${x} ${b.edge}V${b.bus}H${gx}V${near}H${tx}V${port}`,
+export function layout(items, align = "middle") {
+  const roots = [];
+  for (const it of items.values()) if (it.parent == null) roots.push(it.key);
+  const off = new Map(); // a card's centre, down from its parent's
+  // Subtrees packed down in order: each one's centre down from the first's,
+  // and what they hold together, per column from theirs (top and bottom).
+  const pack = (ks, gap) => {
+    const offs = [];
+    const tops = [];
+    const bots = [];
+    for (const k of ks) {
+      const s = shape(k);
+      let o = 0;
+      if (offs.length) {
+        o = -Infinity;
+        for (let i = 0; i < Math.min(tops.length, s.tops.length); i++) o = Math.max(o, bots[i] + gap - s.tops[i]);
+      }
+      offs.push(o);
+      s.tops.forEach((t, i) => {
+        if (i < tops.length) {
+          tops[i] = Math.min(tops[i], o + t);
+          bots[i] = Math.max(bots[i], o + s.bots[i]);
+        } else {
+          tops.push(o + t);
+          bots.push(o + s.bots[i]);
+        }
       });
     }
+    return { offs, tops, bots };
+  };
+  // A subtree's outline, from its card's centre; its children's offsets on the way.
+  const shape = (key) => {
+    const it = items.get(key);
+    const h = cardH(it) / 2;
+    if (!it.children.length) return { tops: [-h], bots: [h] };
+    const { offs, tops, bots } = pack(it.children, ROW_GAP);
+    const y = align === "top" ? 0 : offs[offs.length - 1] / 2;
+    it.children.forEach((k, i) => off.set(k, offs[i] - y));
+    return { tops: [-h, ...tops.map((t) => t - y)], bots: [h, ...bots.map((t) => t - y)] };
+  };
+  const pos = new Map();
+  const place = (key, y) => {
+    pos.set(key, { x: 0, y });
+    for (const k of items.get(key).children) place(k, y + off.get(k));
+  };
+  const centre = roots.length === 1 ? items.get(roots[0]) : null;
+  const upHalf = centre ? centre.children.filter((k) => side(items.get(k)) < 0) : [];
+  if (upHalf.length) {
+    // A bow-tie's centre: each half packed on its own side, level with it.
+    for (const half of [upHalf, centre.children.filter((k) => side(items.get(k)) > 0)]) {
+      if (!half.length) continue;
+      const { offs } = pack(half, ROW_GAP);
+      half.forEach((k, i) => off.set(k, offs[i] - offs[offs.length - 1] / 2));
+    }
+    place(centre.key, 0);
+  } else {
+    const { offs } = pack(roots, ROW_GAP * 2);
+    roots.forEach((r, i) => place(r, offs[i]));
   }
-  return { trunk, gutter, buses: busPaths, arrow: down ? null : arrowAt(tx, port), drops };
+  const y0 = pos.get(roots[0])?.y || 0;
+  for (const p of pos.values()) p.y -= y0;
+
+  // Columns: per side and depth, the widest label and the farthest spread.
+  const cols = new Map();
+  const colOf = (it) => side(it) * it.depth;
+  for (const it of items.values()) {
+    if (it.parent == null) continue;
+    const c = colOf(it);
+    const col = cols.get(c) || { run: RUN_MIN, spread: 0 };
+    if (labelled(it)) col.run = Math.max(col.run, viaText(refEdges(it.edges)).length * CHAR_W + LABEL_PAD + RUN_PAD);
+    col.spread = Math.max(col.spread, Math.abs(pos.get(it.key).y - pos.get(it.parent).y));
+    cols.set(c, col);
+  }
+  const colX = new Map([[0, 0]]);
+  for (const s of [1, -1]) {
+    for (let d = 1; cols.has(s * d); d++) {
+      const col = cols.get(s * d);
+      col.bend = Math.min(BEND_MAX, Math.max(BEND_MIN, col.spread * 0.2));
+      colX.set(s * d, colX.get(s * (d - 1)) + s * (NODE_W + PORT_REACH + col.bend + col.run));
+    }
+  }
+  for (const [key, p] of pos) p.x = colX.get(colOf(items.get(key))) ?? 0;
+
+  const links = new Map();
+  const arrowAt = (x, y) => `M${x - 7} ${y - 4.5}L${x} ${y}L${x - 7} ${y + 4.5}`;
+  for (const it of items.values()) {
+    if (it.parent == null) continue;
+    const par = items.get(it.parent);
+    const P = pos.get(par.key);
+    const K = pos.get(it.key);
+    const col = cols.get(colOf(it));
+    const reachOut = hasPort(par) ? PORT_REACH : 0;
+    let link;
+    if (side(it) > 0) {
+      const x0 = P.x + NODE_W / 2 + reachOut;
+      const x1 = K.x - NODE_W / 2;
+      const xb = x1 - col.run;
+      const m = x0 + (xb - x0) / 2;
+      link = {
+        d: `M${x0} ${P.y}C${m} ${P.y} ${m} ${K.y} ${xb} ${K.y}H${x1}`,
+        arrow: arrowAt(x1, K.y),
+        labelX: x1 - 18,
+        box: [x0, Math.min(P.y, K.y), x1, Math.max(P.y, K.y)],
+      };
+    } else {
+      const x0 = K.x + NODE_W / 2;
+      const xb = x0 + col.run;
+      const x1 = P.x - NODE_W / 2 - reachOut;
+      const m = xb + (x1 - xb) / 2;
+      link = {
+        d: `M${x0} ${K.y}H${xb}C${m} ${K.y} ${m} ${P.y} ${x1} ${P.y}`,
+        arrow: arrowAt(x1, P.y),
+        labelX: x0 + 16,
+        box: [x0, Math.min(P.y, K.y), x1, Math.max(P.y, K.y)],
+      };
+    }
+    links.set(it.key, { ...link, labelY: K.y, side: side(it) });
+  }
+
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const [key, { x, y }] of pos) {
+    const h = cardH(items.get(key)) / 2;
+    minX = Math.min(minX, x - NODE_W / 2 - PORT_REACH);
+    maxX = Math.max(maxX, x + NODE_W / 2 + PORT_REACH);
+    minY = Math.min(minY, y - h);
+    maxY = Math.max(maxY, y + h);
+  }
+  if (!pos.size) [minX, maxX, minY, maxY] = [0, 0, 0, 0];
+  return { pos, bounds: { minX, maxX, minY, maxY }, links };
 }

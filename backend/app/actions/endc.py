@@ -1,9 +1,11 @@
 """
 Set up EN-DC (LTE-NR dual connectivity, NSA option 3X) on one side of the
 link: the 4G side (the LTE eNB, the master node) or the 5G side (the gNB,
-the secondary node). Each side is checked against a template and gets only
-what it lacks, so the review (shown as manual steps first) is the list of
-what is missing, to load or to enter by hand in the WebUI.
+the secondary node). Each side is checked against a template and gets
+everything it lacks: an object the feature needs and the file doesn't have
+is added, one it has is set to the template (the owner's rule, 2026-11-04:
+"you add EVERYTHING it needs"). The review (shown as manual steps first)
+is the list of what changes, to load or to enter by hand in the WebUI.
 
 The template is what the files show for a working setup, with the
 dictionary's rules on top. Evidence: the 11 production xL25R2 SRAN eNBs
@@ -18,44 +20,55 @@ and TL18SP), and the 27 production 25R2 gNBs.
     (2.1).
   - qciTab6-9 lteNrDualConnectSupport EN-DC with nrPdcpProfIdx 1001 (all
     21 EN-DC eNBs); the profile it names, pdcpProf1001, must exist (its
-    rule), with production's values where it doesn't.
+    rule), with production's values where it doesn't. A QCI row the eNB
+    lacks is added first, from another file's row for that QCI (the QoS
+    action's LTE side). QCI 5 is disabled on every working EN-DC eNB (IMS
+    signalling stays on LTE): an EN-DC-eligible QCI 5 is turned back.
   - NRDCDPR-0: dlPathlossChg, tPeriodicPhr and tProhibitPhr (every NRDCDPR
     in the tool), plus what this release's files write on it.
   - NRMEASDPR-0 with one nrQuantityConfig (19 of 21), and per NR carrier an
     ENDCDMEASCONF under NRDCDPR: the B1 measurement that triggers EN-DC
-    (all 11 production eNBs; xL25R2 moved it there from NRDCDPR). The
-    carrier is the SSB's NR-ARFCN, band and subcarrier spacing, from a gNB
-    in this file or the tool (sites.ssb_arfcn) or typed in. Its SMTC
-    (ssbPeriodicity sf20-r15, ssbDuration sf2, ssbOffset 0) is production's
-    and must match the gNB's SSB burst.
+    (all 11 production eNBs). The carrier is the SSB's NR-ARFCN, band and
+    subcarrier spacing, from a gNB in this file or the tool
+    (sites.ssb_arfcn) or typed in. Its SMTC (ssbPeriodicity sf20-r15,
+    ssbDuration sf2, ssbOffset 0) is production's and must match the gNB's
+    SSB burst. Where no file of the eNB's release shows the place, the B1
+    measurement goes on the NRDCDPR itself, where Nokia's SBTS 18A
+    dictionary has carrierFreqNrCell and the B1 thresholds.
   - X2 to the gNB: automatic (actEndcAutoX2Setup and actUeBasedAnrNr true,
     as the 11 production eNBs: the eNB learns NR cells from UEs and sets X2
     up itself), or a planned LNADJGNB (as the lab, endc_gnb), or left as it
     is.
-  Every template parameter goes through the release filter: it is written
-  only where some file of the eNB's release writes it on that class; a
-  class no file of the release has isn't created. The template's own
-  release (xL25R2) is exempt: the template is that release's evidence,
-  whether or not its files are loaded. What can't be written is left as
-  a to-do (`todo`), shown with the manual steps.
+  Every template parameter goes through the release filter: on a class
+  some file of the eNB's release has, it is written only where one of
+  them writes it. A class no file of the release has is still added, with
+  all the template's values, and the plan says so (`_Side.guessed`). The
+  template's own release (xL25R2) is exempt: the template is that
+  release's evidence, whether or not its files are loaded. A to-do
+  (`todo`) is left only for what no file can tell: X2 by automatic setup
+  on a release none of whose files has it.
 
 5G side (gNB):
   - X2-C and X2-U planes (NRBTS x2Cplane, x2Uplane): 79 of 86 gNBs have
-    them, every one on the address its other planes use.
-  - Per cell, an NRPLMNSET_NSA beside its NRPLMNSET_SA, with the same
-    PLMNs (all 130 production cells). A cell with no PLMN set at all (the
-    lab's) is left alone: adding the NSA one only could change what it
-    serves.
-  - QCI 6-9 bearers (NRDRB_QCI): production maps QCI 5-9 to NRDRB-5..9,
-    DRB profiles of their own. Their absence is noted, not filled in: the
-    profiles are more than a template value.
+    them, every one on the address its other planes use; with no other
+    plane, on the address the SRAN eNB's C-plane uses, or the BTS's only
+    one. A gNB with no address at all is refused: its transport comes
+    first (Transport, IP interface).
+  - Per cell, an NRPLMNSET_NSA (all 130 production cells: notReserved,
+    configuredEpsTac 0), with its SA set's PLMNs, or, for a cell with no
+    PLMN set (the lab's), the gNB's NRPLMNs. A gNB whose PLMN is its own
+    mcc and mnc (23R1, no NRPLMN) has nothing to add.
+  - QCI 6-9 bearers (NRDRB_QCI): production maps QCI 5-9 to NRDRB-5..9 and
+    profiles of their own. A missing one is added with production's
+    template, through the QoS action (qos._plan_nr).
 """
 from __future__ import annotations
 
 from typing import Optional
 
 from . import Context, PlanError, finish
-from .doc import Doc, instance, label, release_of, why
+from . import qos
+from .doc import Doc, instance, label, natural, release_of, why
 from .endc_gnb import _Plan as _AdjPlan
 from .endc_gnb import _gnb as _endc_gnb
 from .endc_gnb import _sources as _gnb_sources
@@ -76,6 +89,7 @@ KEEP, AUTO = "keep", "auto"
 
 # 4G template (values of the 11 production xL25R2 eNBs with EN-DC on).
 TEMPLATE_RELEASE = "xL25R2"  # what the template was built from: its classes and values hold there as they are
+GNB_RELEASE = qos.TEMPLATE_RELEASE  # the 5G side's template: the 27 production 25R2 gNBs
 T_PREP = "500"
 QCIS = (6, 7, 8, 9)
 ALSO_SPLIT = (69, 70)  # EN-DC-eligible on 11 of the 13 working EN-DC eNBs, not on all: not in the template
@@ -98,6 +112,8 @@ B1 = [("b1NrBeamReportQuantity", "RSRP"), ("b1NrBeamThreshRsrp", "41"), ("b1NrMa
       ("nrPciNbrRelRemThresh", "1000000"), ("ssbDuration", "sf2"), ("ssbOffset", "0"),
       ("ssbPeriodicity", "sf20-r15")]
 AUTO_X2 = [("actEndcAutoX2Setup", "true"), ("actUeBasedAnrNr", "true")]
+NO_ENDC = {"5": "disabled"}  # what every working EN-DC eNB has on these QCIs
+B1_CORE = {"carrierFreqNrCell", "ssbSubcarrierSpacing", "b1TriggerQuantity", "b1ThresholdNrRsrp"}  # no default
 SCS = ("15kHz", "30kHz", "120kHz", "240kHz")
 
 # 5G template.
@@ -236,25 +252,39 @@ def setup(ctx: Context) -> dict:
 class _Side:
     """Template checks for one side: what is in place, and changes for the rest."""
 
-    def __init__(self, ctx: Context, doc: Doc, node: dict):
+    def __init__(self, ctx: Context, doc: Doc, node: dict, template: str = TEMPLATE_RELEASE):
         self.ctx, self.doc, self.site, self.node = ctx, doc, ctx.site, node
+        self.template = template
         self.release = release_of(node["version"])
         self.index = ctx.release_index()
         self.ready: list[str] = []
         self.notes: list[str] = []
-        self.todo: list[str] = []  # needed, but not something the plan can write
+        self.todo: list[str] = []  # needed, but nothing tells the plan what to write
         self.made: dict[str, int] = {}
+        self.guessed: set[str] = set()  # classes no file of the release has, added anyway
 
-    def knows(self, cls: str) -> bool:
-        return not self.index or self.release == TEMPLATE_RELEASE or cls in self.index.get(self.release, {})
+    def shown(self, cls: str) -> bool:
+        """Some file of this release has the class (always, in the template's own)."""
+        return not self.index or self.release == self.template or cls in self.index.get(self.release, {})
 
     def written(self, cls: str, params: list[tuple[str, str]], core: set[str] = frozenset()) -> list[tuple[str, str]]:
         """The template parameters this release's files write on the class
-        (all of them in the template's own release)."""
-        if not self.index or self.release == TEMPLATE_RELEASE:
+        (all of them in the template's own release, and on a class no file
+        of the release has)."""
+        if not self.shown(cls):
+            self.guessed.add(cls)
+            return params
+        if not self.index or self.release == self.template:
             return params
         names = self.index.get(self.release, {}).get(cls, set())
         return [(k, v) for k, v in params if k in names or k in core]
+
+    def guessed_note(self) -> None:
+        if self.guessed:
+            self.notes.append(f"No file of {self.release or 'this release'} loaded has "
+                              f"{', '.join(sorted(self.guessed))}: written as the {self.template} template has "
+                              f"{'it' if len(self.guessed) == 1 else 'them'}, with all its values. Check the release "
+                              "loads them.")
 
     def set(self, dn: str, name: str, value: str, reason: str, basis: str = "files", rule=None) -> None:
         if (self.site.by_dn.get(dn) or {}).get("p", {}).get(name) == value:
@@ -292,6 +322,13 @@ def _carrier(inputs: dict) -> Optional[tuple[str, str, str]]:
     if len(parts) != 4 or parts[0] != "nr":
         raise PlanError(["Pick the NR carrier the eNB should measure."])
     return parts[1], parts[2], parts[3]
+
+
+def _params_of(ctx: Context, cls: str) -> set[str]:
+    """The parameters the knowledge base has on a class (the files' and
+    the dictionaries')."""
+    cat = ctx.kb.get("catalog") or {}
+    return set(((cat.get("classes") or cat).get(cls) or {}).get("params") or ())
 
 
 def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
@@ -332,11 +369,18 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
     done = []
     for x in QCIS:
         rows = lists.get(f"qciTab{x}") or []
-        if not rows:
-            s.todo.append(f"Make QCI {x} EN-DC-eligible (qciTab{x} lteNrDualConnectSupport EN-DC, nrPdcpProfIdx "
-                          f"{PDCP_PROFILE}): the file has no qciTab{x} to change.")
-            continue
-        row = rows[0]
+        if rows:
+            row = rows[0]
+        else:
+            donor = qos.qci_donor(ctx, enb, str(x), prefer=lambda row: row.get("lteNrDualConnectSupport") == "EN-DC")
+            if not donor:
+                s.todo.append(f"Add QCI {x} to the eNB's QCI table (qciTab{x}), EN-DC-eligible with nrPdcpProfIdx "
+                              f"{PDCP_PROFILE}: no file in the tool has a qciTab{x} to take its settings from.")
+                continue
+            # The QoS action's LTE side adds the row; its EN-DC fields are this action's.
+            out = qos._plan_lte(ctx, doc, enb, {"value": str(x), "template": donor})
+            s.notes += [n for n in out["notes"] if not n.startswith("EN-DC settings")]
+            row = {}
         if row.get("lteNrDualConnectSupport") == "EN-DC" and row.get("nrPdcpProfIdx"):
             done.append(str(x))
             continue
@@ -351,6 +395,12 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
     for name, rows in sorted(lists.items()):
         x = name[6:]
         if not (name.startswith("qciTab") and x.isdigit() and int(x) not in QCIS and rows):
+            continue
+        if rows[0].get("lteNrDualConnectSupport") == "EN-DC" and x in NO_ENDC:
+            doc.set_item(dn, name, 0, "lteNrDualConnectSupport", NO_ENDC[x],
+                         why("endc", f"QCI {x} is {NO_ENDC[x]} for EN-DC on every working EN-DC eNB in the files this "
+                                     "was built from" + (": they keep IMS signalling on LTE" if x == "5" else "")
+                                     + ". It was EN-DC here.", "files"))
             continue
         if rows[0].get("lteNrDualConnectSupport") == "EN-DC" and not rows[0].get("nrPdcpProfIdx"):
             doc.set_item(dn, name, 0, "nrPdcpProfIdx", PDCP_PROFILE,
@@ -374,7 +424,7 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
         s.ready.append(label(meas[0]["dn"]))
         rows = (meas[0].get("lists") or {}).get("nrQuantityConfig") or []
         quantity = rows[0].get("quantityConfigId") if rows else None
-    elif s.knows("NRMEASDPR"):
+    else:
         m = s.create(dn, "NRMEASDPR", 0, s.written("NRMEASDPR", NRMEASDPR),
                      "NR measurement defaults for the B1 measurement, as on 19 of the 21 EN-DC eNBs this was built from.")
         doc.add_item(m, "nrQuantityConfig", NR_QUANTITY, why("endc", "The filtering the B1 measurement uses.", "files"))
@@ -383,7 +433,7 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
         ssb, band, scs = carrier
         if ssb in _measured(site, enb):
             s.ready.append(f"B1 measurement of NR-ARFCN {ssb}")
-        elif s.knows("ENDCDMEASCONF"):
+        elif s.shown("ENDCDMEASCONF"):
             params = s.written("ENDCDMEASCONF", B1 + [("carrierFreqNrCell", ssb), ("ssbSubcarrierSpacing", scs)]
                                + ([("quantityConfigId", quantity)] if quantity else []),
                                {"carrierFreqNrCell", "ssbSubcarrierSpacing"})
@@ -394,14 +444,21 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
                          why("endc", f"The carrier's band, n{band}.", "files"))
             s.notes.append(f"The B1 measurement's SMTC (ssbPeriodicity sf20-r15, ssbDuration sf2, ssbOffset 0) is "
                            f"production's: it must match the SSB burst of the gNB at NR-ARFCN {ssb}.")
-        elif "carrierFreqNrCell" in s.index.get(s.release, {}).get("NRDCDPR", set()):
-            s.set(dpr, "carrierFreqNrCell", ssb, f"The NR carrier to measure (B1), NR-ARFCN {ssb}.", "official")
         else:
-            s.todo.append(f"Add the B1 measurement of NR-ARFCN {ssb} (band n{band}, {scs} SSB): none of the files "
-                          f"loaded for {s.release or 'this release'} shows where it goes. In {TEMPLATE_RELEASE} it is "
-                          "an ENDCDMEASCONF under the NRDCDPR (carrierFreqNrCell, ssbSubcarrierSpacing, the B1 "
-                          "thresholds and freqBandIndicatorNrL); the SBTS 18A dictionary has the same parameters on "
-                          "NRDCDPR.")
+            # No file of the release has an ENDCDMEASCONF: on the NRDCDPR, as the 18A dictionary has it.
+            on = _params_of(ctx, "NRDCDPR") | B1_CORE
+            shown = "carrierFreqNrCell" in s.index.get(s.release, {}).get("NRDCDPR", set())
+            b1 = [(k, v) for k, v in B1 + [("carrierFreqNrCell", ssb), ("ssbSubcarrierSpacing", scs)] if k in on]
+            for k, v in sorted(s.written("NRDCDPR", b1, B1_CORE)):
+                s.set(dpr, k, v, f"The B1 measurement of the NR carrier at NR-ARFCN {ssb} (band n{band}, {scs} SSB), "
+                                 "on the NRDCDPR, where Nokia's SBTS 18A dictionary has it"
+                                 + (" and this release's files set it" if shown else "")
+                                 + ". Production's thresholds.", "official")
+            if not shown:
+                s.notes.append(f"No file of {s.release or 'this release'} shows where the B1 measurement goes: it is on "
+                               f"{label(dpr)}, where Nokia's SBTS 18A dictionary has carrierFreqNrCell and the B1 "
+                               f"thresholds ({TEMPLATE_RELEASE} puts them in an ENDCDMEASCONF under it instead). Check "
+                               "the release takes them there.")
     focus = dn
     if x2 == AUTO:
         auto = s.written("LNBTS", AUTO_X2)
@@ -426,7 +483,27 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
             raise PlanError([problem])
         if note:
             s.notes.append(note)
+    s.guessed_note()
     return enb, s, focus if focus != dn else f"{dn}::p::actLteNrDualConnectivity"
+
+
+def _bts_address(site: Site, gnb: dict) -> tuple[Optional[list[tuple[str, str]]], str]:
+    """Where X2 goes on a gNB whose planes name no address: the SRAN eNB's
+    C-plane address, else the BTS's only address."""
+    for enb in lte_enbs(site):
+        for t in site.child(enb["dn"], "TRSNW"):
+            for r in (t.get("lists") or {}).get("cPlane", []):
+                for k in ("ipV4AddressDN1", "ipV6AddressDN1"):
+                    if r.get(k):
+                        return [(k, r[k])], f"the address the eNB's C-plane uses ({label(r[k])})"
+    found = [(k, m["dn"]) for cls, k in (("IPADDRESSV4", "ipV4AddressDN1"), ("IPADDRESSV6", "ipV6AddressDN1"))
+             for m in site.of(cls)]
+    if len(found) == 1:
+        return [found[0]], f"the BTS's only address ({label(found[0][1])})"
+    what = "none" if not found else f"{len(found)}, none of them on a plane yet"
+    raise PlanError([f"{label(gnb['dn'])} names no IP address on any plane, and the file has {what}: add its "
+                     "transport first (Transport: IP interface, then its NG planes), so X2 goes on the gNB's own "
+                     "address."])
 
 
 def _plan_5g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
@@ -434,53 +511,68 @@ def _plan_5g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
     gnb = next((m for m in _gnbs(site) if m["dn"] == inputs.get("gnb")), None)
     if not gnb:
         raise PlanError(["Pick this file's gNB."])
-    s = _Side(ctx, doc, gnb)
+    s = _Side(ctx, doc, gnb, GNB_RELEASE)
     dn = gnb["dn"]
     lists = gnb.get("lists") or {}
-    src = next((r for plane in OTHER_PLANES + X2_PLANES for r in lists.get(plane, [])
-                if r.get("ipV4AddressDN1") or r.get("ipV6AddressDN1")), None)
     focus = dn
-    for plane in X2_PLANES:
-        if lists.get(plane):
-            s.ready.append(plane)
-        elif src:
+    if any(not lists.get(plane) for plane in X2_PLANES):
+        src = next((r for plane in OTHER_PLANES + X2_PLANES for r in lists.get(plane, [])
+                    if r.get("ipV4AddressDN1") or r.get("ipV6AddressDN1")), None)
+        if src:
             row = [(k, v) for k, v in src.items() if k in ("ipV4AddressDN1", "ipV6AddressDN1") and v]
-            doc.add_item(dn, plane, row, why("endc", f"The X2 {'C' if plane == 'x2Cplane' else 'U'}-plane on the "
-                                                     f"address the gNB's other planes use ({label(row[0][1])}), as on "
-                                                     "every gNB with one in the files this was built from.", "files"))
-            focus = f"{dn}::list::{plane}"
+            where = f"the address the gNB's other planes use ({label(row[0][1])}), as on every gNB with one in the " \
+                    "files this was built from"
         else:
-            s.todo.append(f"Add {plane}: no other plane of the gNB names an address to put it on.")
-    no_sets = 0
+            row, where = _bts_address(site, gnb)
+        for plane in X2_PLANES:
+            if not lists.get(plane):
+                doc.add_item(dn, plane, row, why("endc", f"The X2 {'C' if plane == 'x2Cplane' else 'U'}-plane, on "
+                                                         f"{where}.", "files"))
+                focus = f"{dn}::list::{plane}"
+    s.ready += [plane for plane in X2_PLANES if lists.get(plane)]
+    plmns = site.child(dn, "NRPLMN")
     for cell in site.child(dn, "NRCELL"):
         nsa, sa = site.child(cell["dn"], "NRPLMNSET_NSA"), site.child(cell["dn"], "NRPLMNSET_SA")
         if nsa:
             s.ready.append(f"{label(cell['dn'])} NRPLMNSET_NSA")
             continue
-        if not sa:
-            no_sets += 1
+        if sa:
+            served = (sa[0].get("simple") or {}).get("nrPlmnDNList") or []
+            whose = "the same as its SA set, as on all 130 production cells"
+        elif plmns:
+            served = [m["dn"] for m in sorted(plmns, key=lambda m: natural(m["dn"]))]
+            whose = (f"the gNB's {'PLMN' if len(plmns) == 1 else f'{len(plmns)} PLMNs'}: the cell has no PLMN set, "
+                     "and production cells list the gNB's PLMN in both")
+        elif gnb["p"].get("mcc"):
+            s.ready.append(f"{label(cell['dn'])} PLMN (the gNB's own mcc {gnb['p']['mcc']}, mnc {gnb['p'].get('mnc')})")
             continue
-        plmns = (sa[0].get("simple") or {}).get("nrPlmnDNList") or []
+        else:
+            raise PlanError([f"{label(dn)} has no PLMN (no NRPLMN, no mcc on the NRBTS): add it first (Core network: "
+                             "PLMN), then set up EN-DC."])
         params = s.written("NRPLMNSET_NSA", [("cellReservedForOperatorUse",
-                                              sa[0]["p"].get("cellReservedForOperatorUse") or "notReserved"),
+                                              (sa[0]["p"].get("cellReservedForOperatorUse") if sa else None)
+                                              or "notReserved"),
                                              ("configuredEpsTac", "0")], {"cellReservedForOperatorUse"})
         m = s.create(cell["dn"], "NRPLMNSET_NSA", 1, params,
-                     f"The PLMNs {label(cell['dn'])} serves EN-DC UEs: the same as its SA set, as on all 130 "
-                     "production cells.")
-        if plmns:
-            doc.set_values(m, "nrPlmnDNList", plmns, why("endc", "The SA set's PLMNs.", "files"))
-    if no_sets:
-        s.notes.append(f"{no_sets} cell{'s have' if no_sets > 1 else ' has'} no PLMN set (NRPLMNSET_SA or _NSA), so "
-                       "none is added: production cells have both, and adding the NSA one alone could change what "
-                       "the cell serves.")
+                     f"The PLMNs {label(cell['dn'])} serves EN-DC UEs: {whose}. Production's values.")
+        if served:
+            doc.set_values(m, "nrPlmnDNList", served, why("endc", f"The PLMNs: {whose}.", "files"))
     qcis = {v for m in site.of("NRDRB_QCI", dn) for v in (m.get("simple") or {}).get("qciValueList", [])}
-    missing = [str(q) for q in QCIS if str(q) not in qcis]
+    missing = [q for q in QCIS if str(q) not in qcis]
+    if not s.shown("NRDRB_QCI") and missing:
+        s.guessed.add("NRDRB_QCI")
+    for q in missing:
+        # Production's bearer and profiles for the QCI, through the QoS action.
+        out = qos._plan_nr(ctx, doc, qos.NSA, gnb, {"value": str(q), "template": f"builtin|qci|{q}"})
+        s.notes += [n for n in out["notes"] if n not in s.notes]
+        s.made["NRDRB_QCI"] = s.made.get("NRDRB_QCI", 0) + 1
     if missing:
-        s.todo.append(f"Map QCI {', '.join(missing)} to NR bearers (NRDRB_QCI, each naming an NRDRB): without them EN-DC "
-                      f"bearers of {'that QCI' if len(missing) == 1 else 'those QCIs'} can't be set up on this gNB. "
-                      "Production gNBs map QCI 5-9 to DRB profiles of their own, NRDRB-5 to NRDRB-9.")
+        s.notes.append(f"QCI {', '.join(map(str, missing))} {'is' if len(missing) == 1 else 'are'} mapped to NR "
+                       "bearers as production gNBs map them (NRDRB_QCI to NRDRB-QCI, with production's profiles), so "
+                       "the eNB can split those bearers.")
     else:
         s.ready.append("QCI 6-9 bearers")
+    s.guessed_note()
     return gnb, s, focus, x2_address(site, gnb)
 
 

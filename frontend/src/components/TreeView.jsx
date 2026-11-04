@@ -297,6 +297,8 @@ const TreeRow = memo(function TreeRow({
       ? `${node.label}, ${node.class}`
       : node.kind === "list"
       ? `${node.label}, table with ${node.rowCount ?? node.children.length} rows`
+      : node.kind === "item" && node.value != null
+      ? `${node.label}: ${node.value}`
       : node.label;
 
   return (
@@ -366,6 +368,11 @@ const TreeRow = memo(function TreeRow({
         )}
         {node.kind === "param" && !canEditThis && node.value == null && (
           <span className="value empty">(empty)</span>
+        )}
+        {node.kind === "item" && node.value != null && (
+          <span className="value">
+            <Highlight text={node.value} query={query} />
+          </span>
         )}
         {node.requiredMissing && (
           <span className="tag tag-required-missing" title="Mandatory per Nokia's docs but has no value yet">

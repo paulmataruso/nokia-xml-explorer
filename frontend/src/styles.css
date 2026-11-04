@@ -4290,18 +4290,24 @@ mark {
 }
 
 /* ---------------------------------------------------------------------
-   Reference map: one object in the middle, what points at it above, what
-   it points at below. Diagram nodes on a pannable canvas; every arrow
-   points down, from the object holding the value to the object it names.
+   Reference map: the whole file's tree, or one object with what points at
+   it on its left and what it points at on its right. Diagram nodes on a
+   pannable canvas, laid out left to right; every arrow points right, from
+   the object holding the value to the object it names. The Settings panel
+   docks on the right.
    --------------------------------------------------------------------- */
 .split-pane.rm {
   position: relative;
+  display: flex;
   flex: 1;
+  flex-direction: row; /* the settings dock beside the map */
+  min-width: 0;
 }
 
 .rm-viewport {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   cursor: grab;
   touch-action: none;
@@ -4388,24 +4394,39 @@ mark {
   stroke-width: 2;
 }
 
-/* New connectors pour out of the card that opened them: the Trace draw-in,
-   staggered by depth. */
+/* New links pour out of the card that opened them, staggered by depth:
+   rightwards on the right, leftwards on the left. */
 .rm-link.is-new path {
   transform-box: fill-box;
-  transform-origin: top;
-  animation: trace-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-origin: left center;
+  animation: rm-pour 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   animation-delay: var(--d, 0ms);
+}
+
+.rm-link.is-new.is-left path {
+  transform-origin: right center;
+}
+
+@keyframes rm-pour {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 .rm-link.is-new .rm-arrow {
   animation-delay: calc(var(--d, 0ms) + 140ms);
 }
 
-/* --- Link labels: the parameter that holds the link --- */
+/* --- Link labels: the parameter that holds the link, on the straight
+   stretch into the card it names (right) or out of the card holding it
+   (left) --- */
 .rm-via {
   position: absolute;
-  transform: translate(-50%, -50%);
-  max-width: 240px; /* VIA_CHARS in RefMap.jsx */
+  transform: translateY(-50%);
+  max-width: 220px; /* VIA_CHARS in refMapModel.js */
   height: 20px;
   padding: 0 6px;
   overflow: hidden;
@@ -4419,6 +4440,10 @@ mark {
   white-space: nowrap;
   text-overflow: ellipsis;
   cursor: pointer;
+}
+
+.rm-via.is-right {
+  transform: translate(-100%, -50%);
 }
 
 .rm-via:hover {
@@ -4553,11 +4578,25 @@ mark {
   font-weight: 600;
 }
 
-/* A repeat: the object is already on the map by a shorter path. */
+/* A copy: a reference's link card (the whole file), or a repeat already
+   on the map by a shorter path (a bow-tie). Two lines: GHOST_H in
+   refMapModel.js. */
 .rm-node.is-ghost {
+  height: 50px;
   background: transparent;
   border-style: dashed;
   border-color: var(--line-2);
+}
+
+.rm-node.is-ghost .icon {
+  flex: none;
+  color: var(--ink-3);
+}
+
+/* A copy of the selected object: one of the links that name it. */
+.rm-node.is-ghost.is-target {
+  background: var(--signal-soft);
+  border-color: var(--signal-line);
 }
 
 .rm-node.is-ghost .rm-node-label {
@@ -4638,15 +4677,52 @@ mark {
   font-variant-numeric: tabular-nums;
 }
 
-/* --- Ports: the next level, on the card's edge --- */
+/* Zoomed out (RefMap.jsx's FAR): a card is its name, as large as the
+   card holds (--n, its length) up to about 12.5px on screen (--far-fs), so
+   the whole file still reads as an outline. Link labels would be too small
+   to read: they come back zoomed in. */
+.rm-viewport.is-far .rm-node-sub,
+.rm-viewport.is-far .rm-node-hint,
+.rm-viewport.is-far .rm-counts,
+.rm-viewport.is-far .rm-tail-actions,
+.rm-viewport.is-far .rm-node .icon,
+.rm-viewport.is-far .rm-via {
+  display: none;
+}
+
+.rm-viewport.is-far .rm-node-head {
+  height: auto;
+}
+
+.rm-viewport.is-far .rm-node-label {
+  font-size: min(var(--far-fs), calc(300px / var(--n, 10)));
+  line-height: 1.15;
+}
+
+.rm-viewport.is-far .rm-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.rm-viewport.is-far .rm-group-count {
+  height: auto;
+  font-size: min(var(--far-fs), calc(300px / var(--n, 10)));
+  line-height: 1.15;
+}
+
+/* --- Ports: the next level, on the card's edge, the side it opens to.
+   48 wide, 8 of it over the card: PORT_REACH in refMapModel.js. --- */
 .rm-port {
   position: absolute;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 2px;
+  width: 48px;
   height: 20px;
-  padding: 0 4px 0 7px;
-  transform: translate(-50%, -50%);
+  padding: 0 4px;
+  transform: translateY(-50%);
   background: var(--bg-2);
   border: 1px solid var(--line-2);
   border-radius: 10px;
@@ -4669,13 +4745,8 @@ mark {
   color: var(--ink);
 }
 
-.rm-port.is-static {
-  padding: 0 var(--s-3);
-  background: var(--bg-0);
-  border-color: var(--line);
-  color: var(--ink-3);
-  cursor: default;
-  pointer-events: none;
+.rm-port.is-left {
+  transform: translate(-100%, -50%);
 }
 
 /* --- Overlays --- */
@@ -4820,93 +4891,19 @@ mark {
   font-size: var(--fs-data);
 }
 
-/* Nothing centred yet: where to start. */
-.rm-landing {
+/* A file with no managed objects. */
+.rm-empty {
   position: absolute;
-  top: 12%;
+  top: 30%;
   left: 50%;
-  width: min(520px, calc(100% - 48px));
   transform: translateX(-50%);
-  padding: var(--s-6);
-  background: var(--bg-0);
+  color: var(--ink-3);
+  font-size: var(--fs-body);
   cursor: default;
 }
 
-.rm-landing-title {
-  margin: 0 0 var(--s-3);
-  color: var(--ink);
-  font-size: var(--fs-title);
-  font-weight: 600;
-}
-
-.rm-landing p {
-  margin: 0 0 var(--s-6);
-  color: var(--ink-2);
-  font-size: var(--fs-body);
-  line-height: 1.5;
-}
-
-.rm-hubs-head {
-  margin-bottom: var(--s-2);
-  color: var(--ink-3);
-  font-size: var(--fs-label);
-  font-weight: 600;
-}
-
-.rm-hubs {
+.rm-empty p {
   margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.rm-hubs li + li {
-  border-top: 1px solid var(--line);
-}
-
-.rm-hub {
-  display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--s-4);
-  width: 100%;
-  height: 34px;
-  padding: 0 var(--s-3);
-  background: none;
-  border: none;
-  border-radius: var(--r-2);
-  color: var(--ink-2);
-  font-size: var(--fs-label);
-  text-align: left;
-  cursor: pointer;
-}
-
-.rm-hub:hover {
-  background: var(--veil);
-  color: var(--ink);
-}
-
-.rm-hub-label {
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: var(--fs-data);
-  font-weight: 600;
-}
-
-.rm-hub-meta {
-  overflow: hidden;
-  color: var(--ink-3);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.rm-hub-count {
-  color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.rm-hubs-empty {
-  color: var(--ink-3);
-  font-size: var(--fs-body);
 }
 
 /* --- Toolbar: search, zoom, legend --- */
@@ -5062,6 +5059,213 @@ mark {
 
 .rm-legend-close {
   align-self: flex-end;
+}
+
+/* --- Settings: the selected object's parameters and lists --- */
+.rm-settings {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: 380px;
+  min-height: 0;
+  background: var(--bg-1);
+  border-left: 1px solid var(--line);
+}
+
+.rm-set-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding: var(--s-4) var(--s-4) var(--s-3);
+}
+
+.rm-set-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.rm-set-title .icon-btn {
+  margin-left: auto;
+}
+
+.rm-set-title .rm-swatch {
+  background: var(--seg-hue);
+}
+
+.rm-set-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rm-set-label.is-quiet {
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+}
+
+.rm-set-class {
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.rm-set-filter {
+  padding: 0 var(--s-4) var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.rm-set-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--s-2) var(--s-3) var(--s-5);
+}
+
+.rm-set-section + .rm-set-section {
+  margin-top: var(--s-4);
+}
+
+.rm-set-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+  margin: 0;
+  padding: var(--s-3) var(--s-2) var(--s-2);
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+.rm-set-count {
+  color: var(--ink-3);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.rm-set-row {
+  display: flex;
+  align-items: flex-start;
+  border-radius: var(--r-2);
+}
+
+.rm-set-row:hover {
+  background: var(--veil);
+}
+
+.rm-set-row.is-selected {
+  background: var(--selection);
+}
+
+.rm-set-main,
+.rm-set-list-head,
+.rm-set-item-head {
+  display: grid;
+  grid-template-columns: minmax(0, 44%) minmax(0, 1fr);
+  gap: var(--s-4);
+  flex: 1;
+  min-width: 0;
+  padding: 5px var(--s-2);
+  background: none;
+  border: none;
+  border-radius: var(--r-2);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-data);
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rm-set-row.is-field .rm-set-main {
+  padding-left: var(--s-5);
+}
+
+.rm-set-name {
+  overflow: hidden;
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rm-set-value {
+  color: var(--value);
+  overflow-wrap: anywhere;
+}
+
+.rm-set-value.is-empty {
+  color: var(--ink-4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+}
+
+.rm-set-value.is-missing {
+  color: var(--danger);
+}
+
+.rm-set-go {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+}
+
+.rm-set-list + .rm-set-list {
+  margin-top: var(--s-2);
+}
+
+.rm-set-list-head {
+  width: 100%;
+  font-weight: 600;
+}
+
+.rm-set-list-head .rm-set-name {
+  color: var(--ink);
+}
+
+.rm-set-list-head .rm-set-count {
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+}
+
+.rm-set-item-head {
+  display: block;
+  width: 100%;
+  padding-left: var(--s-5);
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+}
+
+.rm-set-list-head:hover,
+.rm-set-item-head:hover {
+  background: var(--veil);
+}
+
+.rm-set-list-head.is-selected,
+.rm-set-item-head.is-selected {
+  background: var(--selection);
+}
+
+.rm-set-item .rm-set-row.is-field .rm-set-main {
+  padding-left: calc(var(--s-5) + var(--s-4));
+}
+
+.rm-set-note {
+  margin: 0;
+  padding: var(--s-2) var(--s-2) var(--s-3);
+  color: var(--ink-3);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+
+.rm-settings > .rm-set-note {
+  padding: var(--s-3) var(--s-4);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1275,6 +1275,7 @@ export default function App() {
                           key={selectedFile}
                           data={refMap.data}
                           kb={kb}
+                          tree={tree}
                           focusId={focusId}
                           onSelect={handleMapSelect}
                           onOpenInTree={handleMapOpenInTree}

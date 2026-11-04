@@ -96,12 +96,14 @@ def _parse_param_children(
             items = []
             for i, item_el in enumerate(child):
                 item_id = f"{list_id}::item::{i}"
-                item_children = _parse_param_children(item_el, item_id, short_class)
+                # A list of plain values (<list name="fiveqiValueList"><p>5</p></list>): the row is its value.
+                simple = _local(item_el.tag) == "p"
+                item_children = [] if simple else _parse_param_children(item_el, item_id, short_class)
                 items.append({
                     "id": item_id,
                     "label": f"Row {i + 1}",
                     "kind": "item",
-                    "value": None,
+                    "value": _text(item_el) if simple else None,
                     "class": short_class,
                     "fullClass": None,
                     "distName": None,
@@ -313,11 +315,12 @@ def _parse_raw_children(container: ET.Element, base_id: str, owner_dist_name: Op
             items = []
             for i, item_el in enumerate(child):
                 item_id = f"{list_id}::item::{i}"
+                simple = _local(item_el.tag) == "p"  # a list of plain values: <p>5</p>, as written
                 items.append({
                     "id": item_id,
-                    "tag": "item",
+                    "tag": "p" if simple else "item",
                     "attrs": dict(item_el.attrib),
-                    "text": None,
+                    "text": _text(item_el) if simple else None,
                     "children": _parse_raw_children(item_el, item_id),
                 })
             children.append({

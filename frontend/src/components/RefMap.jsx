@@ -1,45 +1,65 @@
 import React, { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "./Icon.jsx";
+import { usePersistentState } from "../usePersistentState.js";
 import {
-  GAP_X,
+  GROUP_MAX,
   NODE_H,
   NODE_W,
   PAGE,
-  PORT,
-  PORT_Y,
+  PORT_REACH,
+  buildTree,
   buildView,
-  fanPaths,
-  hubs,
+  cardH,
+  classOf,
+  hasPort,
   inCount,
   indexGraph,
   label,
   layout,
+  neighbours,
+  openAll,
   outCount,
   reach,
+  refEdges,
   search,
+  viaText,
 } from "./refMapModel.js";
 
 /**
- * The Map view: which objects point at which, around one centred object.
- * What points at it fans out above, what it points at below, so every
- * arrow runs down from the object holding the value to the object it
- * names. Containment joins in the same way, drawn plain: the object the
- * centre sits in above it, what it contains below, after the references.
- * Ports on each card open the next level in that direction;
- * double-click (or Enter) re-centres. Childless siblings that don't fit
- * across the view wrap into tiers (refMapModel's layout). A click selects, like a tree row:
- * the file header's Trace and the Explanation pane follow. A link's label
- * selects the parameter that holds it.
+ * The Map view. By default the whole file, as its containment tree laid
+ * out left to right: each object in the column after the one it sits in,
+ * its references hanging off it as link cards naming the object they point
+ * at (a click goes to that object). Centred on one object (double-click a
+ * card, or Enter), the map is a bow-tie: what points at it and what it sits
+ * in on the left, what it points at and contains on the right. Either way
+ * every link is its own line, labelled with the parameter holding it, and
+ * no line crosses another (refMapModel's layout).
+ *
+ * The port on a card's edge opens or closes its next level; Expand all
+ * opens everything, groups too. A click selects, like a tree row: the file
+ * header's Trace and the Explanation pane follow, and the Settings panel
+ * lists the selected object's parameters and lists. A link's label selects
+ * the parameter that holds it.
  *
  * Pan by dragging the canvas or scrolling, zoom with Ctrl+scroll or the
  * toolbar. The map's controls render into `toolbarSlot` (the workspace
  * toolbar) through a portal, so they sit where the tree's controls sit.
+ * The layers are memoised, so a pan re-renders only the camera; a big map
+ * renders only what is near the view, in tiles, so it re-renders only when
+ * the view crosses into another tile.
  */
 
-const ZOOM_MIN = 0.3;
+const ZOOM_MIN = 0.2;
 const ZOOM_MAX = 1.6;
-const VIA_CHARS = 28; // what a link label holds before it shortens (.rm-via's max-width)
+const CULL_AT = 400; // items: past this, only what is near the view is rendered
+const TILE = 640; // world pixels: the near area is rounded out to these
+const POUR_MAX = 300; // more new links than this appear without pouring in
+const WHOLE = null; // the history's entry for the whole file
+const FAR = 0.6; // zoomed out past this, a card shows only its name, large
+const OVERVIEW = 0.4; // the whole file opens all in view, or at this zoom from its top left
+// Zoomed out, a name about 12.5px on screen (in 2px steps: a step relays every card's text).
+const farFont = (k) => (k < FAR ? `${Math.min(32, Math.round(12.5 / k / 2) * 2)}px` : undefined);
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const ownerOf = (id) => (id ? id.split("::")[0] : null);
 const depthHue = (dn) => `var(--fc-${((dn.split("/").length - 1) % 8) + 1})`;
@@ -71,25 +91,6 @@ function ancestors(dn) {
   return parts.length > 2 ? ["…", ...parts.slice(-2)] : parts;
 }
 
-// A link's label: the parameter holding it, plus how many more hold the
-// same link. A long path loses its leading segments, never its leaf name,
-// which is what tells sibling parameters apart; the title has them all.
-function viaText(edges) {
-  const vias = [...new Set(edges.map((e) => e.via))];
-  const more = vias.length > 1 ? ` +${vias.length - 1}` : "";
-  const room = VIA_CHARS - more.length;
-  let first = vias[0];
-  if (first.length > room) {
-    const parts = first.split(".");
-    while (parts.length > 1 && parts.join(".").length + 1 > room) parts.shift();
-    first = parts.join(".");
-    first = first.length + 1 > room ? `…${first.slice(-(room - 1))}` : `…${first}`;
-  }
-  return first + more;
-}
-
-const refEdges = (edges) => edges.filter((e) => e.kind !== "contains");
-
 function edgeKind(item, g) {
   if (item.kind === "more") return "more";
   if (item.kind === "node" || item.kind === "ghost") {
@@ -99,126 +100,99 @@ function edgeKind(item, g) {
   return item.edges.some((e) => e.kind === "ref") ? "ref" : "id";
 }
 
-// A fan's shared trunk and buses take the strongest kind among the links
-// they carry: solid when any is a reference, dashed when all are implied or
-// missing, plain when all are containment.
-function spineKind(kinds) {
-  if (kinds.includes("ref")) return "ref";
-  const links = kinds.filter((k) => k !== "more" && k !== "contains");
-  if (!links.length) return kinds.includes("contains") ? "contains" : "more";
-  return links.every((k) => k === "missing") ? "missing" : "id";
-}
-
 // --- Layers (memoised: panning re-renders only the camera) ---------------
 
-const Connectors = memo(function Connectors({ items, lay, g, lit, fresh }) {
-  const spines = [];
-  const drops = [];
-  const routes = [];
-  for (const fan of lay.fans) {
-    const fp = fanPaths(fan, lay.pos);
-    const kids = fan.tiers.flat();
-    const tierKinds = fan.tiers.map((tier) => tier.map((k) => edgeKind(items.get(k), g)));
-    const kinds = tierKinds.flat();
-    const delay = (items.get(kids[0]).depth - 1) * 35;
-    const newFan = fresh.has(fan.key);
-    const spine = (key, kind, d, arrow) => (
-      <g key={key} className={`rm-link is-${kind}` + (newFan ? " is-new" : "")} style={newFan ? { "--d": `${delay}ms` } : null}>
-        <path d={d} />
-        {arrow && <path className="rm-arrow" d={arrow} />}
+const Connectors = memo(function Connectors({ items, lay, g, lit, fresh, vis }) {
+  const links = [];
+  const lits = [];
+  for (const [key, l] of lay.links) {
+    if (vis && !vis.links.has(key)) continue;
+    const item = items.get(key);
+    const cls = `rm-link is-${edgeKind(item, g)} is-${l.side > 0 ? "right" : "left"}`;
+    const pour = fresh.keys.has(key);
+    links.push(
+      <g
+        key={key}
+        className={cls + (pour ? " is-new" : "")}
+        style={pour ? { "--d": `${Math.min(item.depth - fresh.base, 6) * 45}ms` } : null}
+      >
+        <path d={l.d} />
+        <path className="rm-arrow" d={l.arrow} />
       </g>
     );
-    // The trunk carries every tier, the gutter the tiers past the first, a
-    // bus its own: references and contents wrapped apart keep their looks.
-    spines.push(spine(fan.key, spineKind(kinds), fp.trunk, fp.arrow));
-    if (fp.gutter) spines.push(spine(`${fan.key}|gutter`, spineKind(tierKinds.slice(1).flat()), fp.gutter));
-    fp.buses.forEach((d, t) => d && spines.push(spine(`${fan.key}|${t}`, spineKind(tierKinds[t]), d)));
-    kids.forEach((k, i) => {
-      const dp = fp.drops.get(k);
-      const newDrop = fresh.has(k);
-      drops.push(
-        <g key={k} className={`rm-link is-${kinds[i]}` + (newDrop ? " is-new" : "")} style={newDrop ? { "--d": `${delay + 60}ms` } : null}>
-          <path d={dp.d} />
-          {dp.arrow && <path className="rm-arrow" d={dp.arrow} />}
+    if (lit.has(key)) {
+      lits.push(
+        <g key={key} className={cls + " is-lit"}>
+          <path d={l.d} />
+          <path className="rm-arrow" d={l.arrow} />
         </g>
       );
-      if (lit.has(k)) {
-        routes.push(
-          <g key={k} className={`rm-link is-${kinds[i]} is-lit`}>
-            <path d={dp.route} />
-            <path className="rm-arrow" d={dp.arrow || fp.arrow} />
-          </g>
-        );
-      }
-    });
+    }
   }
   return (
     <svg className="rm-links" width="1" height="1" aria-hidden="true">
-      {spines}
-      {drops}
-      {routes}
+      {links}
+      {lits}
     </svg>
   );
 });
 
-const LinkLabels = memo(function LinkLabels({ items, lay, g, act, selectedAt }) {
+const LinkLabels = memo(function LinkLabels({ items, lay, g, act, selectedAt, vis }) {
   const out = [];
-  for (const fan of lay.fans) {
-    const fp = fanPaths(fan, lay.pos);
-    for (const key of fan.tiers.flat()) {
-      const item = items.get(key);
-      // Containment has no parameter to name: its links go unlabelled.
-      const links = refEdges(item.edges);
-      if (!links.length || item.kind === "more") continue;
-      const dp = fp.drops.get(key);
-      const kind = edgeKind(item, g);
-      const src = item.dir === "down" ? items.get(item.parent).id : item.id;
-      const dst = item.dir === "down" ? item.id : items.get(item.parent).id;
-      const group = item.kind === "group";
-      const vias = [...new Set(links.map((e) => e.via))];
-      const why = links.find((e) => e.why)?.why;
-      const title = group
-        ? `${plural(item.count, "object")} through ${vias.join(", ")}`
-        : `${label(src)} → ${label(dst)} through ${vias.join(", ")}` +
-          (why ? `\nLinked by id: ${why}` : "") +
-          (kind === "missing" ? `\n${MISSING[g.byId.get(dst)?.missing] || "Not in this file"}` : "");
-      const selected = links.some((e) => e.at === selectedAt);
-      out.push(
-        <button
-          key={key}
-          type="button"
-          tabIndex={-1}
-          className={`rm-via is-${kind}` + (selected ? " is-selected" : "")}
-          style={{ left: dp.labelX, top: dp.labelY }}
-          title={title}
-          aria-label={
-            group
-              ? `Show the ${item.count} ${item.cls} objects`
-              : `${vias.join(", ")}: ${label(src)} points at ${label(dst)}${kind === "id" ? ", linked by id" : ""}. Explain this parameter.`
-          }
-          onClick={(e) => {
-            e.stopPropagation();
-            act(group ? "open" : "via", key);
-          }}
-        >
-          {viaText(links)}
-        </button>
-      );
-    }
+  for (const [key, l] of lay.links) {
+    if (vis && !vis.links.has(key)) continue;
+    const item = items.get(key);
+    // Containment has no parameter to name: its links go unlabelled.
+    const links = refEdges(item.edges);
+    if (!links.length || item.kind === "more") continue;
+    const kind = edgeKind(item, g);
+    const other = items.get(item.parent).id;
+    const src = item.dir === "up" ? item.id : other;
+    const dst = item.dir === "up" ? other : item.id;
+    const group = item.kind === "group";
+    const vias = [...new Set(links.map((e) => e.via))];
+    const why = links.find((e) => e.why)?.why;
+    const title = group
+      ? `${plural(item.count, "object")} through ${vias.join(", ")}`
+      : `${label(src)} → ${label(dst)} through ${vias.join(", ")}` +
+        (why ? `\nLinked by id: ${why}` : "") +
+        (kind === "missing" ? `\n${MISSING[g.byId.get(dst)?.missing] || "Not in this file"}` : "");
+    const selected = links.some((e) => e.at === selectedAt);
+    out.push(
+      <button
+        key={key}
+        type="button"
+        tabIndex={-1}
+        className={`rm-via is-${kind} is-${l.side > 0 ? "right" : "left"}` + (selected ? " is-selected" : "")}
+        style={{ left: l.labelX, top: l.labelY }}
+        title={title}
+        aria-label={
+          group
+            ? `Show the ${item.count} ${item.cls} objects`
+            : `${vias.join(", ")}: ${label(src)} points at ${label(dst)}${kind === "id" ? ", linked by id" : ""}. Explain this parameter.`
+        }
+        onClick={(e) => {
+          e.stopPropagation();
+          act(group ? "open" : "via", key);
+        }}
+      >
+        {viaText(links)}
+      </button>
+    );
   }
   return out;
 });
 
-const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, outs, inside, selected, tabbable, act, register }) {
+const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, where, ins, outs, inside, selected, target, tabbable, act, register }) {
   const centre = item.key === "c";
   const left = x - NODE_W / 2;
-  const top = y - NODE_H / 2;
+  const top = y - cardH(item) / 2;
   if (item.kind === "group") {
     return (
       <div
         ref={(el) => register(item.key, el)}
         className={"rm-node is-group" + (selected ? " is-selected" : "")}
-        style={{ left, top }}
+        style={{ left, top, "--n": String(item.count).length + item.cls.length + 1 }}
         role="button"
         tabIndex={tabbable ? 0 : -1}
         data-key={item.key}
@@ -232,9 +206,9 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
         <div className="rm-node-sub">
           {item.held
             ? `${parentLabel} contains all ${item.count}`
-            : item.dir === "down"
-              ? `${parentLabel} points at all ${item.count}`
-              : `All ${item.count} point at ${parentLabel}`}
+            : item.dir === "up"
+              ? `All ${item.count} point at ${parentLabel}`
+              : `${parentLabel} points at all ${item.count}`}
         </div>
         <div className="rm-node-hint is-action">{`Show ${item.count > PAGE ? `the first ${PAGE}` : "them"}`}</div>
       </div>
@@ -247,7 +221,7 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
       <div
         ref={(el) => register(item.key, el)}
         className={"rm-node is-tail" + (selected ? " is-selected" : "")}
-        style={{ left, top }}
+        style={{ left, top, "--n": String(item.count).length + item.cls.length + 1 }}
         role="group"
         tabIndex={tabbable ? 0 : -1}
         data-key={item.key}
@@ -274,21 +248,45 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
     );
   }
   const missing = node?.missing;
-  const ghost = item.kind === "ghost";
-  const cls =
-    "rm-node" +
-    (centre ? " is-centre" : "") +
-    (ghost ? " is-ghost" : "") +
-    (missing ? " is-missing" : "") +
-    (selected ? " is-selected" : "");
   const name = label(item.id);
+  if (item.kind === "ghost") {
+    // A copy: the link card of a reference (the whole file), or a repeat
+    // (the bow-tie). Two lines: what it names, and where that is.
+    const sub = missing ? MISSING[missing] || "Not in this file" : where ? `In ${where} · go to it` : "Already on the map · go to it";
+    return (
+      <div
+        ref={(el) => register(item.key, el)}
+        className={
+          "rm-node is-ghost" + (missing ? " is-missing" : "") + (target ? " is-target" : "") + (selected ? " is-selected" : "")
+        }
+        style={{ left, top, "--seg-hue": depthHue(item.id), "--n": name.length }}
+        role="button"
+        tabIndex={tabbable ? 0 : -1}
+        data-key={item.key}
+        aria-label={
+          missing
+            ? `${name}: ${sub}. Enter explains the parameter that names it.`
+            : `${name}, ${fullName || node?.cls || ""}. ${where ? `In ${where}.` : "Already on the map."} Enter goes to it.`
+        }
+        onClick={() => act(missing ? "via" : "jump", item.key)}
+      >
+        <div className="rm-node-head">
+          <span className="rm-swatch" aria-hidden="true" />
+          <span className="rm-node-label">{name}</span>
+          {!missing && <Icon name="arrow-right" size={12} />}
+        </div>
+        <div className={"rm-node-hint" + (missing ? "" : " is-action")}>{sub}</div>
+      </div>
+    );
+  }
+  const cls = "rm-node" + (centre ? " is-centre" : "") + (missing ? " is-missing" : "") + (selected ? " is-selected" : "");
   const sub = missing ? MISSING[missing] || "Not in this file" : null;
   const hint = node?.hint || fullName || node?.cls;
   return (
     <div
       ref={(el) => register(item.key, el)}
       className={cls}
-      style={{ left, top, "--seg-hue": depthHue(item.id) }}
+      style={{ left, top, "--seg-hue": depthHue(item.id), "--n": name.length }}
       role="button"
       tabIndex={tabbable ? 0 : -1}
       data-key={item.key}
@@ -299,15 +297,15 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
           ? `. ${sub}`
           : `. ${pointing(ins)} at it; it points at ${plural(outs, "object")}` +
             (inside ? ` and contains ${plural(inside, "object")}.` : ".")) +
-        (ghost ? " Shown elsewhere on the map: Enter goes to it." : centre ? "" : " Enter centres the map on it.")
+        (centre ? "" : " Enter centres the map on it.")
       }
-      onClick={() => act(ghost ? "jump" : "select", item.key)}
-      onDoubleClick={() => !ghost && act("centre", item.key)}
+      onClick={() => act("select", item.key)}
+      onDoubleClick={() => !centre && act("centre", item.key)}
     >
       <div className="rm-node-head">
         <span className="rm-swatch" aria-hidden="true" />
         <span className="rm-node-label">{name}</span>
-        {!missing && !centre && (
+        {!missing && (
           <span className="rm-counts" aria-hidden="true" title={`${pointing(ins)} at it · it points at ${plural(outs, "object")}`}>
             {ins} in · {outs} out
           </span>
@@ -322,9 +320,7 @@ const Card = memo(function Card({ item, x, y, node, fullName, parentLabel, ins, 
             </React.Fragment>
           ))}
       </div>
-      <div className={"rm-node-hint" + (node?.hint ? " is-value" : "") + (ghost ? " is-action" : "")}>
-        {ghost ? "Already on the map · go to it" : missing ? item.id : hint}
-      </div>
+      <div className={"rm-node-hint" + (node?.hint ? " is-value" : "")}>{missing ? item.id : hint}</div>
     </div>
   );
 });
@@ -341,65 +337,70 @@ function portText(g, id, dir, { links, held }) {
   return links ? `${pointing(links)} at ${name}` + (held ? `; it ${sits}` : "") : `${name} ${sits}`;
 }
 
-const Ports = memo(function Ports({ items, pos, g, expanded, act }) {
+const Ports = memo(function Ports({ items, pos, g, whole, expanded, collapsed, act, vis }) {
   const out = [];
   for (const item of items.values()) {
-    if (item.kind !== "node") continue;
+    if (!hasPort(item) || (vis && !vis.cards.has(item.key))) continue;
     const p = pos.get(item.key);
-    if (!p) continue;
-    const centre = item.key === "c";
-    for (const dir of centre ? ["up", "down"] : [item.dir]) {
-      const r = reach(g, item.id, dir);
-      const n = r.total;
-      if (!n) continue;
-      const y = dir === "down" ? p.y + NODE_H / 2 + PORT_Y : p.y - NODE_H / 2 - PORT_Y;
-      if (centre) {
-        const parts =
-          dir === "up"
-            ? [r.links && `${pointing(r.links)} at it`, r.held && `in ${label(g.container.get(item.id))}`]
-            : [r.links && `points at ${plural(r.links, "object")}`, r.held && `contains ${r.held}`];
-        const text = parts.filter(Boolean).join(" · ");
-        out.push(
-          <span key={`c:${dir}`} className={`rm-port is-static is-${dir}`} style={{ left: p.x, top: y }}>
-            {text[0].toUpperCase() + text.slice(1)}
-          </span>
-        );
-        continue;
-      }
-      const open = expanded[dir].has(item.id);
-      const what = portText(g, item.id, dir, r);
-      out.push(
-        <button
-          key={`${item.key}:${dir}`}
-          type="button"
-          tabIndex={-1}
-          className={`rm-port is-${dir}` + (open ? " is-open" : "")}
-          style={{ left: p.x, top: y }}
-          aria-expanded={open}
-          aria-label={`${open ? "Hide" : "Show"} the next level: ${what}`}
-          title={what}
-          onClick={(e) => {
-            e.stopPropagation();
-            act("toggle", item.key);
-          }}
-        >
-          <span>{n}</span>
-          <Icon name={(dir === "down") === open ? "chevron-up" : "chevron-down"} size={12} />
-        </button>
-      );
-    }
+    const dir = item.dir === "up" ? "up" : "down";
+    const r = reach(g, item.id, dir);
+    if (!r.total) continue;
+    const open = whole ? !collapsed.has(item.id) : expanded[dir].has(item.id);
+    const what = portText(g, item.id, dir, r);
+    const right = dir === "down";
+    out.push(
+      <button
+        key={item.key}
+        type="button"
+        tabIndex={-1}
+        className={`rm-port is-${right ? "right" : "left"}` + (open ? " is-open" : "")}
+        style={{ left: right ? p.x + NODE_W / 2 - 8 : p.x - NODE_W / 2 + 8, top: p.y }}
+        aria-expanded={open}
+        aria-label={`${open ? "Hide" : "Show"} the next level: ${what}`}
+        title={what}
+        onClick={(e) => {
+          e.stopPropagation();
+          act("toggle", item.key);
+        }}
+      >
+        {!right && <Icon name={open ? "chevron-right" : "chevron-left"} size={12} />}
+        <span>{r.total}</span>
+        {right && <Icon name={open ? "chevron-left" : "chevron-right"} size={12} />}
+      </button>
+    );
+  }
+  return out;
+});
+
+const MINI_W = 200;
+const MINI_H = 120;
+
+const MinimapCards = memo(function MinimapCards({ items, pos, s, ox, oy, selectedKey }) {
+  const out = [];
+  for (const item of items.values()) {
+    const p = pos.get(item.key);
+    const h = cardH(item);
+    out.push(
+      <rect
+        key={item.key}
+        className={item.parent == null ? "is-centre" : item.key === selectedKey ? "is-selected" : undefined}
+        x={ox + (p.x - NODE_W / 2) * s}
+        y={oy + (p.y - h / 2) * s}
+        width={Math.max(2, NODE_W * s)}
+        height={Math.max(1.5, h * s)}
+        rx="1"
+      />
+    );
   }
   return out;
 });
 
 function Minimap({ items, pos, bounds, cam, size, onMove, selectedKey }) {
-  const W = 200;
-  const H = 120;
   const bw = bounds.maxX - bounds.minX + 160;
   const bh = bounds.maxY - bounds.minY + 160;
-  const s = Math.min(W / bw, H / bh);
-  const ox = (W - bw * s) / 2 - (bounds.minX - 80) * s;
-  const oy = (H - bh * s) / 2 - (bounds.minY - 80) * s;
+  const s = Math.min(MINI_W / bw, MINI_H / bh);
+  const ox = (MINI_W - bw * s) / 2 - (bounds.minX - 80) * s;
+  const oy = (MINI_H - bh * s) / 2 - (bounds.minY - 80) * s;
   const view = {
     x: ox + (-cam.x / cam.k) * s,
     y: oy + (-cam.y / cam.k) * s,
@@ -414,8 +415,8 @@ function Minimap({ items, pos, bounds, cam, size, onMove, selectedKey }) {
   return (
     <svg
       className="rm-minimap"
-      width={W}
-      height={H}
+      width={MINI_W}
+      height={MINI_H}
       role="img"
       aria-label="Overview of the map; click to move there"
       onPointerDown={(e) => {
@@ -427,27 +428,13 @@ function Minimap({ items, pos, bounds, cam, size, onMove, selectedKey }) {
       onPointerMove={(e) => dragging.current && move(e)}
       onPointerUp={() => (dragging.current = false)}
     >
-      {[...items.values()].map((item) => {
-        const p = pos.get(item.key);
-        if (!p) return null;
-        return (
-          <rect
-            key={item.key}
-            className={item.key === "c" ? "is-centre" : item.key === selectedKey ? "is-selected" : undefined}
-            x={ox + (p.x - NODE_W / 2) * s}
-            y={oy + (p.y - NODE_H / 2) * s}
-            width={Math.max(2, NODE_W * s)}
-            height={Math.max(2, NODE_H * s)}
-            rx="1"
-          />
-        );
-      })}
+      <MinimapCards items={items} pos={pos} s={s} ox={ox} oy={oy} selectedKey={selectedKey} />
       <rect className="rm-minimap-view" x={view.x} y={view.y} width={view.w} height={view.h} rx="2" />
     </svg>
   );
 }
 
-function SearchBox({ g, kb, onPick }) {
+function SearchBox({ g, kb, whole, onPick }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -477,13 +464,13 @@ function SearchBox({ g, kb, onPick }) {
         <input
           ref={inputRef}
           className="input"
-          placeholder="Centre on an object (press /)"
+          placeholder={whole ? "Find an object (press /)" : "Centre on an object (press /)"}
           value={q}
           role="combobox"
           aria-expanded={open && results.length > 0}
           aria-controls="rm-search-list"
           aria-activedescendant={open && results[active] ? `rm-opt-${active}` : undefined}
-          aria-label="Find an object to centre the map on"
+          aria-label={whole ? "Find an object on the map" : "Find an object to centre the map on"}
           onChange={(e) => {
             setQ(e.target.value);
             setOpen(true);
@@ -570,16 +557,17 @@ function Legend({ stats, onClose }) {
       ))}
       <div className="rm-legend-row">
         <span className="rm-legend-ghost" aria-hidden="true" />
-        <span>Already on the map by a shorter path</span>
+        <span>A link card: the object a link names, which sits elsewhere on the map. Click it to go there.</span>
       </div>
       <p className="rm-legend-note">
-        Arrows run from the object holding the value to the object it names: what points at the centre sits above
-        it, what it points at below. Plain lines are containment: the object it sits in above, what it contains
-        below, after the references. The number on a card's edge opens the next level.
+        Every arrow points right, from the object holding the value to the object it names. The whole file is its
+        tree, each object right of the one it sits in, with its links beside its contents. Centred on one object,
+        what points at it and what it sits in are on its left, what it points at and contains on its right. No two
+        lines cross. The number on a card's edge opens or closes the next level.
       </p>
       <p className="rm-legend-note">
-        Keys: arrows move, Enter centres, Space opens the next level, E explains the link, Escape folds a group,
-        Backspace goes back, + and − zoom, 0 fits.
+        Keys: arrows move, Enter centres or goes to a link card, Space opens the next level, E explains the link,
+        Escape folds a group, Backspace goes back, + and − zoom, 0 fits.
       </p>
       <p className="rm-legend-note">
         This file: {plural(stats.links, "link")}, {stats.implied} by id, {stats.missing} to missing objects.
@@ -591,12 +579,200 @@ function Legend({ stats, onClose }) {
   );
 }
 
-export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot }) {
+// --- Settings: the selected object's own parameters and lists ------------
+
+const empty = (v) => v == null || v === "";
+
+function SettingRow({ id, name, value, missing, selected, depth, g, onPick, onGo }) {
+  const target = !empty(value) && g.byId.has(value) && !g.byId.get(value).missing ? value : null;
+  return (
+    <div className={"rm-set-row" + (selected ? " is-selected" : "") + (depth ? " is-field" : "")}>
+      <button type="button" className="rm-set-main" onClick={() => onPick(id)} title={`Explain ${name}`}>
+        <span className="rm-set-name">{name}</span>
+        <span className={"rm-set-value" + (missing ? " is-missing" : "") + (empty(value) ? " is-empty" : "")}>
+          {empty(value) ? (missing ? "Required, empty" : "empty") : value}
+        </span>
+      </button>
+      {target && (
+        <button
+          type="button"
+          className="icon-btn rm-set-go"
+          onClick={() => onGo(target)}
+          aria-label={`Go to ${label(target)} on the map`}
+          title={`Go to ${label(target)} on the map`}
+        >
+          <Icon name="arrow-right" size={12} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+function SettingsPanel({ mo, g, kb, focusId, onPick, onGo, onClose }) {
+  const [q, setQ] = useState("");
+  const query = q.trim().toLowerCase();
+  const hit = (...s) => !query || s.some((x) => !empty(x) && String(x).toLowerCase().includes(query));
+  const head = (
+    <div className="rm-set-head">
+      <div className="rm-set-title">
+        {mo ? (
+          <>
+            <span className="rm-swatch" style={{ "--seg-hue": depthHue(mo.id) }} aria-hidden="true" />
+            <span className="rm-set-label">{label(mo.id)}</span>
+          </>
+        ) : (
+          <span className="rm-set-label is-quiet">Settings</span>
+        )}
+        <button className="icon-btn" onClick={onClose} aria-label="Close the settings" title="Close">
+          <Icon name="x" />
+        </button>
+      </div>
+      {mo && <div className="rm-set-class">{className(kb, mo.class) || mo.class}</div>}
+    </div>
+  );
+  if (!mo) {
+    return (
+      <aside className="rm-settings" aria-label="Settings of the selected object">
+        {head}
+        <p className="rm-set-note">Select an object on the map to see its parameters and lists.</p>
+      </aside>
+    );
+  }
+  const params = mo.children.filter((c) => c.kind === "param");
+  const lists = mo.children.filter((c) => c.kind === "list");
+  const shownParams = params.filter((p) => hit(p.label, p.value));
+  const shownLists = lists
+    .map((l) => {
+      const all = hit(l.label);
+      const rows = l.children
+        .map((row) => {
+          if (row.value != null) return all || hit(row.value) ? { row, fields: null } : null;
+          const fields = row.children.filter((f) => all || hit(f.label, f.value));
+          return fields.length ? { row, fields } : null;
+        })
+        .filter(Boolean);
+      return all || rows.length ? { list: l, rows } : null;
+    })
+    .filter(Boolean);
+  const row = (p, depth = 0) => (
+    <SettingRow
+      key={p.id}
+      id={p.id}
+      name={p.label}
+      value={p.value}
+      missing={p.requiredMissing}
+      selected={focusId === p.id}
+      depth={depth}
+      g={g}
+      onPick={onPick}
+      onGo={onGo}
+    />
+  );
+  return (
+    <aside className="rm-settings" aria-label={`Settings of ${label(mo.id)}`}>
+      {head}
+      <div className="rm-set-filter">
+        <label className="input-with-icon">
+          <Icon name="filter" />
+          <input
+            className="input"
+            placeholder="Filter names and values"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => e.key === "Escape" && setQ("")}
+            aria-label="Filter the parameters and lists"
+          />
+          {q && (
+            <button className="icon-btn input-clear" onClick={() => setQ("")} aria-label="Clear the filter">
+              <Icon name="x" />
+            </button>
+          )}
+        </label>
+      </div>
+      <div className="rm-set-body">
+        <section className="rm-set-section">
+          <h3 className="rm-set-section-head">
+            Parameters <span className="rm-set-count">{query ? `${shownParams.length} of ${params.length}` : params.length}</span>
+          </h3>
+          {shownParams.map((p) => row(p))}
+          {!shownParams.length && (
+            <p className="rm-set-note">{params.length ? `No parameter matches "${q.trim()}".` : "None: this object sets no parameter."}</p>
+          )}
+        </section>
+        {(shownLists.length > 0 || (!query && lists.length > 0)) && (
+          <section className="rm-set-section">
+            <h3 className="rm-set-section-head">
+              Lists <span className="rm-set-count">{query ? `${shownLists.length} of ${lists.length}` : lists.length}</span>
+            </h3>
+            {shownLists.map(({ list, rows }) => (
+              <div className="rm-set-list" key={list.id}>
+                <button
+                  type="button"
+                  className={"rm-set-list-head" + (focusId === list.id ? " is-selected" : "")}
+                  onClick={() => onPick(list.id)}
+                  title={`Explain ${list.label}`}
+                >
+                  <span className="rm-set-name">{list.label}</span>
+                  <span className="rm-set-count">{plural(list.rowCount ?? list.children.length, "row")}</span>
+                </button>
+                {rows.map(({ row: r, fields }) =>
+                  fields ? (
+                    <div className="rm-set-item" key={r.id}>
+                      <button
+                        type="button"
+                        className={"rm-set-item-head" + (focusId === r.id ? " is-selected" : "")}
+                        onClick={() => onPick(r.id)}
+                      >
+                        {r.label}
+                      </button>
+                      {fields.map((f) => row(f, 1))}
+                    </div>
+                  ) : (
+                    <SettingRow
+                      key={r.id}
+                      id={r.id}
+                      name={r.label}
+                      value={r.value}
+                      selected={focusId === r.id}
+                      depth={1}
+                      g={g}
+                      onPick={onPick}
+                      onGo={onGo}
+                    />
+                  )
+                )}
+              </div>
+            ))}
+          </section>
+        )}
+      </div>
+    </aside>
+  );
+}
+
+function indexObjects(tree) {
+  const m = new Map();
+  const walk = (n) => {
+    if (n.kind === "mo") m.set(n.id, n);
+    for (const c of n.children || []) if (c.kind === "mo" || c.kind === "mo-placeholder") walk(c);
+  };
+  for (const r of tree?.children || []) walk(r);
+  return m;
+}
+
+export function RefMap({ data, kb, tree, focusId, onSelect, onOpenInTree, toolbarSlot }) {
   const g = useMemo(() => indexGraph(data), [data]);
-  const [nav, setNav] = useState({ list: [], index: -1 });
-  const root = nav.list[nav.index] ?? null;
+  const objects = useMemo(() => indexObjects(tree), [tree]);
+  const [nav, setNav] = useState({ list: [WHOLE], index: 0 });
+  const entry = nav.list[nav.index];
+  const root = entry !== WHOLE && g.byId.has(entry) ? entry : WHOLE;
+  const whole = root === WHOLE;
+  // The bow-tie's state starts afresh with each centre; the whole file's is kept.
   const [expanded, setExpanded] = useState(() => ({ up: new Set(), down: new Set() }));
   const [pages, setPages] = useState(() => new Map());
+  const [collapsed, setCollapsed] = useState(() => new Set());
+  const [treePages, setTreePages] = useState(() => new Map());
+  const [settings, setSettings] = usePersistentState("mapSettings", false);
   const [cam, setCam] = useState({ x: 0, y: 0, k: 1 });
   const [glide, setGlide] = useState(false);
   const [size, setSize] = useState({ w: 800, h: 600 });
@@ -604,41 +780,57 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
   const closeLegend = useMemo(() => () => setLegend(false), []);
   const [panning, setPanning] = useState(false);
   const [keyboard, setKeyboard] = useState(false); // focus is on the map: show its keys
+  const [tick, setTick] = useState(0); // a frame was asked for
   const glideTimer = useRef(null);
   const refocus = useRef(false);
   const navRef = useRef(nav);
   navRef.current = nav;
-  const [activeKey, setActiveKey] = useState("c");
+  const [activeKey, setActiveKey] = useState(null);
   const viewportRef = useRef(null);
   const els = useRef(new Map());
   const anchor = useRef(null);
   const frame = useRef(null);
+  const framed = useRef(false);
   const self = useRef(null);
-  const seen = useRef(new Set());
+  const seen = useRef(null);
   const camRef = useRef(cam);
   camRef.current = cam;
   const sizeRef = useRef(size);
   sizeRef.current = size;
   const revealTimer = useRef(null);
 
-  const items = useMemo(() => (root && g.byId.has(root) ? buildView(g, root, expanded, pages) : null), [g, root, expanded, pages]);
-  // Childless siblings wrap at as many cards as fit across the view.
-  const cols = Math.max(2, Math.floor((size.w - 48 + GAP_X) / (NODE_W + GAP_X)));
-  const lay = useMemo(() => (items ? layout(items, cols) : null), [items, cols]);
+  const items = useMemo(
+    () => (whole ? buildTree(g, collapsed, treePages) : buildView(g, root, expanded, pages)),
+    [g, whole, root, collapsed, treePages, expanded, pages]
+  );
+  const lay = useMemo(() => layout(items, whole ? "top" : "middle"), [items, whole]);
   const layRef = useRef(lay);
   layRef.current = lay;
+  const firstKey = items.keys().next().value ?? null;
+  // Where each object's own card is (the first, in a bow-tie with it in both halves).
+  const realKey = useMemo(() => {
+    const m = new Map();
+    for (const it of items.values()) if (it.kind === "node" && !m.has(it.id)) m.set(it.id, it.key);
+    return m;
+  }, [items]);
 
-  // Which cards and fans are new since the last layout: their links pour in.
+  // Which links are new since the last layout: they pour in, from the
+  // card that opened them. Not on the first map, nor when very many open.
   const fresh = useMemo(() => {
-    if (!lay) return new Set();
-    const out = new Set();
-    for (const k of items.keys()) if (!seen.current.has(k)) out.add(k);
-    for (const f of lay.fans) if (!seen.current.has(f.key)) out.add(f.key);
-    return out;
-  }, [items, lay]);
+    const keys = new Set();
+    let base = Infinity;
+    if (seen.current) {
+      for (const [k, it] of items) {
+        if (seen.current.has(k)) continue;
+        keys.add(k);
+        base = Math.min(base, it.depth);
+      }
+    }
+    return keys.size > POUR_MAX ? { keys: new Set(), base: 0 } : { keys, base };
+  }, [items]);
   useEffect(() => {
-    if (lay) seen.current = new Set([...items.keys(), ...lay.fans.map((f) => f.key)]);
-  }, [items, lay]);
+    seen.current = new Set(items.keys());
+  }, [items]);
 
   // Keep the viewport's size.
   useLayoutEffect(() => {
@@ -650,117 +842,123 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     return () => ro.disconnect();
   }, []);
 
-  const centreOn = (id, { push = true } = {}) => {
-    if (!g.byId.has(id)) return;
-    setNav((n) => {
-      if (n.list[n.index] === id) return n;
-      const list = push ? [...n.list.slice(0, n.index + 1), id] : n.list;
-      return { list, index: push ? list.length - 1 : list.indexOf(id) };
-    });
+  const askFrame = (f) => {
+    frame.current = f;
+    setTick((t) => t + 1);
+  };
+  const resetCentred = () => {
     setExpanded({ up: new Set(), down: new Set() });
     setPages(new Map());
-    setActiveKey("c");
-    frame.current = "centre";
-    refocus.current = !!viewportRef.current?.contains(document.activeElement);
   };
-  // Centre on an object and select it, as picking it anywhere else would.
+  const visit = (target) =>
+    setNav((n) => {
+      if (n.list[n.index] === target) return n;
+      const list = [...n.list.slice(0, n.index + 1), target];
+      return { list, index: list.length - 1 };
+    });
+  const keepFocus = () => (refocus.current = !!viewportRef.current?.contains(document.activeElement));
+
+  // Open the whole file's tree down to an object: its containers, and the
+  // groups it and they fold into.
+  const openPathTo = (id) => {
+    const chain = [];
+    for (let c = g.container.get(id); c; c = g.container.get(c)) chain.push(c);
+    setCollapsed((s) => (chain.some((c) => s.has(c)) ? new Set([...s].filter((x) => !chain.includes(x))) : s));
+    setTreePages((m) => {
+      let next = m;
+      for (const x of [id, ...chain]) {
+        const up = g.container.get(x);
+        if (!up) continue;
+        const cls = classOf(x);
+        if (neighbours(g, up, "down").filter(([o]) => classOf(o) === cls).length <= GROUP_MAX) continue;
+        for (const key of [`down|${up}|${cls}`, `down|${up}|${cls}|in`]) {
+          if (next.get(key) === Infinity) continue;
+          if (next === m) next = new Map(m);
+          next.set(key, Infinity);
+        }
+      }
+      return next;
+    });
+  };
+
+  const centreOn = (id) => {
+    if (!g.byId.has(id)) return;
+    visit(id);
+    resetCentred();
+    setActiveKey("c");
+    askFrame({ centre: true });
+    keepFocus();
+  };
+  // The whole file, at an object (opened down to it) or from its start.
+  const showWhole = (id) => {
+    visit(WHOLE);
+    if (id && g.byId.has(id) && !g.byId.get(id).missing) {
+      openPathTo(id);
+      askFrame({ reveal: id });
+    } else askFrame({ start: true });
+    keepFocus();
+  };
+  // Find an object, as picking it anywhere else would: go to it in the
+  // whole file, centre on it in a bow-tie; and select it.
   const pick = (id) => {
-    centreOn(id);
+    if (whole && !g.byId.get(id)?.missing) showWhole(id);
+    else centreOn(id);
     self.current = id;
     onSelect(id);
   };
   const go = (step) => {
-    setNav((n) => {
-      const index = clamp(n.index + step, 0, n.list.length - 1);
-      return index === n.index ? n : { ...n, index };
-    });
-    setExpanded({ up: new Set(), down: new Set() });
-    setPages(new Map());
-    setActiveKey("c");
-    frame.current = "centre";
-    refocus.current = !!viewportRef.current?.contains(document.activeElement);
+    const n = navRef.current;
+    const index = clamp(n.index + step, 0, n.list.length - 1);
+    if (index === n.index) return;
+    setNav({ ...n, index });
+    if (n.list[index] === WHOLE) {
+      const o = ownerOf(focusId);
+      if (o && g.byId.has(o) && !g.byId.get(o).missing) {
+        openPathTo(o);
+        askFrame({ reveal: o });
+      } else askFrame({ start: true });
+    } else {
+      resetCentred();
+      setActiveKey("c");
+      askFrame({ centre: true });
+    }
+    keepFocus();
   };
 
-  // First centre: the selected object, when the map opens. After an edit
-  // the map keeps its centre and history, less any object that went away.
+  // The first map: the whole file, opened down to the selected object. After
+  // an edit the map keeps its view and history, less any object that went away.
   useEffect(() => {
     const n = navRef.current;
-    const current = n.list[n.index];
-    if (current && g.byId.has(current)) {
-      const list = n.list.filter((id) => g.byId.has(id));
-      setNav({ list, index: list.indexOf(current) });
-      return;
-    }
+    const list = n.list.filter((id) => id === WHOLE || g.byId.has(id));
+    if (list.length !== n.list.length) setNav({ list, index: Math.max(0, list.indexOf(n.list[n.index])) });
+    if (framed.current) return;
+    framed.current = true;
     const owner = ownerOf(focusId);
-    setNav({ list: [], index: -1 });
-    if (owner && g.byId.has(owner)) centreOn(owner);
+    if (owner && g.byId.has(owner) && !g.byId.get(owner).missing) {
+      openPathTo(owner);
+      askFrame({ reveal: owner, first: true });
+    } else askFrame({ start: true, first: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [g]);
 
-  // A selection made outside the map (the Trace address, say) re-centres on
-  // it when it isn't on the map already.
-  const shownIds = useMemo(() => {
-    const s = new Set();
-    if (items) for (const it of items.values()) if (it.kind === "node") s.add(it.id);
-    return s;
-  }, [items]);
+  // A selection made outside the map (the Trace address, say) goes to it:
+  // opened down to it in the whole file, re-centred on it in a bow-tie
+  // that doesn't show it.
   useEffect(() => {
     const owner = ownerOf(focusId);
     const mine = owner === self.current;
     self.current = null;
     if (mine || !owner || !g.byId.has(owner)) return;
-    if (!root || !shownIds.has(owner)) centreOn(owner);
+    const key = realKey.get(owner);
+    if (key) {
+      setActiveKey(key);
+      reveal(key);
+    } else if (whole) {
+      openPathTo(owner);
+      askFrame({ reveal: owner });
+    } else centreOn(owner);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusId]);
-
-  // After a layout: keep an expanded card where it was under the pointer,
-  // or frame a new centre.
-  useLayoutEffect(() => {
-    if (!lay) return;
-    const c = camRef.current;
-    if (anchor.current) {
-      const { key, sx, sy, opened, refit } = anchor.current;
-      anchor.current = null;
-      const p = lay.pos.get(key);
-      if (!p) return;
-      if (typeof refocus.current === "string") {
-        const k = refocus.current;
-        refocus.current = false;
-        requestAnimationFrame(() => els.current.get(k)?.focus({ preventScroll: true }));
-      }
-      const b = lay.bounds;
-      if (refit && (b.maxX - b.minX) * c.k <= size.w - 48 && (b.maxY - b.minY) * c.k <= size.h - 96) {
-        // A fold left a map that fits: frame all of it.
-        glideTo({ ...c, x: size.w / 2 - ((b.minX + b.maxX) / 2) * c.k, y: size.h / 2 - ((b.minY + b.maxY) / 2) * c.k });
-        return;
-      }
-      setCam({ ...c, x: sx - p.x * c.k, y: sy - p.y * c.k });
-      // Once the routes have poured out, ease over to what opened.
-      const keys = opened(items);
-      clearTimeout(revealTimer.current);
-      if (keys.length) revealTimer.current = setTimeout(() => showOpened(keys, key), reducedMotion() ? 0 : 240);
-      return;
-    }
-    if (refocus.current) {
-      const key = typeof refocus.current === "string" ? refocus.current : "c";
-      refocus.current = false;
-      els.current.get(key)?.focus({ preventScroll: true });
-    }
-    if (frame.current === "centre") {
-      frame.current = null;
-      // Keep the zoom (100% to start): rows wrap to the view's width, so the
-      // text stays at its one size. Too tall to fit, the centre sits mid-view,
-      // or high when nothing points at it, or low when it points at nothing.
-      const b = lay.bounds;
-      const k = c.k;
-      const fits = (b.maxY - b.minY) * k <= size.h - 96;
-      const y = fits
-        ? size.h / 2 - ((b.minY + b.maxY) / 2) * k
-        : size.h * (b.minY >= -NODE_H ? 0.3 : b.maxY <= NODE_H ? 0.7 : 0.5);
-      glideTo({ x: size.w / 2, y, k });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lay]);
 
   const glideTo = (next) => {
     if (!reducedMotion()) {
@@ -778,25 +976,98 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     []
   );
 
+  // After a layout: keep an opened card where it was under the pointer.
+  useLayoutEffect(() => {
+    if (!anchor.current) return;
+    const c = camRef.current;
+    const { key, sx, sy, opened, refit } = anchor.current;
+    anchor.current = null;
+    const p = lay.pos.get(key);
+    if (!p) return;
+    if (typeof refocus.current === "string") {
+      const k = refocus.current;
+      refocus.current = false;
+      requestAnimationFrame(() => els.current.get(k)?.focus({ preventScroll: true }));
+    }
+    const b = lay.bounds;
+    if (refit && (b.maxX - b.minX) * c.k <= size.w - 48 && (b.maxY - b.minY) * c.k <= size.h - 96) {
+      // A fold left a map that fits: frame all of it.
+      glideTo({ ...c, x: size.w / 2 - ((b.minX + b.maxX) / 2) * c.k, y: size.h / 2 - ((b.minY + b.maxY) / 2) * c.k });
+      return;
+    }
+    setCam({ ...c, x: sx - p.x * c.k, y: sy - p.y * c.k });
+    // Once the links have poured out, ease over to what opened.
+    const keys = opened(items);
+    clearTimeout(revealTimer.current);
+    if (keys.length) revealTimer.current = setTimeout(() => showOpened(keys, key), reducedMotion() ? 0 : 240);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lay]);
+
+  // A frame asked for: the start of the whole file, a new centre, or an
+  // object to bring into view (at the zoom it has).
+  useLayoutEffect(() => {
+    const f = frame.current;
+    if (!f) return;
+    frame.current = null;
+    if (refocus.current) {
+      const key = typeof refocus.current === "string" ? refocus.current : f.reveal ? realKey.get(f.reveal) : firstKey;
+      refocus.current = false;
+      requestAnimationFrame(() => els.current.get(key)?.focus({ preventScroll: true }));
+    }
+    const c = camRef.current;
+    const move = f.first ? setCam : glideTo;
+    const b = lay.bounds;
+    const fits = Math.min((size.w - 48) / (b.maxX - b.minX), (size.h - 96) / (b.maxY - b.minY));
+    // The whole file from its start: all of it, up to 100%, or else an
+    // overview. A new centre: closer, up to 100%, when that shows all of
+    // it; from an overview, close enough to read every card.
+    const centred = c.k >= FAR ? Math.max(c.k, Math.min(1, fits)) : fits >= FAR ? Math.min(1, fits) : 1;
+    const k = f.start ? clamp(fits, OVERVIEW, 1) : f.centre ? centred : c.k;
+    const at = (key, sx, sy) => {
+      const p = lay.pos.get(key);
+      if (p) move({ k, x: sx - p.x * k, y: sy - p.y * k });
+    };
+    if (f.reveal) {
+      const key = realKey.get(f.reveal);
+      if (!key) return;
+      setActiveKey(key);
+      at(key, size.w / 2, size.h / 2);
+      return;
+    }
+    if ((b.maxX - b.minX) * k <= size.w - 48 && (b.maxY - b.minY) * k <= size.h - 96) {
+      move({ k, x: size.w / 2 - ((b.minX + b.maxX) / 2) * k, y: size.h / 2 - ((b.minY + b.maxY) / 2) * k });
+      return;
+    }
+    // Too big to fit: the whole file from its top left, a centre at the
+    // side it opens away from.
+    const edge = 40 + (NODE_W / 2 + PORT_REACH) * k;
+    if (whole || f.start) move({ k, x: 24 - b.minX * k, y: 40 - b.minY * k });
+    else if (b.minX >= -NODE_W / 2 - PORT_REACH - 1) at("c", edge, size.h / 2);
+    else if (b.maxX <= NODE_W / 2 + PORT_REACH + 1) at("c", size.w - edge, size.h / 2);
+    else at("c", size.w / 2, size.h / 2);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lay, tick, size]);
+
   // Bring cards that just opened into view, keeping the card that opened
-  // them on screen: too wide for the view, centre on that card instead.
+  // them on screen: too tall or wide for the view, keep to that card.
   const showOpened = (keys, anchorKey) => {
     const L = layRef.current;
     const c = camRef.current;
     const { w, h } = sizeRef.current;
     const ps = [anchorKey, ...keys].map((k) => L?.pos.get(k)).filter(Boolean);
     if (ps.length < 2) return;
-    const sx0 = c.x + (Math.min(...ps.map((q) => q.x)) - NODE_W / 2) * c.k;
-    const sx1 = c.x + (Math.max(...ps.map((q) => q.x)) + NODE_W / 2) * c.k;
-    const sy0 = c.y + (Math.min(...ps.map((q) => q.y)) - NODE_H / 2 - PORT) * c.k;
-    const sy1 = c.y + (Math.max(...ps.map((q) => q.y)) + NODE_H / 2 + PORT) * c.k;
+    const sx0 = c.x + (Math.min(...ps.map((q) => q.x)) - NODE_W / 2 - PORT_REACH) * c.k;
+    const sx1 = c.x + (Math.max(...ps.map((q) => q.x)) + NODE_W / 2 + PORT_REACH) * c.k;
+    const sy0 = c.y + (Math.min(...ps.map((q) => q.y)) - NODE_H / 2) * c.k;
+    const sy1 = c.y + (Math.max(...ps.map((q) => q.y)) + NODE_H / 2) * c.k;
     const pad = 24;
     const padBottom = 56;
     let dx = 0;
     let dy = 0;
-    if (sx1 - sx0 > w - 2 * pad) dx = w / 2 - (c.x + ps[0].x * c.k);
-    else if (sx0 < pad) dx = pad - sx0;
-    else if (sx1 > w - pad) dx = w - pad - sx1;
+    if (sx1 - sx0 <= w - 2 * pad) {
+      if (sx0 < pad) dx = pad - sx0;
+      else if (sx1 > w - pad) dx = w - pad - sx1;
+    }
     if (sy1 - sy0 <= h - pad - padBottom) {
       if (sy0 < pad) dy = pad - sy0;
       else if (sy1 > h - padBottom) dy = h - padBottom - sy1;
@@ -805,21 +1076,22 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
   };
 
   const screenOf = (key) => {
-    const p = lay?.pos.get(key);
+    const p = lay.pos.get(key);
     const c = camRef.current;
     return p ? { sx: c.x + p.x * c.k, sy: c.y + p.y * c.k } : null;
   };
 
   const reveal = (key) => {
-    const p = lay?.pos.get(key);
+    const p = layRef.current.pos.get(key);
     if (!p) return;
     const c = camRef.current;
+    const { w, h } = sizeRef.current;
     const sx = c.x + p.x * c.k;
     const sy = c.y + p.y * c.k;
-    const mx = (NODE_W / 2) * c.k + 24;
+    const mx = (NODE_W / 2 + PORT_REACH) * c.k + 24;
     const my = (NODE_H / 2) * c.k + 40;
-    if (sx > mx && sx < size.w - mx && sy > my && sy < size.h - my) return;
-    glideTo({ ...c, x: size.w / 2 - p.x * c.k, y: size.h / 2 - p.y * c.k });
+    if (sx > mx && sx < w - mx && sy > my && sy < h - my) return;
+    glideTo({ ...c, x: w / 2 - p.x * c.k, y: h / 2 - p.y * c.k });
   };
 
   const selectItem = (item) => {
@@ -828,6 +1100,51 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     if (item.kind === "node") {
       self.current = item.id;
       onSelect(item.id);
+    }
+  };
+  // An object on the map, whether its card is shown yet or not.
+  const goTo = (id) => {
+    const key = realKey.get(id);
+    if (key) {
+      selectItem(items.get(key));
+      reveal(key);
+      els.current.get(key)?.focus({ preventScroll: true });
+      return;
+    }
+    if (g.byId.get(id)?.missing) return;
+    if (whole) {
+      openPathTo(id);
+      askFrame({ reveal: id });
+    } else centreOn(id);
+    self.current = id;
+    onSelect(id);
+  };
+
+  const setGroupPages = whole ? setTreePages : setPages;
+  const expandAll = () => {
+    const at = selectedKey || activeKey || firstKey;
+    const sp = screenOf(at);
+    if (sp) anchor.current = { key: at, ...sp, opened: () => [] };
+    if (whole) {
+      setCollapsed(new Set());
+      setTreePages(openAll((_, p) => buildTree(g, new Set(), p)).pages);
+    } else {
+      const all = openAll((ids, p) => buildView(g, root, ids, p));
+      setExpanded(all.ids);
+      setPages(all.pages);
+    }
+  };
+  const collapseAll = () => {
+    if (whole) {
+      const roots = new Set(g.roots);
+      setCollapsed(new Set([...g.kids.keys(), ...g.out.keys()].filter((id) => !roots.has(id))));
+      setTreePages(new Map());
+      setActiveKey(firstKey);
+      askFrame({ start: true });
+    } else {
+      resetCentred();
+      setActiveKey("c");
+      askFrame({ centre: true });
     }
   };
 
@@ -842,23 +1159,33 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     },
     jump: (key) => {
       const it = items.get(key);
-      const real = [...items.values()].find((x) => x.kind === "node" && x.id === it.id && x.dir === it.dir) ||
-        [...items.values()].find((x) => x.kind === "node" && x.id === it.id);
-      if (!real) return;
-      selectItem(real);
-      reveal(real.key);
-      els.current.get(real.key)?.focus({ preventScroll: true });
+      if (!it) return;
+      // In a bow-tie, the original in the same half first.
+      const same = [...items.values()].find((x) => x.kind === "node" && x.id === it.id && x.dir === it.dir);
+      if (same) {
+        selectItem(same);
+        reveal(same.key);
+        els.current.get(same.key)?.focus({ preventScroll: true });
+      } else goTo(it.id);
     },
     toggle: (key) => {
       const it = items.get(key);
-      if (!it || it.kind !== "node" || key === "c") return;
+      if (!it || !hasPort(it)) return;
       const at = screenOf(key);
       if (at) anchor.current = { key, ...at, opened: (next) => next.get(key)?.children || [] };
-      setExpanded((e) => {
-        const set = new Set(e[it.dir]);
-        set.has(it.id) ? set.delete(it.id) : set.add(it.id);
-        return { ...e, [it.dir]: set };
-      });
+      if (whole) {
+        setCollapsed((s) => {
+          const n = new Set(s);
+          n.has(it.id) ? n.delete(it.id) : n.add(it.id);
+          return n;
+        });
+      } else {
+        setExpanded((e) => {
+          const set = new Set(e[it.dir]);
+          set.has(it.id) ? set.delete(it.id) : set.add(it.id);
+          return { ...e, [it.dir]: set };
+        });
+      }
       setActiveKey(key);
     },
     open: (key) => {
@@ -868,7 +1195,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       const at = screenOf(parentKey);
       const members = (next) => (next.get(parentKey)?.children || []).filter((k) => next.get(k).groupKey === it.groupKey);
       if (at) anchor.current = { key: parentKey, ...at, opened: members };
-      setPages((m) => new Map(m).set(it.groupKey, (m.get(it.groupKey) || 0) + 1));
+      setGroupPages((m) => new Map(m).set(it.groupKey, (m.get(it.groupKey) || 0) + 1));
     },
     fold: (key) => {
       const it = items.get(key);
@@ -879,7 +1206,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       if (at) anchor.current = { key: parentKey, ...at, opened: () => [groupCardKey], refit: true };
       if (viewportRef.current?.contains(document.activeElement)) refocus.current = groupCardKey;
       setActiveKey(groupCardKey);
-      setPages((m) => {
+      setGroupPages((m) => {
         const next = new Map(m);
         next.delete(it.groupKey);
         return next;
@@ -893,39 +1220,40 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       setActiveKey(key);
       onSelect(e.at);
     },
+    goTo: (id) => goTo(id),
   };
   const act = useMemo(() => (type, key) => actions.current[type]?.(key), []);
   const register = useMemo(() => (key, el) => (el ? els.current.set(key, el) : els.current.delete(key)), []);
+  const onPickSetting = useMemo(() => (id) => {
+    self.current = ownerOf(id);
+    onSelect(id);
+  }, [onSelect]);
+  const onGoSetting = useMemo(() => (id) => act("goTo", id), [act]);
 
-  // What's selected, and the route to it from the centre.
+  // What's selected, the route to it from the root, and the links to it.
   const owner = ownerOf(focusId);
   const selectedKey = useMemo(() => {
-    if (!items || !owner) return null;
+    if (!owner) return null;
     const active = items.get(activeKey);
-    if (active?.id === owner) return activeKey;
-    if (items.get("c").id === owner) return "c";
-    for (const it of items.values()) if (it.kind === "node" && it.id === owner) return it.key;
-    return null;
-  }, [items, owner, activeKey]);
+    if (active?.kind === "node" && active.id === owner) return activeKey;
+    return realKey.get(owner) ?? null;
+  }, [items, owner, activeKey, realKey]);
   const viaKey = useMemo(() => {
-    if (!items || !focusId?.includes("::")) return null;
+    if (!focusId?.includes("::")) return null;
     for (const it of items.values()) if (it.edges.some((e) => e.at === focusId)) return it.key;
     return null;
   }, [items, focusId]);
   const lit = useMemo(() => {
     const s = new Set();
-    let k = viaKey || selectedKey;
-    while (k && k !== "c" && items?.get(k)) {
-      s.add(k);
-      k = items.get(k).parent;
-    }
+    for (let k = viaKey || selectedKey; k && items.get(k)?.parent != null; k = items.get(k).parent) s.add(k);
+    if (owner) for (const it of items.values()) if (it.kind === "ghost" && it.id === owner) s.add(it.key);
     return s;
-  }, [items, selectedKey, viaKey]);
+  }, [items, selectedKey, viaKey, owner]);
 
   // Keyboard focus follows activeKey.
   useEffect(() => {
-    if (!items?.has(activeKey)) setActiveKey("c");
-  }, [items, activeKey]);
+    if (!items.has(activeKey)) setActiveKey(firstKey);
+  }, [items, activeKey, firstKey]);
 
   // Wheel: scroll pans, Ctrl/Cmd+scroll (and pinch) zooms at the pointer.
   useEffect(() => {
@@ -980,47 +1308,49 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     glideTo({ k, x: mx - (mx - c.x) * (k / c.k), y: my - (my - c.y) * (k / c.k) });
   };
   const fit = () => {
-    if (!lay) return;
     const b = lay.bounds;
     const k = clamp(Math.min((size.w - 64) / (b.maxX - b.minX), (size.h - 64) / (b.maxY - b.minY), 1.2), ZOOM_MIN, ZOOM_MAX);
     glideTo({ k, x: size.w / 2 - ((b.minX + b.maxX) / 2) * k, y: size.h / 2 - ((b.minY + b.maxY) / 2) * k });
   };
 
-  // Arrow keys walk the map as it is drawn: away from the centre to the
-  // next tier of a wrapped fan or along a link, back towards it the same
-  // way, left and right along a row. Enter centres (opens a group, shows
-  // more, goes to a ghost's original), Space opens or closes the next
-  // level, E explains the link's parameter, Escape folds an open group.
+  // Arrow keys walk the map as it is drawn: right and left along the links
+  // (away from the root on its side, back towards it on the other), up and
+  // down the column. Enter centres (opens a group, shows more, goes to a
+  // link card's object), Space opens or closes the next level, E explains
+  // the link's parameter, Escape folds an open group.
   const onKeyDown = (e) => {
-    if (!items || e.target.closest(".rm-overlay")) return;
-    const it = items.get(activeKey) || items.get("c");
+    if (e.target.closest(".rm-overlay")) return;
+    const it = items.get(activeKey) || items.get(firstKey);
+    if (!it) return;
     const at = lay.pos.get(it.key);
     const nearest = (keys) =>
-      keys?.length ? keys.reduce((a, b) => (Math.abs(lay.pos.get(b).x - at.x) < Math.abs(lay.pos.get(a).x - at.x) ? b : a)) : null;
-    const fanOf = (key, dir) => lay.fans.find((f) => f.key === `${key}|${dir}`);
-    const away = () => {
-      const pl = lay.place.get(it.key);
-      if (pl && pl.tier < pl.fan.tiers.length - 1 && !it.children.length) return nearest(pl.fan.tiers[pl.tier + 1]);
-      return nearest(fanOf(it.key, it.dir)?.tiers[0]);
+      keys.length ? keys.reduce((a, b) => (Math.abs(lay.pos.get(b).y - at.y) < Math.abs(lay.pos.get(a).y - at.y) ? b : a)) : null;
+    const onSide = (s) => it.children.filter((k) => (items.get(k).dir === "up" ? -1 : 1) === s);
+    const inColumn = (dir) => {
+      let best = null;
+      let bestD = Infinity;
+      for (const [k, p] of lay.pos) {
+        const d = (p.y - at.y) * dir;
+        if (p.x === at.x && k !== it.key && d > 0 && d < bestD) [best, bestD] = [k, d];
+      }
+      return best;
     };
-    const toward = () => {
-      const pl = lay.place.get(it.key);
-      return pl && pl.tier > 0 ? nearest(pl.fan.tiers[pl.tier - 1]) : it.parent;
-    };
+    const right = it.dir !== "up";
     let next = null;
-    if (e.key === "ArrowDown") next = it.key === "c" ? nearest(fanOf("c", "down")?.tiers[0]) : it.dir === "down" ? away() : toward();
-    else if (e.key === "ArrowUp") next = it.key === "c" ? nearest(fanOf("c", "up")?.tiers[0]) : it.dir === "up" ? away() : toward();
-    else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-      const row = [...items.values()]
-        .filter((x) => x.dir === it.dir && lay.pos.get(x.key).y === at.y)
-        .sort((a, b) => lay.pos.get(a.key).x - lay.pos.get(b.key).x);
-      const i = row.findIndex((x) => x.key === it.key) + (e.key === "ArrowLeft" ? -1 : 1);
-      next = row[i]?.key;
-    } else if (e.key === "Home") next = "c";
+    if (e.key === "Backspace" || (e.altKey && e.key === "ArrowLeft")) {
+      e.preventDefault();
+      go(-1);
+      return;
+    } else if (e.key === "ArrowRight") next = it.parent == null ? nearest(onSide(1)) : right ? nearest(it.children) : it.parent;
+    else if (e.key === "ArrowLeft") next = it.parent == null ? nearest(onSide(-1)) : right ? it.parent : nearest(it.children);
+    else if (e.key === "ArrowUp") next = inColumn(-1);
+    else if (e.key === "ArrowDown") next = inColumn(1);
+    else if (e.key === "Home") next = firstKey;
     else if (e.key === "Enter") {
       e.preventDefault();
       if (it.kind === "more" && !it.left) act("fold", it.key);
-      else act(it.kind === "ghost" ? "jump" : it.kind === "node" ? "centre" : "open", it.key);
+      else if (it.kind === "ghost") act(g.byId.get(it.id)?.missing ? "via" : "jump", it.key);
+      else act(it.kind === "node" ? "centre" : "open", it.key);
       return;
     } else if (e.key === " ") {
       e.preventDefault();
@@ -1028,7 +1358,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       else if (it.kind === "group" || (it.kind === "more" && it.left)) act("open", it.key);
       return;
     } else if (e.key === "e" || e.key === "E") {
-      if (it.key !== "c" && it.kind !== "group" && it.edges.some((x) => x.at)) act("via", it.key);
+      if (it.parent != null && it.kind !== "group" && it.edges.some((x) => x.at)) act("via", it.key);
       return;
     } else if (e.key === "Escape") {
       if (it.groupKey && it.kind !== "group") {
@@ -1036,25 +1366,46 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
         act("fold", it.key);
       }
       return;
-    } else if (e.key === "Backspace" || (e.altKey && e.key === "ArrowLeft")) {
-      e.preventDefault();
-      go(-1);
-      return;
     } else if (e.key === "+" || e.key === "=") return zoomBy(1.2);
     else if (e.key === "-") return zoomBy(1 / 1.2);
     else if (e.key === "0") return fit();
     else return;
     e.preventDefault();
     if (!next) return;
-    const target = items.get(next);
-    selectItem(target);
+    selectItem(items.get(next));
     reveal(next);
     requestAnimationFrame(() => els.current.get(next)?.focus({ preventScroll: true }));
   };
 
+  // A big map renders only what is near the view: the view and half of it
+  // again on each side, rounded out to tiles, so panning re-renders the
+  // layers only when it crosses into another tile.
+  const near = (() => {
+    if (items.size < CULL_AT) return null;
+    const k = cam.k;
+    const w = size.w / k;
+    const h = size.h / k;
+    const x = -cam.x / k;
+    const y = -cam.y / k;
+    const q = (v) => Math.floor(v / TILE);
+    return `${q(x - w / 2)},${q(y - h / 2)},${q(x + w * 1.5) + 1},${q(y + h * 1.5) + 1}`;
+  })();
+  const vis = useMemo(() => {
+    if (!near) return null;
+    const [x0, y0, x1, y1] = near.split(",").map((n) => Number(n) * TILE);
+    const cards = new Set();
+    for (const [key, p] of lay.pos) {
+      if (p.x + NODE_W / 2 + PORT_REACH >= x0 && p.x - NODE_W / 2 - PORT_REACH <= x1 && p.y + NODE_H / 2 >= y0 && p.y - NODE_H / 2 <= y1) {
+        cards.add(key);
+      }
+    }
+    const links = new Set();
+    for (const [key, l] of lay.links) if (l.box[2] >= x0 && l.box[0] <= x1 && l.box[3] >= y0 && l.box[1] <= y1) links.add(key);
+    return { cards, links };
+  }, [near, lay]);
+
   // Cards lying wholly off each side of the view, for the edge counts.
   const offscreen = useMemo(() => {
-    if (!lay) return null;
     const n = { left: 0, right: 0, top: 0, bottom: 0 };
     const hw = (NODE_W / 2) * cam.k;
     const hh = (NODE_H / 2) * cam.k;
@@ -1073,18 +1424,49 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
     glideTo({ ...c, x: c.x + dx * size.w * 0.6, y: c.y + dy * size.h * 0.6 });
   };
 
-  const topHubs = useMemo(() => (items ? [] : hubs(g)), [g, items]);
-  const centre = items?.get("c");
+  const cards = useMemo(() => {
+    const out = [];
+    for (const it of items.values()) {
+      if (vis && !vis.cards.has(it.key) && it.key !== activeKey && it.key !== selectedKey) continue;
+      const p = lay.pos.get(it.key);
+      const node = it.id ? g.byId.get(it.id) : null;
+      const where = whole && it.kind === "ghost" && g.container.has(it.id) ? label(g.container.get(it.id)) : null;
+      out.push(
+        <Card
+          key={it.key}
+          item={it}
+          x={p.x}
+          y={p.y}
+          node={node}
+          fullName={node ? className(kb, node.cls) : null}
+          parentLabel={it.parent != null ? label(items.get(it.parent).id) : null}
+          where={where}
+          ins={it.id ? inCount(g, it.id) : 0}
+          outs={it.id ? outCount(g, it.id) : 0}
+          inside={it.id ? g.kids.get(it.id)?.length || 0 : 0}
+          selected={it.key === selectedKey && !viaKey}
+          target={it.kind === "ghost" && it.id === owner}
+          tabbable={it.key === activeKey}
+          act={act}
+          register={register}
+        />
+      );
+    }
+    return out;
+  }, [items, lay, vis, g, kb, whole, selectedKey, viaKey, activeKey, owner, act, register]);
+
+  const centre = whole ? null : items.get("c");
   const centreNode = centre ? g.byId.get(centre.id) : null;
-  const ownerShown = owner && shownIds.has(owner);
+  const ownerShown = owner && realKey.has(owner);
   const selectedNode = owner ? g.byId.get(owner) : null;
   const lonely = centre && !centre.children.length;
+  const selectedMo = owner ? objects.get(owner) || null : null;
 
   const toolbar = (
     <>
-      <SearchBox g={g} kb={kb} onPick={pick} />
+      <SearchBox g={g} kb={kb} whole={whole} onPick={pick} />
       <span className="btn-pair">
-        <button className="icon-btn" onClick={() => go(-1)} disabled={nav.index <= 0} aria-label="Back to the previous centre" title="Back (Backspace)">
+        <button className="icon-btn" onClick={() => go(-1)} disabled={nav.index <= 0} aria-label="Back" title="Back (Backspace)">
           <Icon name="arrow-left" />
         </button>
         <button className="icon-btn" onClick={() => go(1)} disabled={nav.index >= nav.list.length - 1} aria-label="Forward" title="Forward">
@@ -1094,9 +1476,18 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       <span className="toolbar-sep" aria-hidden="true" />
       <button
         className="btn"
+        onClick={() => showWhole(owner)}
+        disabled={whole}
+        title="Show the whole file's tree, opened down to the selected object"
+      >
+        <Icon name="map" />
+        <span className="btn-label">Whole file</span>
+      </button>
+      <button
+        className="btn"
         onClick={() => owner && centreOn(owner)}
         disabled={!owner || !g.byId.has(owner) || owner === centre?.id}
-        title="Centre the map on the selected object (Enter on a card, or double-click it)"
+        title="Centre the map on the selected object: what points at it on the left, what it points at on the right (Enter on a card, or double-click it)"
       >
         <Icon name="target" />
         <span className="btn-label">Centre on selected</span>
@@ -1104,6 +1495,29 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       <button className="btn" onClick={onOpenInTree} disabled={!owner} title="Show the selected object in the tree">
         <Icon name="tree" />
         <span className="btn-label">Show in tree</span>
+      </button>
+      <span className="toolbar-sep" aria-hidden="true" />
+      <button
+        className="btn"
+        onClick={expandAll}
+        aria-label="Expand all"
+        title={whole ? "Open every object and every group" : "Open every link from the centre, as far as they go, and every group"}
+      >
+        <Icon name="expand-all" />
+        <span className="btn-label">Expand all</span>
+      </button>
+      <button className="btn" onClick={collapseAll} aria-label="Collapse all" title={whole ? "Close everything below the top object's own level" : "Back to the centre's own links"}>
+        <Icon name="collapse-all" />
+        <span className="btn-label">Collapse all</span>
+      </button>
+      <button
+        className="btn btn-toggle"
+        aria-pressed={settings}
+        onClick={() => setSettings((v) => !v)}
+        title="Show the selected object's parameters and lists beside the map"
+      >
+        <Icon name="table" />
+        <span className="btn-label">Settings</span>
       </button>
       <span className="toolbar-sep" aria-hidden="true" />
       <div className="segmented rm-zoom" role="group" aria-label="Zoom">
@@ -1117,7 +1531,7 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
           <Icon name="plus" />
         </button>
       </div>
-      <button className="icon-btn" onClick={fit} disabled={!lay} aria-label="Fit the map to the view" title="Fit (0)">
+      <button className="icon-btn" onClick={fit} disabled={!items.size} aria-label="Fit the map to the view" title="Fit (0)">
         <Icon name="fit" />
       </button>
       <div className="rm-legend-wrap">
@@ -1134,7 +1548,8 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
       {toolbarSlot && createPortal(toolbar, toolbarSlot)}
       <div
         ref={viewportRef}
-        className={"rm-viewport" + (panning ? " is-panning" : "")}
+        className={"rm-viewport" + (panning ? " is-panning" : "") + (cam.k < FAR ? " is-far" : "")}
+        style={{ "--far-fs": farFont(cam.k) }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -1149,123 +1564,79 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
         onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setKeyboard(false)}
         role="application"
         aria-roledescription="reference map"
-        aria-label={centre ? `Reference map centred on ${label(centre.id)}` : "Reference map"}
+        aria-label={centre ? `Reference map centred on ${label(centre.id)}` : "Reference map of the whole file"}
       >
-        {items && lay && (
-          <div
-            className={"rm-world" + (glide ? " is-gliding" : "")}
-            style={{ transform: `translate(${cam.x}px, ${cam.y}px) scale(${cam.k})` }}
-          >
-            <Connectors items={items} lay={lay} g={g} lit={lit} fresh={fresh} />
-            <LinkLabels items={items} lay={lay} g={g} act={act} selectedAt={focusId} />
-            {[...items.values()].map((it) => {
-              const p = lay.pos.get(it.key);
-              const node = it.id ? g.byId.get(it.id) : null;
-              return (
-                <Card
-                  key={it.key}
-                  item={it}
-                  x={p.x}
-                  y={p.y}
-                  node={node}
-                  fullName={node ? className(kb, node.cls) : null}
-                  parentLabel={it.parent ? label(items.get(it.parent).id) : null}
-                  ins={it.id ? inCount(g, it.id) : 0}
-                  outs={it.id ? outCount(g, it.id) : 0}
-                  inside={it.id ? g.kids.get(it.id)?.length || 0 : 0}
-                  selected={it.key === selectedKey && !viaKey}
-                  tabbable={it.key === activeKey}
-                  act={act}
-                  register={register}
-                />
-              );
-            })}
-            <Ports items={items} pos={lay.pos} g={g} expanded={expanded} act={act} />
-            {lonely && (
-              <div className="rm-lonely rm-overlay" style={{ left: -180, top: NODE_H / 2 + 28 }}>
-                <p>
-                  <span className="mono">{label(centre.id)}</span> points at nothing, nothing points at it, and
-                  nothing else in this file sits above or under it.
-                </p>
-              </div>
-            )}
+        <div
+          className={"rm-world" + (glide ? " is-gliding" : "")}
+          style={{ transform: `translate(${cam.x}px, ${cam.y}px) scale(${cam.k})` }}
+        >
+          <Connectors items={items} lay={lay} g={g} lit={lit} fresh={fresh} vis={vis} />
+          <LinkLabels items={items} lay={lay} g={g} act={act} selectedAt={focusId} vis={vis} />
+          {cards}
+          <Ports items={items} pos={lay.pos} g={g} whole={whole} expanded={expanded} collapsed={collapsed} act={act} vis={vis} />
+          {lonely && (
+            <div className="rm-lonely rm-overlay" style={{ left: -180, top: NODE_H / 2 + 28 }}>
+              <p>
+                <span className="mono">{label(centre.id)}</span> points at nothing, nothing points at it, and
+                nothing else in this file sits above or under it.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {!items.size && (
+          <div className="rm-empty rm-overlay">
+            <p>This file has no managed objects to map.</p>
           </div>
         )}
 
-        {!items && (
-          <div className="rm-landing rm-overlay">
-            <h2 className="rm-landing-title">Reference map</h2>
-            <p>
-              Centre the map on an object to see what points at it and what it sits in, above, and what it points at
-              and contains, below. Search for one, select it in the tree first, or start from the objects most pointed
-              at in this file.
-            </p>
-            <div className="rm-hubs-head" id="rm-hubs-head">Most pointed at</div>
-            {topHubs.length > 0 ? (
-              <ul className="rm-hubs" aria-labelledby="rm-hubs-head">
-                {topHubs.map((h) => {
-                  const n = g.byId.get(h.id);
-                  return (
-                    <li key={h.id}>
-                      <button className="rm-hub" onClick={() => pick(h.id)}>
-                        <span className="rm-hub-label">{label(h.id)}</span>
-                        <span className="rm-hub-meta">{n?.hint || className(kb, n?.cls) || n?.cls}</span>
-                        <span className="rm-hub-count">{plural(h.count, "object")} point at it</span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <div className="rm-hubs-empty">No object in this file points at another.</div>
-            )}
-          </div>
-        )}
-
-        {items && (
-          <div className="rm-status rm-overlay" aria-live="polite">
+        <div className="rm-status rm-overlay" aria-live="polite">
+          {whole ? (
+            <span>
+              Whole file · {plural(data.nodes.length, "object")} · {plural(g.stats.links, "link")}
+            </span>
+          ) : (
             <span>
               Centred on <span className="mono">{label(centre.id)}</span>
               {centreNode?.missing ? ` (${MISSING[centreNode.missing]})` : ""}
             </span>
-            {owner && !ownerShown && selectedNode && (
-              <>
-                <span className="rm-status-sep" aria-hidden="true" />
-                <span>
-                  Selected <span className="mono">{label(owner)}</span> isn't on the map
-                </span>
-                <button className="link-btn" onClick={() => centreOn(owner)}>
-                  Centre on it
-                </button>
-              </>
-            )}
-            <span className="rm-status-sep" aria-hidden="true" />
-            <span className="rm-status-help">
-              {keyboard
-                ? "Arrows move · Enter centres · Space opens · E explains the link · Backspace goes back"
-                : "Click a link's name to explain it · double-click to centre · drag to pan · Ctrl+scroll to zoom"}
-            </span>
-          </div>
-        )}
+          )}
+          {owner && !ownerShown && selectedNode && !selectedNode.missing && (
+            <>
+              <span className="rm-status-sep" aria-hidden="true" />
+              <span>
+                Selected <span className="mono">{label(owner)}</span> isn't on the map
+              </span>
+              <button className="link-btn" onClick={() => goTo(owner)}>
+                {whole ? "Open it" : "Centre on it"}
+              </button>
+            </>
+          )}
+          <span className="rm-status-sep" aria-hidden="true" />
+          <span className="rm-status-help">
+            {keyboard
+              ? "Arrows move · Enter centres · Space opens · E explains the link · Backspace goes back"
+              : "Click a link's name to explain it · double-click to centre · drag to pan · Ctrl+scroll to zoom"}
+          </span>
+        </div>
 
-        {offscreen &&
-          EDGES.filter(([side]) => offscreen[side]).map(([side, icon, dx, dy, where]) => (
-            <button
-              key={side}
-              type="button"
-              tabIndex={-1}
-              className={`rm-edge rm-overlay is-${side}`}
-              onClick={() => panBy(dx, dy)}
-              aria-label={`${plural(offscreen[side], "card")} ${where}: move the map to them`}
-              title={`${plural(offscreen[side], "card")} ${where}`}
-            >
-              {(side === "left" || side === "top") && <Icon name={icon} size={12} />}
-              {offscreen[side]}
-              {(side === "right" || side === "bottom") && <Icon name={icon} size={12} />}
-            </button>
-          ))}
+        {EDGES.filter(([side]) => offscreen[side]).map(([side, icon, dx, dy, where]) => (
+          <button
+            key={side}
+            type="button"
+            tabIndex={-1}
+            className={`rm-edge rm-overlay is-${side}`}
+            onClick={() => panBy(dx, dy)}
+            aria-label={`${plural(offscreen[side], "card")} ${where}: move the map to them`}
+            title={`${plural(offscreen[side], "card")} ${where}`}
+          >
+            {(side === "left" || side === "top") && <Icon name={icon} size={12} />}
+            {offscreen[side]}
+            {(side === "right" || side === "bottom") && <Icon name={icon} size={12} />}
+          </button>
+        ))}
 
-        {items && lay && (
+        {items.size > 0 && (
           <div className="rm-overlay rm-minimap-wrap">
             <Minimap
               items={items}
@@ -1279,6 +1650,17 @@ export function RefMap({ data, kb, focusId, onSelect, onOpenInTree, toolbarSlot 
           </div>
         )}
       </div>
+      {settings && (
+        <SettingsPanel
+          mo={selectedMo}
+          g={g}
+          kb={kb}
+          focusId={focusId}
+          onPick={onPickSetting}
+          onGo={onGoSetting}
+          onClose={() => setSettings(false)}
+        />
+      )}
     </section>
   );
 }

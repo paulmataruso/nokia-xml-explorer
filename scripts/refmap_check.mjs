@@ -1,26 +1,83 @@
-// Reference map check: every object of every readable file as the Map
-// view's centre, two levels opened both ways and every group opened a page,
-// laid out unwrapped and wrapped at 3 cards. Fails on a crash, a card
-// without a position or a fan, two cards overlapping, a fan whose trunk
-// would cross one of its own cards, or a wrapped tier mixing references
-// with contained objects. Then a synthetic 40-member group checks paging
-// and folding, and a small tree checks containment.
+// Reference map check, over every readable file:
+// - the whole file as the map opens (groups folded) and with Expand all:
+//   every object on it exactly once as its own card, every link drawn
+//   exactly once (a link card, or the contained card it names);
+// - every object as the centre of a bow-tie, two levels opened both ways
+//   and every group opened a page;
+// and for each of those layouts: no crash, every card placed, no two cards
+// of a column overlapping, and no two links crossing. Links between two
+// columns share one curve (the same x at every step), so two of them cross
+// exactly when their parents and their children come in opposite orders.
+// Then a synthetic 40-member group checks paging and folding, and a small
+// tree checks containment.
 //
 //   node scripts/refmap_check.mjs [base-url]     (default http://localhost:8080)
 //
 // Run it after changing frontend/src/components/refMapModel.js or
 // backend/app/refmap.py. Needs a running app; it reads GET /api/files and
 // /api/files/{f}/refmap.
-import { indexGraph, buildView, layout, fanPaths, GAP_X, NODE_W, PAGE } from "../frontend/src/components/refMapModel.js";
+import { indexGraph, buildTree, buildView, layout, openAll, cardH, PAGE, ROW_GAP } from "../frontend/src/components/refMapModel.js";
 
 const base = process.argv[2] || "http://localhost:8080";
 const listing = await (await fetch(`${base}/api/files`)).json();
 const files = Array.isArray(listing) ? listing : listing.files;
 let centres = 0;
+let wholes = 0;
+let biggest = { n: 0, at: "" };
 let slowest = { ms: 0, at: "" };
 const failures = [];
 
-function check(g, root) {
+function checkLayout(items, align) {
+  const { pos, links } = layout(items, align);
+  const cols = new Map();
+  for (const it of items.values()) {
+    const p = pos.get(it.key);
+    if (!p || !Number.isFinite(p.x) || !Number.isFinite(p.y)) throw new Error(`${it.key} has no position`);
+    if (it.parent != null && !links.has(it.key)) throw new Error(`${it.key} has no link`);
+    if (!cols.has(p.x)) cols.set(p.x, []);
+    cols.get(p.x).push([p.y - cardH(it) / 2, p.y + cardH(it) / 2, it.key]);
+  }
+  for (const [x, cards] of cols) {
+    cards.sort((a, b) => a[0] - b[0]);
+    for (let i = 1; i < cards.length; i++) {
+      if (cards[i][0] - cards[i - 1][1] < ROW_GAP / 2 - 0.5) throw new Error(`cards overlap in column ${x}: ${cards[i - 1][2]}, ${cards[i][2]}`);
+    }
+  }
+  // The links of each gap (side and depth), by parent then child: the
+  // children must come in order too.
+  const gaps = new Map();
+  for (const it of items.values()) {
+    if (it.parent == null) continue;
+    const g = `${it.dir === "up" ? -1 : 1}|${it.depth}`;
+    if (!gaps.has(g)) gaps.set(g, []);
+    gaps.get(g).push([pos.get(it.parent).y, pos.get(it.key).y, it.key]);
+  }
+  for (const list of gaps.values()) {
+    list.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    for (let i = 1; i < list.length; i++) {
+      if (list[i][1] < list[i - 1][1] - 0.01) throw new Error(`links cross: ${list[i - 1][2]} and ${list[i][2]}`);
+    }
+  }
+}
+
+function checkWhole(g, items, all) {
+  const cards = new Map();
+  const links = new Map();
+  for (const it of items.values()) {
+    if (it.kind === "node") cards.set(it.id, (cards.get(it.id) || 0) + 1);
+    if (it.parent == null) continue;
+    const from = items.get(it.parent).id;
+    for (const e of it.edges) if (e.kind !== "contains") links.set(`${from}>${it.id}`, (links.get(`${from}>${it.id}`) || 0) + 1);
+  }
+  for (const [id, n] of cards) if (n > 1) throw new Error(`${id} has ${n} cards`);
+  if (!all) return;
+  for (const n of g.byId.values()) if (!n.missing && !cards.has(n.id)) throw new Error(`${n.id} isn't on the map`);
+  for (const [s, m] of g.out) {
+    for (const t of m.keys()) if (!links.has(`${s}>${t}`)) throw new Error(`the link ${s} → ${t} isn't drawn`);
+  }
+}
+
+function centred(g, root) {
   const expanded = { up: new Set(), down: new Set() };
   const pages = new Map();
   let items = buildView(g, root, expanded, pages);
@@ -31,59 +88,46 @@ function check(g, root) {
     }
     items = buildView(g, root, expanded, pages);
   }
-  for (const cols of [Infinity, 3]) {
-    const { pos, fans, place } = layout(items, cols);
-    const rows = new Map();
-    for (const it of items.values()) {
-      const p = pos.get(it.key);
-      if (!p) throw new Error(`${it.key} has no position`);
-      if (it.key !== "c" && !place.has(it.key)) throw new Error(`${it.key} is in no fan`);
-      if (!rows.has(p.y)) rows.set(p.y, []);
-      rows.get(p.y).push(p.x);
-    }
-    for (const [y, xs] of rows) {
-      xs.sort((a, b) => a - b);
-      for (let i = 1; i < xs.length; i++) if (xs[i] - xs[i - 1] < NODE_W - 0.5) throw new Error(`cards overlap at y ${y} (cols ${cols})`);
-    }
-    for (const fan of fans) {
-      const fp = fanPaths(fan, pos);
-      if (fan.cols) {
-        // Wrapped: references first, then what is contained, never in one tier.
-        const held = fan.tiers.map((tier) => tier.filter((k) => !items.get(k).children.length).map((k) => !!items.get(k).held));
-        if (held.some((t) => t.some((h) => h !== t[0]))) throw new Error(`${fan.key} mixes references and contents in a tier`);
-        const order = held.flat();
-        if (order.some((h, i) => i && order[i - 1] && !h)) throw new Error(`${fan.key} has a reference after its contents`);
-      }
-      for (const k of fan.tiers.flat()) if (!fp.drops.get(k)) throw new Error(`no drop for ${k}`);
-      // Past the first bus a wrapped fan's trunk runs down its gutter through
-      // every tier but the last: no card in those tiers may sit across it.
-      const tx = pos.get(fan.parent).x;
-      const gx = fan.cols ? tx - (fan.cols % 2 ? (NODE_W + GAP_X) / 2 : 0) : tx;
-      for (const tier of fan.tiers.slice(0, -1)) {
-        for (const k of tier) if (Math.abs(pos.get(k).x - gx) < NODE_W / 2) throw new Error(`trunk of ${fan.key} crosses ${k}`);
-      }
-    }
-  }
+  checkLayout(items);
 }
+
+const timed = (at, fn) => {
+  const t = performance.now();
+  try {
+    fn();
+  } catch (e) {
+    failures.push(`${at}: ${e.message}`);
+  }
+  const ms = performance.now() - t;
+  if (ms > slowest.ms) slowest = { ms, at };
+};
 
 for (const f of files) {
   const res = await fetch(`${base}/api/files/${encodeURIComponent(f.name)}/refmap`);
   if (!res.ok) continue; // not XML: the tree refuses it too
   const data = await res.json();
   const g = indexGraph(data);
+  wholes++;
+  timed(`${f.name}: whole file`, () => {
+    const items = buildTree(g, new Set(), new Map());
+    checkWhole(g, items, false);
+    checkLayout(items, "top");
+  });
+  timed(`${f.name}: whole file, all open`, () => {
+    const items = buildTree(g, new Set(), openAll((_, p) => buildTree(g, new Set(), p)).pages);
+    if (items.size > biggest.n) biggest = { n: items.size, at: f.name };
+    checkWhole(g, items, true);
+    checkLayout(items, "top");
+  });
   for (const root of new Set([...data.nodes.map((n) => n.id), ...data.edges.flatMap((e) => [e.s, e.t])])) {
     centres++;
-    const t = performance.now();
-    try {
-      check(g, root);
-    } catch (e) {
-      failures.push(`${f.name}: centred on ${root}: ${e.message}`);
-    }
-    const ms = performance.now() - t;
-    if (ms > slowest.ms) slowest = { ms, at: `${f.name}, ${root.split("/").pop()}` };
+    timed(`${f.name}: centred on ${root}`, () => centred(g, root));
   }
 }
-console.log(`${files.length} files, ${centres} centres, ${failures.length} failures; slowest ${slowest.ms.toFixed(1)} ms (${slowest.at})`);
+console.log(
+  `${files.length} files, ${wholes} whole maps, ${centres} centres, ${failures.length} failures; ` +
+    `slowest ${slowest.ms.toFixed(1)} ms (${slowest.at.split(": ").pop()}); biggest all-open map ${biggest.n} cards`
+);
 failures.slice(0, 20).forEach((x) => console.log("  " + x));
 
 // Paging: 40 objects of one class pointing at one target show as a group,
@@ -97,12 +141,12 @@ for (let i = 1; i <= 40; i++) {
 }
 const g = indexGraph({ nodes, edges, stats: {} });
 const none = { up: new Set(), down: new Set() };
+const upOf = (v) => v.get("c").children.filter((k) => v.get(k).dir === "up").map((k) => v.get(k));
 const first = buildView(g, "R-1/T-1", none, new Map());
 const group = [...first.values()].find((i) => i.kind === "group");
 const paging = [group ? "ok" : "no group"];
 for (const n of [1, 2, 3]) {
-  const v = buildView(g, "R-1/T-1", none, new Map([[group?.groupKey, n]]));
-  const up = v.get("c").up.map((k) => v.get(k));
+  const up = upOf(buildView(g, "R-1/T-1", none, new Map([[group?.groupKey, n]])));
   const shown = up.filter((i) => i.kind === "node").length;
   const more = up.findIndex((i) => i.kind === "more");
   const want = Math.min(40, n * PAGE);
@@ -117,6 +161,7 @@ console.log(`paging: ${pagingOk ? "ok" : paging.join(", ")}`);
 // Containment: an object sits in its nearest ancestor the file has (X-1 is
 // a gap, so Y-1 sits in A-1); one both contained and referenced is one card,
 // a reference; contents come after the references and fold apart from them.
+// In the whole file, a reference to an object elsewhere is a link card.
 const tree = indexGraph({
   nodes: ["A-1", "A-1/B-1", "A-1/B-1/C-1", "A-1/X-1/Y-1", ...Array.from({ length: 8 }, (_, i) => `A-1/B-1/D-${i + 1}`)].map(
     (id) => ({ id, cls: id.split("/").pop().replace(/-.*/, "") })
@@ -128,22 +173,33 @@ const tree = indexGraph({
   stats: {},
 });
 const contain = [];
-const at = (v, half) => v.get("c")[half].map((k) => v.get(k));
+const half = (v, dir) => v.get("c").children.filter((k) => v.get(k).dir === dir).map((k) => v.get(k));
 const a = buildView(tree, "A-1", none, new Map());
-const aDown = at(a, "down");
+const aDown = half(a, "down");
 const b = aDown.find((i) => i.id === "A-1/B-1");
 if (!b || b.held || !b.edges.some((e) => e.kind === "ref") || !b.edges.some((e) => e.kind === "contains")) contain.push("B-1 not one card, a reference");
 if (!aDown.find((i) => i.id === "A-1/X-1/Y-1")?.held) contain.push("Y-1 not held by A-1 across the gap");
 if (aDown.findIndex((i) => i.held) < aDown.findIndex((i) => !i.held)) contain.push("contents before references");
 const bv = buildView(tree, "A-1/B-1", none, new Map());
-const bUp = at(bv, "up");
-if (!bUp.some((i) => i.id === "A-1" && !i.held) || bUp.length !== 1) contain.push("B-1's container (and referrer) A-1 not above it once");
-const bDown = at(bv, "down");
+const bUp = half(bv, "up");
+if (!bUp.some((i) => i.id === "A-1" && !i.held) || bUp.length !== 1) contain.push("B-1's container (and referrer) A-1 not left of it once");
+const bDown = half(bv, "down");
 if (bDown[0]?.id !== "A-1/X-1/Y-1" || bDown[0].held) contain.push("B-1's reference not first");
 if (!bDown.some((i) => i.id === "A-1/B-1/C-1" && i.held)) contain.push("C-1 not under B-1");
 const d = bDown.find((i) => i.kind === "group");
 if (!d?.held || d.count !== 8 || d.groupCard !== d.key) contain.push("D group not folded as contents");
-const c = at(buildView(tree, "A-1/B-1/C-1", none, new Map()), "up");
-if (c.length !== 1 || c[0].id !== "A-1/B-1" || !c[0].held) contain.push("C-1's container not above it");
+const c = half(buildView(tree, "A-1/B-1/C-1", none, new Map()), "up");
+if (c.length !== 1 || c[0].id !== "A-1/B-1" || !c[0].held) contain.push("C-1's container not left of it");
+const w = buildTree(tree, new Set(), new Map());
+const wb = [...w.values()].filter((i) => i.id === "A-1/B-1");
+if (wb.length !== 1 || wb[0].kind !== "node" || !wb[0].edges.some((e) => e.kind === "ref")) contain.push("whole: B-1 not one card, a reference");
+const wy = [...w.values()].filter((i) => i.id === "A-1/X-1/Y-1");
+if (wy.length !== 2 || !wy.some((i) => i.kind === "ghost" && items(w, i.parent).id === "A-1/B-1") || !wy.some((i) => i.kind === "node"))
+  contain.push("whole: Y-1 not its card plus B-1's link card");
+const shut = buildTree(tree, new Set(["A-1/B-1"]), new Map());
+if ([...shut.values()].some((i) => i.id?.startsWith("A-1/B-1/"))) contain.push("whole: a collapsed B-1 still shows its contents");
 console.log(`containment: ${contain.length ? contain.join(", ") : "ok"}`);
+function items(v, key) {
+  return v.get(key);
+}
 process.exit(failures.length || !pagingOk || contain.length ? 1 : 0);
