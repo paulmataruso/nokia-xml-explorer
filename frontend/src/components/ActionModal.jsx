@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { applyAction, duplicateToUploads, getActionSetup, previewAction } from "../api.js";
+import { applyAction, applyRun, duplicateToUploads, getActionSetup, previewRun } from "../api.js";
 import { ChangeRow, ConfirmList, ManualSteps, PlanProblems, StepsTools, plural, toggleIn } from "./ActionParts.jsx";
 import { Findings } from "./CaCheckModal.jsx";
 import { Highlight } from "./Highlight.jsx";
@@ -14,8 +14,14 @@ const STEPS = [
 const counts = (s) =>
   `${plural(s.errors, "error")}, ${plural(s.warnings, "warning")}` + (s.infos ? `, ${plural(s.infos, "note")}` : "");
 
-/** A field's options: its own, or for a `dependsOn` field the ones keyed by its parent's chosen option (chains too). */
+/** A field's options: its own, or for a `dependsOn` field the ones keyed by its parent's chosen option (chains too).
+ * `excludeField` drops the option another field has chosen ("More neighbours" leaves out the first). */
 function resolveOptions(fields, values, field) {
+  const own = ownOptions(fields, values, field);
+  return field.excludeField ? own.filter((o) => o.value !== values[field.excludeField]) : own;
+}
+
+function ownOptions(fields, values, field) {
   // A field with fixed options may still depend on another, for its default only.
   if (!field.dependsOn || !field.optionsByKey) return field.options || [];
   const parent = fields.find((f) => f.id === field.dependsOn);
@@ -225,6 +231,76 @@ function ChecksField({ field, value, options, onChange }) {
   );
 }
 
+/** Several of a long list, ticked: a filter, the options in their groups, and how many are picked. `value` is
+ * the ticked values (none when unset). */
+function PicksField({ field, value, options, onChange }) {
+  const [query, setQuery] = useState("");
+  const ticked = new Set(value || []);
+  const q = query.trim().toLowerCase();
+  const shown = options.filter(
+    (o) => !q || o.label.toLowerCase().includes(q) || (o.hint || "").toLowerCase().includes(q),
+  );
+  const count = options.filter((o) => ticked.has(o.value)).length;
+  const toggle = (v) => {
+    const next = new Set(ticked);
+    if (next.has(v)) next.delete(v);
+    else next.add(v);
+    onChange(options.map((o) => o.value).filter((x) => next.has(x)));
+  };
+  return (
+    <fieldset className="am-field am-checks am-picks">
+      <legend className="cw-label">
+        {field.label}
+        {field.optional && <span className="am-optional">optional</span>}
+        <span className="am-checks-count">{count ? `${count} picked` : `none of ${options.length}`}</span>
+      </legend>
+      {field.hint && <p className="cw-hint am-hint">{field.hint}</p>}
+      <div className="am-picks-bar">
+        <input
+          type="search"
+          className="input"
+          value={query}
+          placeholder="Filter by id, name, address or file"
+          aria-label={`Filter ${field.label}`}
+          spellCheck={false}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        {count > 0 && (
+          <button type="button" className="btn btn-quiet" onClick={() => onChange([])}>
+            Clear
+          </button>
+        )}
+      </div>
+      <div className="am-picks-list">
+        {shown.length === 0 ? (
+          <p className="cw-hint">Nothing matches “{query.trim()}”.</p>
+        ) : (
+          groupBy(shown).map((g) => (
+            <section key={g.name}>
+              {g.name && <h4 className="am-suggest-group">{g.name}</h4>}
+              <ul className="cw-options">
+                {g.items.map((o) => (
+                  <li key={o.value}>
+                    <label>
+                      <input type="checkbox" checked={ticked.has(o.value)} onChange={() => toggle(o.value)} />
+                      <span>
+                        <span className="cw-option-label mono">
+                          <Highlight text={o.label} query={q} />
+                        </span>
+                        {o.hint && <span className="cw-option-help">{o.hint}</span>}
+                      </span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        )}
+      </div>
+    </fieldset>
+  );
+}
+
 function Review({ plan, confirmed, onConfirm, view, onView, filename }) {
   const rootId = plan.changes[0]?.dn.split("/")[0];
   const stepsFile = `${(filename || "plan").replace(/\.xml$/i, "")} - ${plan.label || "steps"}.txt`.replace(/[\\/:*?"<>|]/g, "_");
@@ -323,6 +399,56 @@ function Review({ plan, confirmed, onConfirm, view, onView, filename }) {
   );
 }
 
+/** The ticked confirms of one file of a run (keys "file:item"), as the item numbers. */
+const confirmsOf = (confirmed, fi) =>
+  new Set([...confirmed].filter((k) => k.startsWith(`${fi}:`)).map((k) => Number(k.split(":")[1])));
+
+/** A run's review: each file it writes, with what it does there and its own plan, site check and confirms. */
+function RunReview({ run, confirmed, onConfirm, view, onView }) {
+  const total = run.reduce((n, f) => n + (f.plan?.changes.length || 0), 0);
+  return (
+    <>
+      <div className="ca-summary">
+        <span className="ca-fact">
+          <strong>{plural(run.length, "file")}</strong>, {plural(total, "change")} in all
+        </span>
+        <span className="ca-fact">Written together, each with its own snapshot; a read-only file goes into a copy.</span>
+      </div>
+      {run.map((f, fi) => (
+        <section key={f.key} className="am-run-file" aria-labelledby={`am-run-${fi}`}>
+          <h3 id={`am-run-${fi}`} className="am-run-title">
+            <span className="am-run-name">{f.name}</span>
+            <span className="tag">{f.this ? "This file" : "Other site"}</span>
+            {!f.editable && <span className="tag">Read-only: goes into a copy</span>}
+          </h3>
+          {f.what.length > 0 && (
+            <ul className="am-details">
+              {f.what.map((w, i) => (
+                <li key={i}>{w}.</li>
+              ))}
+            </ul>
+          )}
+          {f.problems ? (
+            <PlanProblems
+              error={{ problems: f.problems }}
+              lead="This file's part can't be planned. Untick what asks for it to write the rest:"
+            />
+          ) : (
+            <Review
+              plan={f.plan}
+              confirmed={confirmsOf(confirmed, fi)}
+              onConfirm={(i) => onConfirm(`${fi}:${i}`)}
+              view={view}
+              onView={onView}
+              filename={f.name}
+            />
+          )}
+        </section>
+      ))}
+    </>
+  );
+}
+
 /**
  * A site action with a form (backend actions/, UI "form"): its fields,
  * then a review of every change with its reason, the site check before and
@@ -336,7 +462,8 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
   const [setup, setSetup] = useState(null);
   const [values, setValues] = useState({});
   const [step, setStep] = useState("inputs");
-  const [plan, setPlan] = useState(null);
+  // The run's files (actions/run.py): this file's plan first, then the other sites' files it changes.
+  const [run, setRun] = useState(null);
   const [error, setError] = useState(null);
   const [confirmed, setConfirmed] = useState(() => new Set());
   const [applying, setApplying] = useState(false);
@@ -380,25 +507,34 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
     !(f.dependsOn && (f.type === "select" || f.type === "checks") && optionsFor(f).length === 0) &&
     (!f.showIf ||
       (f.showIf.in ? f.showIf.in.includes(values[f.showIf.field]) : values[f.showIf.field] === f.showIf.equals));
-  // What the backend gets: an untouched checkbox set means all of it.
-  const inputs = Object.fromEntries(
-    fields
-      .filter(shown)
-      .map((f) => [f.id, f.type === "checks" ? values[f.id] ?? optionsFor(f).map((o) => o.value) : values[f.id]]),
-  );
+  // What the backend gets: an untouched checkbox set means all of it, untouched picks none; picks the options
+  // no longer offer (another target, the first neighbour) are left out.
+  const sent = (f) => {
+    if (f.type === "checks") return values[f.id] ?? optionsFor(f).map((o) => o.value);
+    if (f.type === "picks") {
+      const offered = new Set(optionsFor(f).map((o) => o.value));
+      return (values[f.id] ?? f.default ?? []).filter((v) => offered.has(v));
+    }
+    return values[f.id];
+  };
+  const inputs = Object.fromEntries(fields.filter(shown).map((f) => [f.id, sent(f)]));
   const complete = fields
     .filter((f) => shown(f) && !f.optional)
-    .every((f) => (f.type === "checks" ? inputs[f.id].length > 0 : (inputs[f.id] || "").toString().trim() !== ""));
+    .every((f) =>
+      f.type === "checks" || f.type === "picks" ? inputs[f.id].length > 0 : (inputs[f.id] || "").toString().trim() !== "",
+    );
 
   const goReview = () => {
     setStep("review");
-    setPlan(null);
+    setRun(null);
     setError(null);
     setConfirmed(new Set());
-    previewAction(filename, actionId, inputs)
-      .then(setPlan)
+    previewRun(filename, actionId, inputs)
+      .then((r) => setRun(r.files))
       .catch((e) => setError({ message: String(e.message || e), problems: e.problems || null }));
   };
+  const plan = run?.[0]?.plan;
+  const several = run && run.length > 1;
 
   const apply = async () => {
     setApplying(true);
@@ -406,6 +542,12 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
     let target = filename;
     let copied = false;
     try {
+      if (several) {
+        // The server writes every file, copies included, or none.
+        const [mine, ...others] = (await applyRun(filename, actionId, inputs)).files;
+        onApplied({ ...mine, others });
+        return;
+      }
       if (!editable) {
         target = (await duplicateToUploads(filename)).name;
         copied = true;
@@ -425,9 +567,12 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
     }
   };
 
-  const breaks = plan && plan.check.new.some((f) => f.severity === "error");
-  const allConfirmed = plan && plan.confirm.every((_, i) => confirmed.has(i));
-  const nothingToDo = plan && plan.changes.length === 0;
+  const breaks = run && run.some((f) => f.plan?.check.new.some((x) => x.severity === "error"));
+  const stuck = run && run.some((f) => f.problems);
+  const allConfirmed =
+    run && run.every((f, fi) => !f.plan || f.plan.confirm.every((_, i) => confirmed.has(`${fi}:${i}`)));
+  const confirms = run ? run.reduce((n, f) => n + (f.plan?.confirm.length || 0), 0) : 0;
+  const nothingToDo = run && run.every((f) => !f.plan || f.plan.changes.length === 0);
 
   let body;
   if (!setup) body = <div className="placeholder">Reading the file…</div>;
@@ -459,6 +604,16 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
                 onChange={(v) => setValue(f.id, v)}
               />
             )
+          ) : f.type === "picks" ? (
+            optionsFor(f).length > 0 && (
+              <PicksField
+                key={f.id}
+                field={f}
+                value={values[f.id]}
+                options={optionsFor(f)}
+                onChange={(v) => setValue(f.id, v)}
+              />
+            )
           ) : f.type === "combo" ? (
             <ComboField
               key={f.id}
@@ -481,13 +636,21 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
         </h3>
         {error ? (
           <PlanProblems error={error} />
-        ) : !plan ? (
+        ) : !run ? (
           <div className="placeholder">Planning the changes…</div>
+        ) : several ? (
+          <RunReview
+            run={run}
+            confirmed={confirmed}
+            onConfirm={(k) => setConfirmed((prev) => toggleIn(prev, k))}
+            view={view || setup.view || "changes"}
+            onView={setView}
+          />
         ) : (
           <Review
             plan={plan}
-            confirmed={confirmed}
-            onConfirm={(i) => setConfirmed((prev) => toggleIn(prev, i))}
+            confirmed={confirmsOf(confirmed, 0)}
+            onConfirm={(i) => setConfirmed((prev) => toggleIn(prev, `0:${i}`))}
             view={view || setup.view || "changes"}
             onView={setView}
             filename={filename}
@@ -508,10 +671,16 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
         <>
           <span className="ca-footer-hint">
             {breaks
-              ? "This change would break the file's links, so it can't be applied."
-              : editable
-                ? "Applied as one edit with a snapshot, so Undo puts the file back exactly."
-                : "This file is read-only: the change goes into an editable copy in Your uploads."}
+              ? several
+                ? "A file of the run would break its links, so none can be written."
+                : "This change would break the file's links, so it can't be applied."
+              : stuck
+                ? "A file's part can't be planned, so none can be written."
+                : several
+                  ? `Writes the ${run.length} files together, each with its own snapshot; read-only ones go into copies.`
+                  : editable
+                    ? "Applied as one edit with a snapshot, so Undo puts the file back exactly."
+                    : "This file is read-only: the change goes into an editable copy in Your uploads."}
           </span>
           {stepIndex > 0 && (
             <button className="btn" onClick={() => setStep(STEPS[stepIndex - 1][0])} disabled={applying}>
@@ -527,10 +696,16 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
           ) : (
             <button
               className="btn btn-primary"
-              disabled={!plan || !allConfirmed || nothingToDo || breaks || applying}
+              disabled={!run || !allConfirmed || nothingToDo || breaks || stuck || applying}
               onClick={apply}
             >
-              {applying ? "Applying…" : editable ? "Apply" : "Apply to a copy"}
+              {applying
+                ? "Applying…"
+                : several && !nothingToDo
+                  ? `Apply to ${plural(run.filter((f) => f.plan?.changes.length).length, "file")}`
+                  : editable
+                    ? "Apply"
+                    : "Apply to a copy"}
             </button>
           )}
         </>
@@ -549,7 +724,7 @@ export function ActionModal({ filename, actionId, initial, editable, onClose, on
               {label}
             </button>
           ))}
-          {step === "review" && plan && !allConfirmed && !nothingToDo && plan.confirm.length > 0 && (
+          {step === "review" && run && !allConfirmed && !nothingToDo && confirms > 0 && (
             <span className="rf-tab-hint">Tick every check under "Before you load it" to apply.</span>
           )}
         </div>

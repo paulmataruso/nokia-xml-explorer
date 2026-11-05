@@ -7,7 +7,8 @@ carrier another file uses (else the first suggestion): no crash; the site
 check finds no new error or warning; the same again on the result is
 refused (every cell has it).
 Round trip: every carrier object in the files (IRFIM with its LNHOIF,
-NRFIM and REDRT rows, NRIRFIM, NRLIM, NRREDRT) is removed and added again
+NRFIM and REDRT rows, NRIRFIM, NRLIM, NRREDRT, a cell's NRHOIR with the
+cells naming it) is removed and added again
 through the action, with the band and SCS it had. The copy must name the
 carrier as the removed one did (the same values and ssbScs spellings) and
 hold its template's values everywhere else.
@@ -33,7 +34,7 @@ from cell_check import load  # noqa: E402
 
 W = why("check", "round trip", "choice")
 MAIN = {"lte-lte": "IRFIM", "nr-lte": "NRFIM", "redirect-lte": "REDRT:eutra", "redirect-lte-nr": "REDRT:nr",
-        "nr-nr": "NRIRFIM", "lte-nr": "NRLIM", "redirect-nr": "NRREDRT"}
+        "nr-nr": "NRIRFIM", "lte-nr": "NRLIM", "ho-nr": "NRHOIR", "redirect-nr": "NRREDRT"}
 
 
 def new_findings(plan):
@@ -113,6 +114,9 @@ def round_trip(name, source, raw, corpus, failures):
                                                 next(i for i, r in enumerate(rows) if r.get(OBJECTS[k]["row"][1]) == value), W)
                             else:
                                 doc.delete(o["dn"], W)
+                            if "named" in OBJECTS[k]:
+                                for c in doc.of_class(parent["cls"]):
+                                    doc.remove_value(c, OBJECTS[k]["named"], o["dn"], W)
                     stripped = doc.raw()
                     ctx = Context(stripped, name, source, corpus=lambda: corpus)
                     inputs = {"kind": kind, "targets": [parent["dn"]], spec["input"]: value,

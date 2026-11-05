@@ -615,6 +615,7 @@ def _redirect(ctx: Context, p: _Plan, gnb: dict, cells: list[str], earfcn: Optio
         p.notes += [n.replace("Left out, as", "NRREDRT: left out, as") for n in cp.notes]
         if cp.dropped:
             p.notes.append(f"NRREDRT: left out, as no file of this release sets them: {', '.join(sorted(cp.dropped))}.")
+        p.notes += carrier.plan_notes(cp)
         p.touched += [cp.focus] if cp.focus else []
 
 

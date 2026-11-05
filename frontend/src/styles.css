@@ -3701,6 +3701,62 @@ mark {
   align-self: flex-start;
 }
 
+/* Picks: a long list of sites, filtered, in a bounded scroll. */
+.am-picks-bar {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.am-picks-bar .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.am-picks-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 0 var(--s-1) var(--s-1) 0;
+  scrollbar-gutter: stable;
+}
+
+.am-picks-list section:first-child .am-suggest-group {
+  margin-top: var(--s-1);
+}
+
+/* A run's review: one section per file it writes, ruled apart. */
+.am-run-file {
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--line-2);
+}
+
+.am-run-file + .am-run-file {
+  margin-top: var(--s-7);
+}
+
+.am-run-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin: 0 0 var(--s-3);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.am-run-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.am-run-title .tag {
+  font-weight: 400;
+}
+
+.am-run-file > .am-details {
+  margin-bottom: var(--s-4);
+}
+
 .am-suggest-group {
   margin: var(--s-3) 0 var(--s-2);
   color: var(--ink-3);

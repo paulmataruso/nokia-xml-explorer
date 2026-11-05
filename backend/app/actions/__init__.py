@@ -20,6 +20,10 @@ An action is a module with:
   after, and `steps` and `stepsText`: the changes as steps to make by
   hand (steps.py).
   Raise PlanError for a request the rules forbid.
+- legs(ctx, inputs), optional, for an action that names other sites: the
+  changes the run makes after this one, on this file or on the files the
+  other sites come from (the other end of a neighbour, the other side of
+  EN-DC). run.py plans them together; see its docstring.
 
 Actions are pure like parser.py: main.py reads and writes the files.
 Rule for every action: template values may come from a donor file;
@@ -76,6 +80,16 @@ class Context:
     @property
     def editable(self) -> bool:
         return self.source == "upload"
+
+    @property
+    def key(self) -> str:
+        """The file's key in the corpus ("scp:name.xml")."""
+        return f"{self.source}:{self.filename}"
+
+    def with_raw(self, raw: bytes) -> "Context":
+        """The same file with other bytes: the next change of a run plans
+        on what the one before left."""
+        return Context(raw, self.filename, self.source, self.corpus, self.read, self.release_index, self.kb)
 
 
 def finish(ctx: Context, doc: Doc, plan: dict) -> tuple[bytes, dict]:

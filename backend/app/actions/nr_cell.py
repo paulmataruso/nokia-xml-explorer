@@ -11,7 +11,8 @@ neighbour relations and CBRS registration aren't (cells.py).
 
 Per cell, only cellName, physCellId, prachRootSequenceIndex and lcrId vary
 over 118 production cells; nrCellIdentity, where a file writes it, follows
-from the gNB id and lcrId (sites.nci). mMimoAntArrayMode,
+from the gNB id and lcrId (sites.nci), with gNbIdLength or, where the file
+leaves it out, the length its cells' identities imply. mMimoAntArrayMode,
 numberOfRxBeamforming, numberOfRxPucch and pMax follow the radio: on a
 radio of another product code they take the values the files' cells on
 that code have, else the template's, with a note.
@@ -19,7 +20,8 @@ that code have, else the template's, with a note.
 The new NRCELL is instance lcrId (156 of 167 cells), its NRCELLGRP too, as
 production numbers them; the next free id where that is taken.
 Refused: an lcrId the site uses, or one that doesn't fit the NR cell
-identity (36 - gNbIdLength bits); a PCI or PRACH root another cell on the
+identity (36 - gNbIdLength bits), or an identity the length can't be
+found for; a PCI or PRACH root another cell on the
 same carrier has; a radio that already carries a cell on the same carrier;
 a radio with fewer antennas than the template's channels use.
 """
@@ -35,7 +37,7 @@ from .doc import Doc, instance, label, why
 from .hardware import RADIO_PARAMS, base, corpus_view
 from .neighbours import number
 from .product_code import _name
-from .sites import gscn_to_arfcn, nci, nr_cell
+from .sites import gscn_to_arfcn, id_length, nci, nr_cell
 
 ID = "nr-cell"
 TITLE = "Add a 5G cell"
@@ -190,7 +192,8 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     if site.by_dn.get(radio, {}).get("cls") != "RMOD" or radio.split("/", 1)[0] != root:
         raise PlanError(["Pick the radio the new cell transmits on."])
     problems: list[str] = []
-    length = gnb["p"].get("gNbIdLength")
+    length = gnb["p"].get("gNbIdLength") or id_length(instance(gnb["dn"]),
+                                                      [c["p"] for c in site.child(gnb["dn"], "NRCELL")])
     hi = (1 << (36 - int(length))) - 1 if (length or "").isdigit() and 22 <= int(length) <= 32 else 16383
     lcr = number(inputs.get("lcrId"), 0, hi, "The lcrId", problems)
     pci = number(inputs.get("pci"), 0, 1007, "The PCI", problems)
@@ -234,6 +237,9 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     rewrite, unfit, renumbered = move_antennas(site, mapping, radio)
     if unfit:
         problems.append(unfit)
+    if cell["p"].get("nrCellIdentity") is not None and not nci(instance(gnb["dn"]), length, lcr):
+        problems.append(f"The template writes nrCellIdentity, but gNB {instance(gnb['dn'])}'s id length isn't known "
+                        "(NRBTS gNbIdLength, or the cells' identities), so the new cell's can't be built.")
     if problems:
         raise PlanError(problems)
 
@@ -254,9 +260,7 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
         notes.append(f"On NR-ARFCN {carrier[0]} with its SSB at GSCN {carrier[1]}; the band (n{x['band']}), "
                      f"bandwidth ({cell['p'].get('chBw')}) and SSB spacing stay the template's.")
     if cell["p"].get("nrCellIdentity") is not None:
-        identity = nci(instance(gnb["dn"]), length, lcr)
-        if identity:
-            over["nrCellIdentity"] = identity
+        over["nrCellIdentity"] = nci(instance(gnb["dn"]), length, lcr)
     codes = {r: base(site.by_dn[r]["p"].get("prodCodePlanned")) for r in [*radios(site, mapping), radio]}
     old_code, new_code = codes[radios(site, mapping)[0]], codes[radio]
     if new_code and old_code and new_code != old_code:
@@ -304,7 +308,7 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
                    + (f" (n{x['band']}, NR-ARFCN {target_arfcn})" if x["band"] else "") + ", and the baseband has "
                    "capacity for another cell.")
     notes.append("Neighbours aren't copied: ANR learns them, or plan them with the neighbour actions. An LTE eNB that "
-                 "anchors EN-DC learns the cell from UE measurements, or add it with the EN-DC gNB action.")
+                 "anchors EN-DC learns the cell from UE measurements, or add it with the Add a neighbour gNB action.")
     return finish(ctx, doc, {
         "label": f"NR cell {name} ({label(dst)})",
         "summary": f"{label(dst)} · {name} · lcrId {lcr} · PCI {pci} on {label(radio)}",

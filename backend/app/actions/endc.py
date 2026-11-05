@@ -61,6 +61,12 @@ and TL18SP), and the 27 production 25R2 gNBs.
   - QCI 6-9 bearers (NRDRB_QCI): production maps QCI 5-9 to NRDRB-5..9 and
     profiles of their own. A missing one is added with production's
     template, through the QoS action (qos._plan_nr).
+
+Both sides in one run (run.py): the 4G side also sets up its gNB's 5G side
+in that gNB's file ("The gNB's file": the gNB the X2 link goes to, else the
+nearest one whose cells carry the NR carrier picked), and the 5G side the
+4G side of each eNB picked ("Also set up the 4G side on"), measuring this
+gNB's first carrier with a planned X2 link to it.
 """
 from __future__ import annotations
 
@@ -70,10 +76,11 @@ from . import Context, PlanError, finish
 from . import qos
 from .doc import Doc, instance, label, natural, release_of, why
 from .endc_gnb import _Plan as _AdjPlan
+from .endc_gnb import _existing, _taken
 from .endc_gnb import _gnb as _endc_gnb
 from .endc_gnb import _sources as _gnb_sources
 from .links import Site
-from .neighbours import anr_budget, lte_enbs, number
+from .neighbours import anr_budget, far, from_text, group, lte_enbs, nearby, number, sources
 from .sites import nr_cell, x2_address
 from .transport import lte_cplane
 
@@ -213,16 +220,25 @@ def setup(ctx: Context) -> dict:
             x2.append({"value": AUTO, "key": AUTO, "label": "Automatic X2 setup, as the production SRAN sites",
                        "details": ["actEndcAutoX2Setup and actUeBasedAnrNr: the eNB learns the NR cells from UE "
                                    "measurements and sets up X2 to their gNB itself."]})
-        for e in gnb_found:
+        for e in nearby(site, lte_cplane(site, dn, None), gnb_found):
             if e["ip"] and not any((m["p"].get("cPlaneIpAddr") or "").lower() == e["ip"].lower() for m in adj):
-                x2.append({"value": e["key"], "key": e["key"], "group": "Planned link to a gNB in the tool",
+                x2.append({"value": e["key"], "key": e["key"],
+                           "group": "Planned link to a gNB " + ("on this site's subnet" if e.get("subnet") else
+                                                                 "in the tool"),
                            "label": f"gNB {e['id']}" + (f" {e['name']}" if e.get("name") else "") + f" · {e['ip']}",
-                           "details": [f"An LNADJGNB to it, from {e['file']}. Its cell relations: the EN-DC gNB "
-                                       "action, or UE-based ANR."]})
+                           "details": [f"An LNADJGNB to it, from {e['file']}. Its cell relations: the Add a "
+                                       "neighbour gNB action, or UE-based ANR."]
+                           + ([f"Its address is on this site's subnet ({e['subnet']}), as a co-sited BTS's is."]
+                              if e.get("subnet") else [])})
         x2s[dn] = x2
         x2_default[dn] = KEEP if (adj or auto) else None
     gnb_opts = [{"value": g["dn"], "key": g["dn"], "label": f"{label(g['dn'])} · gNB {instance(g['dn'])}"
                  + (f" · {g['p'].get('btsName')}" if g["p"].get("btsName") else "")} for g in gnbs]
+    enb_found = sources(ctx, "enbs", lambda e: not e["cells"], ("id", "plmn", "ip", "cells")) if gnbs else []
+    enb_picks = {g["dn"]: [{"value": e["key"], "group": group(e), "hint": from_text(e),
+                            "label": f"eNB {e['id']}" + (f" {e['name']}" if e.get("name") else "")
+                            + (f" · {e['ip']}" if e.get("ip") else "")}
+                           for e in nearby(site, x2_address(site, g), enb_found)] for g in gnbs}
     four, five, manual = {"field": "side", "equals": "4g"}, {"field": "side", "equals": "5g"}, \
         {"field": "carrier", "equals": MANUAL}
     return {
@@ -245,8 +261,64 @@ def setup(ctx: Context) -> dict:
              "optionsByKey": x2s, "defaultByKey": x2_default},
             {"id": "gnb", "label": "This gNB", "type": "select", "showIf": five, "options": gnb_opts,
              "default": gnb_opts[0]["value"] if len(gnb_opts) == 1 else None},
+            {"id": "also5g", "label": "The gNB's file", "type": "checks", "showIf": four, "optional": True,
+             "options": [{"value": ALSO, "label": "Set up the gNB's 5G side in its own file too",
+                          "hint": "The gNB the X2 link goes to, else the one the NR carrier comes from, written with "
+                                  "this one (a read-only file goes into a copy). Not for a carrier typed in."}]},
+            {"id": "enbs", "label": "Also set up the 4G side on", "type": "picks", "showIf": five,
+             "dependsOn": "gnb", "optionsByKey": enb_picks, "optional": True, "default": [],
+             "hint": "Each eNB, in its own file, measures this gNB's carrier and gets a planned X2 link to it."},
         ],
     }
+
+
+ALSO = "5g"
+OTHER = {"4g": "Run it on the gNB's file too, 5G side.", "5g": "Run it on the eNB's file too, 4G side."}
+
+
+def _partner(ctx: Context, inputs: dict) -> Optional[str]:
+    """The gNB a 4G side pairs with: the one its X2 link goes to (a planned
+    link picked, else one of the eNB's LNADJGNBs), else the nearest one in the
+    tool whose cells carry the NR carrier picked (or one it already measures)."""
+    if far(inputs.get("x2")):
+        return inputs["x2"]
+    value = (inputs.get("carrier") or "").split(":")
+    enb = next((m for m in lte_enbs(ctx.site) if m["dn"] == inputs.get("enb")), None)
+    if not enb:
+        return None
+    measured = _measured(ctx.site, enb)
+
+    def carries(e: dict) -> bool:
+        if len(value) == 4 and value[0] == "nr":
+            return any((c.get("ssb"), c.get("band"), c.get("scs")) == tuple(value[1:]) for c in e["cells"])
+        return value == [KEEP] and any(c.get("ssb") in measured for c in e["cells"])
+
+    # Another export of a gNB at an address the eNB has for another gNB id is stale.
+    found = [e for e in nearby(ctx.site, lte_cplane(ctx.site, enb["dn"], None), _gnb_sources(ctx))
+             if carries(e) and not _taken(ctx.site, enb, e)]
+    return next((e["key"] for e in found if _existing(ctx.site, enb, e["ip"], e["id"], e["plmn"])), None) or \
+        next((e["key"] for e in found), None)
+
+
+def legs(ctx: Context, inputs: dict) -> list[dict]:
+    """The run's other side: the gNB's 5G side in its file, or each picked
+    eNB's 4G side in its own, paired with this gNB."""
+    if inputs.get("side") == "4g":
+        there = far(_partner(ctx, inputs)) if ALSO in (inputs.get("also5g") or []) else None
+        return [{"file": there[0], "action": ID, "inputs": {"side": "5g", "gnb": there[1]},
+                 "what": f"gNB {instance(there[1])}'s 5G side", "settles": list(OTHER.values())}] if there else []
+    gnb = next((m for m in _gnbs(ctx.site) if m["dn"] == inputs.get("gnb")), None)
+    carriers = _carriers_of(ctx.site, gnb) if gnb and inputs.get("side") == "5g" else []
+    out = []
+    for k in dict.fromkeys(inputs.get("enbs") or []) if carriers else []:
+        there = far(k)
+        if there:
+            out.append({"file": there[0], "action": ID,
+                        "inputs": {"side": "4g", "enb": there[1], "carrier": _carrier_value(*carriers[0]),
+                                   "x2": f"{ctx.key}|{gnb['dn']}"},
+                        "what": f"eNB {instance(there[1])}'s 4G side, with gNB {instance(gnb['dn'])}",
+                        "settles": list(OTHER.values())})
+    return out
 
 
 class _Side:
@@ -470,7 +542,7 @@ def _plan_4g(ctx: Context, doc: Doc, inputs: dict) -> tuple[dict, _Side, str]:
                            "requests on, and the gNB must answer them.")
         else:
             s.todo.append(f"Set up X2 to the gNB: no file of {s.release or 'this release'} has actEndcAutoX2Setup, so "
-                          "plan the link instead (an LNADJGNB, the EN-DC gNB action).")
+                          "plan the link instead (an LNADJGNB, the Add a neighbour gNB action).")
     elif x2 != KEEP:
         nb = _endc_gnb(ctx, {"source": x2, "cells": []})
         adj = _AdjPlan(ctx, doc, enb, nb)
@@ -581,19 +653,17 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     side = inputs.get("side")
     if side == "4g":
         node, s, focus = _plan_4g(ctx, doc, inputs)
-        other = "Run it on the gNB's file too, 5G side."
         confirm = ["The BTS has the LTE4088 licence (LTE-NR Dual Connectivity Option 3X).",
                    "The gNB is set up for EN-DC (its 5G side) and accepts X2 from this eNB"
                    + (f" ({lte_cplane(ctx.site, node['dn'], None)})" if lte_cplane(ctx.site, node["dn"], None) else "")
                    + ", on SCTP port 36422."]
     elif side == "5g":
         node, s, focus, address = _plan_5g(ctx, doc, inputs)
-        other = "Run it on the eNB's file too, 4G side."
         confirm = ["The eNB is set up for EN-DC (its 4G side) and reaches this gNB's X2 address"
                    + (f" ({address})" if address else "") + ", on SCTP port 36422."]
     else:
         raise PlanError(["Pick the side to set up."])
-    notes = ([f"Already in place: {', '.join(s.ready)}."] if s.ready else []) + s.notes + [other]
+    notes = ([f"Already in place: {', '.join(s.ready)}."] if s.ready else []) + s.notes + [OTHER[side]]
     n, todo = len(doc.changes), s.todo
     what = [f"{n} change{'s' if n != 1 else ''} from the EN-DC template"] if n else []
     what += [f"{len(todo)} to do by hand"] if todo else []

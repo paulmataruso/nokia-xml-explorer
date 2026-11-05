@@ -215,6 +215,21 @@ export function applyAction(filename, actionId, inputs) {
   });
 }
 
+/** The action's run: this file's plan and, for an action that names other
+ * sites, the changes it implies in their files, one plan per file. */
+export function previewRun(filename, actionId, inputs) {
+  return jsonRequest(`/files/${encodeURIComponent(filename)}/actions/${encodeURIComponent(actionId)}/run/preview`, "POST", {
+    inputs,
+  });
+}
+
+/** Writes every file of the run, or none; read-only files go into copies. */
+export function applyRun(filename, actionId, inputs) {
+  return jsonRequest(`/files/${encodeURIComponent(filename)}/actions/${encodeURIComponent(actionId)}/run/apply`, "POST", {
+    inputs,
+  });
+}
+
 export function setObjectParam(filename, distName, paramName, value) {
   return jsonRequest(`/files/${encodeURIComponent(filename)}/objects/param`, "PUT", {
     distName,

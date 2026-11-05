@@ -20,6 +20,7 @@ from .actions import Context, PlanError
 from .actions.corpus import profile
 from .actions.registry import ACTIONS
 from .actions.registry import catalog as action_catalog
+from .actions.run import plan_run
 from .actions.site_check import check_site
 from .ca import analyze_ca
 from .refmap import refmap
@@ -1492,16 +1493,27 @@ def _read_source_file(name: str, source: str) -> bytes:
     return path.read_bytes()
 
 
-def _action_context(filename: str) -> tuple[Path, Context]:
-    path, source = _resolve_path(filename)
-    ctx = Context(
-        path.read_bytes(), filename, source,
+def _context(raw: bytes, filename: str, source: str) -> Context:
+    return Context(
+        raw, filename, source,
         corpus=_corpus,
         read=_read_source_file,
         release_index=lambda: _release_params(_corpus()),
         kb={"products": _PRODUCTS, "classes": _CLASSES_KB, "catalog": _CLASS_CATALOG},
     )
-    return path, ctx
+
+
+def _action_context(filename: str) -> tuple[Path, Context]:
+    path, source = _resolve_path(filename)
+    return path, _context(path.read_bytes(), filename, source)
+
+
+def _open_context(key: str) -> Context:
+    """Another file of a run, by its corpus key ("scp:name.xml")."""
+    source, _, name = key.partition(":")
+    if source not in _SOURCE_DIRS:
+        raise FileNotFoundError(key)
+    return _context(_read_source_file(name, source), name, source)
 
 
 def _action(action_id: str):
@@ -1523,13 +1535,42 @@ def _action_plan(filename: str, action_id: str, inputs: dict) -> tuple[Path, Con
         raise HTTPException(status_code=400, detail={"message": str(e), "problems": e.problems})
     except XmlParseError as e:
         raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
-    # When each changed value takes effect, from the official dictionary.
+    _when_effective(plan)
+    return path, ctx, new_bytes, plan
+
+
+def _when_effective(plan: dict) -> None:
+    """When each changed value takes effect, from the official dictionary."""
     for change in plan["changes"]:
         if change["op"] == "set" and "[" not in change["param"]:
             kb, own = _doc_entry(change["class"], change["param"])
             modification = (kb.get("modification") or "").split("\n", 1)[0].strip()
             change["modification"] = modification if own and modification else None
-    return path, ctx, new_bytes, plan
+
+
+def _action_run(filename: str, action_id: str, inputs: dict) -> list[dict]:
+    """The action's run (actions/run.py): this file's plan, then the
+    changes it implies in the other sites' files, per file."""
+    action = _action(action_id)
+    _path, ctx = _action_context(filename)
+    try:
+        reason = action.available(ctx)
+        if reason:
+            raise PlanError([reason])
+        files = plan_run(ctx, action, inputs, ACTIONS, _open_context)
+    except PlanError as e:
+        raise HTTPException(status_code=400, detail={"message": str(e), "problems": e.problems})
+    except XmlParseError as e:
+        raise HTTPException(status_code=422, detail=f"Could not parse XML: {e}")
+    files[0]["this"] = True
+    for f in files:
+        if f["plan"]:
+            _when_effective(f["plan"])
+    return files
+
+
+def _run_view(files: list[dict]) -> dict:
+    return {"files": [{k: v for k, v in f.items() if k != "new"} for f in files]}
 
 
 def _action_apply(filename: str, action_id: str, inputs: dict) -> dict:
@@ -1597,6 +1638,56 @@ def action_preview(filename: str, action_id: str, payload: ActionRequest):
 @app.post("/api/files/{filename}/actions/{action_id}/apply")
 def action_apply(filename: str, action_id: str, payload: ActionRequest):
     return _action_apply(filename, action_id, payload.inputs)
+
+
+@app.post("/api/files/{filename}/actions/{action_id}/run/preview")
+def action_run_preview(filename: str, action_id: str, payload: ActionRequest):
+    """The action's plan for this file and, for an action that names other
+    sites, the changes it implies in their files (their end of a neighbour
+    relation, the other side of EN-DC): one plan per file, each with its
+    own site check and problems. Writes nothing."""
+    return _run_view(_action_run(filename, action_id, payload.inputs))
+
+
+@app.post("/api/files/{filename}/actions/{action_id}/run/apply")
+def action_run_apply(filename: str, action_id: str, payload: ActionRequest):
+    """Writes every file of the run the preview showed, or none: refused
+    while a file has a problem or would gain a site-check error. Each file
+    gets its own snapshot; a read-only one is written to a copy in uploads
+    (the original is untouched)."""
+    files = _action_run(filename, action_id, payload.inputs)
+    stuck = [f"{f['name']}: {p}" for f in files for p in f["problems"] or []]
+    stuck += [f"{f['name']}: {x['title']}. {x['detail']}" for f in files if f["plan"]
+              for x in f["plan"]["check"]["new"] if x["severity"] == "error"]
+    if stuck:
+        raise HTTPException(status_code=409, detail={"message": "Not every file of the run can be written.",
+                                                     "problems": stuck})
+    for f in files:
+        if f["plan"]["changes"]:
+            try:
+                parse_file(f["new"], f["name"])
+            except XmlParseError as e:
+                raise HTTPException(status_code=500, detail=f"{f['name']}: the edit would have produced invalid "
+                                                            f"XML: {e}")
+    out = []
+    for f in files:
+        plan = f["plan"]
+        result = {"key": f["key"], "file": f["name"], "this": f["this"], "copied": False, "snapshot": None,
+                  "label": plan["label"], "changes": len(plan["changes"]), "focus": plan.get("focus"),
+                  "check": plan["check"]["after"],
+                  "changeIds": [c["id"] for c in plan["changes"] if c["op"] != "delete"]}
+        if plan["changes"]:
+            name = f["name"]
+            if not f["editable"]:
+                stem, ext = os.path.splitext(name)
+                name = _unique_upload_name(f"{stem} (copy){ext}")
+                result.update(file=name, copied=True, original=f["name"])
+            old = _read_source_file(f["name"], f["source"])
+            result["snapshot"] = _save_snapshot(name, old, plan["label"])
+            (UPLOAD_DIR / name).write_bytes(f["new"])
+            _invalidate_caches(name)
+        out.append(result)
+    return {"files": out}
 
 
 # The CA wizard's own endpoints, kept as aliases of the "ca" action.

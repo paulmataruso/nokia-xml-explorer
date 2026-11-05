@@ -1,12 +1,19 @@
 """
-Add an X2 neighbour eNB to an LTE eNB: an LNADJ for the other eNB, an
-LNADJL per neighbour cell, an LNREL from each chosen cell of this eNB to
-each neighbour cell, and the carrier settings an inter-frequency neighbour
-needs.
+Add a neighbour eNB, to an LTE eNB or a 5G gNB. To an eNB, over X2: an
+LNADJ for the other eNB, an LNADJL per neighbour cell, an LNREL from each
+chosen cell of this eNB to each neighbour cell, and the carrier settings
+an inter-frequency neighbour needs. To a gNB, the carriers its cells hand
+over, reselect and redirect to, and if picked the X2 link: gnb_enb.py,
+which this hands a gNB to.
 
-The neighbour comes from another site's file in the tool (its eNB id,
-PLMN, C-plane address and cells, from sites.summary) or is typed in, one
-cell at a time. Taking the neighbour's identity from its own file is the
+In a run (run.py), "More neighbour eNBs" adds others the same way, with
+all their cells, and "Their end" adds this site to each neighbour's own
+file: an eNB gets this eNB (here), a gNB's eNB its gNB (neighbour_gnb),
+relating the cells each end picked here.
+
+The neighbour comes from another site's file in the tool, or this file's
+own co-sited eNB (its eNB id, PLMN, C-plane address and cells, from
+sites.summary), or is typed in, one cell at a time. Taking the neighbour's identity from its own file is the
 one exception to the no-identity-from-other-files rule: it describes that
 site, not this one. Running it again for the same eNB adds what is missing
 and corrects what differs, so cells can be added one by one.
@@ -37,19 +44,22 @@ from __future__ import annotations
 
 from typing import Optional
 
-from . import Context, PlanError, finish
+from . import Context, PlanError, finish, gnb_enb
 from .doc import Doc, instance, label, why
-from .neighbours import (anr_budget, distinguish, from_text, lte_enbs, number, parse_plmn, plmn_text, same_node,
-                         sources)
+from .neighbours import (BOTH, anr_budget, distinguish, far, from_text, group, here, lcr_ids, lookup, lte_enbs,
+                         nearby, number, parse_plmn, picked, plmn_text, run_fields, same_node, sources)
 from .sites import NRB, lte_cell
 from .transport import check_ip, lte_cplane, reachable
 
 ID = "neighbour-enb"
-TITLE = "Add a neighbour eNB (X2)"
+TITLE = "Add a neighbour eNB"
 GROUP = "Neighbours"
-SUMMARY = "Add another LTE site as an X2 neighbour: its cells, and relations to them from this eNB's cells."
+SUMMARY = ("Add an LTE site as a neighbour: to an eNB over X2 (its cells, and relations to them), or to a gNB (the "
+           "LTE carriers to hand over, reselect and redirect to).")
 UI = "form"
-KEYWORDS = "neighbour neighbor X2 adjacent eNodeB eNB cell relation handover LNADJ LNADJL LNREL IRFIM LNHOIF ANR"
+KEYWORDS = ("neighbour neighbor X2 adjacent eNodeB eNB cell relation handover reselection redirect LNADJ LNADJL LNREL "
+            "IRFIM LNHOIF ANR gNB gNodeB NR to LTE inter-RAT NRHOIR NRLIM NRREDRT LTEENB "
+            "neighbour cell roam roaming mobility idle")
 
 MANUAL = "manual"
 BANDWIDTHS = ("1.4 MHz", "3 MHz", "5 MHz", "10 MHz", "15 MHz", "20 MHz")
@@ -68,7 +78,8 @@ def _sources(ctx: Context, enb: dict) -> list[dict]:
     """Neighbour candidates from the other files: one per distinct eNB (id,
     PLMN, address, cells), from the newest file that has it."""
     own = instance(enb["dn"])
-    return sources(ctx, "enbs", lambda e: not e["cells"] or e["id"] == own, ("id", "plmn", "ip", "cells"))
+    skip = lambda e: not e["cells"] or e["id"] == own  # noqa: E731
+    return here(ctx, "enbs", skip) + sources(ctx, "enbs", skip, ("id", "plmn", "ip", "cells"))
 
 
 def _existing(lnadjs: list[dict], enb_id: Optional[str], plmn: Optional[dict]) -> Optional[dict]:
@@ -77,14 +88,15 @@ def _existing(lnadjs: list[dict], enb_id: Optional[str], plmn: Optional[dict]) -
 
 
 def available(ctx: Context) -> Optional[str]:
-    if _enbs(ctx):
+    if _enbs(ctx) or gnb_enb.gnbs(ctx.site):
         return None
-    return "This file has no LTE eNB with cells (LNBTS and LNCEL)."
+    return "This file has no LTE eNB or 5G gNB with cells."
 
 
 def setup(ctx: Context) -> dict:
     site = ctx.site
     targets, sources, nb_cells, own_cells, plmns, earfcns, tacs, bws, bw_opts = [], {}, {}, {}, {}, {}, {}, {}, {}
+    both = bool(_enbs(ctx)) and bool(gnb_enb.gnbs(site))
     for enb in _enbs(ctx):
         dn = enb["dn"]
         cells = [lte_cell(site, c) | {"dn": c["dn"]} for c in site.child(dn, "LNCEL")
@@ -93,15 +105,15 @@ def setup(ctx: Context) -> dict:
         targets.append({"value": dn, "key": dn, "label": f"{label(dn)} · eNB {instance(dn)}"
                         + (f" · {enb['p']['enbName']}" if enb["p"].get("enbName") else ""),
                         "details": [f"{len(cells)} cell{'s' if len(cells) != 1 else ''}, {len(lnadjs)} neighbour "
-                                    f"eNB{'s' if len(lnadjs) != 1 else ''}."]})
-        opts, tails, found = [], [], _sources(ctx, enb)
+                                    f"eNB{'s' if len(lnadjs) != 1 else ''}."]} | ({"group": "LTE eNB"} if both else {}))
+        opts, tails, found = [], [], nearby(site, lte_cplane(site, dn, None), _sources(ctx, enb))
         for e in found:
             have = _existing(lnadjs, e["id"], e["plmn"])
             details = [from_text(e), f"PLMN {plmn_text(e['plmn']) or '?'}, X2 C-plane {e['ip'] or 'not in that file'}."]
             details += [_cell_text(c).capitalize() + "." for c in e["cells"][:6]]
             if have:
                 details.append(f"Already a neighbour ({label(have['dn'])}): what's missing is added.")
-            opts.append({"value": e["key"], "key": e["key"], "group": "Sites in the tool", "details": details,
+            opts.append({"value": e["key"], "key": e["key"], "details": details, "group": group(e),
                          "label": f"eNB {e['id']}" + (f" {e['name']}" if e.get("name") else "")})
             tails.append(f"{len(e['cells'])} cell{'s' if len(e['cells']) != 1 else ''}"
                          + (" · already a neighbour" if have else ""))
@@ -117,33 +129,91 @@ def setup(ctx: Context) -> dict:
         tacs[dn] = cells[0]["tac"] or ""
         bw_opts[dn] = [{"value": b, "label": b} for b in BANDWIDTHS]
         bws[dn] = cells[0]["bw"] if cells[0]["bw"] in BANDWIDTHS else "20 MHz"
+    found = gnb_enb.enb_sources(ctx)
+    nr = gnb_enb.setup_parts(ctx, found)
+    for t in nr["targets"]:
+        dn = t["value"]
+        targets.append(t if both else {k: v for k, v in t.items() if k != "group"})
+        opts, tails, near = [], [], nearby(site, nr["x2_addresses"][dn], found)
+        for e in near:
+            state = nr["states"][dn][e["key"]]
+            details = [from_text(e), f"PLMN {plmn_text(e['plmn']) or '?'}, X2 C-plane {e['ip'] or 'not in that file'}."]
+            details += [_cell_text(c).capitalize() + "." for c in e["cells"][:6]]
+            if state:
+                details.append(f"{state[0].upper() + state[1:]}: what's missing is added.")
+            opts.append({"value": e["key"], "key": e["key"], "group": group(e), "details": details,
+                         "label": f"eNB {e['id']}" + (f" {e['name']}" if e.get("name") else "")})
+            tails.append(f"{len(e['cells'])} cell{'s' if len(e['cells']) != 1 else ''}" + (f" · {state}" if state else ""))
+            nb_cells[e["key"]] = [{"value": c["lcrId"], "label": _cell_text(c)} for c in e["cells"]]
+        distinguish(opts, near, tails)
+        opts.append({"value": gnb_enb.MANUAL, "key": gnb_enb.MANUAL, "group": "By hand",
+                     "label": "Enter the eNB by hand",
+                     "details": ["Its id, PLMN and carrier (DL EARFCN), and its address for an X2 link."]})
+        sources[dn] = opts
+        plmns[dn] = nr["plmns"][dn]
+        earfcns[dn] = nr["earfcns"][dn]
     manual = {"field": "source", "equals": MANUAL}
+    typed = {"field": "source", "in": [MANUAL, gnb_enb.MANUAL]}
     return {
-        "intro": "Adds the other eNB (LNADJ), its cells (LNADJL) and a relation (LNREL) from each cell you pick "
-                 "here to each of its cells, with the carrier settings a neighbour on another EARFCN needs.",
+        "intro": "On an eNB: adds the other eNB (LNADJ), its cells (LNADJL) and a relation (LNREL) from each cell "
+                 "you pick here to each of its cells, with the carrier settings a neighbour on another EARFCN needs. "
+                 "On a gNB: adds the eNB's carriers to hand over to (NRHOIR), reselect to (NRLIM) and redirect to "
+                 "(NRREDRT), with the switches that turn them on; the gNB learns the eNB's cells from UEs (ANR).",
         "fields": [
-            {"id": "target", "label": "This eNB", "type": "select", "options": targets,
+            {"id": "target", "label": "This site", "type": "select", "options": targets,
              "default": targets[0]["value"] if len(targets) == 1 else None},
             {"id": "source", "label": "Neighbour", "type": "select", "dependsOn": "target", "optionsByKey": sources},
             {"id": "cells", "label": "Its cells", "type": "checks", "dependsOn": "source", "optionsByKey": nb_cells},
-            {"id": "enbId", "label": "Neighbour eNB id", "type": "text", "showIf": manual, "placeholder": "0-1048575"},
+            {"id": "enbId", "label": "Neighbour eNB id", "type": "text", "showIf": typed, "placeholder": "0-1048575"},
             {"id": "ip", "label": "Its X2 C-plane address", "type": "text", "showIf": manual,
              "placeholder": "10.0.1.47"},
-            {"id": "plmn", "label": "Its PLMN (MCC-MNC)", "type": "text", "showIf": manual, "dependsOn": "target",
+            {"id": "enbIp", "label": "Its X2 C-plane address", "type": "text", "optional": True,
+             "showIf": {"field": "source", "equals": gnb_enb.MANUAL}, "placeholder": "10.0.1.47",
+             "hint": "Only for an X2 link: handover from NR to LTE goes through the core (N26), not X2."},
+            {"id": "plmn", "label": "Its PLMN (MCC-MNC)", "type": "text", "showIf": typed, "dependsOn": "target",
              "defaultByKey": plmns, "placeholder": "310-410"},
             {"id": "lcrId", "label": "Cell lcrId (the ECGI cell id)", "type": "text", "showIf": manual,
              "placeholder": "0-255"},
             {"id": "pci", "label": "Cell PCI", "type": "text", "showIf": manual, "placeholder": "0-503"},
-            {"id": "earfcn", "label": "Cell DL EARFCN", "type": "text", "showIf": manual, "dependsOn": "target",
-             "defaultByKey": earfcns},
+            {"id": "earfcn", "label": "Cell DL EARFCN", "type": "text", "showIf": typed, "dependsOn": "target",
+             "defaultByKey": earfcns, "placeholder": "66786"},
             {"id": "tac", "label": "Cell TAC", "type": "text", "showIf": manual, "dependsOn": "target",
              "defaultByKey": tacs},
             {"id": "bw", "label": "Cell bandwidth", "type": "select", "showIf": manual, "dependsOn": "target",
              "optionsByKey": bw_opts, "defaultByKey": bws},
             {"id": "from", "label": "Relations from these cells", "type": "checks", "dependsOn": "target",
              "optionsByKey": own_cells},
+            {"id": "nrCells", "label": "On these cells", "type": "checks", "dependsOn": "target",
+             "optionsByKey": nr["nr_cells"]},
+            {"id": "x2", "label": "X2", "type": "checks", "dependsOn": "target", "optionsByKey": nr["x2"],
+             "defaultByKey": nr["x2_default"], "optional": True},
+            *run_fields(sources, "eNB"),
         ],
     }
+
+
+def legs(ctx: Context, inputs: dict) -> list[dict]:
+    """The run's other changes: the more neighbours on this file, then, with
+    "Their end", this site on each neighbour's file, relating the cells
+    picked here (theirs from the "cells" pick, this site's from "from" or
+    "nrCells")."""
+    site, target, src = ctx.site, inputs.get("target") or "", inputs.get("source") or ""
+    on_gnb = any(g["dn"] == target for g in gnb_enb.gnbs(site))
+    more = [k for k in dict.fromkeys(inputs.get("more") or []) if far(k) and k != src]
+    out = [{"file": None, "action": ID, "inputs": {**inputs, "source": k, "cells": None},
+            "what": f"eNB {instance(far(k)[1])} as a neighbour too"} for k in more]
+    if BOTH not in (inputs.get("both") or []):
+        return out
+    me = f"{'gNB' if on_gnb else 'eNB'} {instance(target)}"
+    mine = lcr_ids(site, inputs.get("nrCells" if on_gnb else "from"), target, "NRCELL" if on_gnb else "LNCEL")
+    for k in [src] + more:
+        there = far(k)
+        if there:
+            out.append({"file": there[0], "action": "neighbour-gnb" if on_gnb else ID,
+                        "inputs": {"target": there[1], "source": f"{ctx.key}|{target}", "cells": mine,
+                                   "fromLcr": inputs.get("cells") if k == src else None},
+                        "what": f"{me} as eNB {instance(there[1])}'s neighbour"})
+    return out
 
 
 def _neighbour(ctx: Context, enb: dict, inputs: dict) -> dict:
@@ -168,12 +238,12 @@ def _neighbour(ctx: Context, enb: dict, inputs: dict) -> dict:
                 "bw": bw if bw in BANDWIDTHS else "20 MHz", "name": None}
         nb["cells"] = [cell]
     else:
-        match = next((e for e in _sources(ctx, enb) if e["key"] == src), None)
+        match = lookup(ctx, _sources(ctx, enb), src, "enbs")
         if not match:
             raise PlanError(["Pick the neighbour eNB."])
-        picked = set(inputs.get("cells") or [c["lcrId"] for c in match["cells"]])
+        wanted = set(inputs.get("cells") or [c["lcrId"] for c in match["cells"]])
         nb = {"id": match["id"], "plmn": match["plmn"], "ip": match["ip"], "rlf": match["rlf"],
-              "cells": [c for c in match["cells"] if c["lcrId"] in picked], "from": match["file"]}
+              "cells": [c for c in match["cells"] if c["lcrId"] in wanted], "from": match["file"]}
         if not nb["cells"]:
             problems.append("Pick at least one of its cells.")
         if not nb["plmn"]:
@@ -367,13 +437,14 @@ class _Plan:
 
 def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     site = ctx.site
+    if any(g["dn"] == inputs.get("target") for g in gnb_enb.gnbs(site)):
+        return gnb_enb.plan(ctx, inputs)
     enb = next((m for m in _enbs(ctx) if m["dn"] == inputs.get("target")), None)
     if not enb:
-        raise PlanError(["Pick this file's eNB."])
+        raise PlanError(["Pick this file's eNB or gNB."])
     nb = _neighbour(ctx, enb, inputs)
     cells = {c["dn"]: c for c in site.child(enb["dn"], "LNCEL") if c["p"].get("lcrId") not in (None, "")}
-    picked = inputs.get("from")
-    chosen = [cells[d] for d in (picked if picked is not None else cells) if d in cells]
+    chosen = picked(cells, inputs, "from")
     if not chosen:
         raise PlanError(["Pick at least one cell of this eNB to relate to the neighbour."])
 

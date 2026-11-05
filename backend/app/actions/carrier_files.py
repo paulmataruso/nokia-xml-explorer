@@ -7,7 +7,7 @@ Pure: works on ca._load() output.
 """
 from __future__ import annotations
 
-CLASSES = ("IRFIM", "LNHOIF", "NRFIM", "REDRT", "NRIRFIM", "NRLIM", "NRREDRT")
+CLASSES = ("IRFIM", "LNHOIF", "NRFIM", "REDRT", "NRIRFIM", "NRLIM", "NRREDRT", "NRHOIR")
 
 
 def kind_of(m: dict) -> str:

@@ -147,9 +147,19 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
     and every profile it names (or replace a gNB's whole set with the one
     Nokia's production gNBs run), set up VoLTE or VoNR, add a network
     slice (beside the gNB's slices, or instead of some of them).
-  - *Mobility and neighbours*: add a carrier to measure or redirect to
-    (IRFIM/LNHOIF, NRFIM, NRIRFIM, REDRT, NRREDRT), a neighbour eNB (X2),
-    an EN-DC gNB, a neighbour gNB (Xn).
+  - *Mobility and neighbours*: add a carrier to measure, hand over or
+    redirect to (IRFIM/LNHOIF, NRFIM, NRIRFIM, NRLIM, NRHOIR, REDRT,
+    NRREDRT), with the switch it needs (SIB24, release with redirect).
+    Add a neighbour eNB or gNB to any site, whether EN-DC is on or not:
+    an eNB to an eNB over X2, a gNB to a gNB over Xn, an eNB to a gNB
+    (handover, reselection and redirect to its LTE carriers, and an
+    optional X2 link), a gNB to an eNB (the X2 link and relations, and
+    reselection and redirect to its NR carriers). The switches production
+    runs with them are turned on. A site's co-sited eNB is offered first,
+    then the other files' sites on its own subnet, nearest address first
+    (two BTSs on one BBU, exported as separate files). Pick more
+    neighbours to add in the same go, and tick **Their end** to add this
+    site to each neighbour's own file too, so UEs can move both ways.
   - *Core and transport*: add or change an MME or AMF, add a PLMN (RAN
     sharing), change a BTS IP address, add a VLAN interface with its own
     routing table, add a static route, set NTP and DNS servers.
@@ -177,6 +187,13 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   and **Manual steps**: the same change written out object by object, to
   make by hand in the Nokia WebUI if you'd rather, ready to copy. Applying is one undoable edit, refused
   if it would add a site-check error.
+
+  Actions that pair two sites can change both files at once: a
+  neighbour's own end, more neighbours, the gNB's 5G side when you set up
+  EN-DC on the eNB (or the eNBs' 4G side from the gNB). The review then
+  has one section per file, and **Apply to N files** writes them all or
+  none, each with its own snapshot; a read-only file goes into a copy.
+  Undo puts every file back.
 
   An action adds everything its feature needs: an object the file lacks
   is created, and one it has is changed to what the feature needs. EN-DC

@@ -1,7 +1,9 @@
 """
-Add a 5G gNB to an LTE eNB for EN-DC (NSA, option 3X): an LNADJGNB for the
-X2 link to the gNB, and an LNRELGNBCELL from each chosen LTE cell to each
-chosen NR cell.
+Add a 5G gNB to an LTE eNB as a neighbour: the eNB side of "Add a
+neighbour gNB" (neighbour_gnb.py hands an eNB here). An LNADJGNB for the
+X2 link to the gNB and an LNRELGNBCELL from each chosen LTE cell to each
+chosen NR cell, for EN-DC (NSA, option 3X); and, whether EN-DC is on or
+not, what the chosen LTE cells need to send UEs to the gNB's carriers.
 
 The gNB comes from another site's file in the tool (its id, id length,
 PLMN, X2 C-plane address and cells, from sites.summary) or is typed in.
@@ -24,30 +26,42 @@ What is written (the dictionary, LTE18; the corpus is the owner's DHI lab,
     skipped.
   - Relations are optional: UE-based ANR learns them once X2 is up (22 of
     the 33 in the tool were learned that way).
-EN-DC itself (actLteNrDualConnectivity, LTE4088) isn't switched on here;
-when it is off, a note says what turning it on needs (its rule 1.2).
+
+Per NR carrier of the gNB's cells (their SSB, band and SSB subcarrier
+spacing), on the chosen LTE cells, through the carrier action's planner
+(carrier.py; settings from the cell's own, else another file's, else
+production's): a row in NRFIM nrCarFrqL (reselection, with SIB24 on the
+eNB) and in the redirRat nr REDRT's redirNrCarFrq (redirect on release).
+All 11 production eNBs that broadcast NR carriers do both, on all 79
+cells, and none of the 104 others does either. On the LNBTS, what the 11
+have on and the others that set them off: actUeBasedAnrNr (UE-based ANR
+learns the gNB's cells), actHoFromNr and actHoFromNrDlDataForward (the
+gNB's handovers to LTE come in), each where the eNB's release has it.
+Handover from LTE to NR (actHOtoNR) is off in every file, so it isn't
+turned on, and a note says so.
+EN-DC itself (actLteNrDualConnectivity, LTE4088) isn't switched on here
+(the EN-DC action does that); when it is off, a note says what turning it
+on needs (its rule 1.2).
 """
 from __future__ import annotations
 
 import re
 from typing import Optional
 
-from . import Context, PlanError, finish
+from . import Context, PlanError, carrier, finish
 from .doc import Doc, instance, label, release_of, why
-from .neighbours import (anr_budget, distinguish, from_text, lte_enbs, number, own_addresses, parse_plmn,
-                         plmn_text, same_node, same_plmn, sources)
+from .neighbours import (anr_budget, distinguish, from_text, group, lookup, lte_enbs, nearby, number, own_addresses,
+                         parse_plmn, picked, plmn_text, same_node, same_plmn, sources)
 from .sites import lte_cell, nci
 from .transport import check_ip, lte_cplane, reachable
 
-ID = "endc-gnb"
-TITLE = "Add an EN-DC gNB (X2)"
-GROUP = "Neighbours"
-SUMMARY = "Add a 5G gNB this eNB can use for EN-DC (NSA): the X2 link to it, and relations to its cells."
-UI = "form"
-KEYWORDS = "EN-DC ENDC NSA dual connectivity 5G NR gNB gNodeB neighbour neighbor X2 LNADJGNB LNRELGNBCELL"
-
 MANUAL = "manual"
 ID_RANGE = {"LNADJGNB": (0, 31), "LNRELGNBCELL": (0, 255)}
+SWITCHES = (
+    ("actUeBasedAnrNr", "UE-based ANR for NR: the eNB learns the gNB's cells from UE measurements"),
+    ("actHoFromNr", "handover from NR: the gNB's handovers to LTE come in"),
+    ("actHoFromNrDlDataForward", "downlink data forwarding on handover from NR"),
+)
 
 
 def _endc_on(enb: dict) -> bool:
@@ -83,13 +97,21 @@ def _existing(site, enb: dict, ip: Optional[str], gnb_id: Optional[str], plmn: O
     return None
 
 
-def available(ctx: Context) -> Optional[str]:
-    if lte_enbs(ctx.site):
-        return None
-    return "This file has no LTE eNB with cells (LNBTS and LNCEL)."
+def _taken(site, enb: dict, e: dict) -> bool:
+    """Whether this eNB has the gNB's address for another gNB."""
+    have = _existing(site, enb, e["ip"], e["id"], e["plmn"])
+    return bool(have) and have["p"].get("adjGnbId") not in (None, "", e["id"])
 
 
-def setup(ctx: Context) -> dict:
+def _carrier_text(c: dict) -> str:
+    return f"SSB {c.get('ssb') or '?'}" + (f" · n{c['band']}" if c.get("band") else "") + (
+        f" · {c['scs']}" if c.get("scs") else "")
+
+
+def setup_parts(ctx: Context) -> dict:
+    """The eNB targets' share of the "Add a neighbour gNB" form: per eNB,
+    the gNBs to offer, its cells, its PLMN and gNB id length; per gNB, its
+    cells."""
     site = ctx.site
     targets, srcs, nb_cells, own_cells, plmns, lengths = [], {}, {}, {}, {}, {}
     found = _sources(ctx)
@@ -100,61 +122,43 @@ def setup(ctx: Context) -> dict:
         gnbs = site.child(dn, "LNADJGNB")
         targets.append({"value": dn, "key": dn, "label": f"{label(dn)} · eNB {instance(dn)}"
                         + (f" · {enb['p']['enbName']}" if enb["p"].get("enbName") else ""),
-                        "details": [f"{len(cells)} cell{'s' if len(cells) != 1 else ''}, {len(gnbs)} EN-DC "
-                                    f"gNB{'s' if len(gnbs) != 1 else ''}.",
+                        "details": [f"{len(cells)} cell{'s' if len(cells) != 1 else ''}, {len(gnbs)} neighbour "
+                                    f"gNB{'s' if len(gnbs) != 1 else ''} (LNADJGNB).",
                                     "EN-DC is on (actLteNrDualConnectivity)." if _endc_on(enb) else
-                                    "EN-DC is off (actLteNrDualConnectivity): the gNB is added, but no UE uses it "
-                                    "until EN-DC is on."]})
+                                    "EN-DC is off (actLteNrDualConnectivity): UEs reselect and are redirected to "
+                                    "the gNB, and the cell relations wait for EN-DC."]})
         opts, tails = [], []
-        for e in found:
+        near = nearby(site, lte_cplane(site, dn, None), found, stale=lambda e: _taken(site, enb, e))
+        for e in near:
             have = _existing(site, enb, e["ip"], e["id"], e["plmn"])
             details = [from_text(e), f"PLMN {plmn_text(e['plmn']) or '?'}, gNB id length "
                                      f"{e['idLength'] or '?'}, X2 C-plane {e['ip'] or 'not in that file'}."]
             details += [_cell_text(c).capitalize() + "." for c in e["cells"][:6]]
-            other = have and have["p"].get("adjGnbId") not in (None, "", e["id"])
+            nr = sorted({_carrier_text(c) for c in e["cells"] if c.get("ssb")})
+            if nr:
+                details.append(f"NR carrier{'s' if len(nr) != 1 else ''}: {', '.join(nr)}.")
+            other = _taken(site, enb, e)
             if other:
                 details.append(f"{label(have['dn'])} has its address for gNB {have['p']['adjGnbId']}: check which "
                                "gNB is there.")
             elif have:
                 details.append(f"Already an EN-DC gNB ({label(have['dn'])}): what's missing is added.")
-            opts.append({"value": e["key"], "key": e["key"], "group": "Sites in the tool", "details": details,
+            opts.append({"value": e["key"], "key": e["key"], "group": group(e), "details": details,
                          "label": f"gNB {e['id']}" + (f" {e['name']}" if e.get("name") else "")})
             tails.append(f"{len(e['cells'])} cell{'s' if len(e['cells']) != 1 else ''}"
                          + (" · its address is another gNB's" if other else " · already a neighbour" if have else ""))
             nb_cells[e["key"]] = [{"value": c["lcrId"], "label": _cell_text(c)} for c in e["cells"]]
-        distinguish(opts, found, tails)
+        distinguish(opts, near, tails)
         opts.append({"value": MANUAL, "key": MANUAL, "group": "By hand", "label": "Enter the gNB by hand",
-                     "details": ["Its id, id length, address and PLMN, and the lcrIds of the cells to relate to."]})
+                     "details": ["Its id, id length, address and PLMN, its NR carrier, and the lcrIds of the cells "
+                                 "to relate to."]})
         srcs[dn] = opts
         own_cells[dn] = [{"value": c["dn"], "label": f"{label(c['dn'])} · PCI {c['pci']} · EARFCN {c['earfcn']}"
                           + (f" · {c['name']}" if c.get("name") else "")} for c in cells]
         plmns[dn] = plmn_text({k: enb["p"].get(k) for k in ("mcc", "mnc", "mncLength")})
         lengths[dn] = _id_length(site, enb)
-    manual = {"field": "source", "equals": MANUAL}
-    return {
-        "intro": "Adds the X2 link to a 5G gNB (LNADJGNB) and a relation (LNRELGNBCELL) from each LTE cell you "
-                 "pick to each of its NR cells, so UEs on those cells can add the NR cell for EN-DC.",
-        "fields": [
-            {"id": "target", "label": "This eNB", "type": "select", "options": targets,
-             "default": targets[0]["value"] if len(targets) == 1 else None},
-            {"id": "source", "label": "gNB", "type": "select", "dependsOn": "target", "optionsByKey": srcs},
-            {"id": "cells", "label": "Relations to its cells", "type": "checks", "dependsOn": "source",
-             "optionsByKey": nb_cells, "optional": True},
-            {"id": "gnbId", "label": "gNB id", "type": "text", "showIf": manual, "placeholder": "500078"},
-            {"id": "idLength", "label": "gNB id length (bits)", "type": "text", "showIf": manual,
-             "dependsOn": "target", "defaultByKey": lengths, "placeholder": "22-32",
-             "hint": "The gNB's own gNbIdLength (NRBTS). The NR cell identity is built from it."},
-            {"id": "ip", "label": "Its X2 C-plane address", "type": "text", "showIf": manual,
-             "placeholder": "10.0.1.48"},
-            {"id": "plmn", "label": "Its PLMN (MCC-MNC)", "type": "text", "showIf": manual, "dependsOn": "target",
-             "defaultByKey": plmns, "placeholder": "310-410"},
-            {"id": "lcrIds", "label": "Relations to its cells (lcrIds)", "type": "text", "showIf": manual,
-             "optional": True, "placeholder": "1, 2, 3",
-             "hint": "Leave empty to add the X2 link only: UE-based ANR then learns the relations."},
-            {"id": "from", "label": "Relations from these cells", "type": "checks", "dependsOn": "target",
-             "optionsByKey": own_cells},
-        ],
-    }
+    return {"targets": targets, "sources": srcs, "nb_cells": nb_cells, "own_cells": own_cells, "plmns": plmns,
+            "lengths": lengths}
 
 
 def _gnb(ctx: Context, inputs: dict) -> dict:
@@ -176,6 +180,15 @@ def _gnb(ctx: Context, inputs: dict) -> dict:
             problems.append(f"gNB id {nb['id']} doesn't fit in {nb['idLength']} bits (at most "
                             f"{(1 << int(nb['idLength'])) - 1}).")
         nb["cells"] = []
+        nb["carriers"] = []
+        ssb = (inputs.get("ssb") or "").strip()
+        if ssb:
+            ssb = number(ssb, 0, carrier.NR_ARFCN_MAX, "The SSB NR-ARFCN", problems)
+            band = number(inputs.get("band"), 1, 1024, "The NR band", problems)
+            if inputs.get("scs") not in carrier.SCS:
+                problems.append("Pick the SSB subcarrier spacing.")
+            elif ssb and band:
+                nb["carriers"] = [{"ssb": ssb, "band": band, "scs": inputs["scs"]}]
         text = (inputs.get("lcrIds") or "").strip()
         if text and nb["idLength"]:
             top = (1 << (36 - int(nb["idLength"]))) - 1
@@ -184,13 +197,15 @@ def _gnb(ctx: Context, inputs: dict) -> dict:
                 if lcr is not None and lcr not in {c["lcrId"] for c in nb["cells"]}:
                     nb["cells"].append({"lcrId": lcr, "pci": None, "arfcn": None, "name": None})
     else:
-        match = next((e for e in _sources(ctx) if e["key"] == src), None)
+        match = lookup(ctx, _sources(ctx), src, "gnbs")
         if not match:
             raise PlanError(["Pick the gNB."])
-        picked = inputs.get("cells")
-        picked = {c["lcrId"] for c in match["cells"]} if picked is None else set(picked)
+        wanted = inputs.get("cells")
+        wanted = {c["lcrId"] for c in match["cells"]} if wanted is None else set(wanted)
         nb = {"id": match["id"], "idLength": match["idLength"], "plmn": match["plmn"], "ip": match["ip"],
-              "cells": [c for c in match["cells"] if c["lcrId"] in picked], "from": match["file"]}
+              "cells": [c for c in match["cells"] if c["lcrId"] in wanted], "from": match["file"],
+              "carriers": list({(c["ssb"], c["band"], c["scs"]): {"ssb": c["ssb"], "band": c["band"], "scs": c["scs"]}
+                                for c in match["cells"] if c.get("ssb") and c.get("band") and c.get("scs")}.values())}
         if not nb["ip"]:
             problems.append(f"{match['file']} has no address on gNB {match['id']}'s planes (NRBTS x2Cplane). "
                             "Enter the gNB by hand instead.")
@@ -284,6 +299,34 @@ class _Plan:
         self.doc.add_item(dn, "nrCgiPlmnId", self.plmn_row(), why("endc", "The PLMN of the NR cell's NR-CGI.",
                                                                   "choice"))
 
+    def mobility(self, cells: list[dict]) -> carrier._Plan:
+        """Reselection and redirect to the gNB's NR carriers on the cells,
+        and the LNBTS switches for the neighbour gNB."""
+        nb, doc, dn = self.nb, self.doc, self.enb["dn"]
+        cp = carrier._Plan(self.ctx, doc, "nr-lte", {})
+        for c in nb.get("carriers") or []:
+            cp.inputs = c
+            what = f"gNB {nb['id']}'s NR carrier, SSB {c['ssb']}"
+            for own in cells:
+                cp.add(own, "NRFIM", c["ssb"], f"reselection to {what}")
+                cp.add(own, "REDRT:nr", c["ssb"], f"redirect to {what}")
+        index = self.ctx.release_index()
+        rel = release_of(self.enb["version"])
+        missing = []
+        for name, what in SWITCHES:
+            if doc.get(dn, name) == "true":
+                continue
+            if index and name not in index.get(rel, {}).get("LNBTS", set()):
+                missing.append(name)
+                continue
+            doc.set(dn, name, "true", why("neighbour", f"{what[0].upper() + what[1:]}: on in all 11 production "
+                                                       "eNBs that broadcast NR carriers, off in the others that set "
+                                                       "it.", "files"))
+        if missing:
+            self.notes.append(f"No file of {rel} has {', '.join(missing)} on the LNBTS, so "
+                              f"{'it is' if len(missing) == 1 else 'they are'} left out.")
+        return cp
+
 
 def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     site = ctx.site
@@ -294,10 +337,9 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     if nb["ip"].lower() in own_addresses(site):
         raise PlanError([f"{nb['ip']} is one of this BTS's own addresses."])
     cells = {c["dn"]: c for c in site.child(enb["dn"], "LNCEL") if c["p"].get("lcrId") not in (None, "")}
-    picked = inputs.get("from")
-    chosen = [cells[d] for d in (picked if picked is not None else cells) if d in cells]
-    if nb["cells"] and not chosen:
-        raise PlanError(["Pick at least one cell of this eNB to relate to the gNB's cells."])
+    chosen = picked(cells, inputs, "from")
+    if (nb["cells"] or nb["carriers"]) and not chosen:
+        raise PlanError(["Pick at least one cell of this eNB: the relations and the gNB's carriers go on it."])
 
     doc = Doc(ctx.raw)
     p = _Plan(ctx, doc, enb, nb)
@@ -305,15 +347,24 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     for own in chosen if nb["cells"] else []:
         for cell in nb["cells"]:
             p.rel(own, cell)
+    cp = p.mobility(chosen)
     problem, note = anr_budget(site, enb, p.made)
     if problem:
         raise PlanError([problem])
     if note:
         p.notes.append(note)
+    p.notes += carrier.notes(cp)
+    if not nb.get("carriers"):
+        p.notes.append(f"gNB {nb['id']}'s NR carrier isn't known, so no reselection (NRFIM) or redirect (REDRT) to "
+                       "it is added: " + (f"{nb['from']} doesn't say its cells' SSB (gscnOrSsPbchArfcn). Add the carrier "
+                                          "with the carrier action, or enter the gNB by hand with its SSB."
+                                          if nb["from"] else "enter its SSB, band and SCS to add them."))
+    p.notes.append("Handover from LTE to NR (actHOtoNR) isn't turned on: it is off in every file in the tool. UEs "
+                   "reach the gNB by reselection and redirect" + (", and through EN-DC." if _endc_on(enb) else "."))
     if not _endc_on(enb):
-        p.notes.append("EN-DC is off on this eNB (actLteNrDualConnectivity false), so no UE uses the gNB yet. "
-                       "Turning it on needs an NRDCDPR and tLteNrDualConnectPrep (its rule 1.2), and the LTE4088 "
-                       "licence.")
+        p.notes.append("EN-DC is off on this eNB (actLteNrDualConnectivity false): the cell relations are for when "
+                       "it is on. Turning it on (the EN-DC action) needs an NRDCDPR and tLteNrDualConnectPrep (its "
+                       "rule 1.2), and the LTE4088 licence.")
     if not nb["cells"]:
         p.notes.append("No relation is added: UE-based ANR learns them once the X2 link is up (22 of the 33 "
                        "relations in the files this was built from were learned that way).")
@@ -326,7 +377,7 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     source = lte_cplane(site, enb["dn"], None)
     made = ", ".join(f"{n} {cls}" for cls, n in p.made.items())
     return finish(ctx, doc, {
-        "label": f"EN-DC gNB {nb['id']} on {label(enb['dn'])}",
+        "label": f"Neighbour gNB {nb['id']} on {label(enb['dn'])}",
         "summary": f"gNB {nb['id']} with {len(nb['cells'])} cell{'s' if len(nb['cells']) != 1 else ''}"
                    + (f" ({made} new)" if made else ""),
         "notes": p.notes,

@@ -877,19 +877,30 @@ export default function App() {
 
   // A site action wrote its plan, as the CA wizard does: show its focus
   // node, keep the changed rows lit and offer Undo; a copy of a read-only
-  // file opens instead.
+  // file opens instead. A run (res.others) also wrote the other sites'
+  // files: the toast names them, and Undo puts back each one it changed in
+  // place (a copy stays, the original being untouched).
   const handleActionApplied = (res) => {
     setActionId(null);
     const errors = res.check?.errors || 0;
+    const others = (res.others || []).filter((o) => o.changes > 0);
+    const also = others.length
+      ? ` Also changed ${others
+          .map((o) => (o.copied ? `${o.file} (a copy of ${o.original})` : o.file) + `, ${o.changes} change${o.changes === 1 ? "" : "s"}`)
+          .join("; ")}.`
+      : "";
     const summary = `${res.label}. ${res.changes} change${res.changes === 1 ? "" : "s"}` +
       (errors ? `, ${errors} site check error${errors === 1 ? "" : "s"} left.` : ".");
+    if (others.length) refreshFiles();
+    const undoOthers = () =>
+      Promise.all(others.filter((o) => !o.copied && o.snapshot).map((o) => restoreSnapshot(o.file, o.snapshot)));
     if (res.copied) {
       if (res.focus) pendingFocusRef.current = { file: res.file, id: res.focus };
       refreshFiles().then(() => {
         setSelectedFile(res.file);
         setEditMode(true);
       });
-      addToast(`${summary} Written to a copy, ${res.file}; the original is untouched.`, "success", 9000);
+      addToast(`${summary} Written to a copy, ${res.file}; the original is untouched.${also}`, "success", 12000);
       return;
     }
     markEdited(res.changeIds);
@@ -898,7 +909,17 @@ export default function App() {
       setFocusId(res.focus);
       setSelectedNode(findNodeInForest(newTree.children, res.focus));
     });
-    confirmChange(res, summary, res.changeIds);
+    if (!others.length) {
+      confirmChange(res, summary, res.changeIds);
+      return;
+    }
+    const inPlace = others.some((o) => !o.copied && o.snapshot);
+    const undo = () =>
+      undoOthers()
+        .then(() => (res.snapshot ? undoTo(res.snapshot, summary + also, res.changeIds) : addToast(`Undone: ${summary}`, "success")))
+        .catch((e) => addToast(`Couldn't undo: ${String(e.message || e)}`, "error", 10000));
+    addToast(summary + also, "success", 12000,
+      res.snapshot || inPlace ? { label: "Undo", icon: "undo", onClick: undo } : null);
   };
 
   // The action bar picked an action: the CA wizard has its own dialog,

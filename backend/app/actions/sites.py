@@ -10,7 +10,9 @@ The ids (measured on the corpus):
   - gNB id = the NRBTS instance, gNbIdLength bits long. NCI = gNB id
     shifted left by 36 - gNbIdLength, plus the cell's lcrId
     (NRCELL.nrCellIdentity where a file writes it, 19 of 19 cells;
-    LNRELGNBCELL.nrCellId).
+    LNRELGNBCELL.nrCellId). A file that leaves gNbIdLength out but writes
+    nrCellIdentity still tells it: the one length that splits each NCI
+    into this gNB's id and the cell's lcrId.
 
 A gNB has two addresses here: the one an eNB's LNADJGNB names (X2-C) and
 the one another gNB's XNLINK names (Xn-C). Every gNB in the corpus uses one
@@ -77,6 +79,19 @@ def nci(gnb_id, id_length, lcr_id) -> Optional[str]:
     if not 22 <= n <= 32 or g >= 1 << n or c >= 1 << (36 - n):
         return None
     return str((g << (36 - n)) | c)
+
+
+def id_length(gnb_id, cells: list[dict]) -> Optional[str]:
+    """The gNB id length the cells' nrCellIdentity values imply: the one
+    length (22-32) at which every one of them is this gNB's id and the
+    cell's lcrId. None without one, or if more than one length fits."""
+    known = [(c.get("nrCellIdentity"), c.get("lcrId")) for c in cells]
+    known = [(int(n), int(c)) for n, c in known if (n or "").isdigit() and (c or "").isdigit()]
+    if not known or not str(gnb_id).isdigit():
+        return None
+    fits = [n for n in range(22, 33)
+            if all(v >> (36 - n) == int(gnb_id) and v & ((1 << (36 - n)) - 1) == c for v, c in known)]
+    return str(fits[0]) if len(fits) == 1 else None
 
 
 def gscn_to_arfcn(gscn: int) -> int:
@@ -150,8 +165,10 @@ def summary(mos: list[dict]) -> dict:
         if m["dn"].count("/") != 1:
             continue
         plmns = [p for p in (_plmn(x["p"]) for x in site.child(m["dn"], "NRPLMN")) if p]
-        cells = [nr_cell(site, m, c) for c in site.child(m["dn"], "NRCELL") if c["p"].get("lcrId") not in (None, "")]
-        gnbs.append({"dn": m["dn"], "id": instance(m["dn"]), "idLength": m["p"].get("gNbIdLength"),
+        own = [c for c in site.child(m["dn"], "NRCELL") if c["p"].get("lcrId") not in (None, "")]
+        cells = [nr_cell(site, m, c) for c in own]
+        length = m["p"].get("gNbIdLength") or id_length(instance(m["dn"]), [c["p"] for c in own])
+        gnbs.append({"dn": m["dn"], "id": instance(m["dn"]), "idLength": length,
                      "name": m["p"].get("btsName") or m["p"].get("nrBtsName"),
                      "release": release_of(m["version"]), "plmn": plmns[0] if plmns else None,
                      "ip": x2_address(site, m), "xn": xn_address(site, m), "cells": cells})

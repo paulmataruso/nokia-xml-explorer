@@ -14,10 +14,29 @@ the NRSYSINFO_PROFILE the cells broadcast):
   maxFreq);
 - an LTE carrier for NR cells: NRLIM (SIB5), at most 8 (TS 38.331
   maxEUTRA-Carrier);
+- an LTE carrier NR cells hand over to: an NRHOIR (the B2 measurement)
+  for the EARFCN under the gNB, named in each cell's nrhoirDNList (full
+  distNames). Production has one, NRHOIR-1, on each of its 27 gNBs, named
+  by all 130 cells, on the carrier their NRLIM and NRREDRT name too;
 - redirection on release: REDRT with redirRat eutra (redirFreqEutra), or
   REDRT with redirRat nr, a row in its redirNrCarFrq; NRREDRT on NR cells.
   Production numbers REDRT by RAT (0 eutra, 1 utraFDD, 5 geran, 9 nr), so
   a copy keeps its template's id where it is free.
+
+An NR carrier on LTE cells is broadcast in SIB24, so its eNB gets actSIB24
+true where its release has the switch: every eNB in the corpus whose cells
+list NR carriers has it on (11), and none with it off lists any (84). A
+redirect turns on its BTS's actRedirect the same way: LNBTS "enabled" (the
+dictionary: it "enables the feature UE context release with redirect"; all
+11 eNBs that redirect to NR have it), NRBTS "true" (all 27 gNBs with an
+NRREDRT, and none of the 59 without). Where no file of the BTS's release
+has the switch, the object that needs it isn't added either, and the plan
+says why. A profile broadcasts NRLIM in SIB5 and NRIRFIM in SIB4, so its
+sibSchedulingList gets that SIB, broadcasting, when it lacks it: every
+profile in the corpus with an NRLIM schedules SIB5 (27 of 27), and every
+one with an NRIRFIM SIB4 (29 of 29). An NR cell with no profile gets
+production's (profile_of(), for the actions that chain this), where its
+release has the class.
 
 An NR carrier is named by its SSB: TS 38.331 V17.6.0 SIB4 field
 descriptions, dl-CarrierFreq "indicates center frequency of the SS block
@@ -26,9 +45,12 @@ LTE cells list 502110, the SSB of their gNB's GSCN 6276).
 
 Settings come from a template: the cell's own object of the class, else
 another cell's of this file, else one from another file (values only,
-release-filtered), else, for NRREDRT, production's own (BUILTIN): every one
-of the 130 production cells with VoNR has NRREDRT-0 set alike but for its
-carrier. The carrier, band and SCS come from the inputs; the
+release-filtered), else production's own (BUILTIN), set alike but for the
+carrier wherever production has it: NRREDRT-0 on the 130 production cells
+with VoNR, NRLIM-1 and NRHOIR-1 on the 27 gNBs, NRFIM-1 and REDRT-9 (to
+NR) on the 79 LTE cells. The
+release filter reads parameters only, so lists are copied whole. The
+carrier, band and SCS come from the inputs; the
 SCS keeps the template's spelling ("30KHz" on NRFIM, "30 KHz" on NRIRFIM,
 "30kHz" on REDRT). Reselection priorities, thresholds and the measurement
 bandwidth are the template's, with a note: the files set the bandwidth as
@@ -80,6 +102,9 @@ KINDS = {
               "detail": "Inter-frequency reselection: an NRIRFIM in the system information profile the cells use."},
     "lte-nr": {"label": "An LTE carrier for NR cells", "parent": "NRSYSINFO_PROFILE", "input": LTE, "objects": ("NRLIM",),
                "detail": "Reselection from NR to LTE: an NRLIM in the system information profile the cells use."},
+    "ho-nr": {"label": "An LTE carrier NR cells hand over to", "parent": "NRCELL", "input": LTE,
+              "objects": ("NRHOIR",),
+              "detail": "Handover from NR to LTE: an NRHOIR (B2 measurement) for the EARFCN, which the cells name."},
     "redirect-nr": {"label": "An LTE carrier NR cells redirect to", "parent": "NRCELL", "input": LTE,
                     "objects": ("NRREDRT",),
                     "detail": "Release with redirect to LTE (NRREDRT, redirRat eutra)."},
@@ -96,13 +121,68 @@ OBJECTS = {
     "NRIRFIM": {"cls": "NRIRFIM", "param": "dlCarrierFreq", "ids": (1, 8)},
     "NRLIM": {"cls": "NRLIM", "param": "carrierFreq", "ids": (1, 8)},
     "NRREDRT": {"cls": "NRREDRT", "param": "redirFreqEutra", "ids": (0, None)},
+    # Under the gNB, and named by the cells (a list of distNames) instead of under each.
+    "NRHOIR": {"cls": "NRHOIR", "param": "earfcnValue", "ids": (1, None), "named": "nrhoirDNList"},
 }
 # Production's settings where no file loaded has the object, all but the carrier.
 BUILTIN = {
-    "NRREDRT": {"inst": "0", "p": {"redirRat": "eutra", "redirPrio": "4", "redirPrioBadUlRadio": "4"},
+    "NRREDRT": {"inst": "0", "release": "NRBTSCL25R2", "p": {"redirRat": "eutra", "redirPrio": "4", "redirPrioBadUlRadio": "4"},
                 "from": "production's NRREDRT (alike on all 130 production cells with VoNR)"},
+    "NRFIM": {"inst": "1", "release": "xL25R2", "from": "production's NRFIM (alike on all 79 production LTE cells but for the carrier)",
+              "p": {"tResNr": "1"},
+              "lists": {"nrCarFrqL": [{"deriveSsbIndexNr": "true", "nrCelResPrio": "7", "nrCelResSubPrio": "oDot4",
+                                       "nrFrqThrH": "10", "nrFrqThrL": "6", "pMaxNr": "23", "qRxLevMinNr": "-112",
+                                       "ssbMtcDurationNr": "2sf", "ssbMtcOffsetNr": "0", "ssbMtcPeriodicityNr": "20sf",
+                                       "ssbScsNr": "30KHz"}]}},
+    "REDRT:nr": {"inst": "9", "release": "xL25R2", "from": "production's REDRT-9 (alike on all 79 production LTE cells but for the carrier)",
+                 "p": {"addGsmSIToRedirMsg": "both", "addUtranSIToRedirMsg": "both", "redirRat": "nr",
+                       "redirectPrio": "4"},
+                 "lists": {"redirNrCarFrq": [{"ssbDuration": "sf2", "ssbOffset": "0", "ssbPeriodicity": "sf20",
+                                              "ssbSubcarrierSpacing": "30kHz"}]}},
+    "NRLIM": {"inst": "1", "release": "NRBTSCL25R2", "from": "production's NRLIM (alike on all 27 production profiles but for the carrier)",
+              "p": {"allowedMeasBw": "mbw100", "cellReselectionPriority": "6", "cellReselectionSubPriority": "oDot2",
+                    "pMaxEutra": "23", "presenceAntPort1": "true", "qQualMin": "-34", "qRxLevMin": "-56",
+                    "threshXHigh": "1", "threshXLow": "3"}},
+    "NRHOIR": {"inst": "1", "release": "NRBTSCL25R2", "from": "production's NRHOIR (alike on all 27 production gNBs but for the carrier)",
+               "p": {"allowedMeasBandwidth": "mbw100", "b1MeasRedirectEnabled": "none", "b2MeashoEnabled": "rsrp",
+                     "b2Threshold1hoRsrp": "51", "b2Threshold1hoRsrpVoNr": "51", "b2Threshold1hoRsrq": "50",
+                     "b2Threshold1hoRsrqVoNr": "50", "eutraFreqQOffsetRange": "0dB", "presenceAntennaPort1": "true",
+                     "reportAmount": "r8", "reportInterval": "ms240", "widebandRsrqMeas": "true"},
+               "lists": {
+                   "b1MeasRedirectRsrp": [{"b1HysteresisRedirectRsrp": "0", "b1ThresholdRedirectRsrp": "18",
+                                           "b1TimeToTriggerRedirectRsrp": "ms480"}],
+                   "b1MeasRedirectRsrq": [{"b1HysteresisRedirectRsrq": "0", "b1ThresholdRedirectRsrq": "2",
+                                           "b1TimeToTriggerRedirectRsrq": "ms480"}],
+                   "eutraB2MeashoRsrp": [{"b2HysteresishoRsrp": "0", "b2HysteresishoRsrpVoNr": "0",
+                                          "b2Threshold2hoRsrp": "30", "b2Threshold2hoRsrpVoNr": "30",
+                                          "b2TimeToTriggerhoRsrp": "ms320", "b2TimeToTriggerhoRsrpVoNr": "ms320"}],
+                   "eutraB2MeashoRsrq": [{"b2HysteresishoRsrq": "0", "b2HysteresishoRsrqVoNr": "0",
+                                          "b2Threshold2hoRsrq": "2", "b2Threshold2hoRsrqVoNr": "2",
+                                          "b2TimeToTriggerhoRsrq": "ms480", "b2TimeToTriggerhoRsrqVoNr": "ms480"}]}},
 }
 SCS = ("15 kHz", "30 kHz", "120 kHz")
+SIB = {"NRLIM": "sibType5", "NRIRFIM": "sibType4"}  # the SIB a profile broadcasts the object in
+SIB_ROW = {"sibBroadcastStatus": "broadcasting", "sibPeriodicity": "rf8", "sibScope": "cellSpecific"}
+# Production's profile: NRSYSINFO_PROFILE-0, alike on all 27 production gNBs, named by all 130 cells in full.
+PROFILE = {"inst": "0", "release": "NRBTSCL25R2",
+           "p": {"addHystSfHigh": "dB0", "addHystSfMedium": "dB0", "combRelaxedMeasCond": "false",
+                 "combRelaxedMeasCond2": "false", "highPrioMeasRelax": "false", "nCellChangeHigh": "2",
+                 "nCellChangeMedium": "1", "qHyst": "dB4", "sNonIntraSearchP": "4", "siWindowLength": "s40",
+                 "systemInformationTargetRate": "157", "tEvaluation": "s30", "tHystNormal": "s30",
+                 "tReselectionEutra": "2", "threshServingLowP": "3"},
+           "sibs": ("sibType2", "sibType3", "sibType5", "sibType8", "sibType4")}
+# The switch each kind of cell's BTS needs for a carrier object: (parameter, on, why, basis).
+SWITCH = {
+    ("LNCEL", "NRFIM"): ("actSIB24", "true", "SIB24 carries the cells' NR carriers (NRFIM nrCarFrqL) to idle UEs: "
+                                             "every eNB in the files this was built from that lists NR carriers has "
+                                             "it on (11), and none with it off lists any (84).", "files"),
+    ("LNCEL", "REDRT"): ("actRedirect", "enabled", "Release with redirect, which the cells' REDRT redirects to: the "
+                                                   "dictionary has it enable the feature UE context release with "
+                                                   "redirect.", "official"),
+    ("NRCELL", "NRREDRT"): ("actRedirect", "true", "Release with redirect, which the cells' NRREDRT redirects to: on "
+                                                   "in all 27 production gNBs with an NRREDRT, off in all 59 "
+                                                   "without.", "files"),
+}
 EARFCN_MAX, NR_ARFCN_MAX = 262143, 3279165  # TS 36.331 ARFCN-ValueEUTRA-r9, TS 38.331 ARFCN-ValueNR
 
 
@@ -112,6 +192,9 @@ def _parents(ctx: Context, kind: str) -> list[dict]:
 
 def _objects(site, parent: str, key: str) -> list[dict]:
     spec = OBJECTS[key]
+    if "named" in spec:
+        cell = site.by_dn.get(parent) or {}
+        return [site.by_dn[d] for d in (cell.get("simple") or {}).get(spec["named"], []) if d in site.by_dn]
     return [m for m in site.child(parent, spec["cls"]) if "rat" not in spec or m["p"].get("redirRat") == spec["rat"]]
 
 
@@ -151,7 +234,8 @@ def available(ctx: Context) -> Optional[str]:
 
 
 def _kinds_with_templates(ctx: Context) -> set[str]:
-    have = {key for f in ctx.corpus() for key in (f.get("carriers") or {})} | {kind_of(m) for m in ctx.site.mos}
+    have = ({key for f in ctx.corpus() for key in (f.get("carriers") or {})} | {kind_of(m) for m in ctx.site.mos}
+            | set(BUILTIN))
     return {k for k, spec in KINDS.items() if all(key in have for key in spec["objects"])}
 
 
@@ -281,6 +365,11 @@ class _Plan:
         self.copied: dict[str, list[str]] = {}
         self.dropped: set[str] = set()
         self.replaced: dict[str, list[str]] = {}
+        self.linked: dict[str, list[str]] = {}  # cells now naming an object the gNB had
+        self.unproven: set[tuple] = set()  # (class, release, BUILTIN's) written in a release no file shows it in
+        self.switched: dict[str, list[str]] = {}  # switch -> BTSs it was turned on on
+        self.scheduled: dict[str, list[str]] = {}  # SIB -> profiles that now broadcast it
+        self.profiles: dict[str, str] = {}  # gNB -> the profile this plan made for it
         self.focus: Optional[str] = None
 
     def template(self, parent: dict, key: str) -> Optional[dict]:
@@ -308,12 +397,15 @@ class _Plan:
             t = (f.get("carriers") or {}).get(key)
             if t and (f["source"], f["name"]) != (self.ctx.source, self.ctx.filename):
                 return {"p": {k: v for k, v in t["p"].items() if keep(k)},
-                        "lists": {k: v for k, v in t["lists"].items() if keep(k)}, "simple": {},
+                        "lists": {k: [dict(r) for r in v] for k, v in t["lists"].items()}, "simple": {},
                         "inst": t.get("inst"), "from": "another file", "donor": True, "version": t.get("version")}
         b = BUILTIN.get(key)
         if b:
-            return {"p": {k: v for k, v in b["p"].items() if keep(k)}, "lists": {}, "simple": {}, "inst": b["inst"],
-                    "from": b["from"], "donor": False}
+            if self.index and known is None and rel != b["release"]:
+                self.unproven.add((cls, rel, b["release"]))
+            return {"p": {k: v for k, v in b["p"].items() if keep(k)},
+                    "lists": {k: [dict(r) for r in v] for k, v in (b.get("lists") or {}).items()},
+                    "simple": {}, "inst": b["inst"], "from": b["from"], "donor": False}
         return None
 
     def overrides(self, key: str, t: dict) -> tuple[dict, dict]:
@@ -332,6 +424,8 @@ class _Plan:
             return {"redirRat": "eutra", "redirFreqEutra": i["earfcn"]}, {}
         if key == "NRLIM":
             return {"carrierFreq": i["earfcn"]}, {}
+        if key == "NRHOIR":
+            return {"earfcnValue": i["earfcn"]}, {}
         if key == "NRIRFIM":
             return {"dlCarrierFreq": i["ssb"], "freqBandIndicatorNR": i["band"], "ssbScs": scs(t["p"].get("ssbScs"))}, {}
         row = (t["lists"].get(OBJECTS[key]["row"][0]) or [{}])[0]
@@ -401,6 +495,16 @@ class _Plan:
 
     def add(self, parent: dict, key: str, carrier: str, what: str) -> None:
         spec = OBJECTS[key]
+        if "named" in spec:
+            self.add_named(parent, key, carrier, what)
+            return
+        missing = self.switch(parent, spec["cls"])
+        if missing:
+            self.skipped.setdefault(f"no file of its release has {missing}, which {spec['cls']} needs",
+                                    []).append(label(parent["dn"]))
+            return
+        if parent["cls"] == "NRSYSINFO_PROFILE" and key in SIB:
+            self.schedule(parent["dn"], SIB[key], spec["cls"])
         have = [m for m in _objects(self.site, parent["dn"], key) if carrier in _carriers(m, key)]
         if have:
             self.replace(parent, key, carrier, what, have)
@@ -427,7 +531,8 @@ class _Plan:
                                         []).append(label(parent["dn"]))
                 return
             params = {**t["p"], **p_over}
-            dn = self.doc.create(parent["dn"], spec["cls"], inst, list(params.items()), w=w,
+            dn = self.doc.create(parent["dn"], spec["cls"], inst, sorted(params.items(), key=lambda kv: kv[0].lower()),
+                                 w=w,
                                  **self.class_args(parent, spec["cls"], t))
             for name, rows in t["lists"].items():
                 if "row" in spec and name == spec["row"][0]:
@@ -438,6 +543,138 @@ class _Plan:
                 self.doc.set_values(dn, name, vals, w)
             self.focus = self.focus or dn
         self.copied.setdefault(t["from"], []).append(label(parent["dn"]))
+
+    def switch(self, cell: dict, cls: str) -> Optional[str]:
+        """The switch the cell's BTS needs for the class (SWITCH), on. Returns
+        "BTS switch" when no file of the BTS's release has it."""
+        if (cell["cls"], cls) not in SWITCH:
+            return None
+        name, on, reason, basis = SWITCH[(cell["cls"], cls)]
+        bts = cell["dn"].rsplit("/", 1)[0]
+        m = self.site.by_dn.get(bts)
+        if not m or self.doc.get(bts, name) == on:
+            return None
+        if self.index and name not in self.index.get(release_of(m["version"]), {}).get(m["cls"], set()):
+            return f"{m['cls']} {name}"
+        self.doc.set(bts, name, on, why("carrier", reason, basis))
+        self.switched.setdefault(name, []).append(label(bts))
+        return None
+
+    def schedule(self, profile: str, sib: str, cls: str) -> None:
+        """The profile broadcasts the SIB its new object goes out in."""
+        doc = self.doc
+        rows = doc.items(profile, "sibSchedulingList")
+        i = next((i for i, r in enumerate(rows) if r.get("sibType") == sib), None)
+        w = why("carrier", f"The {cls} goes out in {sib[:3].upper()}{sib[7:]}: every profile in the files this was "
+                           f"built from with an {cls} broadcasts it.", "files")
+        if i is None:
+            doc.add_item(profile, "sibSchedulingList", [*SIB_ROW.items(), ("sibType", sib)], w)
+        elif rows[i].get("sibBroadcastStatus") != "broadcasting":
+            doc.set_item(profile, "sibSchedulingList", i, "sibBroadcastStatus", "broadcasting", w)
+        else:
+            return
+        self.scheduled.setdefault(f"{sib[:3].upper()}{sib[7:]}", []).append(label(profile))
+
+    def profile_of(self, cell: dict) -> Optional[dict]:
+        """The system information profile an NR cell broadcasts, as a parent
+        for add(). A cell with none gets production's, shared by the gNB's
+        cells that have none, where its release has the class; else None."""
+        doc, gnb = self.doc, cell["dn"].rsplit("/", 1)[0]
+        ref = doc.get(cell["dn"], "nrSysInfoProfileDN") or ""
+        for dn in (ref, f"{gnb}/{ref}") if ref else ():
+            if doc.exists(dn):
+                return self.site.by_dn.get(dn) or {"dn": dn, "cls": "NRSYSINFO_PROFILE", "version": cell["version"]}
+        if self.index and "NRSYSINFO_PROFILE" not in self.index.get(release_of(cell["version"]), {}):
+            return None
+        dn = self.profiles.get(gnb)
+        if dn is None:
+            made = why("carrier", "The system information the cells broadcast, set like production's "
+                                  "NRSYSINFO_PROFILE (alike on all 27 production gNBs).", "files")
+            dn = doc.create(gnb, "NRSYSINFO_PROFILE", doc.next_free(gnb, "NRSYSINFO_PROFILE", int(PROFILE["inst"])),
+                            sorted(PROFILE["p"].items(), key=lambda kv: kv[0].lower()), w=made,
+                            **self.class_args(cell, "NRSYSINFO_PROFILE", {}))
+            for sib in PROFILE["sibs"]:
+                doc.add_item(dn, "sibSchedulingList", [*SIB_ROW.items(), ("sibType", sib)], made)
+            self.profiles[gnb] = dn
+        doc.set(cell["dn"], "nrSysInfoProfileDN", dn,
+                why("carrier", f"{label(cell['dn'])} broadcasts {label(dn)}: every production cell names its gNB's "
+                               "profile (130 of 130), in full.", "files"))
+        return {"dn": dn, "cls": "NRSYSINFO_PROFILE", "version": cell["version"]}
+
+    def add_named(self, cell: dict, key: str, carrier: str, what: str) -> None:
+        """An object of the gNB for the carrier, named in the cell's list: the
+        one the gNB has, else a new one like the template."""
+        spec, doc = OBJECTS[key], self.doc
+        gnb, cls, field, named = cell["dn"].rsplit("/", 1)[0], spec["cls"], spec["param"], spec["named"]
+        names = doc.values(cell["dn"], named)
+        mine = [d for d in names if doc.cls(d) == cls and doc.get(d, field) == carrier]
+        if mine:
+            self.skipped.setdefault(f"already {what}", []).append(label(cell["dn"]))
+            return
+        dn = next((d for d in doc.children(gnb, cls) if doc.get(d, field) == carrier), None)
+        w = why("carrier", f"{what[0].upper() + what[1:]}: {label(cell['dn'])} names "
+                           + (f"{label(dn)}, the gNB's {cls} for it." if dn else f"the new {cls} for it."), "files")
+        if dn is None:
+            t = self.template(cell, key)
+            if not t:
+                self.skipped.setdefault(f"no {cls} to copy in any file", []).append(label(cell["dn"]))
+                return
+            inst = self.free(gnb, key, t["inst"])
+            made = why("carrier", f"{what[0].upper() + what[1:]}, set like "
+                                  + (f"an {cls} of another file." if t["donor"] else f"{t['from']}."),
+                       "donor" if t["donor"] else "files")
+            dn = doc.create(gnb, cls, inst, sorted({**t["p"], **self.overrides(key, t)[0]}.items(),
+                                                   key=lambda kv: kv[0].lower()),
+                            w=made, **self.class_args(cell, cls, t))
+            for name, rows in t["lists"].items():
+                for r in rows:
+                    doc.add_item(dn, name, list(r.items()), made)
+            for name, vals in t["simple"].items():
+                doc.set_values(dn, name, vals, made)
+            self.copied.setdefault(t["from"], []).append(label(cell["dn"]))
+        else:
+            self.linked.setdefault(label(dn), []).append(label(cell["dn"]))
+        doc.add_value(cell["dn"], named, dn, w)
+        self.focus = self.focus or dn
+
+
+def notes(p: _Plan) -> list[str]:
+    """Everything a plan has to say: what it copied, replaced and left alone,
+    and plan_notes()."""
+    out = list(p.notes)
+    for source, cells in p.copied.items():
+        out.append(f"{', '.join(sorted(set(cells)))}: settings copied from {source}.")
+    if p.copied:
+        out.append("Check the reselection priority, thresholds and measurement bandwidth (for redirection, its "
+                   "priority) suit the new carrier: they are the template's.")
+    for where, fixed in p.replaced.items():
+        out.append(f"Replaced {where}'s entry for it: {'; '.join(fixed)}. Its priorities and thresholds stay, "
+                   "the carrier's own.")
+    for reason, cells in p.skipped.items():
+        out.append(f"Left alone: {', '.join(cells)} ({reason}).")
+    if p.dropped:
+        out.append(f"Left out, as no file of this release sets them: {', '.join(sorted(p.dropped)[:8])}.")
+    return out + plan_notes(p)
+
+
+def plan_notes(p: _Plan) -> list[str]:
+    """What a plan did beyond the carrier objects, for any action chaining it."""
+    out = [f"{', '.join(cells)} now name{'s' if len(cells) == 1 else ''} {dn}, the gNB's for it."
+           for dn, cells in p.linked.items()]
+    for gnb, dn in p.profiles.items():
+        out.append(f"{label(gnb)}'s cells broadcast no system information profile, so they now name {label(dn)}, set "
+                   "like production's (alike on all 27 production gNBs).")
+    for sib, where in p.scheduled.items():
+        out.append(f"{', '.join(sorted(set(where)))} now broadcast{'s' if len(set(where)) == 1 else ''} {sib}, which "
+                   "the new carrier goes out in.")
+    for name, where in p.switched.items():
+        out.append(f"Turned on {name} on {', '.join(sorted(set(where)))}: "
+                   + ("its cells broadcast their NR carriers in SIB24." if name == "actSIB24" else
+                      "release with redirect, for the redirect added."))
+    for cls, rel, theirs in sorted(p.unproven):
+        out.append(f"No file of {rel} has an {cls}: it is written as production's ({theirs}). Check this release "
+                   "takes it.")
+    return out
 
 
 def _number(value: Optional[str], hi: int, what: str, problems: list[str]) -> Optional[str]:
@@ -486,18 +723,7 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     if not doc.changes:
         raise PlanError([f"Nothing to add: {', '.join(cells)} {reason}." for reason, cells in p.skipped.items()]
                         or ["Nothing to add."])
-    for source, cells in p.copied.items():
-        p.notes.append(f"{', '.join(sorted(set(cells)))}: settings copied from {source}.")
-    if p.copied:
-        p.notes.append("Check the reselection priority, thresholds and measurement bandwidth (for redirection, its "
-                       "priority) suit the new carrier: they are the template's.")
-    for where, fixed in p.replaced.items():
-        p.notes.append(f"Replaced {where}'s entry for it: {'; '.join(fixed)}. Its priorities and thresholds stay, "
-                       "the carrier's own.")
-    for reason, cells in p.skipped.items():
-        p.notes.append(f"Left alone: {', '.join(cells)} ({reason}).")
-    if p.dropped:
-        p.notes.append(f"Left out, as no file of this release sets them: {', '.join(sorted(p.dropped)[:8])}.")
-    done = len({c for cells in p.copied.values() for c in cells} | {w.split(" ")[0] for w in p.replaced})
+    done = len({c for cells in [*p.copied.values(), *p.linked.values()] for c in cells}
+               | {w.split(" ")[0] for w in p.replaced})
     return finish(ctx, doc, {"label": f"Add {what}", "summary": f"{spec['label']}: {what}, on {done} of {len(targets)}.",
-                             "notes": p.notes, "confirm": [], "focus": p.focus})
+                             "notes": notes(p), "confirm": [], "focus": p.focus})

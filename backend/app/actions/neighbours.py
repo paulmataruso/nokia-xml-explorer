@@ -4,6 +4,17 @@ candidates (sites.summary per file in the corpus), option labels that tell
 look-alike sites apart, PLMN and number fields, and the eNB's limit on
 neighbour objects.
 
+The candidates come in groups: this file's own sites (co-sited), then the
+other files' sites whose address is on the subnet of this site's own (the
+one the neighbour faces), nearest address first, then the rest. Two BTSs
+on one BBU exported as separate files share that subnet, on neighbouring
+addresses (owner, 2026-11-05). It narrows the list, it doesn't prove a
+co-site: a lab subnet holds several BTSs (up to 7 addresses on one
+target's subnet in the corpus, though no eNB has more than one gNB
+address on its own), and one address every export of the BTS that had it
+over time. A site at this site's own address is this BTS in another
+export (all 66 gNBs on a gNB's subnet are), so it stays with the rest.
+
 The limit is the dictionary's maxNumAnrMoiAllowed (LNBTS): the LNADJ,
 LNADJL, LNREL, LNADJW, LNRELW, LNADJT, LNRELT, LNADJG, LNRELG, LNADJX,
 LNRELX, LNNEIH, LNADJGNB and LNRELGNBCELL of an eNB together "shall not
@@ -14,12 +25,15 @@ no eNB is above 80% of it.
 from __future__ import annotations
 
 import collections
+import ipaddress
 import json
 from typing import Callable, Optional
 
 from . import Context
 from .ip_address import addresses
 from .links import Site
+from .sites import summary
+from .transport import subnets
 
 ANR_CLASSES = ("LNADJ", "LNADJL", "LNREL", "LNADJW", "LNRELW", "LNADJT", "LNRELT", "LNADJG", "LNRELG", "LNADJX",
                "LNRELX", "LNNEIH", "LNADJGNB", "LNRELGNBCELL")
@@ -97,9 +111,126 @@ def sources(ctx: Context, kind: str, skip: Callable[[dict], bool], fields: tuple
     return sorted(seen.values(), key=lambda e: (int(e["id"]) if e["id"].isdigit() else 0, e["file"]))
 
 
+def here(ctx: Context, kind: str, skip: Callable[[dict], bool]) -> list[dict]:
+    """This file's own eNBs or gNBs as candidates, as sources() gives the
+    other files': a co-sited site is the likeliest neighbour."""
+    return [{**e, "file": "this file", "key": f"here|{e['dn']}", "files": 1}
+            for e in summary(ctx.site.mos)[kind] if not skip(e)]
+
+
+def nearby(site: Site, own: Optional[str], found: list[dict], address: str = "ip",
+           stale: Callable[[dict], bool] = lambda e: False) -> list[dict]:
+    """`found` in its groups: this file's sites, then the other files' on
+    the subnet of `own` (this site's address the neighbour faces), each
+    with "subnet" set, nearest address first, then the rest; otherwise in
+    found's order. A site at `own` itself stays with the rest: one address
+    is one system module, so that is this BTS in another export. So does
+    one `stale` picks: at an address this site has for another BTS."""
+    nets = [net for _, net in subnets(site) if _within(own, net)]
+    near, rest = [], []
+    for e in found:
+        net = (None if e["key"].startswith("here|") or _distance(e.get(address), own) == 0 or stale(e) else
+               next((n for n in nets if _within(e.get(address), n)), None))
+        if net:
+            near.append({**e, "subnet": str(net)})
+        else:
+            rest.append(e)
+    near.sort(key=lambda e: _distance(e[address], own))
+    return ([e for e in rest if e["key"].startswith("here|")] + near
+            + [e for e in rest if not e["key"].startswith("here|")])
+
+
+def _distance(a: Optional[str], b: Optional[str]) -> Optional[int]:
+    try:
+        return abs(int(ipaddress.ip_address((a or "").strip())) - int(ipaddress.ip_address((b or "").strip())))
+    except ValueError:
+        return None
+
+
+def _within(value: Optional[str], net) -> bool:
+    try:
+        ip = ipaddress.ip_address((value or "").strip())
+    except ValueError:
+        return False
+    return ip.version == net.version and ip in net
+
+
+def group(e: dict) -> str:
+    return ("This file" if e["key"].startswith("here|") else
+            "On this site's subnet" if e.get("subnet") else "Sites in the tool")
+
+
+def far(key: Optional[str]) -> Optional[tuple[str, str]]:
+    """(corpus key of its file, distName) for a site option from another
+    file; None for this file's own (co-sited) or a typed-in one."""
+    head, _, dn = (key or "").partition("|")
+    if not dn or head == "here" or ":" not in head:
+        return None
+    return head, dn
+
+
+def lookup(ctx: Context, found: list[dict], key: str, kind: str) -> Optional[dict]:
+    """The site `key` names: an option of `found`, else that file's site
+    itself. A run names a site by the file it plans in, which `found` may
+    list under a newer file with the same cells."""
+    match = next((e for e in found if e["key"] == key), None)
+    where = far(key)
+    if match or not where or where[0] == ctx.key:
+        return match
+    for f in ctx.corpus():
+        if f["key"] == where[0]:
+            for e in (f.get("sites") or {}).get(kind, []):
+                if e["dn"] == where[1]:
+                    return {**e, "file": f["name"], "key": key, "files": 1}
+    return None
+
+
+def picked(cells: dict[str, dict], inputs: dict, name: str) -> list[dict]:
+    """The cells (distName -> object) `inputs[name]` names, by distName, or
+    `inputs[name + "Lcr"]` names by lcrId (how a run's other end names this
+    file's cells); every one when neither is given."""
+    if inputs.get(name) is not None:
+        return [cells[d] for d in inputs[name] if d in cells]
+    if inputs.get(name + "Lcr") is not None:
+        lcrs = {str(x) for x in inputs[name + "Lcr"]}
+        return [c for c in cells.values() if c["p"].get("lcrId") in lcrs]
+    return list(cells.values())
+
+
+def lcr_ids(site: Site, dns: Optional[list[str]], parent: str, cls: str) -> list[str]:
+    """The lcrIds of the cells `dns` names (every cell of `parent` when
+    None): what the other end of a run relates to."""
+    cells = [site.by_dn[d] for d in dns if d in site.by_dn] if dns is not None else site.child(parent, cls)
+    return [c["p"]["lcrId"] for c in cells if c["p"].get("lcrId") not in (None, "")]
+
+
+BOTH = "both"
+
+
+def run_fields(sources: dict[str, list[dict]], kind: str) -> list[dict]:
+    """A neighbour form's run fields (run.py): more neighbours from other
+    files, added as the first is, and their own end of each relation."""
+    more = {dn: [{"value": o["value"], "label": o["label"], "group": o.get("group"),
+                  "hint": (o.get("details") or [""])[0]} for o in opts if far(o["value"])]
+            for dn, opts in sources.items()}
+    return [
+        {"id": "more", "label": f"More neighbour {kind}s", "type": "picks", "dependsOn": "target",
+         "optionsByKey": more, "excludeField": "source", "optional": True, "default": [],
+         "hint": "Each is added as the first, with all its cells, in the same run."},
+        {"id": "both", "label": "Their end", "type": "checks", "optional": True,
+         "options": [{"value": BOTH, "label": "Add this site to each neighbour's own file too",
+                      "hint": "In the file each neighbour comes from, written with this one (a read-only file "
+                              "goes into a copy). Not for one typed in or in this file."}]},
+    ]
+
+
 def from_text(e: dict) -> str:
+    if e["key"].startswith("here|"):
+        return "In this file (co-sited)."
     return (f"From {e['file']}" + (f" (and {e['files'] - 1} other file{'s' if e['files'] > 2 else ''} with "
-                                   "the same cells)" if e["files"] > 1 else "") + ".")
+                                   "the same cells)" if e["files"] > 1 else "") + "."
+            + (f" Its address is on this site's subnet ({e['subnet']}), as a co-sited BTS's is." if e.get("subnet")
+               else ""))
 
 
 def distinguish(opts: list[dict], found: list[dict], tails: list[str], address: str = "ip") -> None:

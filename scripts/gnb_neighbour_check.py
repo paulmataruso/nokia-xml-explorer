@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Corpus check for the gNB neighbour actions: EN-DC (backend/app/actions/
-endc_gnb.py) and Xn (backend/app/actions/neighbour_gnb.py).
+Corpus check for the neighbour gNB action (backend/app/actions/
+neighbour_gnb.py: Xn on a gNB, and endc_gnb.py on an eNB).
 
 1. Sweep:
    - every eNB gets a few gNBs from the other files (the first offered, the
-     first with several cells, one that is already its EN-DC gNB) and one
-     typed in, with relations and without;
+     first with several cells, one that is already its neighbour) and one
+     typed in, with relations and without, and with its NR carrier;
    - every gNB gets the first gNB offered and one typed in, and a learned
      (gnbControlled) XNLINK planned again must turn oamControlled.
    A crash fails; a refusal is counted with its reason. The result must
@@ -49,20 +49,22 @@ def main(folders):
     counts, refusals, failures, diffs = collections.Counter(), collections.Counter(), [], collections.Counter()
     notes = collections.Counter()
 
-    def check(action, c, src, name, inputs, where, kind):
+    action = neighbour_gnb
+
+    def check(side, c, src, name, inputs, where, kind):
         try:
             out, plan = action.plan(c, inputs)
         except PlanError as e:
-            counts[(action.ID, kind, "refused")] += 1
+            counts[(side, kind, "refused")] += 1
             for p in e.problems:
-                refusals[(action.ID, p[:90])] += 1
+                refusals[(side, p[:90])] += 1
             return None, None
         except Exception:
             failures.append(f"{where}: plan crashed\n{traceback.format_exc()}")
             return None, None
-        counts[(action.ID, kind, "ok")] += 1
+        counts[(side, kind, "ok")] += 1
         for n in plan["notes"]:
-            notes[(action.ID, n.split(":")[0][:70])] += 1
+            notes[(side, n.split(":")[0][:70])] += 1
         try:
             parse_file(out, name)
         except XmlParseError as e:
@@ -76,7 +78,7 @@ def main(folders):
             failures.append(f"{where}: not idempotent: {[(x['op'], x['dn'], x.get('param')) for x in again[:4]]}")
         return out, plan
 
-    def refused(action, c, inputs, where):
+    def refused(c, inputs, where):
         try:
             action.plan(c, inputs)
         except PlanError:
@@ -87,49 +89,61 @@ def main(folders):
     for (src, name), raw in raws.items():
         c = ctx(raw, src, name)
         own = sorted(own_addresses(c.site))
-        for action in (endc_gnb, neighbour_gnb):
-            try:
-                if action.available(c):
-                    continue
-                fields = {f["id"]: f for f in action.setup(c)["fields"]}
-            except Exception:
-                failures.append(f"{name}: {action.ID} setup crashed\n{traceback.format_exc()}")
+        try:
+            if action.available(c):
                 continue
-            for target in fields["target"]["options"]:
-                where = f"{name} {target['label']}"
-                opts = [o for o in fields["source"]["optionsByKey"][target["key"]] if o["value"] != action.MANUAL]
-                pick = {}
-                for o in opts:
-                    pick.setdefault("first", o)
-                    if action is endc_gnb and len(fields["cells"]["optionsByKey"].get(o["key"], [])) > 1:
-                        pick.setdefault("several cells", o)
-                    if "already a neighbour" in o["label"]:
-                        pick.setdefault("already a neighbour", o)
-                for kind, o in pick.items():
-                    check(action, c, src, name, {"target": target["value"], "source": o["value"]},
-                          f"{where} <- {o['label']}", kind)
-                if action is endc_gnb:
-                    manual = {"target": target["value"], "source": action.MANUAL, "gnbId": "4194303",
-                              "idLength": fields["idLength"]["defaultByKey"][target["key"]] or "22",
-                              "ip": "10.250.250.9", "plmn": fields["plmn"]["defaultByKey"][target["key"]] or "001-01"}
-                    check(action, c, src, name, {**manual, "lcrIds": "1, 2"}, f"{where} <- by hand", "by hand")
-                    check(action, c, src, name, manual, f"{where} <- by hand, X2 only", "by hand, X2 only")
-                else:
-                    manual = {"target": target["value"], "source": action.MANUAL, "ip": "10.250.250.9"}
-                    check(action, c, src, name, manual, f"{where} <- by hand", "by hand")
-                    learned = next((m for m in c.site.child(target["value"], "XNLINK")
-                                    if m["p"].get("cPlaneIpAddrCtrl") == "gnbControlled"), None)
-                    if learned:
-                        out, plan = check(action, c, src, name, {**manual, "ip": learned["p"]["cPlaneIpAddr"]},
-                                          f"{where} <- learned {label(learned['dn'])}", "learned link")
-                        if plan and [(x["op"], x.get("param")) for x in plan["changes"]] != \
-                                [("set", "cPlaneIpAddrCtrl")]:
-                            failures.append(f"{where}: learned {label(learned['dn'])} planned again doesn't just "
-                                            "turn oamControlled")
-                if own:
-                    extra = ({"gnbId": "4194303", "idLength": "22", "plmn": "001-01"} if action is endc_gnb else {})
-                    refused(action, c, {"target": target["value"], "source": action.MANUAL, "ip": own[0], **extra},
-                            f"{where} <- its own address {own[0]}")
+            fields = {f["id"]: f for f in action.setup(c)["fields"]}
+        except Exception:
+            failures.append(f"{name}: setup crashed\n{traceback.format_exc()}")
+            continue
+        for target in fields["target"]["options"]:
+            where = f"{name} {target['label']}"
+            lte = target["key"] in fields["from"]["optionsByKey"]
+            side, manual_value = ("eNB", endc_gnb.MANUAL) if lte else ("gNB", neighbour_gnb.MANUAL)
+            opts = [o for o in fields["source"]["optionsByKey"][target["key"]] if o["value"] != manual_value]
+            pick = {}
+            for o in opts:
+                pick.setdefault("first", o)
+                if lte and len(fields["cells"]["optionsByKey"].get(o["key"], [])) > 1:
+                    pick.setdefault("several cells", o)
+                if o["value"].startswith("here|"):
+                    pick.setdefault("co-sited", o)
+                if "already a neighbour" in o["label"]:
+                    pick.setdefault("already a neighbour", o)
+            for kind, o in pick.items():
+                check(side, c, src, name, {"target": target["value"], "source": o["value"]},
+                      f"{where} <- {o['label']}", kind)
+            if lte:
+                manual = {"target": target["value"], "source": manual_value, "gnbId": "4194303",
+                          "idLength": fields["idLength"]["defaultByKey"][target["key"]] or "22",
+                          "ip": "10.250.250.9", "plmn": fields["plmn"]["defaultByKey"][target["key"]] or "001-01"}
+                check(side, c, src, name, {**manual, "lcrIds": "1, 2"}, f"{where} <- by hand", "by hand")
+                check(side, c, src, name, manual, f"{where} <- by hand, X2 only", "by hand, X2 only")
+                check(side, c, src, name, {**manual, "ssb": "502110", "band": "41", "scs": "30 kHz"},
+                      f"{where} <- by hand, with its carrier", "by hand, with its carrier")
+            else:
+                manual = {"target": target["value"], "source": manual_value, "xnIp": "10.250.250.9"}
+                check(side, c, src, name, manual, f"{where} <- by hand", "by hand")
+                check(side, c, src, name, {**manual, "ssb": "520110", "band": "41", "scs": "30 kHz"},
+                      f"{where} <- by hand, on another carrier", "by hand, on another carrier")
+                learned = next((m for m in c.site.child(target["value"], "XNLINK")
+                                if m["p"].get("cPlaneIpAddrCtrl") == "gnbControlled"), None)
+                if learned:
+                    out, plan = check(side, c, src, name, {**manual, "xnIp": learned["p"]["cPlaneIpAddr"]},
+                                      f"{where} <- learned {label(learned['dn'])}", "learned link")
+                    if plan and ("set", "cPlaneIpAddrCtrl") not in [(x["op"], x.get("param")) for x in plan["changes"]]:
+                        failures.append(f"{where}: learned {label(learned['dn'])} planned again doesn't turn "
+                                        "oamControlled")
+                    elif plan and any(x["op"] != "set" or x["dn"] != target["value"]
+                                      for x in plan["changes"] if x.get("param") != "cPlaneIpAddrCtrl"
+                                      and x.get("class") != "NRANR"):
+                        failures.append(f"{where}: learned {label(learned['dn'])} planned again adds more than the "
+                                        "gNB's switches and NRANR")
+            if own:
+                extra = {"gnbId": "4194303", "idLength": "22", "plmn": "001-01", "ip": own[0]} if lte else \
+                    {"xnIp": own[0]}
+                refused(c, {"target": target["value"], "source": manual_value, **extra},
+                        f"{where} <- its own address {own[0]}")
 
     # 2. Round trip.
     trips = collections.Counter()
@@ -155,7 +169,7 @@ def main(folders):
             inputs = {"target": enb, "source": endc_gnb.MANUAL, "gnbId": gnb_id, "idLength": length, "ip": ip,
                       "plmn": plmn_text(plmn), "lcrIds": ", ".join(lcrs), **({"from": froms} if froms else {})}
             try:
-                out, _ = endc_gnb.plan(ctx(doc.raw(), src, name), inputs)
+                out, _ = neighbour_gnb.plan(ctx(doc.raw(), src, name), inputs)
             except Exception as e:
                 failures.append(f"{name} round trip of {label(adj['dn'])}: {e}")
                 continue
@@ -174,7 +188,7 @@ def main(folders):
             gnb = link["dn"].rsplit("/", 1)[0]
             doc = Doc(raw)
             doc.delete(link["dn"], W)
-            inputs = {"target": gnb, "source": neighbour_gnb.MANUAL, "ip": link["p"]["cPlaneIpAddr"]}
+            inputs = {"target": gnb, "source": neighbour_gnb.MANUAL, "xnIp": link["p"]["cPlaneIpAddr"]}
             try:
                 out, _ = neighbour_gnb.plan(ctx(doc.raw(), src, name), inputs)
             except Exception as e:
