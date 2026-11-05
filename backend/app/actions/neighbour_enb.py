@@ -46,8 +46,9 @@ from typing import Optional
 
 from . import Context, PlanError, finish, gnb_enb
 from .doc import Doc, instance, label, why
-from .neighbours import (BOTH, anr_budget, distinguish, far, from_text, group, here, lcr_ids, lookup, lte_enbs,
-                         nearby, number, parse_plmn, picked, plmn_text, run_fields, same_node, sources)
+from .neighbours import (BOTH, anr_budget, distinguish, far, from_text, group, here, id_clash, lcr_ids, lookup,
+                         lte_enbs, nearby, number, own_addresses, parse_plmn, picked, plmn_text, run_fields, same_node,
+                         sources)
 from .sites import NRB, lte_cell
 from .transport import check_ip, lte_cplane, reachable
 
@@ -77,9 +78,16 @@ def _cell_text(c: dict) -> str:
 def _sources(ctx: Context, enb: dict) -> list[dict]:
     """Neighbour candidates from the other files: one per distinct eNB (id,
     PLMN, address, cells), from the newest file that has it."""
-    own = instance(enb["dn"])
-    skip = lambda e: not e["cells"] or e["id"] == own  # noqa: E731
-    return here(ctx, "enbs", skip) + sources(ctx, "enbs", skip, ("id", "plmn", "ip", "cells"))
+    own, mine = instance(enb["dn"]), own_addresses(ctx.site)
+    # In another file, a site at this BTS's own address is this BTS in another export; one with its id is
+    # another BTS (lab files reuse ids), offered and refused only where the PLMN is the same too.
+    return (here(ctx, "enbs", lambda e: not e["cells"] or e["id"] == own)
+            + sources(ctx, "enbs", lambda e: not e["cells"] or (e.get("ip") or "").strip().lower() in mine,
+                      ("id", "plmn", "ip", "cells")))
+
+
+def _plmn(enb: dict) -> Optional[dict]:
+    return {k: enb["p"].get(k) for k in ("mcc", "mnc", "mncLength")} if enb["p"].get("mcc") else None
 
 
 def _existing(lnadjs: list[dict], enb_id: Optional[str], plmn: Optional[dict]) -> Optional[dict]:
@@ -106,6 +114,7 @@ def setup(ctx: Context) -> dict:
                         + (f" · {enb['p']['enbName']}" if enb["p"].get("enbName") else ""),
                         "details": [f"{len(cells)} cell{'s' if len(cells) != 1 else ''}, {len(lnadjs)} neighbour "
                                     f"eNB{'s' if len(lnadjs) != 1 else ''}."]} | ({"group": "LTE eNB"} if both else {}))
+        own_plmn = _plmn(enb)
         opts, tails, found = [], [], nearby(site, lte_cplane(site, dn, None), _sources(ctx, enb))
         for e in found:
             have = _existing(lnadjs, e["id"], e["plmn"])
@@ -113,10 +122,13 @@ def setup(ctx: Context) -> dict:
             details += [_cell_text(c).capitalize() + "." for c in e["cells"][:6]]
             if have:
                 details.append(f"Already a neighbour ({label(have['dn'])}): what's missing is added.")
+            clash = id_clash("eNB", e["id"], e["plmn"], instance(dn), own_plmn)
+            if clash:
+                details.append(clash)
             opts.append({"value": e["key"], "key": e["key"], "details": details, "group": group(e),
                          "label": f"eNB {e['id']}" + (f" {e['name']}" if e.get("name") else "")})
             tails.append(f"{len(e['cells'])} cell{'s' if len(e['cells']) != 1 else ''}"
-                         + (" · already a neighbour" if have else ""))
+                         + (" · already a neighbour" if have else "") + (" · same eNB id" if clash else ""))
             nb_cells[e["key"]] = [{"value": c["lcrId"], "label": _cell_text(c)} for c in e["cells"]]
         distinguish(opts, found, tails)
         opts.append({"value": MANUAL, "key": MANUAL, "group": "By hand", "label": "Enter the neighbour by hand",
@@ -124,7 +136,7 @@ def setup(ctx: Context) -> dict:
         sources[dn] = opts
         own_cells[dn] = [{"value": c["dn"], "label": f"{label(c['dn'])} · PCI {c['pci']} · EARFCN {c['earfcn']}"
                           + (f" · {c['name']}" if c.get("name") else "")} for c in cells]
-        plmns[dn] = plmn_text({k: enb["p"].get(k) for k in ("mcc", "mnc", "mncLength")})
+        plmns[dn] = plmn_text(own_plmn)
         earfcns[dn] = cells[0]["earfcn"] or ""
         tacs[dn] = cells[0]["tac"] or ""
         bw_opts[dn] = [{"value": b, "label": b} for b in BANDWIDTHS]
@@ -254,8 +266,9 @@ def _neighbour(ctx: Context, enb: dict, inputs: dict) -> dict:
         for c in nb["cells"]:
             if c.get("pci") in (None, "") or c.get("earfcn") in (None, "") or c.get("tac") in (None, ""):
                 problems.append(f"{match['file']} lacks the PCI, EARFCN or TAC of cell {c['lcrId']}.")
-    if nb.get("id") == instance(enb["dn"]):
-        problems.append(f"eNB {nb['id']} is this eNB.")
+    clash = id_clash("eNB", nb.get("id"), nb.get("plmn"), instance(enb["dn"]), _plmn(enb))
+    if clash:
+        problems.append(clash)
     if problems:
         raise PlanError(problems)
     return nb

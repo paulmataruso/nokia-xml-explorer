@@ -84,6 +84,22 @@ def same_node(m: dict, list_name: str, plmn: Optional[dict]) -> bool:
     return not have or not plmn or same_plmn(have, plmn)
 
 
+def id_clash(kind: str, nb_id: Optional[str], nb_plmn: Optional[dict], own_id: str,
+             own_plmn: Optional[dict]) -> Optional[str]:
+    """Why a neighbour eNB or gNB (`kind`) with this site's own id can't be
+    added, or None. A global eNB/gNB id is the PLMN plus the id, so two sites
+    of one PLMN need different ids; with another PLMN it is another node.
+    Lab files reuse ids (eNB 0, gNB 0), so such a site is offered, not
+    hidden, and the reason says what to do."""
+    if nb_id is None or nb_id != own_id or (nb_plmn and own_plmn and not same_plmn(nb_plmn, own_plmn)):
+        return None
+    cls, cgi = ("LNBTS", "ECGI") if kind == "eNB" else ("NRBTS", "NCGI")
+    plmn = plmn_text(own_plmn or nb_plmn)
+    return (f"{kind} {nb_id} has this {kind}'s own id" + (f" in the same PLMN ({plmn})" if plmn else "")
+            + f": two {kind}s of one PLMN need different ids, or their cells' global ids ({cgi}) collide. "
+            f"Renumber one of them first (Renumber on its {cls}).")
+
+
 def number(value, lo: int, hi: int, what: str, problems: list[str]) -> Optional[str]:
     v = (value or "").strip()
     if not v.isdigit() or not lo <= int(v) <= hi:

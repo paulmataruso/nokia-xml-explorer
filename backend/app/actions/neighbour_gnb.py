@@ -46,8 +46,8 @@ from typing import Optional
 from . import Context, PlanError, carrier, endc_gnb, finish, gnb_enb
 from .doc import Doc, instance, label, why
 from .links import Site
-from .neighbours import (BOTH, distinguish, far, from_text, group, here, lcr_ids, lookup, lte_enbs, nearby, number,
-                         own_addresses, plmn_text, run_fields, same_plmn, sources)
+from .neighbours import (BOTH, distinguish, far, from_text, group, here, id_clash, lcr_ids, lookup, lte_enbs, nearby,
+                         number, own_addresses, plmn_text, run_fields, same_plmn, sources)
 from .sites import nr_cell, xn_address
 from .transport import check_ip, reachable
 
@@ -80,9 +80,12 @@ def _cell_text(c: dict) -> str:
 
 
 def _sources(ctx: Context, gnb: dict) -> list[dict]:
-    own = instance(gnb["dn"])
-    skip = lambda e: e["id"] == own or (not e["cells"] and not e["xn"])  # noqa: E731
-    return here(ctx, "gnbs", skip) + sources(ctx, "gnbs", skip, ("id", "plmn", "xn", "cells"))
+    own, mine = instance(gnb["dn"]), own_addresses(ctx.site)
+    empty = lambda e: not e["cells"] and not e["xn"]  # noqa: E731
+    # As for eNBs: at this BTS's own address is this BTS in another export; its id alone is another BTS.
+    return (here(ctx, "gnbs", lambda e: e["id"] == own or empty(e))
+            + sources(ctx, "gnbs", lambda e: empty(e) or (e.get("xn") or "").strip().lower() in mine,
+                      ("id", "plmn", "xn", "cells")))
 
 
 def _link(site: Site, gnb: dict, ip: Optional[str]) -> Optional[dict]:
@@ -125,10 +128,13 @@ def setup(ctx: Context) -> dict:
             details += [_cell_text(c).capitalize() + "." for c in e["cells"][:6]]
             if have:
                 details.append(f"Already an Xn neighbour ({label(have['dn'])}, {have['p'].get('cPlaneIpAddrCtrl')}).")
+            clash = id_clash("gNB", e["id"], e["plmn"], instance(gnb["dn"]), _plmn(site, gnb))
+            if clash:
+                details.append(clash)
             opts.append({"value": e["key"], "key": e["key"], "details": details, "group": group(e),
                          "label": f"gNB {e['id']}" + (f" {e['name']}" if e.get("name") else "")})
             tails.append(f"{len(e['cells'])} cell{'s' if len(e['cells']) != 1 else ''}"
-                         + (" · already a neighbour" if have else ""))
+                         + (" · already a neighbour" if have else "") + (" · same gNB id" if clash else ""))
         distinguish(opts, found, tails, address="xn")
         opts.append({"value": MANUAL, "key": MANUAL, "group": "By hand", "label": "Enter its address by hand",
                      "details": ["The other gNB's Xn C-plane address, and its carrier if this gNB doesn't serve it."]})
@@ -275,6 +281,9 @@ def plan(ctx: Context, inputs: dict) -> tuple[bytes, dict]:
     if not gnb:
         raise PlanError(["Pick this file's gNB or eNB."])
     nb = _neighbour(ctx, gnb, inputs)
+    clash = id_clash("gNB", nb["id"], nb["plmn"], instance(gnb["dn"]), _plmn(site, gnb))
+    if clash:
+        raise PlanError([clash])
     if nb["ip"].lower() in own_addresses(site):
         raise PlanError([f"{nb['ip']} is one of this BTS's own addresses."])
     who = f"gNB {nb['id']}" if nb["id"] else nb["ip"]
