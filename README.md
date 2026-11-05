@@ -193,7 +193,9 @@ you still need to set, tracked file-wide in the "Required Fields" panel.
   EN-DC on the eNB (or the eNBs' 4G side from the gNB). The review then
   has one section per file, and **Apply to N files** writes them all or
   none, each with its own snapshot; a read-only file goes into a copy.
-  Undo puts every file back.
+  Undo puts every file back. Two picks that disagree about one setting
+  (two exports of the same eNB with different cells, say) are flagged,
+  so you can keep one.
 
   An action adds everything its feature needs: an object the file lacks
   is created, and one it has is changed to what the feature needs. EN-DC

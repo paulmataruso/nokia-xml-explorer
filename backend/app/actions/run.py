@@ -10,7 +10,11 @@ after its own, in order, each {"file": corpus key or None (this file),
 "action": id, "inputs": {...}, "what": what it does there}. The legs on one
 file chain: each plans on the bytes the one before left, so a second
 neighbour sees the first. A leg's "settles" lists the notes it makes moot
-("Run it on the gNB's file too"), dropped once it plans. A leg that can't be planned is its file's
+("Run it on the gNB's file too"), dropped once it plans. A leg that
+changes what an earlier leg of the run wrote in the same file is refused:
+the two picks disagree (two exports of one eNB with different cells, one
+SSB in two bands), and a repeat would flip the value back and forth. A
+leg that can't be planned is its file's
 problem, listed with the file; the run can't be written while a file has
 one (untick what asks for it). This file's own change failing is the run
 failing, as for a single action.
@@ -24,9 +28,10 @@ Pure: main.py opens the other files (open_ctx) and writes the results.
 """
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, Optional
 
 from . import Context, PlanError
+from .doc import label
 from .site_check import check_loaded, check_site, new_findings
 from .steps import steps_text
 
@@ -60,6 +65,9 @@ def plan_run(ctx: Context, action, inputs: dict, actions: dict, open_ctx: Callab
             if reason:
                 raise PlanError([reason])
             new, plan = a.plan(f["ctx"], clean)
+            clash = _clash(f, plan, leg.get("what"))
+            if clash:
+                raise PlanError([clash])
         except PlanError as e:
             if i == 0:
                 raise
@@ -75,7 +83,39 @@ def plan_run(ctx: Context, action, inputs: dict, actions: dict, open_ctx: Callab
 def _file(key: str, ctx, problems=None) -> dict:
     source, _, name = key.partition(":")
     return {"key": key, "name": name, "source": source, "editable": source == "upload", "start": ctx, "ctx": ctx,
-            "plans": [], "what": [], "problems": problems or []}
+            "plans": [], "what": [], "problems": problems or [], "wrote": {}, "made": {}}
+
+
+def _clash(f: dict, plan: dict, what) -> Optional[str]:
+    """A value of this file the plan changes after an earlier leg of the run
+    wrote it (set it, or created its object), or None; then records what the
+    plan writes. A simple list ("name[]") only clashes when the plan drops a
+    value the earlier leg added: two neighbours each add theirs."""
+    mine = what or "This file's own change"
+    for c in plan["changes"]:
+        if c["op"] not in ("set", "unset"):
+            continue
+        key = (c["dn"], c["param"])
+        if key in f["wrote"]:
+            had, by = f["wrote"][key]
+            if c["param"].endswith("[]"):
+                lost = set((had or "").split(", ")) - set((c["new"] or "").split(", ")) - {""}
+                if not lost:
+                    continue
+            elif had == c["new"]:
+                continue
+        elif c["dn"] in f["made"] and c["old"] != c["new"]:
+            by = f["made"][c["dn"]]
+        else:
+            continue
+        return (f"{c['param']} on {label(c['dn'])} would be {c['new'] or 'unset'}, where {by[0].lower() + by[1:]} "
+                f"writes {c['old'] or 'nothing'}: the two disagree, so pick one of them.")
+    for c in plan["changes"]:
+        if c["op"] in ("set", "unset"):
+            f["wrote"][(c["dn"], c["param"])] = (c["new"], mine)
+        elif c["op"] == "create":
+            f["made"].setdefault(c["dn"], mine)
+    return None
 
 
 def _once(items) -> list:
